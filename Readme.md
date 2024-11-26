@@ -51,14 +51,16 @@
 ## Pensamentos:
 Frete grátis 
 
-cupons de desconto 
+Cupons de desconto 
 
 5% de comissao para a loja, resto para o vendedor 
 
 Apenas produtos nacionais 
 
-produtos mais vendidos 
+Produtos mais vendidos 
 
 Login
 
-tela compatibilidade pc
+Tela compatibilidade pc
+
+Tela de retorno de produto. O site pede o tipo de produto, quanto tempo foi usado, estipula um desconto e gera um ticket para o produto ser retornado
