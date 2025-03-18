@@ -1,6 +1,5 @@
 package telas;
 
-import dados.Loja;
 import dados.Produto;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -9,6 +8,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import banco.OperacoesBanco;
 
 public class TelaCadastroProduto extends JDialog {
     private JPanel contentPane;
@@ -25,17 +26,17 @@ public class TelaCadastroProduto extends JDialog {
     private Produto produto;
     private ArrayList<Produto> estoque = new ArrayList<>();
 
-    public void screen(Loja loja) {
+    public void screen(OperacoesBanco operacoesBanco) {
         setVisible(true);
         setContentPane(contentPane);
         setModal(true);
-        setSize(700, 600); //Tamanho da tela
+        setSize(700, 600); // Tamanho da tela
         setLocationRelativeTo(null);
         gerenciarTelas = new GerenciarTelas();
 
         voltarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gerenciarTelas.trocarTela(0, loja);
+                gerenciarTelas.trocarTela(0, operacoesBanco);
                 dispose();
             }
         });
@@ -53,12 +54,12 @@ public class TelaCadastroProduto extends JDialog {
                     campoResultado.setText("Erro ao cadastrar produto");
                 } else {
                     produto = new Produto();
-                    // garagemprodutos = loja.getGaragem();
+                    // garagemprodutos = operacoesBanco.getGaragem();
                     estoque.add(produto);
                     for (produto produto1 : estoque) {
-                        //garagemprodutos.adicionar(produto);
+                        // garagemprodutos.adicionar(produto);
                     }
-                    //campoResultado.setText(garagemprodutos.listaprodutos());
+                    // campoResultado.setText(garagemprodutos.listaprodutos());
                 }
             }
         });

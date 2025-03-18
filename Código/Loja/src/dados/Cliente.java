@@ -7,6 +7,16 @@ public class Cliente {
     private String rg;
     private int idade;
 
+    public Cliente() {
+
+    }
+
+    public Cliente(String nome, String cpf, String rg) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.rg = rg;
+    }
+
     public Cliente(int id, String nome, String cpf, String rg) {
         this.id = id;
         this.nome = nome;
@@ -20,6 +30,14 @@ public class Cliente {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdade() {
+        return idade;
+    }
+
+    public void setIdade(int idade) {
+        this.idade = idade;
     }
 
     public String getNome() {

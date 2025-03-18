@@ -1,11 +1,12 @@
 package telas;
 
-import dados.Loja;
 import java.awt.event.*;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import banco.OperacoesBanco;
 
 public class TelaMenuPrincipal extends JDialog {
     private JPanel contentPane;
@@ -17,7 +18,7 @@ public class TelaMenuPrincipal extends JDialog {
     private JButton editClientsButton;
     private JButton dealershipButton;
 
-    public void screen(Loja loja) {
+    public void screen(OperacoesBanco operacoesBanco) {
         setVisible(true);
         setContentPane(contentPane);
         setModal(true);
@@ -25,33 +26,33 @@ public class TelaMenuPrincipal extends JDialog {
         setLocationRelativeTo(null); // Centralizando a tela
         gerenciarTelas = new GerenciarTelas();
 
-         cadastroCarroButton.addActionListener(new ActionListener() {
+        cadastroCarroButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gerenciarTelas.trocarTela(1, loja);
+                gerenciarTelas.trocarTela(1, operacoesBanco);
                 dispose();
             }
         });
         cadastroClienteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gerenciarTelas.trocarTela(2, loja);
+                gerenciarTelas.trocarTela(2, operacoesBanco);
                 dispose();
             }
         });
         editCarsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gerenciarTelas.trocarTela(3, loja);
+                gerenciarTelas.trocarTela(3, operacoesBanco);
                 dispose();
             }
         });
         editClientsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gerenciarTelas.trocarTela(4, loja);
+                gerenciarTelas.trocarTela(4, operacoesBanco);
                 dispose();
             }
         });
         dealershipButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gerenciarTelas.trocarTela(5, loja);
+                gerenciarTelas.trocarTela(5, operacoesBanco);
                 dispose();
             }
         });

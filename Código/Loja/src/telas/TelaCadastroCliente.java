@@ -1,8 +1,7 @@
 package telas;
 
 import dados.Cliente;
-import dados.Loja;
-import java.awt.*;
+
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.JButton;
@@ -11,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import banco.OperacoesBanco;
 
 public class TelaCadastroCliente extends JDialog {
     private JPanel contentPane;
@@ -27,47 +28,47 @@ public class TelaCadastroCliente extends JDialog {
     private Cliente cliente;
     private ArrayList<Cliente> clientesCadastrados = new ArrayList<>();
 
-    public void screen(Loja loja) {
+    public void screen(OperacoesBanco operacoesBanco) {
         setVisible(true);
         setContentPane(contentPane);
         setModal(true);
-        setSize(700, 600); //Tamanho da tela
+        setSize(700, 600); // Tamanho da tela
         setLocationRelativeTo(null);
         gerenciarTelas = new GerenciarTelas();
-        //campoNome.setBackground(Color.darkGray);
+        // campoNome.setBackground(Color.darkGray);
 
         voltarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gerenciarTelas.trocarTela(0, loja);
+                gerenciarTelas.trocarTela(0, operacoesBanco);
                 dispose();
             }
         });
         cadastrarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(campoNome.getName() == null){
+                if (campoNome.getName() == null) {
                     campoResultado.setText("Erro ao cadastrar o nome. Tente novamente");
-                }else if (clientesCadastrados.contains(cliente)){
+                } else if (clientesCadastrados.contains(cliente)) {
                     campoResultado.setText("Cliente já cadastrado");
-                }else if(!clientesCadastrados.add(cliente)) {
+                } else if (!clientesCadastrados.add(cliente)) {
                     campoResultado.setText("Erro ao cadastrar cliente");
-                }else {
+                } else {
                     cliente = new Cliente(campoNome.getName());
                     clientesCadastrados.add(cliente);
                     campoResultado.setText(cliente.toString());
                     for (Cliente cliente1 : clientesCadastrados) {
-                        loja.adicionarCliente(cliente1);
+                        operacoesBanco.adicionarCliente(cliente1);
                     }
                 }
             }
         });
         showClientsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(!clientesCadastrados.isEmpty()) {
-                    for(Cliente cliente1 : clientesCadastrados){
-                        loja.adicionarCliente(cliente1);
+                if (!clientesCadastrados.isEmpty()) {
+                    for (Cliente cliente1 : clientesCadastrados) {
+                        operacoesBanco.adicionarCliente(cliente1);
                         campoResultado.setText(cliente1.toString());
                     }
-                }else {
+                } else {
                     campoResultado.setText("Lista de clientes está vazia");
                 }
             }

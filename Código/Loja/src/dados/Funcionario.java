@@ -7,8 +7,7 @@ public class Funcionario {
     private String rg;
     private int idade;
 
-    public Funcionario(int id, String nome, String cpf, String rg) {
-        this.id = id;
+    public Funcionario(String nome, String cpf, String rg) {
         this.nome = nome;
         this.cpf = cpf;
         this.rg = rg;
@@ -49,13 +48,5 @@ public class Funcionario {
     @Override
     public String toString() {
         return "Funcionario [nome=" + nome + ", cpf=" + cpf + ", rg=" + rg + ", idade=" + idade + "]";
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

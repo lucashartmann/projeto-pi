@@ -1,14 +1,16 @@
 package telas;
 
-import dados.Loja;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class TelaEditarClientes extends JDialog {
+import banco.OperacoesBanco;
+
+public class TelaEditarFornecedores extends JDialog {
     private JPanel contentPane;
     private JButton editButton;
     private JLabel cpfText;
@@ -25,17 +27,17 @@ public class TelaEditarClientes extends JDialog {
     private JButton buttonCancel;
     private GerenciarTelas gerenciarTelas;
 
-    public void telaEditarClientes(Loja loja) {
+    public void telaEditarClientes(OperacoesBanco operacoesBanco) {
         setVisible(true);
         setContentPane(contentPane);
         setModal(true);
-        setSize(700, 600); //Tamanho da tela
+        setSize(700, 600); // Tamanho da tela
         setLocationRelativeTo(null);
         gerenciarTelas = new GerenciarTelas();
 
         backButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                gerenciarTelas.trocarTela(0, loja);
+                gerenciarTelas.trocarTela(0, operacoesBanco);
                 dispose();
             }
         });
@@ -46,5 +48,4 @@ public class TelaEditarClientes extends JDialog {
         });
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
-
 }
