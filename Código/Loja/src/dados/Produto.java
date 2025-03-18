@@ -6,10 +6,11 @@ public class Produto {
     private String cor;
     private double preco;
     private String marca;
+    private String modelo;
 
-    public Produto(String nome, int codigo, String cor, double preco, String marca) {
+    public Produto(String nome, String marca, String modelo, String cor, double preco) {
         this.nome = nome;
-        this.codigo = codigo;
+        this.modelo = modelo;
         this.cor = cor;
         this.preco = preco;
         this.marca = marca;
@@ -55,10 +56,18 @@ public class Produto {
         this.marca = marca;
     }
 
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
     @Override
     public String toString() {
         return "Produto [nome=" + nome + ", codigo=" + codigo + ", cor=" + cor + ", preco=" + preco + ", marca=" + marca
-                + "]";
+                + ", modelo=" + modelo + "]";
     }
 
 }

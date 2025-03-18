@@ -15,16 +15,22 @@ public class TelaCadastroProduto extends JDialog {
     private JPanel contentPane;
     private JButton voltarButton;
     private JButton cadastrarButton;
-    private JTextField campoPlaca;
-    private JTextField campoResultado;
+    private JTextField campoPreco;
+    private JTextField campoCor;
+    private JTextField campoNome;
     private JTextField campoMarca;
+    private JTextField campoResultado;
     private JLabel placaTexto;
     private JLabel marcaTexto;
     private GerenciarTelas gerenciarTelas;
-    private String placa;
+    private String nome;
+    private int codigo;
+    private String cor;
+    private double preco;
     private String marca;
+    private String modelo;
     private Produto produto;
-    private ArrayList<Produto> estoque = new ArrayList<>();
+    private boolean condicao;
 
     public void screen(OperacoesBanco operacoesBanco) {
         setVisible(true);
@@ -40,31 +46,29 @@ public class TelaCadastroProduto extends JDialog {
                 dispose();
             }
         });
+
         cadastrarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                placa = campoPlaca.getName();
-                marca = campoPlaca.getName();
-                if (placa == null) {
+                nome = campoNome.getName();
+                cor = campoCor.getName();
+                marca = campoMarca.getName();
+                preco = campoPreco.getName();
+                if (nome == null) {
                     campoResultado.setText("Erro ao cadastrar placa, tente novamente");
                 } else if (marca == null) {
                     campoResultado.setText("Erro ao cadastrar marca, tente novamente");
-                } else if (estoque.contains(produto)) {
-                    campoResultado.setText("produto já cadastrado no cinema");
-                } else if (!estoque.add(produto)) {
-                    campoResultado.setText("Erro ao cadastrar produto");
                 } else {
-                    produto = new Produto();
-                    // garagemprodutos = operacoesBanco.getGaragem();
-                    estoque.add(produto);
-                    for (produto produto1 : estoque) {
-                        // garagemprodutos.adicionar(produto);
+                    produto = new Produto(nome, marca, modelo, cor, preco);
+                    condicao = operacoesBanco.inserirProduto(produto);
+                    if (condicao == true) {
+                        campoResultado.setText(produto.toString());
+                        System.out.println("Produto inserido com sucesso");
+                    } else {
+                        System.out.println("Erro ao inserir o produto");
                     }
-                    // campoResultado.setText(garagemprodutos.listaprodutos());
                 }
             }
         });
-
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
-
 }

@@ -26,7 +26,6 @@ public class TelaCadastroCliente extends JDialog {
     private JButton showClientsButton;
     private GerenciarTelas gerenciarTelas;
     private Cliente cliente;
-    private ArrayList<Cliente> clientesCadastrados = new ArrayList<>();
 
     public void screen(OperacoesBanco operacoesBanco) {
         setVisible(true);
@@ -47,29 +46,10 @@ public class TelaCadastroCliente extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if (campoNome.getName() == null) {
                     campoResultado.setText("Erro ao cadastrar o nome. Tente novamente");
-                } else if (clientesCadastrados.contains(cliente)) {
-                    campoResultado.setText("Cliente já cadastrado");
-                } else if (!clientesCadastrados.add(cliente)) {
-                    campoResultado.setText("Erro ao cadastrar cliente");
                 } else {
                     cliente = new Cliente(campoNome.getName());
-                    clientesCadastrados.add(cliente);
                     campoResultado.setText(cliente.toString());
-                    for (Cliente cliente1 : clientesCadastrados) {
-                        operacoesBanco.adicionarCliente(cliente1);
-                    }
-                }
-            }
-        });
-        showClientsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!clientesCadastrados.isEmpty()) {
-                    for (Cliente cliente1 : clientesCadastrados) {
-                        operacoesBanco.adicionarCliente(cliente1);
-                        campoResultado.setText(cliente1.toString());
-                    }
-                } else {
-                    campoResultado.setText("Lista de clientes está vazia");
+                    operacoesBanco.inserirCliente(cliente);
                 }
             }
         });

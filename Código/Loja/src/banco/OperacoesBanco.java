@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dados.Cliente;
+import dados.Produto;
 
 public class OperacoesBanco {
 
@@ -46,6 +47,9 @@ public class OperacoesBanco {
                 System.out.println("Erro ao fechar recursos: " + e.getMessage());
             }
         }
+    }
+
+    public boolean inserirProduto(Produto produto) {
     }
 
     public List<Cliente> consultarClientesPorNome(String nome) {
