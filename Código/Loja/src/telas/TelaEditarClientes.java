@@ -11,19 +11,11 @@ import banco.OperacoesBanco;
 
 public class TelaEditarClientes extends JDialog {
     private JPanel contentPane;
-    private JButton editButton;
     private JLabel cpfText;
-    private JTextField fieldCPF;
-    private JTextField fieldName;
-    private JButton backButton;
-    private JTextField fieldResult;
+    private JTextField fieldCPF, fieldName, fieldResult, newFieldCPF,newFieldName;
     private JLabel nameText;
-    private JTextField newFieldCPF;
-    private JTextField newFieldName;
-    private JLabel newCpfText;
-    private JLabel newNameText;
-    private JButton buttonOK;
-    private JButton buttonCancel;
+    private JLabel newCpfText, newNameText;
+    private JButton buttonOK, buttonCancel, backButton, editButton;
     private GerenciarTelas gerenciarTelas;
 
     public void telaEditarClientes(OperacoesBanco operacoesBanco) {

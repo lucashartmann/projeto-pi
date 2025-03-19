@@ -16,7 +16,9 @@ public class TelaEditarProduto extends JDialog {
     private JLabel placaTexto, marcaTexto;
     private JTextField campoPlaca, campoResultado, campoMarca, fieldNewPlaca, fieldNewMarca;
     private GerenciarTelas gerenciarTelas;
-    private String placa, marca, novaPlaca, novaMarca;
+    private String nome, marca, modelo, cor, preco;
+    private String novoNome, novaMarca, novoModelo, novaCor, novoPreco;
+    private double precoConvertido;
 
     public void telaEditarprodutos(OperacoesBanco operacoesBanco) {
         setVisible(true);
@@ -34,24 +36,25 @@ public class TelaEditarProduto extends JDialog {
         });
         editButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                placa = campoPlaca.getText();
+                nome = campoPlaca.getText();
+                modelo = campoPlaca.getText();
+                cor = campoPlaca.getText();
+                preco = campoPlaca.getText();
                 marca = campoMarca.getText();
-                if (placa != null && marca != null) {
+                if (nome != null && marca != null) {
                     Produto produto = operacoesBanco.consultarprodutoPorPlacaMarca(placa, marca);
                     campoResultado.setText("produto antes: " + produto.toString());
                     novaMarca = fieldNewMarca.getText();
-                    novaPlaca = fieldNewPlaca.getText();
+                    novoNome = campoNovoNome.getText();
+                    novoModelo = campoNovoModelo.getText();
+                    novaCor = campoNovaCor.getText();
+                    novoPreco = campoNovoPreco.getText();
+                    precoConvertido = Double.parseDouble(preco);
                     produto.setMarca(novaMarca);
-                    produto.setPlaca(novaPlaca);
-                    campoResultado.setText("produto depois: " + produto.toString());
-                }
-                if (placa != null && marca == null) {
-                    Produto produto = operacoesBanco.consultarprodutoPorPlaca(placa);
-                    campoResultado.setText("produto antes: " + produto.toString());
-                    novaMarca = fieldNewMarca.getText();
-                    novaPlaca = fieldNewPlaca.getText();
-                    produto.setMarca(novaMarca);
-                    produto.setPlaca(novaPlaca);
+                    produto.setModelo(novoModelo);
+                    produto.setPreco(precoConvertido);
+                    produto.setCor(novaCor);
+                    produto.setNome(novoNome);
                     campoResultado.setText("produto depois: " + produto.toString());
                 }
             }

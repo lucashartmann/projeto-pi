@@ -16,14 +16,9 @@ import banco.OperacoesBanco;
 public class TelaCadastroCliente extends JDialog {
     private JPanel contentPane;
     private JFrame clienteJFrame;
-    private JTextField campoCPF;
-    private JTextField campoNome;
-    private JTextField campoResultado;
-    private JButton voltarButton;
-    private JButton cadastrarButton;
-    private JLabel nome;
-    private JLabel cpf;
-    private JButton showClientsButton;
+    private JTextField campoCPF, campoNome, campoResultado;
+    private JButton voltarButton, cadastrarButton, showClientsButton;
+    private JLabel nome, cpf;
     private GerenciarTelas gerenciarTelas;
     private Cliente cliente;
 

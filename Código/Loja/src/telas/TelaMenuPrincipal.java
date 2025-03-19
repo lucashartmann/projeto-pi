@@ -10,13 +10,10 @@ import banco.OperacoesBanco;
 
 public class TelaMenuPrincipal extends JDialog {
     private JPanel contentPane;
-    private JButton cadastroCarroButton;
-    private JButton cadastroClienteButton;
+    private JButton cadastroCarroButton, cadastroClienteButton;
     private GerenciarTelas gerenciarTelas;
     private JLabel titulo;
-    private JButton editCarsButton;
-    private JButton editClientsButton;
-    private JButton dealershipButton;
+    private JButton editCarsButton, editClientsButton, dealershipButton;
 
     public void screen(OperacoesBanco operacoesBanco) {
         setVisible(true);

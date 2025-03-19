@@ -13,22 +13,13 @@ import banco.OperacoesBanco;
 
 public class TelaCadastroProduto extends JDialog {
     private JPanel contentPane;
-    private JButton voltarButton;
-    private JButton cadastrarButton;
-    private JTextField campoPreco;
-    private JTextField campoCor;
-    private JTextField campoNome;
-    private JTextField campoMarca;
-    private JTextField campoResultado;
-    private JLabel placaTexto;
-    private JLabel marcaTexto;
+    private JButton voltarButton, cadastrarButton;
+    private JTextField campoMarca, campoResultado, campoNome, campoCor, campoPreco;
+    private JLabel placaTexto, marcaTexto;
     private GerenciarTelas gerenciarTelas;
-    private String nome;
     private int codigo;
-    private String cor;
-    private double preco;
-    private String marca;
-    private String modelo;
+    private String cor, preco, marca, modelo,nome;
+    private double precoConvertido;
     private Produto produto;
     private boolean condicao;
 
@@ -53,12 +44,11 @@ public class TelaCadastroProduto extends JDialog {
                 cor = campoCor.getName();
                 marca = campoMarca.getName();
                 preco = campoPreco.getName();
-                if (nome == null) {
+                precoConvertido = Double.parseDouble(preco);
+                if (nome == null || cor == null || marca == null || preco == null) {
                     campoResultado.setText("Erro ao cadastrar placa, tente novamente");
-                } else if (marca == null) {
-                    campoResultado.setText("Erro ao cadastrar marca, tente novamente");
                 } else {
-                    produto = new Produto(nome, marca, modelo, cor, preco);
+                    produto = new Produto(nome, marca, modelo, cor, precoConvertido);
                     condicao = operacoesBanco.inserirProduto(produto);
                     if (condicao == true) {
                         campoResultado.setText(produto.toString());

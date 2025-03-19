@@ -10,11 +10,9 @@ import banco.OperacoesBanco;
 
 public class TelaLoja extends JDialog {
     private JPanel contentPane;
-    private JButton vehiclesButton;
-    private JButton clientsButton;
+    private JButton vehiclesButton, clientsButton;
+    private JButton backButton, allDataButton;
     private JTextField fieldResult;
-    private JButton backButton;
-    private JButton allDataButton;
     private GerenciarTelas gerenciarTelas;
 
     public void telaLoja(OperacoesBanco operacoesBanco) {
@@ -33,8 +31,7 @@ public class TelaLoja extends JDialog {
         });
         vehiclesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String resultadoConsulta = "Quantidade de produtos: " + operacoesBanco.getQuantidadeProdutos() + "\n"
-                        + operacoesBanco.listaProdutos();
+                String resultadoConsulta = "Quantidade de produtos: " + operacoesBanco.getQuantidadeProdutos();
                 fieldResult.setText(resultadoConsulta);
             }
         });
@@ -45,13 +42,16 @@ public class TelaLoja extends JDialog {
                 fieldResult.setText(resultadoConsulta);
             }
         });
-        allDataButton.addActionListener(new ActionListener() {
+        pesquisaProduto.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String resultadoConsultaProdutos = "Quantidade de produtos: " + operacoesBanco.getQuantidadeProdutos()
-                        + "\n" + operacoesBanco.listaProdutos();
-                String resultadoConsultaClientes = "Quantidade de clientes: " + operacoesBanco.getQuantidadeClientes()
-                        + "\n" + operacoesBanco.consultarClientes();
-                fieldResult.setText(resultadoConsultaProdutos + "\n" + resultadoConsultaClientes);
+                String resultadoConsultaProdutos = "Quantidade de produtos: " + //operacoesBanco.getQuantidadeProdutos();
+                fieldResult.setText(resultadoConsultaProdutos);
+            }
+        });
+        pesquisaCliente.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String resultadoConsultaClientes = "Quantidade de clientes: " + //operacoesBanco.getQuantidadeClientes();
+                fieldResult.setText(resultadoConsultaClientes);
             }
         });
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
