@@ -16,9 +16,9 @@ import banco.OperacoesBanco;
 public class TelaCadastroCliente extends JDialog {
     private JPanel contentPane;
     private JFrame clienteJFrame;
-    private JTextField campoCPF, campoNome, campoResultado;
-    private JButton voltarButton, cadastrarButton, showClientsButton;
-    private JLabel nome, cpf;
+    private JTextField campoCPF, campoNome, campoResultado, campoRG;
+    private JButton voltarButton, cadastrarButton, editarButton;
+    private String nome, cpf, rg;
     private GerenciarTelas gerenciarTelas;
     private Cliente cliente;
 
@@ -29,7 +29,6 @@ public class TelaCadastroCliente extends JDialog {
         setSize(700, 600); // Tamanho da tela
         setLocationRelativeTo(null);
         gerenciarTelas = new GerenciarTelas();
-        // campoNome.setBackground(Color.darkGray);
 
         voltarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -38,11 +37,14 @@ public class TelaCadastroCliente extends JDialog {
             }
         });
         cadastrarButton.addActionListener(new ActionListener() {
+            nome = campoNome.getName();
+            rg = campoRG.getNome();
+            cpf = campoCPF.getNome();
             public void actionPerformed(ActionEvent e) {
-                if (campoNome.getName() == null) {
-                    campoResultado.setText("Erro ao cadastrar o nome. Tente novamente");
+                if (nome == null || cpf == null || rg == null) {
+                    campoResultado.setText("Erro ao cadastrar. Tente novamente");
                 } else {
-                    cliente = new Cliente(campoNome.getName());
+                    cliente = new Cliente(nome, cpf, rg);
                     campoResultado.setText(cliente.toString());
                     operacoesBanco.inserirCliente(cliente);
                 }

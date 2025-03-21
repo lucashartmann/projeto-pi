@@ -6,7 +6,7 @@
       <xy x="48" y="54" width="916" height="595"/>
     </constraints>
     <properties>
-      <background color="-13626339"/>
+      <background color="-2340460"/>
     </properties>
     <border type="none"/>
     <children>
@@ -51,20 +51,8 @@
               <requestFocusEnabled value="true"/>
               <rolloverEnabled value="true"/>
               <selected value="false"/>
-              <text value="Cadastro de carros"/>
+              <text value="Produtos"/>
               <verifyInputWhenFocusTarget value="true"/>
-            </properties>
-          </component>
-          <component id="1a576" class="javax.swing.JButton" binding="editClientsButton">
-            <constraints>
-              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
-                <preferred-size width="100" height="100"/>
-              </grid>
-            </constraints>
-            <properties>
-              <font name="Arial Black" size="16" style="1"/>
-              <horizontalTextPosition value="0"/>
-              <text value="Edição de clientes"/>
             </properties>
           </component>
           <component id="5723f" class="javax.swing.JButton" binding="cadastroClienteButton">
@@ -76,22 +64,34 @@
             <properties>
               <font name="Arial Black" size="16" style="1"/>
               <horizontalTextPosition value="0"/>
-              <text value="Cadastro de clientes"/>
+              <text value="Clientes"/>
             </properties>
           </component>
-          <component id="2ed28" class="javax.swing.JButton" binding="dealershipButton">
+          <component id="d6ec6" class="javax.swing.JButton">
             <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="100"/>
               </grid>
             </constraints>
             <properties>
+              <borderPainted value="true"/>
+              <contentAreaFilled value="true"/>
+              <defaultCapable value="true"/>
+              <doubleBuffered value="false"/>
+              <enabled value="true"/>
+              <focusCycleRoot value="false"/>
+              <focusable value="true"/>
               <font name="Arial Black" size="16" style="1"/>
               <horizontalTextPosition value="0"/>
-              <text value="Vendedora"/>
+              <opaque value="true"/>
+              <requestFocusEnabled value="true"/>
+              <rolloverEnabled value="true"/>
+              <selected value="false"/>
+              <text value="Funcionários"/>
+              <verifyInputWhenFocusTarget value="true"/>
             </properties>
           </component>
-          <component id="3644b" class="javax.swing.JButton" binding="editCarsButton">
+          <component id="65571" class="javax.swing.JButton">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="100"/>
@@ -111,8 +111,20 @@
               <requestFocusEnabled value="true"/>
               <rolloverEnabled value="true"/>
               <selected value="false"/>
-              <text value="Edição de carros"/>
+              <text value="Fornecedores"/>
               <verifyInputWhenFocusTarget value="true"/>
+            </properties>
+          </component>
+          <component id="2ed28" class="javax.swing.JButton" binding="dealershipButton">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="100" height="100"/>
+              </grid>
+            </constraints>
+            <properties>
+              <font name="Arial Black" size="16" style="1"/>
+              <horizontalTextPosition value="0"/>
+              <text value="Loja"/>
             </properties>
           </component>
         </children>

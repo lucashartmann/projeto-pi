@@ -29,29 +29,12 @@ public class TelaLoja extends JDialog {
                 dispose();
             }
         });
-        vehiclesButton.addActionListener(new ActionListener() {
+        dadosButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String resultadoConsulta = "Quantidade de produtos: " + operacoesBanco.getQuantidadeProdutos();
+                String resultadoConsulta = "Quantidade de produtos: " + operacoesBanco.getQuantidadeProdutos() +
+                        "\nQuantidade de clientes:" + "\nQuantidade de fornecedores" +
+                        ;
                 fieldResult.setText(resultadoConsulta);
-            }
-        });
-        clientsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String resultadoConsulta = "Quantidade de clientes: " + operacoesBanco.getQuantidadeClientes() + "\n"
-                        + operacoesBanco.consultarClientes();
-                fieldResult.setText(resultadoConsulta);
-            }
-        });
-        pesquisaProduto.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String resultadoConsultaProdutos = "Quantidade de produtos: " + //operacoesBanco.getQuantidadeProdutos();
-                fieldResult.setText(resultadoConsultaProdutos);
-            }
-        });
-        pesquisaCliente.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String resultadoConsultaClientes = "Quantidade de clientes: " + //operacoesBanco.getQuantidadeClientes();
-                fieldResult.setText(resultadoConsultaClientes);
             }
         });
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -13,7 +13,7 @@ import banco.OperacoesBanco;
 
 public class TelaCadastroProduto extends JDialog {
     private JPanel contentPane;
-    private JButton voltarButton, cadastrarButton;
+    private JButton voltarButton, cadastrarButton, editarButton;
     private JTextField campoMarca, campoResultado, campoNome, campoCor, campoPreco;
     private JLabel placaTexto, marcaTexto;
     private GerenciarTelas gerenciarTelas;

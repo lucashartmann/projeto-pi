@@ -12,7 +12,7 @@ import dados.Produto;
 
 public class OperacoesBanco {
 
-    private int quantidadeClientes;
+    private int quantClientes, quantProdutos, quantFornecedores, quantFucionarios;
     private Connection conexao = null;
     private PreparedStatement stmt = null;
     private ResultSet rs = null;
@@ -27,7 +27,7 @@ public class OperacoesBanco {
             stmt.setString(2, cliente.getCpf());
             stmt.setString(3, cliente.getRg());
             int linhasAfetadas = stmt.executeUpdate();
-            quantidadeClientes++;
+            quantClientes++;
             return linhasAfetadas > 0;
         } catch (SQLException e) {
             if (e.getMessage().contains("Duplicate") || e.getErrorCode() == 1062) {
@@ -87,42 +87,8 @@ public class OperacoesBanco {
         return clientes;
     }
 
-    public List<Cliente> consultarClientes() {
-        List<Cliente> clientes = new ArrayList<>();
-        sql = "SELECT * FROM Cliente";
-        try {
-            conexao = ConexaoBanco.getConnection();
-            stmt = conexao.prepareStatement(sql);
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                Cliente cliente = new Cliente();
-                cliente.setId(rs.getInt("id_cliente"));
-                cliente.setNome(rs.getString("nome"));
-                cliente.setCpf(rs.getString("cpf"));
-                cliente.setRg(rs.getString("rg"));
-                cliente.setIdade(rs.getInt("idade"));
-                clientes.add(cliente);
-            }
-        } catch (SQLException e) {
-            System.out.println("Erro ao consultar clientes: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null)
-                    rs.close();
-                if (stmt != null)
-                    stmt.close();
-                if (conexao != null)
-                    conexao.close();
-            } catch (SQLException e) {
-                System.out.println("Erro ao fechar recursos: " + e.getMessage());
-            }
-        }
-        return clientes;
-    }
-
     public int getQuantidadeClientes() {
-        return quantidadeClientes;
+        return quantClientes;
     }
 
 }
