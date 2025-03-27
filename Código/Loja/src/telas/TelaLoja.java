@@ -10,31 +10,30 @@ import banco.OperacoesBanco;
 
 public class TelaLoja extends JDialog {
     private JPanel contentPane;
-    private JButton vehiclesButton, clientsButton;
-    private JButton backButton, allDataButton;
-    private JTextField fieldResult;
+    private JButton voltarButton, allDataButton, pesquisarButton;
     private GerenciarTelas gerenciarTelas;
+    private JTextField campoPesquisa, campoResultado;
 
     public void telaLoja(OperacoesBanco operacoesBanco) {
         setVisible(true);
         setContentPane(contentPane);
         setModal(true);
-        setSize(700, 600); // Tamanho da tela
+        setSize(700, 600);
         setLocationRelativeTo(null);
         gerenciarTelas = new GerenciarTelas();
 
-        backButton.addActionListener(new ActionListener() {
+        voltarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gerenciarTelas.trocarTela(0, operacoesBanco);
                 dispose();
             }
         });
-        dadosButton.addActionListener(new ActionListener() {
+        allDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String resultadoConsulta = "Quantidade de produtos: " + operacoesBanco.getQuantidadeProdutos() +
-                        "\nQuantidade de clientes:" + "\nQuantidade de fornecedores" +
-                        ;
-                fieldResult.setText(resultadoConsulta);
+               // String resultadoConsulta = "Quantidade de produtos: " + operacoesBanco.getQuantProdutos() +
+               //         "\nQuantidade de clientes:" + operacoesBanco.getQuantidadeClientes() + "\nQuantidade de fornecedores" +
+               //         operacoesBanco.getQuantFornecedores() +"\nQuantidade de funcionarios" + operacoesBanco.getQuantFuncionarios();
+               // campoResultado.setText(resultadoConsulta);
             }
         });
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -49,8 +49,8 @@ public class OperacoesBanco {
         }
     }
 
-    public boolean inserirProduto(Produto produto) {
-    }
+    //public boolean inserirProduto(Produto produto) {
+    //}
 
     public List<Cliente> consultarClientesPorNome(String nome) {
         List<Cliente> clientes = new ArrayList<>();

@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Telas.TelaMenuPrincipal">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="telas.TelaMenu">
   <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="30" vgap="30">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
       <xy x="48" y="54" width="916" height="595"/>
     </constraints>
     <properties>
-      <background color="-2340460"/>
+      <background color="-2315386"/>
     </properties>
     <border type="none"/>
     <children>
-      <component id="f52f5" class="javax.swing.JLabel" binding="titulo">
+      <component id="f52f5" class="javax.swing.JLabel">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <background color="-10020275"/>
           <enabled value="true"/>
-          <font name="Arial Black" size="22" style="1"/>
+          <font name="Arial Black" size="20" style="1"/>
+          <foreground color="-16777216"/>
           <text value="Menu"/>
         </properties>
       </component>
@@ -27,11 +28,11 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <background color="-10020275"/>
+          <background color="-3556371"/>
         </properties>
         <border type="none"/>
         <children>
-          <component id="e7465" class="javax.swing.JButton" binding="cadastroCarroButton">
+          <component id="e7465" class="javax.swing.JButton" binding="produtosButton">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="100"/>
@@ -55,7 +56,7 @@
               <verifyInputWhenFocusTarget value="true"/>
             </properties>
           </component>
-          <component id="5723f" class="javax.swing.JButton" binding="cadastroClienteButton">
+          <component id="5723f" class="javax.swing.JButton" binding="clientesButton">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="100"/>
@@ -67,7 +68,7 @@
               <text value="Clientes"/>
             </properties>
           </component>
-          <component id="d6ec6" class="javax.swing.JButton">
+          <component id="d6ec6" class="javax.swing.JButton" binding="funcionariosButton">
             <constraints>
               <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="100"/>
@@ -91,7 +92,7 @@
               <verifyInputWhenFocusTarget value="true"/>
             </properties>
           </component>
-          <component id="65571" class="javax.swing.JButton">
+          <component id="65571" class="javax.swing.JButton" binding="fornecedoresButton">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="100"/>
@@ -115,7 +116,7 @@
               <verifyInputWhenFocusTarget value="true"/>
             </properties>
           </component>
-          <component id="2ed28" class="javax.swing.JButton" binding="dealershipButton">
+          <component id="2ed28" class="javax.swing.JButton" binding="lojaButton">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="100" height="100"/>

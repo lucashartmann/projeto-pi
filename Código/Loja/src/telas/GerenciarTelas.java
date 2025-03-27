@@ -5,31 +5,31 @@ import banco.OperacoesBanco;
 public class GerenciarTelas {
 
     public void trocarTela(int trocaTela, OperacoesBanco operacoesBanco) {
-        TelaMenuPrincipal menu = new TelaMenuPrincipal();
-        TelaCadastroProduto cadastro_produto = new TelaCadastroProduto();
-        TelaCadastroCliente cadastro_cliente = new TelaCadastroCliente();
-        TelaLoja dadosLoja = new TelaLoja();
-        TelaEditarProduto editarProduto = new TelaEditarProduto();
-        TelaEditarClientes editarClientes = new TelaEditarClientes();
+        TelaMenu menu = new TelaMenu();
+        TelaProduto produto = new TelaProduto();
+        TelaCliente cliente = new TelaCliente();
+        TelaLoja loja = new TelaLoja();
+        TelaFornecedores fornecedores = new TelaFornecedores();
+        TelaFuncionarios funcionarios = new TelaFuncionarios();
 
         switch (trocaTela) {
             case 0:
                 menu.screen(operacoesBanco);
                 break;
             case 1:
-                cadastro_produto.screen(operacoesBanco);
+                loja.telaLoja(operacoesBanco);
                 break;
             case 2:
-                cadastro_cliente.screen(operacoesBanco);
+                cliente.screen(operacoesBanco);
                 break;
             case 3:
-                editarProduto.telaEditarprodutos(operacoesBanco);
+                produto.screen(operacoesBanco);
                 break;
             case 4:
-                editarClientes.telaEditarClientes(operacoesBanco);
+                fornecedores.tela(operacoesBanco);
                 break;
             case 5:
-                dadosLoja.telaLoja(operacoesBanco);
+                funcionarios.tela(operacoesBanco);
                 break;
             default:
                 break;

@@ -11,14 +11,14 @@ import javax.swing.JTextField;
 
 import banco.OperacoesBanco;
 
-public class TelaCadastroProduto extends JDialog {
+public class TelaProduto extends JDialog {
     private JPanel contentPane;
     private JButton voltarButton, cadastrarButton, editarButton;
-    private JTextField campoMarca, campoResultado, campoNome, campoCor, campoPreco;
+    private JTextField campoMarca, campoResultado, campoNome, campoCor, campoPreco, campoModelo;
     private JLabel placaTexto, marcaTexto;
     private GerenciarTelas gerenciarTelas;
     private int codigo;
-    private String cor, preco, marca, modelo,nome;
+    private String cor, preco, marca, modelo, nome;
     private double precoConvertido;
     private Produto produto;
     private boolean condicao;
@@ -27,7 +27,7 @@ public class TelaCadastroProduto extends JDialog {
         setVisible(true);
         setContentPane(contentPane);
         setModal(true);
-        setSize(700, 600); // Tamanho da tela
+        setSize(700, 600);
         setLocationRelativeTo(null);
         gerenciarTelas = new GerenciarTelas();
 
@@ -40,16 +40,17 @@ public class TelaCadastroProduto extends JDialog {
 
         cadastrarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                nome = campoNome.getName();
-                cor = campoCor.getName();
-                marca = campoMarca.getName();
-                preco = campoPreco.getName();
+                nome = campoNome.getText();
+                cor = campoCor.getText();
+                marca = campoMarca.getText();
+                preco = campoPreco.getText();
+                modelo = campoModelo.getText();
                 precoConvertido = Double.parseDouble(preco);
-                if (nome == null || cor == null || marca == null || preco == null) {
+                if (nome == null || cor == null || marca == null || preco == null || modelo == null) {
                     campoResultado.setText("Erro ao cadastrar placa, tente novamente");
                 } else {
                     produto = new Produto(nome, marca, modelo, cor, precoConvertido);
-                    condicao = operacoesBanco.inserirProduto(produto);
+                    //condicao = operacoesBanco.inserirProduto(produto);
                     if (condicao == true) {
                         campoResultado.setText(produto.toString());
                         System.out.println("Produto inserido com sucesso");
