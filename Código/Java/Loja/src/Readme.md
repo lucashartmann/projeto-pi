@@ -3,6 +3,7 @@
 ### Tudo
 - Melhorar Design das Telas
 - Criar banco de dados e tabelas
+- Implementar faturamento da loja
 
 ### TelaLoja
 - Ver quantidade de um certo tipo de produto ou categoria 
