@@ -1,0 +1,32 @@
+class Estoque:
+    def __init__(self):
+        self.produtos = []
+        self.quantidade = 0
+        
+    def adicionar_produto(self, produto):
+        if(produto not in self.produtos):
+            self.produtos.append(produto)
+            self.quantidade += 1
+            return True
+        return False
+    
+    def remover_produto(self, produto):
+        if(produto in self.produtos):
+            self.produtos.remove(produto)
+            self.quantidade -= 1
+            return True
+        return False
+    
+    def listar_produtos(self):
+        for produto in self.produtos:
+            print(produto)
+        
+    def get_quantidade(self):
+        return self.quantidade
+    
+    def consultarProdutosPorNome(nome):
+        produtos = []
+        for produto in produtos:
+            if(produto.nome == nome):
+                produtos.append(produto)
+        return None

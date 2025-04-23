@@ -1,11 +1,12 @@
 class Produto:
-    def __init__(self, nome, marca, modelo, cor, preco):
+    def __init__(self, nome, marca, modelo, cor, preco, quantidade):
         self.nome = nome
         self.codigo = None
         self.cor = cor
         self.preco = preco
         self.marca = marca
         self.modelo = modelo
+        self.quantidade = quantidade
 
     def __str__(self):
         return (f"Produto [nome={self.nome}, codigo={self.codigo}, cor={self.cor}, "
