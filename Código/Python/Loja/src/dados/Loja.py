@@ -82,4 +82,3 @@ class Loja:
                 if cliente.get_cpf() == cpf:
                     return True
             return False
-        
