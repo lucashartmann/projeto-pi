@@ -24,7 +24,7 @@ class Estoque:
     def get_quantidade(self):
         return self.quantidade
     
-    def consultarProdutosPorNome(nome):
+    def consultar_produtos_por_nome(nome):
         produtos = []
         for produto in produtos:
             if(produto.nome == nome):

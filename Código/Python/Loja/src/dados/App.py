@@ -12,104 +12,134 @@ fornecedor1 = Fornecedor("Pedro", "11111111111", "11111111111", "11111111111", "
 funcionario1 = Funcionario("Fernando", "22222222222", "2222222222", "22222222222", "Bento Gonçalves 100", "fernando@gmail.com")
 produto1 = Produto("Placa de video", "Branca", 1000.00, "Nvidia", "RTX 4060", 100)
 
-def menu():
+# Implementar lógica de segurança para ver se é o admin
+
+def login():
+    print("Escolha um usuário: ")
+    print("1 - Cliente")
+    print("2 - Admin")
+    usuario = int(input("Digite o número correspondente ao usuário: "))
+    if usuario == 1:
+        menuCliente()
+    elif usuario == 2:
+        menuAdmin()
+    else:
+        print("Usuário não encontrado")
+
+def menuCliente():
     opcao = 0 
-    while opcao < 1 or opcao > 11:
+    carrinho_compras = []
+    while opcao < 1 or opcao > 3:
+        print()
+        print('##### MENU CLIENTE ######')
+        print('1 - Adicionar produtos no Carrinho')
+        print('2 - Realizar compra')
+        print('3 -- Sair do menu')
+        opcao = int(input('Digite o número correspondente a opção: '))
+        print()
+        match opcao:
+            case 1:
+                carrinho_compras = carrinho_compras()
+            case 2:
+                realizar_compra(carrinho_compras)
+            case 3:
+                return
+            case _:
+                print('Opção errada, tente novamente')
+        menuCliente()
+
+def menuAdmin():
+    opcao = 0 
+    while opcao < 1 or opcao > 5:
         print()
         print('##### MENU ######')
-        print('1 -- Cadastrar Cliente/Fornecedor/Funcionario')
-        print('2 -- Cadastrar Produto')
-        print('3 -- Editar Cliente/Fornecedor/Funcionario')
-        print('4 -- Editar Produto')
-        print('5 -- Estoque')
-        print('6 -- Dados')
-        print('7 -- Sair do menu')
+        print('1 -- Cadastrar pessoa')
+        print('2 -- Editar pessoa')
+        print('3 -- Estoque')
+        print('4 -- Dados')
+        print('5 -- Sair do menu')
         opcao = int(input('Digite o número correspondente a opção: '))
         print()
         match opcao:
             case 1:
                 cadastroPessoa()
             case 2:
-                cadastroProduto()
-            case 3:
                 edicaoPessoa()
-            case 4:
-                edicaoProduto()
-            case 5:
+            case 3:
                 menuEstoque()
-            case 6:
+            case 4:
                 menuDados()
-            case 7:
+            case 5:
                 return
             case _:
                 print('Opção errada, tente novamente')
-        menu()
+        menuAdmin()
 
 def menuEstoque():
     opcao = 0
-    while opcao < 1 or opcao > 11:
+    while opcao < 1 or opcao > 6:
         print()
         print('##### MENU ######')
-        print('1 -- Ver produto por nome')
-        print('2 -- Ver produtos por fornecedor')
-        print('3 -- Ver produtos por categoria')
-        print('4 -- Sair do menu')
+        print('1 -- Cadastrar Produto')
+        print('2 -- Editar Produto')
+        print('3 -- Ver produto por nome')
+        print('4 -- Ver produtos por marca')
+        print('5 -- Ver produtos por categoria')
+        print('6 -- Sair do menu')
         opcao = int(input('Digite o número correspondente a opção: '))
         print()
         match opcao:
             case 1:
-                estoque.verProdutoPorNome()
+                cadastroProduto()
             case 2:
-                estoque.verProdutoPorFornecedor()
+                edicaoProduto()
             case 3:
-                estoque.verProdutoPorCategoria()
+                estoque.ver_produto_por_nome()
             case 4:
+                estoque.ver_produto_por_marca()
+            case 5:
+                estoque.ver_produto_por_categoria()
+            case 6:
                 return
             case _:
                 print('Opção errada, tente novamente')
         
 def menuDados():
     opcao = 0 
-    while opcao < 1 or opcao > 7:
+    while opcao < 1 or opcao > 4:
         print()
         print('##### MENU DADOS ######')
-        print('1 -- Ver quantidade de clientes')
-        print('2 -- Ver quantidade de produtos')
-        print('3 -- Ver quantidade de fornecedores')
-        print('4 -- Ver quantidade de funcionarios')
-        print('5 -- Ver quantidade de produtos por fornecedor')
-        print('6 -- Ver quantidade de produtos por categoria')
-        print('7 -- Sair do menu')
+        print('1 -- Ver quantidade')
+        print('2 -- Ver quantidade de produtos por marca')
+        print('3 -- Ver quantidade de produtos por categoria')
+        print('4 -- Sair do menu')
         opcao = int(input('Digite o número correspondente a opção: '))
         print()
         match opcao:
             case 1:
-                print("Qauantidade de clientes: ", loja.get_quantidade_clientes())
+                print("Quantidade de clientes: ", loja.get_quantidade_clientes(), "\nQuantidade de funcionários: ", loja.get_quantidade_funcionarios(), "\nQuantidade de fornecedores: ", loja.get_quantidade_fornecedores())
             case 2:
-                print("Quantidade de produtos: ", estoque.get_quantidade())
+                loja.get_quantidade_produtos_por_marca()
             case 3:
-                print("Quantidade de fornecedores: ", loja.get_quantidade_fornecedores())
-            case 4:
-                print("Quantidade de funcionarios: ", loja.get_quantidade_funcionarios())
-            case 5:
-                loja.get_quantidade_produtos_por_fornecedor()
-            case 6:
                 estoque.get_quantidade_produtos_por_categoria()
-            case 7:
+            case 4:
                 return
             case _:
                 print('Opção errada, tente novamente')
-        
-def cadastroPessoa():
+
+def menuPessoa():
     opcao = 0
     while opcao < 1 or opcao > 3:
-        print()
         print('##### MENU PESSOA ######')
         print('1 -- Cliente')
         print('2 -- Fornecedor')
         print('3 -- Funcionario')
         opcao = int(input('Digite o número correspondente a opção: '))
         print()
+        return opcao
+        
+def cadastroPessoa():
+        opcao = menuPessoa()
         nome = input("Digite o nome: ")
         cpf = input("Digite o CPF: ")
         telefone = input("Digite o telefone: ")
@@ -136,24 +166,7 @@ def cadastroPessoa():
                 print('Opção errada, tente novamente')
         
 def edicaoPessoa():
-        opcao = 0
-        while opcao < 1 or opcao > 3:
-            print()
-            print('##### MENU PESSOA ######')
-            print('1 -- Cliente')
-            print('2 -- Fornecedor')
-            print('3 -- Funcionario')
-            opcao = int(input('Digite o número correspondente a opção: '))
-            print()
-            match opcao:
-                case 1:
-                    cliente1.editar()
-                case 2:
-                    fornecedor1.editar()
-                case 3:
-                    funcionario1.editar()
-                case _:
-                    print('Opção errada, tente novamente')
+        opcao = menuPessoa()
             
 def cadastroProduto():
     nome = input("Digite o nome: ")
@@ -174,6 +187,44 @@ def cadastroProduto():
         print("Erro. Produto não cadastrado!")
             
 def edicaoProduto():
+    # Implementar
     pass
 
-menu()
+# Implementar Remover produto do carrinho
+def carrinho_compras():
+    cpf = input("Digite o CPF do cliente: ")
+    condicao = "s"
+    if(loja.verificar_cliente(cpf)):
+        while condicao == "s":
+            produto = input("Digite o nome do produto: ")
+            quantidade = int(input("Digite a quantidade: "))
+            if(estoque.verificar_produto(produto)):
+                if(estoque.verificar_quantidade(produto, quantidade)):
+                    carrinho = {
+                        "produto": produto,
+                        "quantidade": quantidade
+                    }
+                    carrinho_compras = []
+                    carrinho_compras.append(carrinho)
+                    condicao = input("Deseja comprar mais algum produto? (s/n): ")
+                    if(condicao == "s"):
+                        carrinho_compras()
+                    else:
+                        for i in carrinho_compras:
+                            print(i)
+                        condicao = "n"
+                        return carrinho_compras
+                else:
+                    print("Quantidade insuficiente!")
+        else:
+            print("Produto não encontrado!")
+    else:
+        print("Cliente não encontrado!")
+        cadastroPessoa()
+
+def realizar_compra(carrinho_compras):
+    for produto in carrinho_compras:
+        loja.realizar_venda(produto)
+  
+
+login()

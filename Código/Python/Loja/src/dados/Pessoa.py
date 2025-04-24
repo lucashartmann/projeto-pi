@@ -7,4 +7,5 @@ class Pessoa:
         self.endereco = endereco
         self.email = email
         
- 
+    def get_cpf(self):
+        return self.cpf

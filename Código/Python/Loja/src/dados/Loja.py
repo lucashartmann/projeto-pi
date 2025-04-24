@@ -11,6 +11,17 @@ class Loja:
         self.quantidade_funcionarios = 0
         self.quantidade_clientes = 0
         self.quantidade_fornecedores = 0
+        self.faturamento = 0
+
+        def realizar_compra(cliente, produto): #ou realizar_venda()?
+            # Pedir dados do cliente?
+            # Ver se cliente está cadastrado
+            # Remover produto do estoque, diminuir quantidade do produto no estoque
+            # Somar preço do produto ao faturamento da loja 
+            # Permitir usuario de realizar mais compras? Implementar lógica de um carrinho?
+            # Receber uma lista de produtos?
+            # Usar um for em uma lista de produtos passando para cada produto o realizar_compra
+            pass
         
         def adicionar_funcionario(self, funcionario):
             if funcionario not in self.funcionarios:
@@ -62,3 +73,13 @@ class Loja:
         
         def get_quantidade_fornecedores(self):
             return self.quantidade_fornecedores
+        
+        def get_faturamento(self):
+            return self.faturamento
+        
+        def is_cliente_cadastrado(self, cpf):
+            for cliente in self.clientes:
+                if cliente.get_cpf() == cpf:
+                    return True
+            return False
+        
