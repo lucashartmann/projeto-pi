@@ -1,4 +1,4 @@
-from Estoque import Estoque 
+import Estoque 
 
 class Loja:
     def __init__(self, nome, cnpj):

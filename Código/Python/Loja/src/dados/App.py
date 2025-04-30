@@ -1,12 +1,11 @@
-from Cliente import Cliente
-from Fornecedor import Fornecedor
-from Funcionario import Funcionario
-from Produto import Produto
-from Estoque import Estoque
-from Loja import Loja
+import Cliente
+import Fornecedor
+import Funcionario
+import Produto
+import Estoque
+import Loja
 
 loja = Loja("Loja do João", "123456789")
-estoque = Estoque()
 cliente1 = Cliente("João", "00000000000", "00000000000", "00000000000", "Bento Gonçalves 102", "joao@gmail.com")
 fornecedor1 = Fornecedor("Pedro", "11111111111", "11111111111", "11111111111", "Bento Gonçalves 10", "pedro@gmail.com")
 funcionario1 = Funcionario("Fernando", "22222222222", "2222222222", "22222222222", "Bento Gonçalves 100", "fernando@gmail.com")
@@ -94,11 +93,11 @@ def menuEstoque():
             case 2:
                 edicaoProduto()
             case 3:
-                estoque.ver_produto_por_nome()
+                Estoque.ver_produto_por_nome()
             case 4:
-                estoque.ver_produto_por_marca()
+                Estoque.ver_produto_por_marca()
             case 5:
-                estoque.ver_produto_por_categoria()
+                Estoque.ver_produto_por_categoria()
             case 6:
                 return
             case _:
@@ -121,7 +120,7 @@ def menuDados():
             case 2:
                 loja.get_quantidade_produtos_por_marca()
             case 3:
-                estoque.get_quantidade_produtos_por_categoria()
+                Estoque.get_quantidade_produtos_por_categoria()
             case 4:
                 return
             case _:
@@ -179,8 +178,8 @@ def cadastroProduto():
         print("Preencha todos os campos")
         cadastroProduto()
     produto1 = Produto(nome, marca, modelo, cor, preco, quantidade)
-    if(estoque.adicionar_produto(produto1)):
-        estoque.adicionar_produto(produto1)
+    if(Estoque.adicionar_produto(produto1)):
+        Estoque.adicionar_produto(produto1)
         print("Produto cadastrado com sucesso!")
         print(produto1)
     else:
@@ -203,7 +202,7 @@ def carrinho_compras():
             print(menu)
             opcao = input("Digite o número correspondente a opção: ")
             if(opcao == "1"):
-                print(estoque.get_lista_produtos())
+                print(Estoque.get_lista_produtos())
                 id = input("Digite o ID do produto que você deseja comprar: ")
             elif(opcao == "2"):
                 produto = input("Digite o nome do produto: ")
@@ -211,8 +210,8 @@ def carrinho_compras():
             else:
                 print("Opção inválida")
                 carrinho_compras()  
-            if(estoque.verificar_produto(produto)):
-                if(estoque.verificar_quantidade(produto, quantidade)):
+            if(Estoque.verificar_produto(produto)):
+                if(Estoque.verificar_quantidade(produto, quantidade)):
                     carrinho = {
                         "produto": produto,
                         "quantidade": quantidade
