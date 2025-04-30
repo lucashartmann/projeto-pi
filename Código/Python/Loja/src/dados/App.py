@@ -192,12 +192,25 @@ def edicaoProduto():
 
 # Implementar Remover produto do carrinho
 def carrinho_compras():
-    cpf = input("Digite o CPF do cliente: ")
+    cpf = input("Digite o CPF do cliente: ") # ?
     condicao = "s"
     if(loja.verificar_cliente(cpf)):
         while condicao == "s":
-            produto = input("Digite o nome do produto: ")
-            quantidade = int(input("Digite a quantidade: "))
+            menu = '''
+            1- Ver todos os produtos
+            2- Pesquisar produto
+            '''
+            print(menu)
+            opcao = input("Digite o número correspondente a opção: ")
+            if(opcao == "1"):
+                print(estoque.get_lista_produtos())
+                id = input("Digite o ID do produto que você deseja comprar: ")
+            elif(opcao == "2"):
+                produto = input("Digite o nome do produto: ")
+                quantidade = int(input("Digite a quantidade: "))
+            else:
+                print("Opção inválida")
+                carrinho_compras()  
             if(estoque.verificar_produto(produto)):
                 if(estoque.verificar_quantidade(produto, quantidade)):
                     carrinho = {
@@ -208,7 +221,7 @@ def carrinho_compras():
                     carrinho_compras.append(carrinho)
                     condicao = input("Deseja comprar mais algum produto? (s/n): ")
                     if(condicao == "s"):
-                        carrinho_compras()
+                            carrinho_compras()
                     else:
                         for i in carrinho_compras:
                             print(i)
@@ -216,8 +229,8 @@ def carrinho_compras():
                         return carrinho_compras
                 else:
                     print("Quantidade insuficiente!")
-        else:
-            print("Produto não encontrado!")
+            else:
+                print("Produto não encontrado!")         
     else:
         print("Cliente não encontrado!")
         cadastroPessoa()

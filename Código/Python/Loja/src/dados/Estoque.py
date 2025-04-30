@@ -17,9 +17,8 @@ class Estoque:
             return True
         return False
     
-    def listar_produtos(self):
-        for produto in self.produtos:
-            print(produto)
+    def get_lista_produtos(self):
+        return self.produtos
         
     def get_quantidade(self):
         return self.quantidade
