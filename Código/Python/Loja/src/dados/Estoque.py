@@ -23,9 +23,17 @@ class Estoque:
     def get_quantidade(self):
         return self.quantidade
     
-    def consultar_produtos_por_nome(nome):
+    def consultar_produtos_por_nome(self, nome):
         produtos = []
-        for produto in produtos:
+        for produto in self.produtos:
             if(produto.nome == nome):
                 produtos.append(produto)
+        if(len(produtos) > 0):
+            return produtos
+        return None
+
+    def consultar_produto_por_id(self, id):
+        for produto in self.produtos:
+            if(produto.id == id):
+                return produto
         return None

@@ -1,13 +1,14 @@
 import Estoque 
+import Funcionario
+import Cliente
+import Fornecedor
 
 class Loja:
     def __init__(self, nome, cnpj):
         self.nome = nome
         self.cnpj = cnpj
         self.estoque = Estoque()
-        self.funcionarios = []
-        self.clientes = []
-        self.fornecedores = []
+        self.pessoas = []
         self.quantidade_funcionarios = 0
         self.quantidade_clientes = 0
         self.quantidade_fornecedores = 0
@@ -23,47 +24,32 @@ class Loja:
             # Usar um for em uma lista de produtos passando para cada produto o realizar_compra
             pass
         
-        def adicionar_funcionario(self, funcionario):
-            if funcionario not in self.funcionarios:
-                self.funcionarios.append(funcionario)
-                self.quantidade_funcionarios += 1
+        def cadastrar(self, pessoa):
+            if pessoa not in self.pessoas:
+                self.pessoas.append(pessoa)
                 return True
             return False
             
-        def adicionar_cliente(self, cliente):
-            if cliente not in self.clientes:
-                self.clientes.append(cliente)
-                self.quantidade_clientes += 1
+        def remover(self, pessoa):
+            if pessoa in self.pessoas:
+                self.pessoas.remove(pessoa)
                 return True
             return False
         
-        def adicionar_fornecedor(self, fornecedor):
-            if fornecedor not in self.fornecedores:
-                self.fornecedores.append(fornecedor)
-                self.quantidade_fornecedores += 1
-                return True
-            return False
-            
-        def remover_funcionario(self, funcionario):
-            if funcionario in self.funcionarios:
-                self.funcionarios.remove(funcionario)
-                self.quantidade_funcionarios -= 1
-                return True
-            return False
+        def set_quantidade_funcionarios(self):
+            for funcionario in self.pessoas:
+                if isinstance(funcionario, Funcionario):
+                    self.quantidade_funcionarios += 1
 
-        def remover_cliente(self, cliente):
-            if cliente in self.clientes:
-                self.clientes.remove(cliente)
-                self.quantidade_clientes -= 1
-                return True
-            return False
-            
-        def remover_fornecedor(self, fornecedor):
-            if fornecedor in self.fornecedores:
-                self.fornecedores.remove(fornecedor)
-                self.quantidade_fornecedores -= 1
-                return True
-            return False
+        def set_quantidade_clientes(self):
+            for cliente in self.pessoas:
+                if isinstance(cliente, Cliente):
+                    self.quantidade_clientes += 1
+        
+        def set_quantidade_fornecedores(self):
+            for fornecedor in self.pessoas:
+                if isinstance(fornecedor, Fornecedor):
+                    self.quantidade_fornecedores += 1
         
         def get_quantidade_funcionarios(self):
             return self.quantidade_funcionarios
