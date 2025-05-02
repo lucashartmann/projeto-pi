@@ -24,40 +24,18 @@ def login():
 def menuCliente():
     opcao = 0 
     carrinho_compras = []
-    while opcao < 1 or opcao > 6:
+    # Fazer cadastrar e editar em um método só?
+    while opcao < 1 or opcao > 8:
         menu = '''
         ##### MENU CLIENTE ######
-        1 - Adicionar produtos no Carrinho
-        2 - Realizar compra
-        3 - Ver produtos no carrinho
-        4 - Remover produto do carrinho
-        5 - Ver últimas compras
-        6 - Sair do menu
-        '''
-        print(menu)
-        opcao = int(input('Digite o número correspondente a opção: '))
-        print()
-        match opcao:
-            case 1:
-                carrinho_compras = carrinho_compras()
-            case 2:
-                realizar_compra(carrinho_compras)
-            case 6:
-                return
-            case _:
-                print('Opção errada, tente novamente')
-        menuCliente()
-
-def menuAdmin():
-    opcao = 0 
-    while opcao < 1 or opcao > 5:
-        menu = '''
-        ##### MENU ADMIN ######
-        1 -- Cadastrar pessoa
-        2 -- Editar pessoa
-        3 -- Estoque
-        4 -- Dados
-        5 -- Sair do menu
+        1 - Cadastrar 
+        2 - Editar cadastro
+        3 - Adicionar produtos no Carrinho
+        4 - Realizar compra
+        5 - Ver produtos no carrinho
+        6 - Remover produto do carrinho
+        7 - Ver últimas compras
+        8 - Sair do menu
         '''
         print(menu)
         opcao = int(input('Digite o número correspondente a opção: '))
@@ -68,26 +46,29 @@ def menuAdmin():
             case 2:
                 edicaoPessoa()
             case 3:
-                menuEstoque()
+                carrinho_compras = carrinho_compras()
             case 4:
-                menuDados()
-            case 5:
+                realizar_compra(carrinho_compras)
+            case 8:
                 return
             case _:
                 print('Opção errada, tente novamente')
-        menuAdmin()
+        menuCliente()
 
-def menuEstoque():
-    opcao = 0
-    while opcao < 1 or opcao > 6:
+def menuAdmin():
+    opcao = 0 
+    while opcao < 1 or opcao > 9:
         menu = '''
-        ##### MENU ESTOQUE ######
+        ##### MENU ADMIN ######
         1 -- Cadastrar Produto
         2 -- Editar Produto
         3 -- Ver produto por nome
         4 -- Ver produtos por marca
         5 -- Ver produtos por categoria
-        6 -- Sair do menu
+        6 -- Ver quantidade de tudo
+        7 -- Ver quantidade de produtos por marca
+        8 -- Ver quantidade de produtos por categoria
+        9 -- Sair do menu
         '''
         print(menu)
         opcao = int(input('Digite o número correspondente a opção: '))
@@ -97,41 +78,63 @@ def menuEstoque():
                 cadastroProduto()
             case 2:
                 edicaoProduto()
-            case 3:
-                Estoque.ver_produto_por_nome()
-            case 4:
-                Estoque.ver_produto_por_marca()
-            case 5:
-                Estoque.ver_produto_por_categoria()
+            case 3, 4, 5:
+                procurarProduto(opcao)
             case 6:
-                return
-            case _:
-                print('Opção errada, tente novamente')
-        
-def menuDados():
-    opcao = 0 
-    while opcao < 1 or opcao > 4:
-        menu = '''
-        ##### MENU DADOS ######
-        1 -- Ver quantidade
-        2 -- Ver quantidade de produtos por marca
-        3 -- Ver quantidade de produtos por categoria
-        4 -- Sair do menu
-        '''
-        print(menu)
-        opcao = int(input('Digite o número correspondente a opção: '))
-        print()
-        match opcao:
-            case 1:
                 print("Quantidade de clientes: ", Loja.get_quantidade_clientes(), "\nQuantidade de funcionários: ", Loja.get_quantidade_funcionarios(), "\nQuantidade de fornecedores: ", Loja.get_quantidade_fornecedores())
-            case 2:
-                Loja.get_quantidade_produtos_por_marca()
-            case 3:
-                Estoque.get_quantidade_produtos_por_categoria()
-            case 4:
+            case 7, 8:
+                verQuantidadeProduto(opcao)
+            case 9:
                 return
             case _:
                 print('Opção errada, tente novamente')
+        menuAdmin()
+
+def verQuantidadeProduto(opcao):
+    # Ver quantidade por modelo
+    if opcao == 7:
+        marca = input("Digite a marca do produto: ")
+        quantidade = Estoque.get_quantidade_produtos_por_marca(marca)
+        if quantidade is None:
+            print("Produto não encontrado!")
+            return
+        print(f"Quantidade de produtos da marca {marca}: {quantidade}")
+    elif opcao == 8:
+        categoria = input("Digite a categoria do produto: ")
+        quantidade = Estoque.get_quantidade_produtos_por_categoria(categoria)
+        if quantidade is None:
+            print("Produto não encontrado!")
+            return
+        print(f"Quantidade de produtos da categoria {categoria}: {quantidade}")
+
+def procurarProduto(opcao):
+    if opcao == 3:
+        nome = input("Digite o nome do produto: ")
+        produtos = Estoque.consultar_produtos_por_nome(nome)
+        if produtos is None:
+            print("Produto não encontrado!")
+            return
+        print("Produtos encontrados:")
+        for produto in produtos:
+            print(produto)
+    elif opcao == 4:
+        marca = input("Digite a marca do produto: ")
+        produtos = Estoque.consultar_produtos_por_marca(marca)
+        if produtos is None:
+            print("Produto não encontrado!")
+            return
+        print("Produtos encontrados:")
+        for produto in produtos:
+            print(produto)
+    elif opcao == 5:
+        categoria = input("Digite a categoria do produto: ")
+        produtos = Estoque.consultar_produtos_por_categoria(categoria)
+        if produtos is None:
+            print("Produto não encontrado!")
+            return
+        print("Produtos encontrados:")
+        for produto in produtos:
+            print(produto)
 
 def cadastroPessoa():
     while True:  
