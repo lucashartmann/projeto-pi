@@ -9,3 +9,21 @@ class Pessoa:
 
     def get_cpf(self):
         return self.cpf
+    
+    def set_nome(self, nome):
+        self.nome = nome
+
+    def set_cpf(self, cpf):
+        self.cpf = cpf
+    
+    def set_rg(self, rg):
+        self.rg = rg
+
+    def set_telefone(self, telefone):
+        self.telefone = telefone
+
+    def set_endereco(self, endereco):
+        self.endereco = endereco
+    
+    def set_email(self, email):
+        self.email = email

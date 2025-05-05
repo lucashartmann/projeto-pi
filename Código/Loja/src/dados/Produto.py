@@ -22,7 +22,7 @@ class Produto:
         return self.marca
 
     def get_modelo(self):
-        return
+        return self.modelo
 
     def get_cor(self):
         return self.cor
@@ -32,6 +32,24 @@ class Produto:
 
     def get_id(self):
         return self.id
+    
+    def set_nome(self, nome):
+        self.nome = nome
+    
+    def set_cor(self, cor):
+        self.cor = cor
+    
+    def set_preco(self, preco):
+        self.preco = preco
+
+    def set_marca(self, marca):
+        self.marca = marca
+
+    def set_modelo(self, modelo):
+        self.modelo = modelo
+
+    def set_quantidade(self, quantidade):
+        self.quantidade = quantidade
 
     def __str__(self):
         return (f"Produto [id = {self.get_id}, nome={self.get_nome}, codigo={self.get_codigo}, cor={self.get_cor}, "

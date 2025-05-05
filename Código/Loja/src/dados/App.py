@@ -182,10 +182,10 @@ def cadastroPessoa():
         endereco = input("Digite o endereço: ")
         if len(endereco) > 0:
             break
-    isCadastrado = True
     if usuario == 1:
         cliente = Cliente(nome, cpf, rg, telefone, endereco, email)
         Loja.cadastrar(cliente)
+        isCadastrado = True
         return
     # Mudar para fornecedor ou funcionario
     pessoa = (nome, cpf, rg, telefone, endereco, email)

@@ -1,7 +1,6 @@
 class Estoque:
     def __init__(self):
         self.produtos = []
-        self.quantidade = 0
 
     def adicionar_produto(self, produto):
         if (produto not in self.produtos):
@@ -19,9 +18,6 @@ class Estoque:
 
     def get_lista_produtos(self):
         return self.produtos
-
-    def get_quantidade(self):
-        return self.quantidade
     
     def verifica_produto(self, produto):
         if produto in self.produtos:
