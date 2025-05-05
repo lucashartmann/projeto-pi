@@ -5,6 +5,11 @@ import Produto
 import Estoque
 import Loja
 
+isCadastrado = False
+usuario = 0
+cliente = None
+
+
 def login():
     menu = '''
     ##### LOGIN ######
@@ -21,10 +26,10 @@ def login():
         print("Opção inválida. Tente novamente.")
         login()
 
+
 def menuCliente():
-    opcao = 0 
+    opcao = 0
     carrinho_compras = []
-    # Fazer cadastrar e editar em um método só?
     while opcao < 1 or opcao > 8:
         menu = '''
         ##### MENU CLIENTE ######
@@ -55,20 +60,23 @@ def menuCliente():
                 print('Opção errada, tente novamente')
         menuCliente()
 
+
 def menuAdmin():
-    opcao = 0 
+    opcao = 0
     while opcao < 1 or opcao > 9:
         menu = '''
         ##### MENU ADMIN ######
         1 -- Cadastrar Produto
         2 -- Editar Produto
-        3 -- Ver produto por nome
-        4 -- Ver produtos por marca
-        5 -- Ver produtos por categoria
-        6 -- Ver quantidade de tudo
-        7 -- Ver quantidade de produtos por marca
-        8 -- Ver quantidade de produtos por categoria
-        9 -- Sair do menu
+        3 - Editar Cliente
+        4 -- Ver produto por nome
+        5 -- Ver produtos por marca
+        6 -- Ver produtos por categoria
+        7 -- Ver quantidade de tudo
+        8 -- Ver quantidade de produtos por marca
+        9 -- Ver quantidade de produtos por categoria
+        10 - Ver quantidade de produtos por modelo
+        11 -- Sair do menu
         '''
         print(menu)
         opcao = int(input('Digite o número correspondente a opção: '))
@@ -78,34 +86,45 @@ def menuAdmin():
                 cadastroProduto()
             case 2:
                 edicaoProduto()
-            case 3, 4, 5:
+            case 3:
+                edicaoPessoa()
+            case 4, 5, 6:
                 procurarProduto(opcao)
-            case 6:
-                print("Quantidade de clientes: ", Loja.get_quantidade_clientes(), "\nQuantidade de funcionários: ", Loja.get_quantidade_funcionarios(), "\nQuantidade de fornecedores: ", Loja.get_quantidade_fornecedores())
-            case 7, 8:
+            case 7:
+                print("Quantidade de clientes: ", Loja.get_quantidade_clientes(), "\nQuantidade de funcionários: ",
+                      Loja.get_quantidade_funcionarios(), "\nQuantidade de fornecedores: ", Loja.get_quantidade_fornecedores())
+            case 8, 9, 10:
                 verQuantidadeProduto(opcao)
-            case 9:
+            case 11:
                 return
             case _:
                 print('Opção errada, tente novamente')
         menuAdmin()
 
+
 def verQuantidadeProduto(opcao):
-    # Ver quantidade por modelo
     if opcao == 7:
         marca = input("Digite a marca do produto: ")
-        quantidade = Estoque.get_quantidade_produtos_por_marca(marca)
+        quantidade = Estoque.get_quantidade_produto_por_marca(marca)
         if quantidade is None:
             print("Produto não encontrado!")
             return
         print(f"Quantidade de produtos da marca {marca}: {quantidade}")
     elif opcao == 8:
         categoria = input("Digite a categoria do produto: ")
-        quantidade = Estoque.get_quantidade_produtos_por_categoria(categoria)
+        quantidade = Estoque.get_quantidade_produto_por_categoria(categoria)
         if quantidade is None:
             print("Produto não encontrado!")
             return
         print(f"Quantidade de produtos da categoria {categoria}: {quantidade}")
+    elif opcao == 9:
+        modelo = input("Digite o modelo do produto: ")
+        quantidade = Estoque.get_quantidade_produto_por_modelo(modelo)
+        if quantidade is None:
+            print("Produto não encontrado!")
+            return
+        print(f"Quantidade de produtos do modelo {modelo}: {quantidade}")
+
 
 def procurarProduto(opcao):
     if opcao == 3:
@@ -136,37 +155,106 @@ def procurarProduto(opcao):
         for produto in produtos:
             print(produto)
 
+
 def cadastroPessoa():
-    while True:  
+    while True:
         nome = input("Digite o nome: ")
         if len(nome) > 0:
             break
-    while True:  
+    while True:
         cpf = input("Digite o CPF: ")
         if len(cpf) == 11:
             break
-    while True:  
+    while True:
         telefone = input("Digite o telefone: ")
         if len(telefone) == 11:
             break
-    while True:  
+    while True:
         email = input("Digite o email: ")
         if len(email) > 0:
             break
-    while True:  
+    while True:
         rg = input("Digite a RG: ")
         if len(rg) > 0:
             break
-    while True:  
+    while True:
         endereco = input("Digite o endereço: ")
         if len(endereco) > 0:
             break
-    Loja.cadastrar(nome, cpf, rg, telefone, endereco, email)
-    
+    isCadastrado = True
+    if usuario == 1:
+        cliente = Cliente(nome, cpf, rg, telefone, endereco, email)
+        Loja.cadastrar(cliente)
+        return
+    # Mudar para fornecedor ou funcionario
+    pessoa = (nome, cpf, rg, telefone, endereco, email)
+
+
 def edicaoPessoa():
-        # Implementar
-        pass
-            
+    if usuario == 1:
+        if isCadastrado == False:
+            print("Você não está cadastrado!")
+            return
+    else:
+        print("Digite o CPF do cliente que deseja editar: ")
+        cpf = input()
+        pessoa = Loja.get_cliente_por_cpf(cpf)
+        if pessoa is None:
+            print("Cliente não encontrado!")
+            return
+    print("MENU DE EDIÇÃO")
+    print("1 - Editar nome")
+    print("2 - Editar CPF")
+    print("3 - Editar telefone")
+    print("4 - Editar email")
+    print("5 - Editar RG")
+    print("6 - Editar endereço")
+    print("7 - Sair")
+    opcao = int(input("Digite o número correspondente a opção: "))
+    match opcao:
+        case 1:
+            while True:
+                nome = input("Digite o novo nome: ")
+                if len(nome) > 0:
+                    pessoa.set_nome(nome)
+                    break
+        case 2:
+            while True:
+                cpf = input("Digite o novo CPF: ")
+                if len(cpf) == 11:
+                    pessoa.set_cpf(cpf)
+                    break
+        case 3:
+            while True:
+                telefone = input("Digite o novo telefone: ")
+                if len(telefone) == 11:
+                    pessoa.set_telefone(telefone)
+                    break
+        case 4:
+            while True:
+                email = input("Digite o novo email: ")
+                if len(email) > 0:
+                    pessoa.set_email(email)
+                    break
+        case 5:
+            while True:
+                rg = input("Digite o novo RG: ")
+                if len(rg) > 0:
+                    pessoa.set_rg(rg)
+                    break
+        case 6:
+            while True:
+                endereco = input("Digite o novo endereço: ")
+                if len(endereco) > 0:
+                    pessoa.set_endereco(endereco)
+                    break
+        case 7:
+            return
+        case _:
+            print("Opção inválida. Tente novamente.")
+            edicaoPessoa()
+
+
 def cadastroProduto():
     while True:
         nome = input("Digite o nome: ")
@@ -176,7 +264,7 @@ def cadastroProduto():
         marca = input("Digite a marca: ")
         if len(marca) > 0:
             break
-    while True:  
+    while True:
         modelo = input("Digite o modelo: ")
         if len(modelo) > 0:
             break
@@ -188,42 +276,100 @@ def cadastroProduto():
         preco = float(input("Digite o preço: "))
         if preco > 0:
             break
-    while True:  
+    while True:
         quantidade = int(input("Digite a quantidade: "))
         if quantidade > 0:
             break
     produto1 = Produto(nome, marca, modelo, cor, preco, quantidade)
-    if(Estoque.adicionar_produto(produto1)):
+    if (Estoque.adicionar_produto(produto1)):
         Estoque.adicionar_produto(produto1)
         print("Produto cadastrado com sucesso!")
         print(produto1)
     else:
         print("Erro. Produto não cadastrado!")
-            
+
+
 def edicaoProduto():
-    # Implementar
-    pass
+    print("Digite o ID do produto que deseja editar: ")
+    id = input()
+    produto = Estoque.get_produto_por_id(id)
+    if produto is None:
+        print("Produto não encontrado!")
+        return
+    print("MENU DE EDIÇÃO")
+    print("1 - Editar nome")
+    print("2 - Editar marca")
+    print("3 - Editar modelo")
+    print("4 - Editar cor")
+    print("5 - Editar preço")
+    print("6 - Editar quantidade")
+    print("7 - Sair")
+    opcao = int(input("Digite o número correspondente a opção: "))
+    match opcao:
+        case 1:
+            while True:
+                nome = input("Digite o novo nome: ")
+                if len(nome) > 0:
+                    produto.set_nome(nome)
+                    break
+        case 2:
+            while True:
+                marca = input("Digite a nova marca: ")
+                if len(marca) > 0:
+                    produto.set_marca(marca)
+                    break
+        case 3:
+            while True:
+                modelo = input("Digite o novo modelo: ")
+                if len(modelo) > 0:
+                    produto.set_modelo(modelo)
+                    break
+        case 4:
+            while True:
+                cor = input("Digite a nova cor: ")
+                if len(cor) > 0:
+                    produto.set_cor(cor)
+                    break
+        case 5:
+            while True:
+                preco = float(input("Digite o novo preço: "))
+                if preco > 0:
+                    produto.set_preco(preco)
+                    break
+        case 6:
+            while True:
+                quantidade = int(input("Digite a nova quantidade: "))
+                if quantidade > 0:
+                    produto.set_quantidade(quantidade)
+                    break
+        case 7:
+            return
+        case _:
+            print("Opção inválida. Tente novamente.")
+            edicaoProduto()
 
-# Implementar Remover produto do carrinho
+
 def carrinho_compras():
-
-    cpf = input("Digite o CPF do cliente: ") # ?
-    condicao = "s"
-    if(Loja.verificar_cliente(cpf)):
-        while condicao == "s":
-
-            menu = '''
-            1 - Ver todos os produtos
-            2 - Pesquisar produto
+    if isCadastrado == False:
+        print("Você não está cadastrado!")
+        return
+    else:
+        carrinho_compras = []
+        menu = '''
+            ##### MENU CARRINHO ######
+            1 - Ver todos os produtos da loja para adicionar no carrinho
+            2 - Pesquisar produto para adicionar no carrinho
+            3 - Remover produto do carrinho
+            4 - Ver produtos no carrinho
+            5 - Sair do menu
             '''
-            print(menu)
-            opcao = input("Digite o número correspondente a opção: ")
-
-            if(opcao == "1"):
+        print(menu)
+        opcao = input("Digite o número correspondente a opção: ")
+        match opcao:
+            case 1:
                 print(Estoque.get_lista_produtos())
-                id = input("Digite o ID do produto que você deseja comprar: ")
-            elif(opcao == "2"):
-                nome = input("Digite o nome do produto: ")
+            case 2:
+                nome = input("\nDigite o nome do produto: ")
                 produtos = Estoque.consultar_produtos_por_nome(nome)
                 if produtos is None:
                     print("Produto não encontrado!")
@@ -231,40 +377,80 @@ def carrinho_compras():
                 print("Produtos encontrados:")
                 for produto in produtos:
                     print(produto)
-                id = input("Digite o ID do produto que você deseja comprar: ")
-                while True:
-                    quantidade = int(input("Digite a quantidade: "))
-                    if quantidade <= produto.get_quantidade():
-                        break
-            else:
-                print("Opção inválida")
-                carrinho_compras()  
-
-            produto = Estoque.consultar_produto_por_id(id)
-
-            carrinho = {
-                "produto": produto,
-                "quantidade": quantidade
-            }
-            carrinho_compras = []
-            carrinho_compras.append(carrinho)
-            print("Produto adicionado ao carrinho!")
-
-            condicao = input("Deseja adicionar mais algum produto? (s/n): ")
-            if(condicao == "s"):
-                    carrinho_compras()
-            else:
+            case 3:
+                id = input("Digite o ID do produto que deseja remover: ")
+                for produto in carrinho_compras:
+                    if produto.get_id() == id:
+                        carrinho_compras.remove(i)
+                        print("Produto removido do carrinho!")
+                        return
+                print("Produto não encontrado no carrinho!")
+            case 4:
+                if len(carrinho_compras) == 0:
+                    print("Carrinho vazio!")
+                    return
+                print("Produtos no carrinho:")
                 for i in carrinho_compras:
                     print(i)
-                condicao = "n"
-                return carrinho_compras    
-              
-    else:
-        print("Cliente não encontrado!")
-        cadastroPessoa()
+            case 5:
+                return
+            case _:
+                print("Opção inválida")
+                carrinho_compras()
+        id = input("Digite o ID do produto que você deseja comprar: ")
+        produto = Estoque.consultar_produto_por_id(id)
+        while True:
+            quantidade = int(input("Digite a quantidade: "))
+            if quantidade <= produto.get_quantidade():
+                break
+        carrinho = {
+            "produto": produto,
+            "quantidade": quantidade
+        }
+        carrinho_compras.append(carrinho)
+        print("Produto adicionado ao carrinho!")
+        # condicao = input("Deseja adicionar mais algum produto? (s/n): ")
+        # if(condicao == "s"):
+        #         carrinho_compras()
+        # else:
+        #     for i in carrinho_compras:
+        #         print(i)
+        #     condicao = "n"
+        #     return carrinho_compras
+
 
 def realizar_compra(carrinho_compras):
+    if isCadastrado == False:
+        print("Você não está cadastrado!")
+        return
+    if len(carrinho_compras) == 0:
+        print("Carrinho vazio!")
+        return
+    print("Produtos no carrinho:")
+    for i in carrinho_compras:
+        print(i)
+    print("Opção de pagamento:")
+    print("1 - Cartão de crédito")
+    print("2 - Cartão de débito")
+    print("3 - Pix")
+    opcao = int(input("Digite o número correspondente a opção: "))
+    match opcao:
+        case 1:
+            parcelas = int(input("Parcelas:"))
+            modo_pagamento = 1
+            print("Pagamento realizado com cartão de crédito!")
+        case 2:
+            modo_pagamento = 2
+            print("Pagamento realizado com cartão de débito!")
+        case 3:
+            modo_pagamento = 3
+            print("Pagamento realizado com dinheiro!")
+        case _:
+            print("Opção inválida. Tente novamente.")
+            realizar_compra(carrinho_compras)
     for produto in carrinho_compras:
         Loja.realizar_venda(produto)
+    print(Loja.gerar_recibo(cliente, carrinho_compras))
+
 
 login()

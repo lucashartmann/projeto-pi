@@ -5,25 +5,11 @@
 
 ### Falta fazer:
 ####  App:
-- Melhorar "Login"
 - Implementar opção de remover produto do carrinho
-- Implementar edicao_pessoa()
-- Implementar edicao_produto()
 - Falta implementar opção do cliente procurar produtos por nome, marca, categoria e etc, ou ver todos os produtos
-- Mudar logica do cadastro de cliente do menu_admin() para o menu_cliente()?
 #### Loja e App:
 - Implementar sistema de pagamento (cartão, juros, parcelas, etc) (nota fiscal/recibo)
-#### Estoque:
-- Implementar estoque.ver_produto_por_nome()
-- Implementar estoque.ver_produto_por_marca()
-- Implementar estoque.ver_produto_por_categoria()
-- Implementar estoque.get_quantidade_produtos_por_marca()
-- Implementar estoque.get_quantidade_produtos_por_categoria()
-- Implementar estoque.verificar_produto(produto)
-- Implementar estoque.verificar_quantidade(produto, quantidade)
 #### Loja:
-- Implementar loja.get_quantidade_produtos_por_marca()
-- Implementar realizar_compra() ou realizar_venda() (gerar nota fiscal/recibo)
 - Implementar numero_vendas, get_numero_vendas() (mensal, anual, semanal, diaria)
 #### Fornecedor/Funcionario/Cliente:
 - Ver qual é a diferença dessas classes. Se não tiver diferença, então remover elas

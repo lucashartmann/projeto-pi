@@ -6,6 +6,6 @@ class Pessoa:
         self.telefone = telefone
         self.endereco = endereco
         self.email = email
-        
+
     def get_cpf(self):
         return self.cpf
