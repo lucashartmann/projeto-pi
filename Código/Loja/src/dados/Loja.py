@@ -33,18 +33,21 @@ class Loja:
                             produto_estoque.get_quantidade() - produto_carrinho.get_quantidade())
                 self.faturamento += produto_carrinho.get_preco() * produto_carrinho.get_quantidade()
 
-    def gerar_recibo(self, cliente, produtos):
+    def gerar_recibo(self, cliente, produtos, modo_pagamento):
+        total = sum(produto.get_preco() * produto.get_quantidade() for produto in produtos)
         recibo = f'''
-            Recibo de Compra:
-            Nome do Cliente: {cliente.get_nome()}
-            CPF do Cliente: {cliente.get_cpf()}
-            CNPJ da Loja: {self.cnpj}
-            Nome da Loja: {self.nome}
-            Data: {}
-            Produtos Comprados:{for produto in produtos print(produto)}
-            Total: {}
-            Modo de Pagamento: {if (modo_pagamento == "crédito") print("Parcelas")}
-        '''
+Recibo de Compra:
+Nome do Cliente: {cliente.get_nome()}
+CPF do Cliente: {cliente.get_cpf()}
+CNPJ da Loja: {self.cnpj}
+Nome da Loja: {self.nome}
+Produtos Comprados: {', '.join([produto for produto in produtos])}
+Total: {total}
+Modo de Pagamento: {modo_pagamento}
+            '''
+        # Modo de Pagamento: {if (modo_pagamento == "crédito") print("Parcelas")}
+        # Data: {}
+        # Hora: {}
         return recibo
 
     def cadastrar(self, pessoa):
