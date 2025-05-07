@@ -8,6 +8,16 @@ class Produto:
         self.marca = marca
         self.modelo = modelo
         self.quantidade = quantidade
+        
+    def editar_campo(self, nome_campo, setter):
+        while True:
+            novo_valor = input(f"Digite o novo {nome_campo}: ")
+            validacao = len(novo_valor) > 0
+            if validacao:
+                setter(novo_valor)
+                print(f"{nome_campo} atualizado com sucesso!\n")
+                break
+            print(f"{nome_campo} inválido!")
 
     def get_quantidade(self):
         return self.quantidade
@@ -32,13 +42,13 @@ class Produto:
 
     def get_id(self):
         return self.id
-    
+
     def set_nome(self, nome):
         self.nome = nome
-    
+
     def set_cor(self, cor):
         self.cor = cor
-    
+
     def set_preco(self, preco):
         self.preco = preco
 
