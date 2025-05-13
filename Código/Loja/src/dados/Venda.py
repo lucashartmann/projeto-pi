@@ -28,7 +28,7 @@ class Venda:
             loja.faturamento += produto_carrinho.get_preco() * quantidade
 
     def gerar_recibo(self, loja):
-        produtos_str = "\n".join(str(item) for item in self.itens)
+        produtos_str = "\n".join(item for item in self.itens)
 
         if self.modo_pagamento == 1:
             pagamento = "Cartão de Crédito"
@@ -40,9 +40,6 @@ class Venda:
         elif self.modo_pagamento == 3:
             pagamento = "Dinheiro"
             parcelas_info = "À vista"
-        else:
-            pagamento = "Desconhecido"
-            parcelas_info = "N/A"
 
         recibo = f"""
     ========= RECIBO =========

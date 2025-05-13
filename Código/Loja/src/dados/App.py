@@ -11,22 +11,23 @@ loja = Loja("loja do Silva", "00000000000")
 
 
 def login():
-    print(menu_login())
-    usuario = int(input("Digite o número correspondente ao usuário: "))
-    if usuario == 1:
-        cliente(usuario, cliente_atual)
-    elif usuario == 2:
-        admin(usuario)
-    else:
-        print("Opção inválida. Tente novamente.")
-        login()
-    login()
+    while True:
+        print(menu_login())
+        usuario = int(input("Digite o número correspondente ao usuário: "))
+        match usuario:
+            case 1:
+                cliente(usuario, cliente_atual)
+            case 2:
+                admin(usuario)
+            case 3:
+                break
+            case _:
+                print("Opção inválida. Tente novamente.")
 
 
 def cliente(usuario, cliente_atual):
-    opcao = 0
     carrinho_compras = []
-    while opcao < 1 or opcao > 7:
+    while True:
         print(menu_cliente())
         opcao = int(input('Digite o número correspondente a opção: '))
         print()
@@ -42,15 +43,13 @@ def cliente(usuario, cliente_atual):
             case 5:
                 realizar_compra(carrinho_compras)
             case 7:
-                return
+                break
             case _:
                 print('Opção errada, tente novamente')
-        cliente(usuario, cliente_atual)
 
 
 def admin(usuario):
-    opcao = 0
-    while opcao < 1 or opcao > 12:
+    while True:
         print(menu_admin())
         opcao = int(input('Digite o número correspondente a opção: '))
         print()
@@ -71,10 +70,9 @@ def admin(usuario):
             case 9, 10, 11:
                 verQuantidadeProduto(opcao)
             case 12:
-                return
+                break
             case _:
                 print('Opção errada, tente novamente')
-        admin(usuario)
 
 
 def verQuantidadeProduto(opcao):
@@ -124,12 +122,12 @@ def validar(string):
 
 
 def cadastroPessoa(usuario):
-    # nome = validar("o seu nome")
-    # cpf = validar("o seu CPF")
-    # telefone = validar("o seu telefone")
-    # email = validar("o seu email")
-    # rg = validar("a sua RG")
-    # endereco = validar("o seu endereço")
+    nome = validar("o seu nome")
+    cpf = validar("o seu CPF")
+    telefone = validar("o seu telefone")
+    email = validar("o seu email")
+    rg = validar("a sua RG")
+    endereco = validar("o seu endereço")
     if usuario == 1:
         cliente_atual = Cliente("Lucas", "00000000000", 000000000,
                                 00000000000, "Bento", "Lucas")
@@ -141,24 +139,24 @@ def cadastroPessoa(usuario):
             return cliente_atual
         else:
             print("Cliente não cadastrado!")
-    # # # else:
-    # # #     print("1 - Funcionário")
-    # # #     print("2 - Fornecedor")
-    # # #     tipo = int(input("Digite o tipo de pessoa: "))
-    # # #     if tipo == 1:
-    # # #         funcionario = Funcionario(nome, cpf, rg, telefone, endereco, email)
-    # # #         if loja.cadastrar(funcionario):
-    # # #             loja.cadastrar(funcionario)
-    # # #             print("Funcionário cadastrado com sucesso!")
-    # # #         else:
-    # # #             print("Funcionário não cadastrado!")
-    # # #     else:
-    # # #         fornecedor = Fornecedor(nome, cpf, rg, telefone, endereco, email)
-    # # #         if loja.cadastrar(fornecedor):
-    # # #             loja.cadastrar(fornecedor)
-    # # #             print("Fornecedor cadastrado com sucesso!")
-    # # #         else:
-    # # #             print("Fornecedor não cadastrado!")
+    else:
+        print("1 - Funcionário")
+        print("2 - Fornecedor")
+        tipo = int(input("Digite o tipo de pessoa: "))
+        if tipo == 1:
+            funcionario = Funcionario(nome, cpf, rg, telefone, endereco, email)
+            if loja.cadastrar(funcionario):
+                loja.cadastrar(funcionario)
+                print("Funcionário cadastrado com sucesso!")
+            else:
+                print("Funcionário não cadastrado!")
+        else:
+            fornecedor = Fornecedor(nome, cpf, rg, telefone, endereco, email)
+            if loja.cadastrar(fornecedor):
+                loja.cadastrar(fornecedor)
+                print("Fornecedor cadastrado com sucesso!")
+            else:
+                print("Fornecedor não cadastrado!")
 
 
 def edicaoPessoa(usuario, cliente_atual):
@@ -328,7 +326,7 @@ def gerar_menu(titulo, opcoes):
 
 
 def menu_login():
-    return gerar_menu("Login", ["Cliente", "Admin"])
+    return gerar_menu("Login", ["Cliente", "Admin", "Encerrar programa"])
 
 
 def menu_edicao_produto():
