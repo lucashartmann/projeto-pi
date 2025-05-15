@@ -219,28 +219,28 @@ def edicaoProduto():
     if produto is None:
         print("Produto não encontrado!")
         return
-    print(menu_edicao_produto())
-    opcao = int(input("Digite o número correspondente a opção: "))
-    match opcao:
-        case 1:
-            produto.editar_campo("nome", produto.set_nome)
-        case 2:
-            produto.editar_campo("marca", produto.set_marca)
-        case 3:
-            produto.editar_campo(
-                "modelo", produto.set_modelo)
-        case 4:
-            produto.editar_campo("cor", produto.set_cor)
-        case 5:
-            produto.editar_campo("preco", produto.set_preco)
-        case 6:
-            produto.editar_campo(
-                "quantidade", produto.set_quantidade)
-        case 7:
-            return
-        case _:
-            print("Opção inválida. Tente novamente.")
-    edicaoProduto()
+    while True:
+        print(menu_edicao_produto())
+        opcao = int(input("Digite o número correspondente a opção: "))
+        match opcao:
+            case 1:
+                produto.editar_campo("nome", produto.set_nome)
+            case 2:
+                produto.editar_campo("marca", produto.set_marca)
+            case 3:
+                produto.editar_campo(
+                    "modelo", produto.set_modelo)
+            case 4:
+                produto.editar_campo("cor", produto.set_cor)
+            case 5:
+                produto.editar_campo("preco", produto.set_preco)
+            case 6:
+                produto.editar_campo(
+                    "quantidade", produto.set_quantidade)
+            case 7:
+                break
+            case _:
+                print("Opção inválida. Tente novamente.")
 
 
 def realizar_compra(cliente_atual):
@@ -284,18 +284,10 @@ def carrinho(cliente_atual):
         match opcao:
             case 1:
                 print(loja.get_estoque().get_lista_produtos())
-                id = input("ID do produto: ")
-                produto = loja.get_estoque().consultar_produto_por_id(id)
-                if produto:
-                    qtd = int(input("Quantidade: "))
-                    if carrinho.adicionar_produto(produto, qtd):
-                        print("Produto adicionado!")
-                    else:
-                        print("Quantidade inválida!")
             case 2:
                 nome = input("Nome do produto: ")
                 produtos = loja.get_estoque().consultar_produtos_por_nome(nome)
-                for p in produtos:
+                for p in produtos:  # Ou print(produtos)
                     print(p)
             case 3:
                 id = input("ID do produto a remover: ")
@@ -314,6 +306,18 @@ def carrinho(cliente_atual):
                 return carrinho
             case _:
                 print("Opção inválida.")
+        if opcao == 1 or opcao == 2:
+            while True:
+                id = input("ID do produto (ou 0 para sair): ")
+                if id == 0:
+                    break
+                produto = loja.get_estoque().consultar_produto_por_id(id)
+                if produto:
+                    qtd = int(input("Quantidade: "))
+                    if carrinho.adicionar_produto(produto, qtd):
+                        print("Produto adicionado!")
+                    else:
+                        print("Quantidade inválida!")
 
 
 def gerar_menu(titulo, opcoes):
