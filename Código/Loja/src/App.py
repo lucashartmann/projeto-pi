@@ -7,10 +7,49 @@ from dados.Loja import Loja
 
 usuario = 0
 cliente_atual = None
-loja = Loja("loja do Silva", "00000000000")
+loja = Loja("GameStart", "00000000000")
+
+
+def init():
+
+    cliente1 = Cliente("Marcos", "00000000000", "00000000000",
+                       "00000000000", "Rua 1", "marcos@gmail.com")
+    cliente2 = Cliente("Pedro", "00000000000", "00000000000",
+                       "00000000000", "Rua 2", "pedro@gmail.com")
+    cliente3 = Cliente("Julia", "00000000000", "00000000000",
+                       "00000000000", "Rua 3", "julia@gmail.com")
+    cliente4 = Cliente("João", "00000000000", "00000000000",
+                       "00000000000", "Rua 4", "joao@gmail.com")
+    cliente5 = Cliente("Andressa", "00000000000", "00000000000",
+                       "00000000000", "Rua 5", "andressa@gmail.com")
+    cliente6 = Cliente("Maria", "00000000000", "00000000000",
+                       "00000000000", "Rua 6", "maria@gmail.com")
+    cliente7 = Cliente("Ana", "00000000000", "00000000000",
+                       "00000000000", "Rua 7", "ana@gmail.com")
+    cliente8 = Cliente("Joana", "00000000000", "00000000000",
+                       "00000000000", "Rua 8", "joana@gmail.com")
+    cliente9 = Cliente("Gabriela", "00000000000", "00000000000",
+                       "00000000000", "Rua 9", "gabriela@gmail.com")
+    cliente10 = Cliente("Fernanda", "00000000000", "00000000000",
+                        "00000000000", "Rua 10", "fernanda@gmail.com")
+
+    produto1 = Produto("Playstation 5", "Sony", "Slim", "Preto", 5000.00, 10)
+    produto2 = Produto("Xbox Series X", "Microsoft",
+                       "Slim", "Preto", 4000.00, 10)
+    produto3 = Produto("Nintendo Switch", "Nintendo",
+                       "Slim", "Preto", 3000.00, 10)
+    produto4 = Produto("GeForce RTX 3080 ti", "Nvidia",
+                       "ti", "Branco", 2000.00, 3)
+    produto5 = Produto("RX 6900 XT", "AMD", "60 Series", "Branco", 1000.00, 3)
+    produto6 = Produto("GeForce RTX 3090", "Nvidia",
+                       "30 Series", "Branco", 1000.00, 3)
+    produto7 = Produto("Dualshock 4", "Sony", "Slim", "Preto", 200.00, 10)
+    produto9 = Produto("Volante Gamer", "Logitech", "G29", "Preto", 500.00, 5)
+    produto10 = Produto("Mouse Gamer", "Logitech", "G502", "Preto", 100.00, 10)
 
 
 def login():
+    # init()
     while True:
         print(menu_login())
         usuario = int(input("Digite o número correspondente ao usuário: "))
@@ -62,12 +101,12 @@ def admin(usuario):
                 cadastroPessoa(usuario)
             case 4:
                 edicaoPessoa(usuario, cliente_atual)
-            case 5, 6, 7:
+            case 5 | 6 | 7:
                 procurarProduto(opcao)
             case 8:
-                print("Quantidade de clientes: ", loja.get_quantidade_clientes(), "\nQuantidade de funcionários: ",
+                print("Quantidade de Produtos: ", loja.get_estoque().get_quantidade_produtos(), "\nQuantidade de clientes: ", loja.get_quantidade_clientes(), "\nQuantidade de funcionários: ",
                       loja.get_quantidade_funcionarios(), "\nQuantidade de fornecedores: ", loja.get_quantidade_fornecedores())
-            case 9, 10, 11:
+            case 9 | 10 | 11:
                 verQuantidadeProduto(opcao)
             case 12:
                 break
@@ -77,9 +116,9 @@ def admin(usuario):
 
 def verQuantidadeProduto(opcao):
     campos = {
-        7: ("marca", loja.get_estoque().get_quantidade_produto_por_marca),
-        8: ("categoria", loja.get_estoque().get_quantidade_produto_por_categoria),
-        9: ("modelo", loja.get_estoque().get_quantidade_produto_por_modelo)
+        9: ("marca", loja.get_estoque().get_quantidade_produto_por_marca),
+        10: ("categoria", loja.get_estoque().get_quantidade_produto_por_categoria),
+        11: ("modelo", loja.get_estoque().get_quantidade_produto_por_modelo)
     }
 
     nome_campo, func = campos[opcao]
@@ -95,9 +134,9 @@ def verQuantidadeProduto(opcao):
 
 def procurarProduto(opcao):
     campos = {
-        3: ("nome", loja.get_estoque().consultar_produtos_por_nome),
-        4: ("marca", loja.get_estoque().consultar_produtos_por_marca),
-        5: ("categoria", loja.get_estoque().consultar_produtos_por_categoria)
+        5: ("nome", loja.get_estoque().get_produtos_por_nome),
+        6: ("marca", loja.get_estoque().get_produtos_por_marca),
+        7: ("categoria", loja.get_estoque().get_produtos_por_categoria)
     }
 
     nome_campo, func = campos[opcao]
@@ -117,7 +156,29 @@ def validar(string):
     while True:
         campo = input(f"Digite {string}: ")
         if len(campo) > 0:
-            return campo
+            if "CPF" in string:
+                if len(campo) == 11:
+                    cpf_ja_cadastrado = loja.is_cpf_cadastrado(campo)
+                    if not cpf_ja_cadastrado:
+                        return campo
+                    print("CPF já cadastrado!")
+                print("CPF inválido!")
+            elif "RG" in string:
+                if len(campo) == 9:
+                    rg_ja_cadastrado = loja.is_rg_cadastrado(campo)
+                    if not rg_ja_cadastrado:
+                        return campo
+                    print("RG já cadastrado!")
+                print("RG inválido!")
+            elif "telefone" in string:
+                if len(campo) == 11:
+                    telefone_ja_cadastrado = loja.is_telefone_cadastrado(campo)
+                    if not telefone_ja_cadastrado:
+                        return campo
+                    print("Telefone já cadastrado!")
+                print("Telefone inválido!")
+            else:
+                return campo
         print(f"{campo} inválido!")
 
 
@@ -193,6 +254,7 @@ def edicaoPessoa(usuario, cliente_atual):
                 break
             case _:
                 print("Opção inválida. Tente novamente.")
+        print(pessoa_atual)
 
 
 def cadastroProduto():
@@ -200,8 +262,8 @@ def cadastroProduto():
     marca = validar("a marca do produto")
     modelo = validar("o modelo do produto")
     cor = validar("a cor do produto")
-    preco = float(validar("o preço"))
-    quantidade = int(validar("a quantidade"))
+    preco = float(validar("o preço do produto"))
+    quantidade = int(validar("a quantidade do produto"))
     novo_produto = Produto(nome, marca, modelo, cor, preco, quantidade)
     cadastrado = loja.get_estoque().adicionar_produto(novo_produto)
     if cadastrado:
@@ -212,8 +274,7 @@ def cadastroProduto():
 
 
 def edicaoProduto():
-    print("Digite o ID do produto que deseja editar: ")
-    id = input()
+    id = int(input("Digite o ID do produto que deseja editar: "))
     produto = loja.get_estoque().get_produto_por_id(id)
     if produto is None:
         print("Produto não encontrado!")
@@ -240,6 +301,7 @@ def edicaoProduto():
                 break
             case _:
                 print("Opção inválida. Tente novamente.")
+        print(produto)
 
 
 def realizar_compra(cliente_atual):
@@ -285,11 +347,11 @@ def carrinho(cliente_atual):
                 print(loja.get_estoque().get_lista_produtos())
             case 2:
                 nome = input("Nome do produto: ")
-                produtos = loja.get_estoque().consultar_produtos_por_nome(nome)
+                produtos = loja.get_estoque().get_produtos_por_nome(nome)
                 for p in produtos:  # Ou print(produtos)
                     print(p)
             case 3:
-                id = input("ID do produto a remover: ")
+                id = int(input("ID do produto a remover: "))
                 if carrinho.remover_produto_por_id(id):
                     print("Removido com sucesso.")
                 else:
@@ -307,16 +369,18 @@ def carrinho(cliente_atual):
                 print("Opção inválida.")
         if opcao == 1 or opcao == 2:
             while True:
-                id = input("ID do produto (ou 0 para sair): ")
+                id = int(input("ID do produto (ou 0 para sair): "))
                 if id == 0:
                     break
-                produto = loja.get_estoque().consultar_produto_por_id(id)
+                produto = loja.get_estoque().get_produto_por_id(id)
                 if produto:
                     qtd = int(input("Quantidade: "))
                     if carrinho.adicionar_produto(produto, qtd):
                         print("Produto adicionado!")
+                        print(produto)
                     else:
                         print("Quantidade inválida!")
+            print(carrinho)
 
 
 def gerar_menu(titulo, opcoes):

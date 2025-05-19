@@ -74,8 +74,20 @@ class Loja:
                 return produto
         return None
 
-    def is_cliente_cadastrado(self, cpf):
-        for cliente in self.clientes:
-            if cliente.get_cpf() == cpf:
+    def is_cpf_cadastrado(self, cpf):
+        for pessoa in self.pessoas:
+            if pessoa.get_cpf() == cpf:
+                return True
+        return False
+
+    def is_rg_cadastrado(self, rg):
+        for pessoa in self.pessoas:
+            if pessoa.get_rg() == rg:
+                return True
+        return False
+    
+    def is_telefone_cadastrado(self, telefone):
+        for pessoa in self.pessoas:
+            if pessoa.get_telefone() == telefone:
                 return True
         return False

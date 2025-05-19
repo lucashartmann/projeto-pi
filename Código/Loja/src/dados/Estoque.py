@@ -22,7 +22,7 @@ class Estoque:
             return True
         return False
 
-    def consultar_produtos_por_nome(self, nome):
+    def get_produtos_por_nome(self, nome):
         produtos = []
         for produto in self.produtos:
             if produto.get_nome() == nome:
@@ -31,7 +31,7 @@ class Estoque:
             return produtos
         return None
 
-    def consultar_produtos_por_marca(self, marca):
+    def get_produtos_por_marca(self, marca):
         produtos = []
         for produto in self.produtos:
             if produto.get_marca() == marca:
@@ -40,7 +40,7 @@ class Estoque:
             return produtos
         return None
 
-    def consultar_produtos_por_modelo(self, modelo):
+    def get_produtos_por_modelo(self, modelo):
         produtos = []
         for produto in self.produtos:
             if produto.get_modelo() == modelo:
@@ -49,7 +49,7 @@ class Estoque:
             return produtos
         return None
 
-    def consultar_produtos_por_categoria(self, categoria):
+    def get_produtos_por_categoria(self, categoria):
         produtos = []
         for produto in self.produtos:
             if produto.get_categoria() == categoria:
@@ -58,7 +58,7 @@ class Estoque:
             return produtos
         return None
 
-    def consultar_produto_por_id(self, id):
+    def get_produto_por_id(self, id):
         for produto in self.produtos:
             if produto.get_id() == id:
                 return produto
@@ -68,19 +68,26 @@ class Estoque:
         quantidade = 0
         for produto in self.produtos:
             if produto.get_marca() == marca:
-                quantidade = produto.get_quantidade + quantidade
+                quantidade += produto.get_quantidade()
         return quantidade
 
     def get_quantidade_produto_por_modelo(self, modelo):
         quantidade = 0
         for produto in self.produtos:
             if produto.get_modelo() == modelo:
-                quantidade = produto.get_quantidade + quantidade
+                quantidade += produto.get_quantidade()
         return quantidade
 
     def get_quantidade_produto_por_categoria(self, categoria):
         quantidade = 0
         for produto in self.produtos:
             if produto.get_categoria() == categoria:
-                quantidade = produto.get_quantidade + quantidade
+                quantidade += produto.get_quantidade() 
         return quantidade
+    
+    def get_quantidade_produtos(self):
+        quantidade = 0 
+        for produto in self.produtos:
+            quantidade += produto.get_quantidade()
+        return quantidade
+

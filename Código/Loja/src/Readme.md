@@ -1,44 +1,60 @@
-### Ideias:
-- Fazer o sistema de realizar compra para o cliente ou fazer o sistema de cadastrar/realizar venda para o admin?
-- Fazer o programa ser para cliente e admin ou só o admin?
-- Criar classe Venda() ou Pedido()?
-
-### Falta fazer:
+#### Falta fazer:
 ####  App:
-- Implementar opção de remover produto do carrinho
-- Falta implementar opção do cliente procurar produtos por nome, marca, categoria e etc, ou ver todos os produtos
-#### Loja e App:
-- Implementar sistema de pagamento (cartão, juros, parcelas, etc) (nota fiscal/recibo)
+- Implementar opção do cliente procurar produtos por nome, marca, categoria e etc, ou ver todos os produtos
+- Melhorar os menus e suas opções
+- Melhorar validação: Especificar se a pessoa precisa digitar o nome completo, se sim precisa ter no mínimo 20-50 caracteres
 #### Loja:
-- Implementar numero_vendas, get_numero_vendas() (mensal, anual, semanal, diaria)
+- Implementar get número/quantidade de vendas no dia, semana, mês, ano. get faturamento no dia, semana, mês, ano. 
 #### Fornecedor/Funcionario/Cliente:
 - Ver qual é a diferença dessas classes. Se não tiver diferença, então remover elas
+#### Produto e Pessoa:
+- Separar view, model e controller em editar_campo()
 
 # Modelagem: 
 ## Pessoa
 - Atributos:
-    - nome
-    - cpf/cnpj
-    - rg
+    - nome 
+    - cpf 
+    - rg 
     - telefone 
-    - endereco
+    - endereco 
     - email
 - Métodos:
+    - editar_campo(self, nome_campo, setter)
+    - get_nome(self)
+    - get_rg(self)
+    - get_telefone(self)
+    - get_endereco(self)
+    - get_email(self)
     - get_cpf(self)
+    - set_nome(self, nome)
+    - set_cpf(self, cpf)
+    - set_rg(self, rg)
+    - set_telefone(self, telefone)
+    - set_endereco(self, endereco)
+    - set_email(self, email)
 ## Cliente
 - Atributos:
     - super()
+    - isCadastrado
 - Métodos:
+    - get_is_cadastrado(self)
+    - set_is_cadastrado(self, isCadastrado)
+    - get_carrinho(self)
+    - __str__(self)
 ## Fornecedor
 - Atributos:
     - super()
 - Métodos:
+    - __str__(self)
 ## Funcionario
 - Atributos:
     - super()
 - Métodos:
+    - __str__(self)
 ## Produto
 - Atributos:
+    - id
     - nome
     - codigo
     - cor
@@ -47,41 +63,87 @@
     - modelo
     - quantidade
 - Métodos:
+    - editar_campo(self, nome_campo, setter)
+    - get_quantidade(self)
+    - get_nome(self)
+    - get_codigo(self)
+    - get_marca(self)
+    - get_modelo(self)
+    - get_cor(self)
+    - get_preco(self)
+    - get_id(self)
+    - set_nome(self, nome)
+    - set_cor(self, cor)
+    - set_preco(self, preco)
+    - set_marca(self, marca)
+    - set_modelo(self, modelo)
+    - set_quantidade(self, quantidade)
+    - __str__(self)
 ## Estoque
 - Atributos:
-    - podutos
-    - quantidade
+    - podutos[]
 - Métodos:
     - adicionar_produto(self, produto)
     - remover_produto(self, produto)
-    - listar_produtos(self)
-    - get_quantidade(self)
-    - consultar_produtos_por_nome(nome)
+    - get_lista_produtos(self)
+    - verifica_produto(self, produto)
+    - get_produtos_por_nome(self, nome)
+    - get_produtos_por_marca(self, marca)
+    - get_produtos_por_modelo(self, modelo)
+    - get_produtos_por_categoria(self, categoria)
+    - get_produto_por_id(self, id)
+    - get_quantidade_produto_por_marca(self, marca)
+    - get_quantidade_produto_por_modelo(self, modelo)
+    - get_quantidade_produto_por_categoria(self, categoria)
+    - get_quantidade_produtos(self)
 ## Loja
 - Atributos:
     - nome
     - cnpj
     - Estoque 
-    - funcionarios
-    - clientes
-    - fornecedores
+    - pessoas[]
     - quantidade_funcionarios
     - quantidade_clientes
     - quantidade_fornecedores
     - faturamento
 - Métodos:
-    - realizar_compra(cliente, produto)
-    - adicionar_funcionario(self, funcionario)
-    - adicionar_cliente(self, cliente)
-    - adicionar_fornecedor(self, fornecedor)
-    - remover_funcionario(self, funcionario)
-    - remover_cliente(self, cliente)
-    - remover_fornecedor(self, fornecedor)
+    - cadastrar(self, pessoa)
+    - remover(self, pessoa)
+    - set_quantidade(self)
+    - get_estoque(self)
+    - get_nome(self)
+    - get_cnpj(self)
     - get_quantidade_funcionarios(self)
     - get_quantidade_clientes(self)
     - get_quantidade_fornecedores(self)
     - get_faturamento(self)
-    - is_cliente_cadastrado(self, cpf)
+    - get_cliente_por_cpf(self, cpf)
+    - get_produto_por_id(self, id)
+    - is_cpf_cadastrado(self, cpf)
+    - is_rg_cadastrado(self, rg)
+    - is_telefone_cadastrado(self, telefone)
+## Venda
+- Atributos:
+    - cliente
+    - itens[]
+    - modo_pagamento
+    - parcelas
+    - total
+- Métodos:
+    - calcular_total(self)
+    - aplicar_venda(self, loja)
+    - gerar_recibo(self, loja)
+## Carrinho
+- Atributos:
+    - itens[]
+- Métodos:
+    - adicionar_produto(self, produto, quantidade)
+    - remover_produto_por_id(self, id_produto)
+    - listar_produtos(self)
+    - esta_vazio(self)
+    - limpar(self)
+    - get_total(self)
+
 ## App:
 Administrador cadastra produtos, funcionários, fornecedores<br/>
 Admin consulta o estoque onde pode cadastrar produtos, editar produtos, ver quantidade de certo produto por categoria, marca, nome, remover produto<br/>
