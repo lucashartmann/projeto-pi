@@ -8,7 +8,7 @@ class Produto:
         self.marca = marca
         self.modelo = modelo
         self.quantidade = quantidade
-        
+
     def editar_campo(self, nome_campo, setter):
         while True:
             novo_valor = input(f"Digite o novo {nome_campo}: ")
@@ -62,5 +62,5 @@ class Produto:
         self.quantidade = quantidade
 
     def __str__(self):
-        return (f"Produto [id = {self.get_id}, nome={self.get_nome}, codigo={self.get_codigo}, cor={self.get_cor}, "
-                f"preco={self.get_preco}, marca={self.get_marca}, modelo={self.get_modelo}]")
+        return (f"Produto [id = {self.get_id()}, nome={self.get_nome()}, codigo={self.get_codigo()}, cor={self.get_cor()}, "
+                f"preco={self.get_preco()}, marca={self.get_marca()}, modelo={self.get_modelo()}]")

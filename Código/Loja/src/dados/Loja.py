@@ -1,7 +1,7 @@
-from Estoque import Estoque
-from Funcionario import Funcionario
-from Cliente import Cliente
-from Fornecedor import Fornecedor
+from dados.Estoque import Estoque
+from dados.Funcionario import Funcionario
+from dados.Cliente import Cliente
+from dados.Fornecedor import Fornecedor
 
 
 class Loja:

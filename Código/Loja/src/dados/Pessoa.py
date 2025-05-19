@@ -16,19 +16,19 @@ class Pessoa:
                 print(f"{nome_campo} atualizado com sucesso!\n")
                 break
             print(f"{nome_campo} inválido!")
-    
+
     def get_nome(self):
         return self.nome
-    
+
     def get_rg(self):
         return self.rg
-    
+
     def get_telefone(self):
         return self.telefone
-    
+
     def get_endereco(self):
         return self.endereco
-    
+
     def get_email(self):
         return self.email
 

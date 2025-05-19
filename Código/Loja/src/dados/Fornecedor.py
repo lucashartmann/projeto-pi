@@ -1,4 +1,4 @@
-from Pessoa import Pessoa
+from dados.Pessoa import Pessoa
 
 
 class Fornecedor(Pessoa):
@@ -6,4 +6,4 @@ class Fornecedor(Pessoa):
         super().__init__(nome, cpf, rg, telefone, endereco, email)
 
     def __str__(self):
-        return f"Fornecedor [nome={self.nome}, cpf={self.cpf}]"
+        return f"Fornecedor [nome={self.get_nome()}, cpf={self.get_cpf()}]"

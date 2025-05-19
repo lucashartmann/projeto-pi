@@ -13,7 +13,7 @@ class Carrinho:
 
     def remover_produto_por_id(self, id_produto):
         for item in self.itens:
-            if item.get_id() == id_produto:
+            if item["produto"].get_id() == id_produto:
                 self.itens.remove(item)
                 return True
         return False
@@ -28,6 +28,9 @@ class Carrinho:
         self.itens.clear()
 
     def get_total(self):
+        total = 0
         for item in self.itens:
-            total += item.get_preco() * item.get_quantidade()
+            produto = item["produto"]
+            quantidade = item["quantidade"]
+            total += produto.get_preco() * quantidade
         return total

@@ -1,5 +1,6 @@
-from Pessoa import Pessoa
-from Carrinho import Carrinho
+from dados.Pessoa import Pessoa
+from dados.Carrinho import Carrinho
+
 
 class Cliente(Pessoa):
     def __init__(self, nome, cpf, rg, telefone, endereco, email):
@@ -9,12 +10,12 @@ class Cliente(Pessoa):
 
     def get_is_cadastrado(self):
         return self.isCadastrado
-    
+
     def set_is_cadastrado(self, isCadastrado):
         self.isCadastrado = isCadastrado
-        
+
     def get_carrinho(self):
         return self.carrinho
-    
+
     def __str__(self):
-        return f"Cliente [nome={self.nome}, cpf={self.cpf}, rg={self.rg}, endereco={self.endereco}, email={self.email}, telefone={self.telefone}, isCadastrado={self.isCadastrado}]"
+        return f"Cliente [nome={self.get_nome()}, cpf={self.get_cpf()}, rg={self.get_rg()}, endereco={self.get_endereco()}, email={self.get_email()}, telefone={self.get_telefone()}, isCadastrado={self.get_is_cadastrado()}]"

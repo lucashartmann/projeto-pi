@@ -1,9 +1,9 @@
-from Venda import Venda
-from Cliente import Cliente
-from Fornecedor import Fornecedor
-from Funcionario import Funcionario
-from Produto import Produto
-from Loja import Loja
+from dados.Venda import Venda
+from dados.Cliente import Cliente
+from dados.Fornecedor import Fornecedor
+from dados.Funcionario import Funcionario
+from dados.Produto import Produto
+from dados.Loja import Loja
 
 usuario = 0
 cliente_atual = None
@@ -129,8 +129,7 @@ def cadastroPessoa(usuario):
     rg = validar("a sua RG")
     endereco = validar("o seu endereço")
     if usuario == 1:
-        cliente_atual = Cliente("Lucas", "00000000000", 000000000,
-                                00000000000, "Bento", "Lucas")
+        cliente_atual = Cliente(nome, cpf, rg, telefone, endereco, email)
         if loja.cadastrar(cliente_atual):
             loja.cadastrar(cliente_atual)
             cliente_atual.set_is_cadastrado(True)
@@ -201,15 +200,15 @@ def cadastroProduto():
     marca = validar("a marca do produto")
     modelo = validar("o modelo do produto")
     cor = validar("a cor do produto")
-    preco = float(validar("Digite o preço: "))
-    quantidade = int(validar("Digite a quantidade: "))
-    produto1 = Produto(nome, marca, modelo, cor, preco, quantidade)
-    if (loja.get_estoque().adicionar_produto(produto1)):
-        loja.get_estoque().adicionar_produto(produto1)
-        print("Produto cadastrado com sucesso!")
-        print(produto1)
+    preco = float(validar("o preço"))
+    quantidade = int(validar("a quantidade"))
+    novo_produto = Produto(nome, marca, modelo, cor, preco, quantidade)
+    cadastrado = loja.get_estoque().adicionar_produto(novo_produto)
+    if cadastrado:
+        print("\nProduto cadastrado com sucesso!")
+        print(novo_produto)
     else:
-        print("Erro. Produto não cadastrado!")
+        print("\nErro. Não foi possivel cadastrar o produto")
 
 
 def edicaoProduto():

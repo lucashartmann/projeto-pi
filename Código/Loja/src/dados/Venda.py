@@ -1,6 +1,3 @@
-from datetime import datetime
-
-
 class Venda:
     def __init__(self, cliente, carrinho, modo_pagamento):
         self.cliente = cliente
@@ -15,17 +12,18 @@ class Venda:
         return self.total
 
     def aplicar_venda(self, loja):
+        estoque = loja.get_estoque()
         for item in self.itens:
-            produto_carrinho = item
             quantidade = item.get_quantidade()
-            for produto_estoque in loja.get_estoque().get_produtos():
-                if produto_estoque.get_id() == produto_carrinho.get_id():
-                    if produto_estoque.get_quantidade() == quantidade:
-                        loja.get_estoque().remover_produto(produto_estoque)
+            for produto in estoque.get_produtos():
+                if produto.get_id() == item.get_id():
+                    nova_qtd = produto.get_quantidade() - quantidade
+                    if nova_qtd <= 0:
+                        estoque.remover_produto(produto)
                     else:
-                        produto_estoque.set_quantidade(
-                            produto_estoque.get_quantidade() - quantidade)
-            loja.faturamento += produto_carrinho.get_preco() * quantidade
+                        produto.set_quantidade(nova_qtd)
+                    break
+            loja.faturamento += item.get_preco() * quantidade
 
     def gerar_recibo(self, loja):
         produtos_str = "\n".join(item for item in self.itens)
