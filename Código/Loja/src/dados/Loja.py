@@ -85,7 +85,7 @@ class Loja:
             if pessoa.get_rg() == rg:
                 return True
         return False
-    
+
     def is_telefone_cadastrado(self, telefone):
         for pessoa in self.pessoas:
             if pessoa.get_telefone() == telefone:

@@ -1,4 +1,6 @@
 #### Falta fazer:
+- Melhorar pagamento
+- Usar Try e Expect
 ####  App:
 - Implementar opção do cliente procurar produtos por nome, marca, categoria e etc, ou ver todos os produtos
 - Melhorar os menus e suas opções

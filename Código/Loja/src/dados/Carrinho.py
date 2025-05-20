@@ -1,20 +1,21 @@
 class Carrinho:
     def __init__(self):
-        self.itens = []
+        self.itens = {}
 
     def adicionar_produto(self, produto, quantidade):
         if quantidade <= produto.get_quantidade():
-            self.itens.append({
-                "produto": produto,
-                "quantidade": quantidade
-            })
-            return True
+            if produto not in self.itens:
+                self.itens[produto] = quantidade
+                return True
+            else:
+                self.itens[produto] += quantidade
+                return True
         return False
 
     def remover_produto_por_id(self, id_produto):
-        for item in self.itens:
-            if item["produto"].get_id() == id_produto:
-                self.itens.remove(item)
+        for produto in self.itens:
+            if self.itens[produto].get_id() == id_produto:
+                del self.itens[produto]
                 return True
         return False
 
@@ -29,8 +30,6 @@ class Carrinho:
 
     def get_total(self):
         total = 0
-        for item in self.itens:
-            produto = item["produto"]
-            quantidade = item["quantidade"]
+        for produto, quantidade in self.itens.items():
             total += produto.get_preco() * quantidade
         return total

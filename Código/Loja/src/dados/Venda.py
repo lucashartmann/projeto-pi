@@ -4,18 +4,16 @@ class Venda:
         self.itens = carrinho.listar_produtos()
         self.modo_pagamento = modo_pagamento
         self.parcelas = 0
-        self.total = self.calcular_total()
+        self.total = cliente.get_carrinho().get_total()
 
-    def calcular_total(self):
-        for item in self.itens:
-            self.total += item.get_preco() * item.get_quantidade()
-        return self.total
+    def set_parcelas(self, parcelas):
+        self.parcelas = parcelas
 
     def aplicar_venda(self, loja):
         estoque = loja.get_estoque()
         for item in self.itens:
             quantidade = item.get_quantidade()
-            for produto in estoque.get_produtos():
+            for produto in estoque.get_lista_produtos():
                 if produto.get_id() == item.get_id():
                     nova_qtd = produto.get_quantidade() - quantidade
                     if nova_qtd <= 0:
@@ -26,8 +24,9 @@ class Venda:
             loja.faturamento += item.get_preco() * quantidade
 
     def gerar_recibo(self, loja):
-        produtos_str = "\n".join(item for item in self.itens)
-
+        produtos_str = ""
+        for produto, quantidade in self.itens.items():
+            produtos_str += produto.get_nome() + " - Quantidade: " + str(quantidade) + "\n"
         if self.modo_pagamento == 1:
             pagamento = "Cartão de Crédito"
             valor_parcela = self.total / self.parcelas

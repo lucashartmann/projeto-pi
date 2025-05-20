@@ -82,12 +82,11 @@ class Estoque:
         quantidade = 0
         for produto in self.produtos:
             if produto.get_categoria() == categoria:
-                quantidade += produto.get_quantidade() 
+                quantidade += produto.get_quantidade()
         return quantidade
-    
+
     def get_quantidade_produtos(self):
-        quantidade = 0 
+        quantidade = 0
         for produto in self.produtos:
             quantidade += produto.get_quantidade()
         return quantidade
-

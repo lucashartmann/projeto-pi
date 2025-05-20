@@ -12,44 +12,67 @@ loja = Loja("GameStart", "00000000000")
 
 def init():
 
-    cliente1 = Cliente("Marcos", "00000000000", "00000000000",
-                       "00000000000", "Rua 1", "marcos@gmail.com")
-    cliente2 = Cliente("Pedro", "00000000000", "00000000000",
-                       "00000000000", "Rua 2", "pedro@gmail.com")
-    cliente3 = Cliente("Julia", "00000000000", "00000000000",
-                       "00000000000", "Rua 3", "julia@gmail.com")
-    cliente4 = Cliente("João", "00000000000", "00000000000",
-                       "00000000000", "Rua 4", "joao@gmail.com")
-    cliente5 = Cliente("Andressa", "00000000000", "00000000000",
-                       "00000000000", "Rua 5", "andressa@gmail.com")
-    cliente6 = Cliente("Maria", "00000000000", "00000000000",
-                       "00000000000", "Rua 6", "maria@gmail.com")
-    cliente7 = Cliente("Ana", "00000000000", "00000000000",
-                       "00000000000", "Rua 7", "ana@gmail.com")
-    cliente8 = Cliente("Joana", "00000000000", "00000000000",
-                       "00000000000", "Rua 8", "joana@gmail.com")
-    cliente9 = Cliente("Gabriela", "00000000000", "00000000000",
-                       "00000000000", "Rua 9", "gabriela@gmail.com")
-    cliente10 = Cliente("Fernanda", "00000000000", "00000000000",
-                        "00000000000", "Rua 10", "fernanda@gmail.com")
+    cliente1 = Cliente("MARCOS", "11111111111", "11111111111",
+                       "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
+    cliente2 = Cliente("PEDRO", "22222222222", "22222222222",
+                       "22222222222", "RUA 2", "PEDRO@GMAIL.COM")
+    cliente3 = Cliente("JULIA", "33333333333", "33333333333",
+                       "33333333333", "RUA 3", "JULIA@GMAIL.COM")
+    cliente4 = Cliente("JOÃO", "44444444444", "44444444444",
+                       "44444444444", "RUA 4", "JOAO@GMAIL.COM")
+    cliente5 = Cliente("ANDRESSA", "55555555555", "55555555555",
+                       "55555555555", "RUA 5", "ANDRESSA@GMAIL.COM")
+    cliente6 = Cliente("MARIA", "66666666666", "66666666666",
+                       "66666666666", "RUA 6", "MARIA@GMAIL.COM")
+    cliente7 = Cliente("ANA", "77777777777", "77777777777",
+                       "77777777777", "RUA 7", "ANA@GMAIL.COM")
+    cliente8 = Cliente("JOANA", "88888888888", "88888888888",
+                       "88888888888", "RUA 8", "JOANA@GMAIL.COM")
+    cliente9 = Cliente("GABRIELA", "99999999999", "99999999999",
+                       "99999999999", "RUA 9", "GABRIELA@GMAIL.COM")
+    cliente10 = Cliente("FERNANDA", "10101010101", "10101010101",
+                        "10101010101", "RUA 10", "FERNANDA@GMAIL.COM")
 
-    produto1 = Produto("Playstation 5", "Sony", "Slim", "Preto", 5000.00, 10)
-    produto2 = Produto("Xbox Series X", "Microsoft",
-                       "Slim", "Preto", 4000.00, 10)
-    produto3 = Produto("Nintendo Switch", "Nintendo",
-                       "Slim", "Preto", 3000.00, 10)
-    produto4 = Produto("GeForce RTX 3080 ti", "Nvidia",
-                       "ti", "Branco", 2000.00, 3)
-    produto5 = Produto("RX 6900 XT", "AMD", "60 Series", "Branco", 1000.00, 3)
-    produto6 = Produto("GeForce RTX 3090", "Nvidia",
-                       "30 Series", "Branco", 1000.00, 3)
-    produto7 = Produto("Dualshock 4", "Sony", "Slim", "Preto", 200.00, 10)
-    produto9 = Produto("Volante Gamer", "Logitech", "G29", "Preto", 500.00, 5)
-    produto10 = Produto("Mouse Gamer", "Logitech", "G502", "Preto", 100.00, 10)
+    loja.cadastrar(cliente1)
+    loja.cadastrar(cliente2)
+    loja.cadastrar(cliente3)
+    loja.cadastrar(cliente4)
+    loja.cadastrar(cliente5)
+    loja.cadastrar(cliente6)
+    loja.cadastrar(cliente7)
+    loja.cadastrar(cliente8)
+    loja.cadastrar(cliente9)
+    loja.cadastrar(cliente10)
+
+    produto1 = Produto("PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10)
+    produto2 = Produto("XBOX SERIES X", "MICROSOFT",
+                       "SLIM", "PRETO", 4000.00, 10)
+    produto3 = Produto("NINTENDO SWITCH", "NINTENDO",
+                       "SLIM", "PRETO", 3000.00, 10)
+    produto4 = Produto("GEFORCE RTX 3080 TI", "NVIDIA",
+                       "TI", "BRANCO", 2000.00, 3)
+    produto5 = Produto("RX 6900 XT", "AMD", "60 SERIES", "BRANCO", 1000.00, 3)
+    produto6 = Produto("GEFORCE RTX 3090", "NVIDIA",
+                       "30 SERIES", "BRANCO", 1000.00, 3)
+    produto7 = Produto("DUALSHOCK 4", "SONY", "SLIM", "PRETO", 200.00, 10)
+    produto9 = Produto("VOLANTE GAMER", "LOGITECH", "G29", "PRETO", 500.00, 5)
+    produto10 = Produto("MOUSE GAMER", "LOGITECH", "G502", "PRETO", 100.00, 10)
+    produto11 = Produto("PLAYSTATION 5", "SONY", "PRO", "BRANCO", 6000.00, 30)
+
+    loja.get_estoque().adicionar_produto(produto1)
+    loja.get_estoque().adicionar_produto(produto2)
+    loja.get_estoque().adicionar_produto(produto3)
+    loja.get_estoque().adicionar_produto(produto4)
+    loja.get_estoque().adicionar_produto(produto5)
+    loja.get_estoque().adicionar_produto(produto6)
+    loja.get_estoque().adicionar_produto(produto7)
+    loja.get_estoque().adicionar_produto(produto9)
+    loja.get_estoque().adicionar_produto(produto10)
+    loja.get_estoque().adicionar_produto(produto11)
 
 
 def login():
-    # init()
+    init()
     while True:
         print(menu_login())
         usuario = int(input("Digite o número correspondente ao usuário: "))
@@ -61,11 +84,10 @@ def login():
             case 3:
                 break
             case _:
-                print("Opção inválida. Tente novamente.")
+                print("Erro. Opção inválida. Tente novamente.")
 
 
 def cliente(usuario, cliente_atual):
-    carrinho_compras = []
     while True:
         print(menu_cliente())
         opcao = int(input('Digite o número correspondente a opção: '))
@@ -78,13 +100,13 @@ def cliente(usuario, cliente_atual):
             case 3:
                 print(cliente_atual)
             case 4:
-                carrinho_compras = carrinho(cliente_atual)
+                carrinho(cliente_atual)
             case 5:
-                realizar_compra(carrinho_compras)
+                realizar_compra(cliente_atual)
             case 7:
                 break
             case _:
-                print('Opção errada, tente novamente')
+                print('Erro. Opção errada, tente novamente')
 
 
 def admin(usuario):
@@ -111,7 +133,7 @@ def admin(usuario):
             case 12:
                 break
             case _:
-                print('Opção errada, tente novamente')
+                print('Erro. Opção errada, tente novamente')
 
 
 def verQuantidadeProduto(opcao):
@@ -122,11 +144,11 @@ def verQuantidadeProduto(opcao):
     }
 
     nome_campo, func = campos[opcao]
-    valor = input(f"Digite a {nome_campo} do produto: ")
+    valor = input(f"Digite a {nome_campo} do produto: ").upper()
     quantidade = func(valor)
 
     if quantidade is None:
-        print("Produto não encontrado!")
+        print("Erro. Produto não encontrado!")
         return
 
     print(f"Quantidade de produtos da {nome_campo} {valor}: {quantidade}")
@@ -140,11 +162,11 @@ def procurarProduto(opcao):
     }
 
     nome_campo, func = campos[opcao]
-    valor = input(f"Digite a {nome_campo} do produto: ")
+    valor = input(f"Digite a {nome_campo} do produto: ").upper()
     produtos = func(valor)
 
     if not produtos:
-        print("Produto não encontrado!")
+        print("Erro. Produto não encontrado!")
         return
 
     print("Produtos encontrados:")
@@ -154,32 +176,29 @@ def procurarProduto(opcao):
 
 def validar(string):
     while True:
-        campo = input(f"Digite {string}: ")
+        campo = input(f"Digite {string}: ").upper()
         if len(campo) > 0:
             if "CPF" in string:
                 if len(campo) == 11:
                     cpf_ja_cadastrado = loja.is_cpf_cadastrado(campo)
                     if not cpf_ja_cadastrado:
                         return campo
-                    print("CPF já cadastrado!")
-                print("CPF inválido!")
+                    print("Erro. CPF já cadastrado!")
             elif "RG" in string:
                 if len(campo) == 9:
                     rg_ja_cadastrado = loja.is_rg_cadastrado(campo)
                     if not rg_ja_cadastrado:
                         return campo
-                    print("RG já cadastrado!")
-                print("RG inválido!")
+                    print("Erro. RG já cadastrado!")
             elif "telefone" in string:
                 if len(campo) == 11:
                     telefone_ja_cadastrado = loja.is_telefone_cadastrado(campo)
                     if not telefone_ja_cadastrado:
                         return campo
-                    print("Telefone já cadastrado!")
-                print("Telefone inválido!")
+                    print("Erro. Telefone já cadastrado!")
             else:
                 return campo
-        print(f"{campo} inválido!")
+        print(f"Erro. {campo} inválido!")
 
 
 def cadastroPessoa(usuario):
@@ -198,7 +217,7 @@ def cadastroPessoa(usuario):
             print(cliente_atual)
             return cliente_atual
         else:
-            print("Cliente não cadastrado!")
+            print("Erro. Cliente não cadastrado!")
     else:
         print("1 - Funcionário")
         print("2 - Fornecedor")
@@ -209,27 +228,27 @@ def cadastroPessoa(usuario):
                 loja.cadastrar(funcionario)
                 print("Funcionário cadastrado com sucesso!")
             else:
-                print("Funcionário não cadastrado!")
+                print("Erro. Funcionário não cadastrado!")
         else:
             fornecedor = Fornecedor(nome, cpf, rg, telefone, endereco, email)
             if loja.cadastrar(fornecedor):
                 loja.cadastrar(fornecedor)
                 print("Fornecedor cadastrado com sucesso!")
             else:
-                print("Fornecedor não cadastrado!")
+                print("Erro. Fornecedor não cadastrado!")
 
 
 def edicaoPessoa(usuario, cliente_atual):
     if usuario == 1:
         if not cliente_atual.get_is_cadastrado():
-            print("Você não está cadastrado!")
+            print("Erro. Você não está cadastrado!")
             return
         pessoa_atual = cliente_atual
     else:
         cpf = input("Digite o CPF do cliente que deseja editar: ")
         pessoa_atual = loja.get_cliente_por_cpf(cpf)
         if pessoa_atual is None:
-            print("Cliente não encontrado!")
+            print("Erro. Cliente não encontrado!")
             return
     while True:
         print(menu_edicao_pessoa())
@@ -253,7 +272,7 @@ def edicaoPessoa(usuario, cliente_atual):
                 print("Saindo da edição...")
                 break
             case _:
-                print("Opção inválida. Tente novamente.")
+                print("Erro. Opção inválida. Tente novamente.")
         print(pessoa_atual)
 
 
@@ -277,7 +296,7 @@ def edicaoProduto():
     id = int(input("Digite o ID do produto que deseja editar: "))
     produto = loja.get_estoque().get_produto_por_id(id)
     if produto is None:
-        print("Produto não encontrado!")
+        print("Erro. Produto não encontrado!")
         return
     while True:
         print(menu_edicao_produto())
@@ -300,17 +319,17 @@ def edicaoProduto():
             case 7:
                 break
             case _:
-                print("Opção inválida. Tente novamente.")
+                print("Erro. Opção inválida. Tente novamente.")
         print(produto)
 
 
 def realizar_compra(cliente_atual):
     if not cliente_atual.get_is_cadastrado():
-        print("Você não está cadastrado!")
+        print("Erro. Você não está cadastrado!")
         return
     carrinho = cliente_atual.get_carrinho()
     if carrinho.esta_vazio():
-        print("Carrinho vazio!")
+        print("Erro. Carrinho vazio!")
         return
     print("Produtos no carrinho:")
     for produto in carrinho.listar_produtos():
@@ -320,10 +339,10 @@ def realizar_compra(cliente_atual):
     match opcao:
         case 1:
             parcelas = int(input("Parcelas: "))
-        case 2, 3:
+        case 2 | 3:
             parcelas = 1
         case _:
-            print("Opção inválida.")
+            print("Erro. Opção inválida.")
             return
     modo_pagamento = opcao
     venda = Venda(cliente_atual, carrinho,
@@ -332,6 +351,7 @@ def realizar_compra(cliente_atual):
     venda.aplicar_venda(loja)
     print(venda.gerar_recibo(loja))
     carrinho.limpar()
+    quit()
 
 
 def carrinho(cliente_atual):
@@ -344,25 +364,33 @@ def carrinho(cliente_atual):
         opcao = int(input("Digite o número correspondente à opção: "))
         match opcao:
             case 1:
-                print(loja.get_estoque().get_lista_produtos())
+                produtos_estoque = loja.get_estoque().get_lista_produtos()
+                for produto in produtos_estoque:
+                    print(produto)
             case 2:
                 nome = input("Nome do produto: ")
+                nome = nome.upper()
                 produtos = loja.get_estoque().get_produtos_por_nome(nome)
-                for p in produtos:  # Ou print(produtos)
-                    print(p)
+                if not produtos:
+                    print(f"Erro. Nenhum produto {nome} no estoque")
+                else:
+                    for p in produtos:
+                        print(p)
             case 3:
                 id = int(input("ID do produto a remover: "))
-                if carrinho.remover_produto_por_id(id):
+                removido = carrinho.remover_produto_por_id(id)
+                if removido:
                     print("Removido com sucesso.")
                 else:
-                    print("Produto não encontrado.")
+                    print("Erro. Produto não encontrado.")
             case 4:
                 itens = carrinho.listar_produtos()
                 if not itens:
-                    print("Carrinho vazio.")
+                    print("Erro. Carrinho vazio.")
                 else:
-                    for item in itens:
-                        print(item)
+                    print("Produtos no carrinho:")
+                    for produto, quantidade in itens.items():
+                        print(produto, "Quantidade:", quantidade)
             case 5:
                 return carrinho
             case _:
@@ -375,12 +403,14 @@ def carrinho(cliente_atual):
                 produto = loja.get_estoque().get_produto_por_id(id)
                 if produto:
                     qtd = int(input("Quantidade: "))
-                    if carrinho.adicionar_produto(produto, qtd):
+                    adicionar = carrinho.adicionar_produto(produto, qtd)
+                    if adicionar:
                         print("Produto adicionado!")
                         print(produto)
                     else:
-                        print("Quantidade inválida!")
-            print(carrinho)
+                        print("Erro. Quantidade inválida!")
+                else:
+                    print("Erro. Produto não encontrado.")
 
 
 def gerar_menu(titulo, opcoes):

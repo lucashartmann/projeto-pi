@@ -9,7 +9,7 @@ class Pessoa:
 
     def editar_campo(self, nome_campo, setter):
         while True:
-            novo_valor = input(f"Digite o novo {nome_campo}: ")
+            novo_valor = input(f"Digite o novo {nome_campo}: ").upper()
             validacao = len(novo_valor) > 0
             if validacao:
                 setter(novo_valor)
