@@ -74,7 +74,13 @@ def init():
 def login():
     init()
     while True:
-        print(menu_login())
+        menu = '''
+## Login ## 
+1. Cliente 
+2. Admin 
+3. Encerrar programa
+        '''
+        print(menu)
         usuario = int(input("Digite o número correspondente ao usuário: "))
         match usuario:
             case 1:
@@ -89,7 +95,17 @@ def login():
 
 def cliente(usuario, cliente_atual):
     while True:
-        print(menu_cliente())
+        menu = '''
+## Menu Cliente ##
+1. Cadastrar
+2. Editar cadastro
+3. Ver cadastro
+4. Carrinho de compras
+5. Realizar compra
+6. Ver últimas compras
+7. Sair do menu
+        '''
+        print(menu)
         opcao = int(input('Digite o número correspondente a opção: '))
         print()
         match opcao:
@@ -111,7 +127,22 @@ def cliente(usuario, cliente_atual):
 
 def admin(usuario):
     while True:
-        print(menu_admin())
+        menu = '''
+## Menu Admin ##
+1. Cadastrar Produto
+2. Editar Produto
+3. Cadastrar Pessoa
+4. Editar Pessoa
+5. Ver produto por nome
+6. Ver produtos por marca
+7. Ver produtos por categoria
+8. Ver quantidade de tudo
+9. Ver quantidade de produtos por marca
+10. Ver quantidade de produtos por categoria
+11. Ver quantidade de produtos por modelo
+12. Sair do menu
+        '''
+        print(menu)
         opcao = int(input('Digite o número correspondente a opção: '))
         print()
         match opcao:
@@ -251,7 +282,17 @@ def edicaoPessoa(usuario, cliente_atual):
             print("Erro. Cliente não encontrado!")
             return
     while True:
-        print(menu_edicao_pessoa())
+        menu = '''
+## Menu de Edição ##
+1. Editar nome
+2. Editar CPF
+3. Editar telefone
+4. Editar email
+5. Editar RG
+6. Editar endereço
+7. Sair
+        '''
+        print(menu)
         opcao = int(input("Digite o número correspondente à opção: "))
         match opcao:
             case 1:
@@ -299,7 +340,17 @@ def edicaoProduto():
         print("Erro. Produto não encontrado!")
         return
     while True:
-        print(menu_edicao_produto())
+        menu = '''
+## Menu de Edição ## 
+1. Editar nome
+2. Editar marca
+3. Editar modelo
+4. Editar cor
+5. Editar preço
+6. Editar quantidade
+7. Sair
+        '''
+        print(menu)
         opcao = int(input("Digite o número correspondente a opção: "))
         match opcao:
             case 1:
@@ -334,7 +385,13 @@ def realizar_compra(cliente_atual):
     print("Produtos no carrinho:")
     for produto in carrinho.listar_produtos():
         print(produto)
-    print(menu_pagamento())
+    menu = '''
+## Menu de Pagamento ##
+1. Cartão de crédito
+2. Cartão de débito
+3. Pix
+    '''
+    print(menu)
     opcao = int(input("Digite o número correspondente à opção: "))
     match opcao:
         case 1:
@@ -360,7 +417,15 @@ def carrinho(cliente_atual):
         return
     carrinho = cliente_atual.get_carrinho()
     while True:
-        print(menu_carrinho())
+        menu = '''
+### Menu Carrinho ###
+1. Ver todos os produtos da loja para adicionar no carrinho
+2. Pesquisar produto para adicionar no carrinho
+3. Remover produto do carrinho
+4. Ver produtos no carrinho
+5. Sair do menu
+        '''
+        print(menu)
         opcao = int(input("Digite o número correspondente à opção: "))
         match opcao:
             case 1:
@@ -411,70 +476,6 @@ def carrinho(cliente_atual):
                         print("Erro. Quantidade inválida!")
                 else:
                     print("Erro. Produto não encontrado.")
-
-
-def gerar_menu(titulo, opcoes):
-    menu = f"\n##### {titulo.upper()} #####\n"
-    i = 1
-    for opcao in opcoes:
-        menu += f"{i} - {opcao}\n"
-        i += 1
-    return menu
-
-
-def menu_login():
-    return gerar_menu("Login", ["Cliente", "Admin", "Encerrar programa"])
-
-
-def menu_edicao_produto():
-    return gerar_menu("Menu de Edição", ["Editar nome", "Editar marca", "Editar modelo", "Editar cor", "Editar preço", "Editar quantidade", "Sair"])
-
-
-def menu_edicao_pessoa():
-    return gerar_menu("Menu de Edição", ["Editar nome", "Editar CPF", "Editar telefone", "Editar email", "Editar RG", "Editar endereço", "Sair"])
-
-
-def menu_pagamento():
-    return gerar_menu("Menu de Pagamento", ["Cartão de crédito", "Cartão de débito", "Pix"])
-
-
-def menu_carrinho():
-    return gerar_menu("Menu Carrinho", [
-        "Ver todos os produtos da loja para adicionar no carrinho",
-        "Pesquisar produto para adicionar no carrinho",
-        "Remover produto do carrinho",
-        "Ver produtos no carrinho",
-        "Sair do menu"
-    ])
-
-
-def menu_cliente():
-    return gerar_menu("Menu Cliente", [
-        "Cadastrar",
-        "Editar cadastro",
-        "Ver cadastro",
-        "Carrinho de compras",
-        "Realizar compra",
-        "Ver últimas compras",
-        "Sair do menu"
-    ])
-
-
-def menu_admin():
-    return gerar_menu("Menu Admin", [
-        "Cadastrar Produto",
-        "Editar Produto",
-        "Cadastrar Pessoa",
-        "Editar Pessoa",
-        "Ver produto por nome",
-        "Ver produtos por marca",
-        "Ver produtos por categoria",
-        "Ver quantidade de tudo",
-        "Ver quantidade de produtos por marca",
-        "Ver quantidade de produtos por categoria",
-        "Ver quantidade de produtos por modelo",
-        "Sair do menu"
-    ])
 
 
 if __name__ == '__main__':
