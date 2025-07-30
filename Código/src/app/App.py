@@ -1,9 +1,4 @@
-from dados.Venda import Venda
-from dados.Cliente import Cliente
-from dados.Fornecedor import Fornecedor
-from dados.Funcionario import Funcionario
-from dados.Produto import Produto
-from dados.Loja import Loja
+from model import Venda, Cliente, Fornecedor, Funcionario, Loja, Produto
 
 usuario = 0
 cliente_atual = None

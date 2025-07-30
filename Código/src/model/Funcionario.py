@@ -1,4 +1,4 @@
-from dados.Pessoa import Pessoa
+from model.Pessoa import Pessoa
 
 
 class Funcionario(Pessoa):

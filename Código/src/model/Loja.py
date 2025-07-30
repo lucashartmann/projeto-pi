@@ -1,7 +1,7 @@
-from dados.Estoque import Estoque
-from dados.Funcionario import Funcionario
-from dados.Cliente import Cliente
-from dados.Fornecedor import Fornecedor
+from model.Estoque import Estoque
+from model.Funcionario import Funcionario
+from model.Cliente import Cliente
+from model.Fornecedor import Fornecedor
 
 
 class Loja:

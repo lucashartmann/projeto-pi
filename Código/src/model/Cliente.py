@@ -1,5 +1,5 @@
-from dados.Pessoa import Pessoa
-from dados.Carrinho import Carrinho
+from model.Pessoa import Pessoa
+from model.Carrinho import Carrinho
 
 
 class Cliente(Pessoa):

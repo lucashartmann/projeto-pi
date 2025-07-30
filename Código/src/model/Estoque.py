@@ -1,6 +1,6 @@
 class Estoque:
     def __init__(self):
-        self.produtos = []
+        self.produtos = list()
 
     def adicionar_produto(self, produto):
         if produto not in self.produtos:
@@ -90,3 +90,12 @@ class Estoque:
         for produto in self.produtos:
             quantidade += produto.get_quantidade()
         return quantidade
+
+    def __str__(self):
+        if not self.produtos:
+            return "Estoque: Vazio"
+        
+        resultado = "Estoque:\n"
+        for produto in self.produtos:
+            resultado += f"  - {produto}\n"
+        return resultado
