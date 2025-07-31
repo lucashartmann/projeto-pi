@@ -13,7 +13,7 @@ class TelaEstoque(Screen):
         yield Input()
         yield TextArea(disabled=True)
 
-    produtos = Controller.loja.get_estoque().get_lista_produtos()
+    produtos = Controller.ver_produtos_estoque(Controller)
     produtos_filtrados = []
 
     def on_mount(self):
