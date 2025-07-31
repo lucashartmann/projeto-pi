@@ -43,20 +43,20 @@ class Controller():
         self.loja.cadastrar(cliente9)
         self.loja.cadastrar(cliente10)
 
-        produto1 = Produto.Produto("PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10)
+        produto1 = Produto.Produto("PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
         produto2 = Produto.Produto("XBOX SERIES X", "MICROSOFT",
-                        "SLIM", "PRETO", 4000.00, 10)
+                        "SLIM", "PRETO", 4000.00, 10, "CONSOLE")
         produto3 = Produto.Produto("NINTENDO SWITCH", "NINTENDO",
-                        "SLIM", "PRETO", 3000.00, 10)
+                        "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
         produto4 = Produto.Produto("GEFORCE RTX 3080 TI", "NVIDIA",
-                        "TI", "BRANCO", 2000.00, 3)
-        produto5 = Produto.Produto("RX 6900 XT", "AMD", "60 SERIES", "BRANCO", 1000.00, 3)
+                        "TI", "BRANCO", 2000.00, 3, "PLACA DE VIDEO")
+        produto5 = Produto.Produto("RX 6900 XT", "AMD", "60 SERIES", "BRANCO", 1000.00, 3, "PLACA DE VIDEO")
         produto6 = Produto.Produto("GEFORCE RTX 3090", "NVIDIA",
-                        "30 SERIES", "BRANCO", 1000.00, 3)
-        produto7 = Produto.Produto("DUALSHOCK 4", "SONY", "SLIM", "PRETO", 200.00, 10)
-        produto9 = Produto.Produto("VOLANTE GAMER", "LOGITECH", "G29", "PRETO", 500.00, 5)
-        produto10 = Produto.Produto("MOUSE GAMER", "LOGITECH", "G502", "PRETO", 100.00, 10)
-        produto11 = Produto.Produto("PLAYSTATION 5", "SONY", "PRO", "BRANCO", 6000.00, 30)
+                        "30 SERIES", "BRANCO", 1000.00, 3, "PLACA DE VIDEO")
+        produto7 = Produto.Produto("DUALSHOCK 4", "SONY", "SLIM", "PRETO", 200.00, 10, "PERIFÉRICOS")
+        produto9 = Produto.Produto("VOLANTE GAMER", "LOGITECH", "G29", "PRETO", 500.00, 5, "PERIFÉRICOS")
+        produto10 = Produto.Produto("MOUSE GAMER", "LOGITECH", "G502", "PRETO", 100.00, 10, "PERIFÉRICOS")
+        produto11 = Produto.Produto("PLAYSTATION 5", "SONY", "PRO", "BRANCO", 6000.00, 30, "CONSOLE")
 
         self.loja.get_estoque().adicionar_produto(produto1)
         self.loja.get_estoque().adicionar_produto(produto2)

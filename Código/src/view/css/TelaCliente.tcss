@@ -1,0 +1,7 @@
+Input {
+    width: 50%;
+}
+
+Screen {
+    background: pink;
+}

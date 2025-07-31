@@ -4,6 +4,18 @@ Grid {
     grid-gutter: 1 2;  
 }
 
-Input {
-    background: pink;
+# ScreenInicial Screen {
+#     background: green;
+# }
+
+# ScreenInicial {
+#     background: green;
+# }
+
+# ScreenInicial Button {
+#     background: green;
+# }
+
+ScreenInicial  {
+    background: green;
 }

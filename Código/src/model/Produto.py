@@ -1,7 +1,7 @@
 class Produto:
     id = 0
 
-    def __init__(self, nome, marca, modelo, cor, preco, quantidade):
+    def __init__(self, nome, marca, modelo, cor, preco, quantidade, categoria):
         self.id = self.gerar_id()
         self.nome = nome
         self.codigo = None  # Implementar o código ou deixar só id
@@ -10,6 +10,7 @@ class Produto:
         self.marca = marca
         self.modelo = modelo
         self.quantidade = quantidade
+        self.categoria = categoria
 
     def editar_campo(self, nome_campo, setter):
         while True:
@@ -26,6 +27,9 @@ class Produto:
 
     def get_nome(self):
         return self.nome
+    
+    def get_categoria(self):
+        return self.categoria
 
     def get_codigo(self):
         return self.codigo
@@ -51,6 +55,9 @@ class Produto:
 
     def set_nome(self, nome):
         self.nome = nome
+        
+    def set_categoria(self, categoria):
+        self.categoria = categoria
 
     def set_cor(self, cor):
         self.cor = cor
@@ -69,4 +76,4 @@ class Produto:
 
     def __str__(self):
         return (f"Produto [id = {self.get_id()}, nome = {self.get_nome()}, marca = {self.get_marca()}, modelo = {self.get_modelo()}, cor = {self.get_cor()}, "
-                f"preco = {self.get_preco()}, quantidade = {self.get_quantidade()}]")
+                f"preco = {self.get_preco()}, quantidade = {self.get_quantidade()}, categoria = {self.get_categoria()}]")
