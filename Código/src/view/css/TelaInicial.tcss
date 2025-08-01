@@ -16,6 +16,6 @@ Grid {
 #     background: green;
 # }
 
-ScreenInicial  {
-    background: green;
-}
+# ScreenInicial  {
+#     background: green;
+# }
