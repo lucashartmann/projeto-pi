@@ -34,7 +34,7 @@ class TelaEstoque(Screen):
         self.montar_checkboxes()
 
     def on_button_pressed(self):
-        self.screen.app.switch_mode("tela_inicial")
+        self.screen.app.switch_screen("tela_inicial")
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value

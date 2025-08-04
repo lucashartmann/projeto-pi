@@ -17,19 +17,22 @@ class ScreenInicial(Screen):
             yield Button("Fornecedor")
             yield Button("Funcionario")
             yield Button("Estoque", id="bt_estoque")
+            yield Button("Sair", id="bt_sair")
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_estoque":
-                self.screen.app.switch_mode("tela_estoque")
+                self.screen.app.switch_screen("tela_estoque")
             case "bt_cliente":
-                self.screen.app.switch_mode("tela_cliente")
+                self.screen.app.switch_screen("tela_cliente")
             case "bt_produto":
-                self.screen.app.switch_mode("tela_produto")
+                self.screen.app.switch_screen("tela_produto")
+            case "bt_sair":
+                self.screen.app.exit()
 
 
 class TelaInicial(App):
-    MODES = {
+    SCREENS = {
         "tela_inicial": ScreenInicial,
         "tela_estoque": TelaEstoque,
         "tela_cliente": TelaCliente,
@@ -37,4 +40,4 @@ class TelaInicial(App):
     }
 
     def on_mount(self):
-        self.switch_mode("tela_inicial")
+        self.push_screen("tela_inicial")

@@ -4,18 +4,6 @@ Grid {
     grid-gutter: 1 2;  
 }
 
-# ScreenInicial Screen {
-#     background: green;
-# }
-
-# ScreenInicial {
-#     background: green;
-# }
-
-# ScreenInicial Button {
-#     background: green;
-# }
-
-# ScreenInicial  {
-#     background: green;
-# }
+ScreenInicial {
+    background: rgba(202, 96, 96, 1);
+}

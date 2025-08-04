@@ -31,7 +31,7 @@ class TelaCliente(Screen):
         yield Button("Voltar", id="bt_voltar")
         
     def on_button_pressed(self):
-        self.screen.app.switch_mode("tela_inicial")
+        self.screen.app.switch_screen("tela_inicial")
 
     def cadastro(self):
         dados = []
