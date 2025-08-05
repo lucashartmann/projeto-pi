@@ -43,7 +43,7 @@ class TelaEstoque(Screen):
 
         if len(palavras) > 1:
             self.produtos_filtrados = []
-            if "marca:" in palavras:
+            if "marca:" in palavras: # TODO: Permitir multiplas marcas
                 index = palavras.index("marca:")
                 if index + 1 < len(palavras):
                     marca_busca = palavras[index + 1]
