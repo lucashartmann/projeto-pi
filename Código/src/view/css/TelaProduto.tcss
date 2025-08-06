@@ -1,0 +1,16 @@
+Input {
+    width: 20%;
+    margin: 2 0 0 0;
+}
+
+Label {
+    margin: 3 10 0 10;
+}
+
+TelaProduto {
+    align: center middle;
+}
+
+Button {
+    margin: 2 0 0 0;
+}

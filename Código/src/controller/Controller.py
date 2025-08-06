@@ -7,6 +7,24 @@ class Controller():
     cliente_atual = None
     loja = Loja.Loja("GameStart", "00000000000")
     
+    def editar_produto(self, produto, lista):
+        if lista[0] != "":
+            produto.set_nome(lista[0])
+        if lista[1] != "":
+            produto.set_marca(lista[1])
+        if lista[2] != "":
+            produto.set_modelo(lista[2])
+        if lista[3] != "":
+            produto.set_cor(lista[3])
+        if lista[4] != "":
+            float(lista[4])
+            produto.set_preco(lista[4])
+        if lista[5] != "":
+            int(lista[5])
+            produto.set_quantidade(lista[5])
+            
+        return "Produto editado com sucesso"
+
     def ver_produtos_estoque(self):
         return self.loja.get_estoque().get_lista_produtos()
 

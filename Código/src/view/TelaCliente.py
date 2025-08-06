@@ -1,6 +1,6 @@
-from textual.widgets import Input, Pretty, TextArea, Label, Button
+from textual.widgets import Input, Label, Button, Footer, Header
 from textual.screen import Screen
-from textual.containers import HorizontalGroup, VerticalGroup
+from textual.containers import HorizontalGroup
 from controller.Controller import Controller
 
 
@@ -9,6 +9,7 @@ class TelaCliente(Screen):
     CSS_PATH = "css/TelaCliente.tcss"
 
     def compose(self):
+        yield Header()
         with HorizontalGroup():
             yield Label("Nome:")
             yield Input(placeholder="Nome aqui")
@@ -29,6 +30,7 @@ class TelaCliente(Screen):
             yield Input(placeholder="Email aqui")
         yield Button("Cadastrar")
         yield Button("Voltar", id="bt_voltar")
+        yield Footer()
         
     def on_button_pressed(self):
         self.screen.app.switch_screen("tela_inicial")

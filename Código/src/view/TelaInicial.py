@@ -1,6 +1,6 @@
 from textual.app import App
 from textual.containers import Grid
-from textual.widgets import Button
+from textual.widgets import Button, Footer, Header
 from textual.screen import Screen
 from view.TelaEstoque import TelaEstoque
 from view.TelaCliente import TelaCliente
@@ -11,6 +11,7 @@ class ScreenInicial(Screen):
     CSS_PATH = "css/TelaInicial.tcss"
 
     def compose(self):
+        yield Header()
         with Grid():
             yield Button("Produto", id="bt_produto")
             yield Button("Cliente", id="bt_cliente")
@@ -18,6 +19,7 @@ class ScreenInicial(Screen):
             yield Button("Funcionario")
             yield Button("Estoque", id="bt_estoque")
             yield Button("Sair", id="bt_sair")
+        yield Footer()
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:

@@ -1,4 +1,4 @@
-from textual.widgets import Input, Pretty, TextArea, Button, Checkbox
+from textual.widgets import Input, Pretty, TextArea, Button, Checkbox, Footer, Header, Select
 from textual.screen import Screen
 from textual.containers import HorizontalGroup
 from controller.Controller import Controller
@@ -9,15 +9,19 @@ class TelaEstoque(Screen):
     CSS_PATH = "css/TelaEstoque.tcss"
 
     def compose(self):
-        with HorizontalGroup():
+        yield Header()
+        with HorizontalGroup(id="hg_pesquisa"):
+            yield Select([(categoria, categoria) for categoria in self.categorias])
             yield Input()
             yield Button("Voltar", id="bt_voltar")
         yield TextArea(disabled=True)
         with HorizontalGroup(id="container"):
             pass
+        yield Footer()
 
     produtos = Controller.ver_produtos_estoque(Controller)
     produtos_filtrados = []
+    categorias = []
 
     def montar_checkboxes(self):
         lista_categorias = []
@@ -28,6 +32,8 @@ class TelaEstoque(Screen):
                 lista_categorias.append(produto.get_categoria())
 
     def on_mount(self):
+        self.categorias = list({produto.get_categoria() for produto in self.produtos})
+        self.query_one(Select).set_options([(categoria, categoria) for categoria in self.categorias])
         Controller.init(Controller)
         produtos_str = [str(produto) for produto in self.produtos]
         self.mount(Pretty(produtos_str))

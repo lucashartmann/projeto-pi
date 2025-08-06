@@ -2,7 +2,10 @@ TextArea {
     height: 5;
 }
 
-
 TelaEstoque Input {
-    width: 93%;
+    width: 80%;
+}
+
+#hg_pesquisa {
+    margin: 1;
 }
