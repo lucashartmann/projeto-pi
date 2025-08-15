@@ -52,6 +52,16 @@ class TelaEstoque(Screen):
         produtos_str = [str(produto)for produto in self.produtos_filtrados]
         self.query_one(Pretty).update(produtos_str)
 
+    @on(Checkbox.Changed)
+    def checkbox_changed(self, evento: Checkbox.Changed):
+        valor_checkbox = str(evento.checkbox.label)
+        self.produtos_filtrados = []
+        for produto in self.produtos:
+            if produto.get_categoria() == valor_checkbox:
+                self.produtos_filtrados.append(produto)
+        produtos_str = [str(produto)for produto in self.produtos_filtrados]
+        self.query_one(Pretty).update(produtos_str)
+
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value
         resultado = self.query_one(Pretty)
