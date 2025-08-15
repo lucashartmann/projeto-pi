@@ -2,6 +2,7 @@ from textual.widgets import Input, Pretty, TextArea, Button, Checkbox, Footer, H
 from textual.screen import Screen
 from textual.containers import HorizontalGroup
 from controller.Controller import Controller
+from textual import on
 
 
 class TelaEstoque(Screen):
@@ -11,7 +12,7 @@ class TelaEstoque(Screen):
     def compose(self):
         yield Header()
         with HorizontalGroup(id="hg_pesquisa"):
-            yield Select([(categoria, categoria) for categoria in self.categorias])
+            yield Select([("produto", 'produto')])
             yield Input()
             yield Button("Voltar", id="bt_voltar")
         yield TextArea(disabled=True)
@@ -21,7 +22,6 @@ class TelaEstoque(Screen):
 
     produtos = Controller.ver_produtos_estoque(Controller)
     produtos_filtrados = []
-    categorias = []
 
     def montar_checkboxes(self):
         lista_categorias = []
@@ -30,10 +30,10 @@ class TelaEstoque(Screen):
             if produto.get_categoria() not in lista_categorias:
                 horizontal.mount(Checkbox(produto.get_categoria()))
                 lista_categorias.append(produto.get_categoria())
+                self.query_one(Select).set_options(
+                    [(categoria, categoria) for categoria in lista_categorias])
 
     def on_mount(self):
-        self.categorias = list({produto.get_categoria() for produto in self.produtos})
-        self.query_one(Select).set_options([(categoria, categoria) for categoria in self.categorias])
         Controller.init(Controller)
         produtos_str = [str(produto) for produto in self.produtos]
         self.mount(Pretty(produtos_str))
@@ -42,6 +42,16 @@ class TelaEstoque(Screen):
     def on_button_pressed(self):
         self.screen.app.switch_screen("tela_inicial")
 
+    @on(Select.Changed)
+    def select_changed(self, evento: Select.Changed):
+        valor_select = str(evento.value)
+        self.produtos_filtrados = []
+        for produto in self.produtos:
+            if produto.get_categoria() == valor_select:
+                self.produtos_filtrados.append(produto)
+        produtos_str = [str(produto)for produto in self.produtos_filtrados]
+        self.query_one(Pretty).update(produtos_str)
+
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value
         resultado = self.query_one(Pretty)
@@ -49,7 +59,7 @@ class TelaEstoque(Screen):
 
         if len(palavras) > 1:
             self.produtos_filtrados = []
-            if "marca:" in palavras: # TODO: Permitir multiplas marcas
+            if "marca:" in palavras:  # TODO: Permitir multiplas marcas
                 index = palavras.index("marca:")
                 if index + 1 < len(palavras):
                     marca_busca = palavras[index + 1]

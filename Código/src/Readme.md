@@ -1,16 +1,18 @@
 #### Falta fazer:
 - Melhorar pagamento
 - Usar Try e Expect
-####  App:
+#### app/App:
 - Implementar opção do cliente procurar produtos por nome, marca, categoria e etc, ou ver todos os produtos
 - Melhorar os menus e suas opções
 - Melhorar validação: Especificar se a pessoa precisa digitar o nome completo, se sim precisa ter no mínimo 20-50 caracteres
-#### Loja:
+#### model/Loja:
 - Implementar get número/quantidade de vendas no dia, semana, mês, ano. get faturamento no dia, semana, mês, ano. 
-#### Fornecedor/Funcionario/Cliente:
+#### model/Fornecedor/Funcionario/Cliente:
 - Ver qual é a diferença dessas classes. Se não tiver diferença, então remover elas
-#### Produto e Pessoa:
+#### model/Produto e Pessoa:
 - Separar view, model e controller em editar_campo()
+#### view/TelaProduto:
+- Usar o Select() e as Checkboxes() que existem no código mas não estão implementadas com a pesquisa
 
 # Modelagem: 
 ## Pessoa
