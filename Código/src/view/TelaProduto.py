@@ -2,6 +2,7 @@ from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer
 from textual.screen import Screen
 from textual.containers import HorizontalGroup, Container, VerticalGroup
 from controller.Controller import Controller
+from model import Init
 
 
 class TelaCadastrar(Container):
@@ -38,6 +39,11 @@ class TelaRemover(Container):
         yield Button("Remover", id="bt_remover")
         yield Button("Voltar", id="bt_voltar")
 
+    def on_button_pressed(self, evento: Button.Pressed):
+        match evento.button.id:
+            case "bt_remover":
+                pass
+
 
 class TelaEditar(Container):
     produto = None
@@ -47,7 +53,7 @@ class TelaEditar(Container):
             with VerticalGroup():
                 with HorizontalGroup():
                     yield Label("ID do Produto:", id="lb_id")
-                    yield Input(placeholder="ID aqui")
+                    yield Input(placeholder="ID aqui", id="input_id")
                 with HorizontalGroup():
                     yield Label("Nome:")
                     yield Input(placeholder="Nome aqui")
@@ -72,11 +78,11 @@ class TelaEditar(Container):
                 yield Button("Voltar", id="bt_voltar")
 
     def on_input_changed(self, evento: Input.Changed):
-        if len(evento.value) == 2:
-            for produto in Controller.get_lista_produtos():
-                if produto.get_id() == evento.value:
+        if evento.input.id == "input_id":
+            if len(evento.value) >= 2:
+                produto = Init.loja.get_produto_por_id(evento.value)
+                if produto:
                     self.produto = produto
-                    break
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
@@ -84,19 +90,7 @@ class TelaEditar(Container):
                 if self.produto is not None:
                     dados = []
                     for input in self.query(Input):
-                        dados.append(input.value)
-                    if dados[4] != "":
-                        try:
-                            float(dados[4])
-                        except ValueError:
-                            self.notify(f"O valor {dados[4]} está incorreto")
-                            return
-                    if dados[5] != "":
-                        try:
-                            int(dados[5])
-                        except ValueError:
-                            self.notify(f"O valor {dados[5]} está incorreto")
-                            return
+                        dados.append(input.value.upper())
                     mensagem = Controller.editar_produto(self.produto, dados)
                     self.notify(mensagem)
                     self.produto = None
@@ -104,7 +98,7 @@ class TelaEditar(Container):
 
 class TelaProduto(Screen):
     CSS_PATH = "css/TelaProduto.tcss"
-    
+
     def compose(self):
         yield Header()
         with TabbedContent():
@@ -129,14 +123,6 @@ class TelaProduto(Screen):
     def cadastro(self):
         dados = []
         for input in self.query(Input):
-            dados.append(input.value)
-        try:
-            preco = float(dados[4])
-            quant = int(dados[5])
-        except ValueError:
-            self.notify(
-                f"Um dos valores seguintes estão errados: {dados[4]} ou {dados[5]}")
-            return
-        resultado = Controller.cadastrar_produto(
-            dados[0], dados[1], dados[2], dados[3], preco, quant)
+            dados.append(input.value.upper())
+        resultado = Controller.cadastrar_produto(dados)
         self.notify(resultado)
