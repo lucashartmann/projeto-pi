@@ -28,6 +28,9 @@ class TelaCadastrar(Container):
     def cadastro(self):
         dados = []
         for input in self.query(Input):
+            if input.value == "":
+                self.notify(f"{input.placeholder} está vazio, tente novamente")
+                return
             dados.append(input.value.upper())
         resultado = Controller.cadastrar_produto(Controller, dados)
         self.notify(resultado)

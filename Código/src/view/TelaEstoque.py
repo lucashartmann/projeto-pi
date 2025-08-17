@@ -22,6 +22,11 @@ class TelaEstoque(Screen):
 
     produtos = Controller.ver_produtos_estoque(Controller)
     produtos_filtrados = []
+    filtrou_checkbox = False
+    filtrou_select = False
+    filtrou_input = False
+    select_evento = ""
+    checkbox_evento = ""
 
     def montar_checkboxes(self):
         lista_categorias = []
@@ -52,36 +57,65 @@ class TelaEstoque(Screen):
     @on(Select.Changed)
     def select_changed(self, evento: Select.Changed):
         if evento.select.is_blank():
-            self.produtos_filtrados = []
+            if self.filtrou_input == False and self.filtrou_checkbox == False and self.filtrou_select:
+                self.produtos_filtrados = []
             produtos_str = [str(produto) for produto in self.produtos]
             self.query_one(Pretty).update(produtos_str)
             self.setup_dados()
+            self.filtrou_select = False
         else:
             valor_select = str(evento.value)
-            self.produtos_filtrados = []
-            for produto in self.produtos:
-                if produto.get_categoria() == valor_select:
-                    self.produtos_filtrados.append(produto)
+            valor_antigo = ""
+            if valor_select != valor_antigo and self.filtrou_input == False and self.filtrou_checkbox == False and self.filtrou_select:
+                self.produtos_filtrados = []
+                valor_antigo = valor_select
+            if len(self.produtos_filtrados) == 0:
+                for produto in self.produtos:
+                    if produto.get_categoria() == valor_select:
+                        self.produtos_filtrados.append(produto)
+            else:
+                produtos_temp = []
+                for produto in self.produtos_filtrados:
+                    if produto.get_categoria() == valor_select:
+                        produtos_temp.append(produto)
+                if len(produtos_temp) > 0:
+                    self.produtos_filtrados = produtos_temp
+
             produtos_str = [str(produto)for produto in self.produtos_filtrados]
             self.query_one(Pretty).update(produtos_str)
             self.setup_dados()
+            self.filtrou_select = True
+            self.select_evento = evento
 
     @on(Checkbox.Changed)
     def checkbox_changed(self, evento: Checkbox.Changed):
         valor_checkbox = str(evento.checkbox.label)
         if evento.checkbox.value is False:
-            self.produtos_filtrados = []
+            if self.filtrou_input == False and self.filtrou_select == False and self.filtrou_checkbox:
+                self.produtos_filtrados = []
             produtos_str = [str(produto) for produto in self.produtos]
             self.query_one(Pretty).update(produtos_str)
             self.setup_dados()
+            self.filtrou_checkbox = False
         else:
-            self.produtos_filtrados = []
-            for produto in self.produtos:
-                if produto.get_categoria() == valor_checkbox:
-                    self.produtos_filtrados.append(produto)
+            if self.filtrou_input == False and self.filtrou_select == False and self.filtrou_checkbox:
+                self.produtos_filtrados = []
+            if len(self.produtos_filtrados) == 0:
+                for produto in self.produtos:
+                    if produto.get_categoria() == valor_checkbox:
+                        self.produtos_filtrados.append(produto)
+            else:
+                produtos_temp = []
+                for produto in self.produtos_filtrados:
+                    if produto.get_categoria() == valor_checkbox:
+                        produtos_temp.append(produto)
+                if len(produtos_temp) > 0:
+                    self.produtos_filtrados = produtos_temp
             produtos_str = [str(produto)for produto in self.produtos_filtrados]
             self.query_one(Pretty).update(produtos_str)
             self.setup_dados()
+            self.filtrou_checkbox = True
+            self.checkbox_evento = evento
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value.upper()
@@ -89,7 +123,8 @@ class TelaEstoque(Screen):
         palavras = texto.split()
 
         if len(palavras) > 0:
-            # self.produtos_filtrados = []
+            if self.filtrou_select == False and self.filtrou_checkbox == False:
+                self.produtos_filtrados = []
             if "MARCA:" in palavras:  # TODO: Permitir multiplas marcas
                 index = palavras.index("MARCA:")
                 if index + 1 < len(palavras):
@@ -237,6 +272,16 @@ class TelaEstoque(Screen):
                 resultado.update(produtos_str)
                 self.setup_dados()
         else:
-            produtos_str = [str(produto) for produto in self.produtos]
-            resultado.update(produtos_str)
-            self.setup_dados()
+            if len(self.produtos_filtrados) > 0 and self.filtrou_select == False and self.filtrou_checkbox == False:
+                produtos_str = [str(produto)
+                                for produto in self.produtos_filtrados]
+                resultado.update(produtos_str)
+                self.setup_dados()
+            elif self.filtrou_checkbox:
+                self.checkbox_changed(self.checkbox_evento)
+            elif self.filtrou_select:
+                self.select_changed(self.select_evento)
+            else:
+                produtos_str = [str(produto) for produto in self.produtos]
+                resultado.update(produtos_str)
+                self.setup_dados()

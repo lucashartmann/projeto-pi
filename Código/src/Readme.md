@@ -12,7 +12,7 @@
 #### model/Produto e Pessoa:
 - Separar view, model e controller em editar_campo()
 #### view/TelaEstoque:
-- Combinar input com checkbox e select. Quando eu apago marca:SONY do input mesmo com o checkbox marcado ele reseta a visualização
+- Depois que a pessoa disgita no Input o valor não volta para a filtragem que estava no checkbox ou no select
 
 # Modelagem: 
 ## Pessoa

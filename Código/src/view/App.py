@@ -1,7 +1,4 @@
 from textual.app import App
-from textual.containers import Grid
-from textual.widgets import Button, Footer, Header
-from textual.screen import Screen
 from view import TelaEstoque, TelaCliente, TelaProduto, TelaInicial
 
 
