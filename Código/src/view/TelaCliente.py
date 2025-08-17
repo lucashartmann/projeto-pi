@@ -1,4 +1,4 @@
-from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header
+from textual.widgets import Input, Label, Pretty, Button, TabbedContent, TabPane, Footer, Header
 from textual.screen import Screen
 from textual.containers import Container
 from controller.Controller import Controller
@@ -42,6 +42,8 @@ class TelaCadastrar(Container):
 
 class TelaRemover(Container):
     def compose(self):
+        yield Label("ID do Cliente:")
+        yield Input(placeholder="ID aqui", id="input_id")
         yield Button("Limpar", id="bt_limpar")
         yield Button("Remover", id="bt_remover")
         yield Button("Voltar", id="bt_voltar")
@@ -49,11 +51,21 @@ class TelaRemover(Container):
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_remover":
-                pass
+                input_cpf = self.query_one("#input_cpf").value
+                if len(input_cpf) == 11:
+                    cliente = Init.loja.get_cliente_por_cpf(input_cpf)
+                    if not cliente:
+                        self.notify(
+                            f"Cliente com CPF {input_cpf} não encontrado")
+                    else:
+                        mensagem = Controller.remover_cliente(
+                            Controller, cliente)
+                        self.notify(mensagem)
+                else:
+                    self.notify("CPF precisa ter 11 digitos")
 
 
 class TelaEditar(Container):
-    cliente = None
 
     def compose(self):
         yield Label("ID do Cliente:")
@@ -61,7 +73,7 @@ class TelaEditar(Container):
         yield Label("Nome:")
         yield Input(placeholder="Nome aqui")
         yield Label("CPF:")
-        yield Input(placeholder="CPF aqui")
+        yield Input(placeholder="CPF aqui", id="input_cpf")
         yield Label("RG:")
         yield Input(placeholder="RG aqui")
         yield Label("Telefone:")
@@ -74,23 +86,24 @@ class TelaEditar(Container):
         yield Button("Editar", id="bt_editar")
         yield Button("Voltar", id="bt_voltar")
 
-    def on_input_changed(self, evento: Input.Changed):
-        if evento.input.id == "input_id":
-            if len(evento.value) >= 2:
-                cliente = Init.loja.get_cliente_por_cpf(evento.value)
-                if cliente:
-                    self.cliente = cliente
-
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_editar":
-                if self.produto is not None:
-                    dados = []
-                    for input in self.query(Input):
-                        dados.append(input.value.upper())
-                    mensagem = Controller.editar_produto(self.produto, dados)
-                    self.notify(mensagem)
-                    self.produto = None
+                input_cpf = self.query_one("#input_cpf").value
+                if len(input_cpf) == 11:
+                    cliente = Init.loja.get_cliente_por_cpf(input_cpf)
+                    if not cliente:
+                        self.notify(
+                            f"Cliente com CPF {input_cpf} não encontrado")
+                    else:
+                        dados = []
+                        for input in self.query(Input)[1:]:
+                            dados.append(input.value.upper())
+                        mensagem = Controller.editar_cliente(
+                            Controller, cliente, dados)
+                        self.notify(mensagem)
+                else:
+                    self.notify("CPF precisa ter 11 digitos")
 
 
 class TelaCliente(Screen):
@@ -112,8 +125,6 @@ class TelaCliente(Screen):
         match evento.button.id:
             case "bt_voltar":
                 self.screen.app.switch_screen("tela_inicial")
-            case "bt_cadastrar":
-                self.cadastro()
             case "bt_limpar":
                 for input in self.query(Input):
                     input.value = ""

@@ -1,4 +1,4 @@
-from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header
+from textual.widgets import Input, Pretty, Label, Button, TabbedContent, TabPane, Footer, Header
 from textual.screen import Screen
 from textual.containers import Container
 from controller.Controller import Controller
@@ -43,6 +43,8 @@ class TelaCadastrar(Container):
 
 class TelaRemover(Container):
     def compose(self):
+        yield Label("ID do Produto:", id="lb_id")
+        yield Input(placeholder="ID aqui", id="input_id")
         yield Button("Limpar", id="bt_limpar")
         yield Button("Remover", id="bt_remover")
         yield Button("Voltar", id="bt_voltar")
@@ -50,12 +52,22 @@ class TelaRemover(Container):
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_remover":
-                pass
+                input_id = self.query_one("#input_id").value
+                if len(input_id) >= 1:
+                    input_id = int(input_id)
+                    produto = Init.loja.get_produto_por_id(input_id)
+                    if not produto:
+                        self.notify(
+                            f"Produto com id {input_id} não encontrado")
+                    else:
+                        mensagem = Controller.remover_produto(
+                            Controller, produto)
+                        self.notify(mensagem)
+                else:
+                    self.notify("ID precisa ter no minimo 1 digitos")
 
 
 class TelaEditar(Container):
-    produto = None
-
     def compose(self):
         yield Label("ID do Produto:", id="lb_id")
         yield Input(placeholder="ID aqui", id="input_id")
@@ -75,23 +87,25 @@ class TelaEditar(Container):
         yield Button("Editar", id="bt_editar")
         yield Button("Voltar", id="bt_voltar")
 
-    def on_input_changed(self, evento: Input.Changed):
-        if evento.input.id == "input_id":
-            if len(evento.value) >= 2:
-                produto = Init.loja.get_produto_por_id(evento.value)
-                if produto:
-                    self.produto = produto
-
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_editar":
-                if self.produto is not None:
-                    dados = []
-                    for input in self.query(Input):
-                        dados.append(input.value.upper())
-                    mensagem = Controller.editar_produto(self.produto, dados)
-                    self.notify(mensagem)
-                    self.produto = None
+                input_id = self.query_one("#input_id").value
+                if len(input_id) >= 1:
+                    input_id = int(input_id)
+                    produto = Init.loja.get_produto_por_id(input_id)
+                    if not produto:
+                        self.notify(
+                            f"Produto com id {input_id} não encontrado")
+                    else:
+                        dados = []
+                        for input in self.query(Input)[1:]:
+                            dados.append(input.value.upper())
+                        mensagem = Controller.editar_produto(
+                            Controller, produto, dados)
+                        self.notify(mensagem)
+                else:
+                    self.notify("ID precisa ter no minimo 1 digitos")
 
 
 class TelaProduto(Screen):

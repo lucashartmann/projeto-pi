@@ -40,6 +40,13 @@ class Loja:
             elif isinstance(pessoa, Fornecedor):
                 self.quantidade_fornecedores += 1
             self.quantidade_funcionarios += 1
+    
+    def get_lista_clientes(self):
+        clientes = []
+        for pessoa in self.pessoas:
+            if isinstance(pessoa, Cliente):
+                clientes.append(pessoa)
+        return clientes
 
     def get_estoque(self):
         return self.estoque
@@ -69,7 +76,7 @@ class Loja:
         return None
 
     def get_produto_por_id(self, id):
-        for produto in self.estoque.get_produtos():
+        for produto in self.estoque.get_lista_produtos():
             if produto.get_id() == id:
                 return produto
         return None
