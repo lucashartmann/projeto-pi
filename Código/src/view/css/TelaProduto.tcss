@@ -11,6 +11,25 @@ TelaProduto {
     align: center middle;
 }
 
+TelaCadastrar {
+    layout: grid;
+    grid-size: 4 5;
+}
+
+Input {
+    width: 20;
+}
+
+TelaRemover {
+    layout: grid;
+    grid-size: 4 5;
+}
+
+TelaEditar {
+    layout: grid;
+    grid-size: 4 5;
+}
+
 Button {
     margin: 2 0 0 0;
 }

@@ -1,36 +1,29 @@
 from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header
 from textual.screen import Screen
-from textual.containers import HorizontalGroup, Container, VerticalGroup
+from textual.containers import HorizontalGroup, Container, VerticalGroup, VerticalScroll
 from controller.Controller import Controller
 from model import Init
 
 
-class TelaCadastrar(Container):
+class TelaCadastrar(VerticalScroll):
     def compose(self):
-        with HorizontalGroup():
-            with VerticalGroup():
-                with HorizontalGroup():
-                    yield Label("Nome:")
-                    yield Input(placeholder="Nome aqui")
-                with HorizontalGroup():
-                    yield Label("Marca:")
-                    yield Input(placeholder="Marca aqui")
-                with HorizontalGroup():
-                    yield Label("Modelo:")
-                    yield Input(placeholder="Modelo aqui")
-                with HorizontalGroup():
-                    yield Label("Cor:")
-                    yield Input(placeholder="Cor aqui")
-                with HorizontalGroup():
-                    yield Label("Preço:")
-                    yield Input(placeholder="Preço aqui")
-                with HorizontalGroup():
-                    yield Label("Quantidade:")
-                    yield Input(placeholder="Quantidade aqui")
-            with VerticalGroup():
-                yield Button("Limpar", id="bt_limpar")
-                yield Button("Cadastrar", id="bt_cadastrar")
-                yield Button("Voltar", id="bt_voltar")
+        yield Label("Nome:")
+        yield Input(placeholder="Nome aqui")
+        yield Label("Marca:")
+        yield Input(placeholder="Marca aqui")
+        yield Label("Modelo:")
+        yield Input(placeholder="Modelo aqui")
+        yield Label("Cor:")
+        yield Input(placeholder="Cor aqui")
+        yield Label("Preço:")
+        yield Input(placeholder="Preço aqui")
+        yield Label("Quantidade:")
+        yield Input(placeholder="Quantidade aqui")
+        yield Label("Categoria:")
+        yield Input(placeholder="Categoria aqui")
+        yield Button("Limpar", id="bt_limpar")
+        yield Button("Cadastrar", id="bt_cadastrar")
+        yield Button("Voltar", id="bt_voltar")
 
 
 class TelaRemover(Container):
@@ -49,33 +42,23 @@ class TelaEditar(Container):
     produto = None
 
     def compose(self):
-        with HorizontalGroup():
-            with VerticalGroup():
-                with HorizontalGroup():
-                    yield Label("ID do Produto:", id="lb_id")
-                    yield Input(placeholder="ID aqui", id="input_id")
-                with HorizontalGroup():
-                    yield Label("Nome:")
-                    yield Input(placeholder="Nome aqui")
-                with HorizontalGroup():
-                    yield Label("Marca:")
-                    yield Input(placeholder="Marca aqui")
-                with HorizontalGroup():
-                    yield Label("Modelo:")
-                    yield Input(placeholder="Modelo aqui")
-                with HorizontalGroup():
-                    yield Label("Cor:")
-                    yield Input(placeholder="Cor aqui")
-                with HorizontalGroup():
-                    yield Label("Preço:")
-                    yield Input(placeholder="Preço aqui")
-                with HorizontalGroup():
-                    yield Label("Quantidade:")
-                    yield Input(placeholder="Quantidade aqui")
-            with VerticalGroup():
-                yield Button("Limpar", id="bt_limpar")
-                yield Button("Editar", id="bt_editar")
-                yield Button("Voltar", id="bt_voltar")
+        yield Label("ID do Produto:", id="lb_id")
+        yield Input(placeholder="ID aqui", id="input_id")
+        yield Label("Nome:")
+        yield Input(placeholder="Nome aqui")
+        yield Label("Marca:")
+        yield Input(placeholder="Marca aqui")
+        yield Label("Modelo:")
+        yield Input(placeholder="Modelo aqui")
+        yield Label("Cor:")
+        yield Input(placeholder="Cor aqui")
+        yield Label("Preço:")
+        yield Input(placeholder="Preço aqui")
+        yield Label("Quantidade:")
+        yield Input(placeholder="Quantidade aqui")
+        yield Button("Limpar", id="bt_limpar")
+        yield Button("Editar", id="bt_editar")
+        yield Button("Voltar", id="bt_voltar")
 
     def on_input_changed(self, evento: Input.Changed):
         if evento.input.id == "input_id":
@@ -124,5 +107,5 @@ class TelaProduto(Screen):
         dados = []
         for input in self.query(Input):
             dados.append(input.value.upper())
-        resultado = Controller.cadastrar_produto(dados)
+        resultado = Controller.cadastrar_produto(Controller, dados)
         self.notify(resultado)

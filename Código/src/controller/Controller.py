@@ -62,7 +62,7 @@ class Controller():
             except ValueError:
                 return (f"O valor {lista[5]} está incorreto")
         produto = Produto.Produto(
-            lista[0], lista[1], lista[2], lista[3], lista[4], lista[5])
+            lista[0], lista[1], lista[2], lista[3], lista[4], lista[5], lista[6])
         cadastro = Init.loja.get_estoque().adicionar_produto(produto)
         if cadastro:
             return "Produto cadastrado com sucesso!"
