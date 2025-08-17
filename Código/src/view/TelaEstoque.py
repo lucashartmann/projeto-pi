@@ -84,14 +84,14 @@ class TelaEstoque(Screen):
             self.setup_dados()
 
     def on_input_changed(self, evento: Input.Changed):
-        texto = evento.value
+        texto = evento.value.upper()
         resultado = self.query_one(Pretty)
         palavras = texto.split()
 
-        if len(palavras) > 1:
-            self.produtos_filtrados = []
-            if "marca:" in palavras:  # TODO: Permitir multiplas marcas
-                index = palavras.index("marca:")
+        if len(palavras) > 0:
+            # self.produtos_filtrados = []
+            if "MARCA:" in palavras:  # TODO: Permitir multiplas marcas
+                index = palavras.index("MARCA:")
                 if index + 1 < len(palavras):
                     marca_busca = palavras[index + 1]
                     if len(self.produtos_filtrados) > 0:
@@ -106,8 +106,8 @@ class TelaEstoque(Screen):
                             if produto.get_marca() == marca_busca:
                                 self.produtos_filtrados.append(produto)
 
-            if "valor:" in palavras:
-                index = palavras.index("valor:")
+            if "VALOR:" in palavras:
+                index = palavras.index("VALOR:")
                 if index + 1 < len(palavras):
                     try:
                         valor_busca = float(palavras[index + 1])
@@ -125,8 +125,8 @@ class TelaEstoque(Screen):
                     except ValueError:
                         self.notify("Valor inválido")
 
-            if "nome:" in palavras:
-                index = palavras.index("nome:")
+            if "NOME:" in palavras:
+                index = palavras.index("NOME:")
                 if index + 1 < len(palavras):
                     nome_busca = palavras[index + 1]
                     if len(self.produtos_filtrados) > 0:
@@ -141,8 +141,8 @@ class TelaEstoque(Screen):
                             if produto.get_nome() == nome_busca:
                                 self.produtos_filtrados.append(produto)
 
-            if "quantidade:" in palavras:
-                index = palavras.index("quantidade:")
+            if "QUANTIDADE:" in palavras:
+                index = palavras.index("QUANTIDADE:")
                 if index + 1 < len(palavras):
                     try:
                         quantidade_busca = int(palavras[index + 1])
@@ -160,8 +160,8 @@ class TelaEstoque(Screen):
                     except ValueError:
                         self.notify("Valor inválido")
 
-            if "modelo:" in palavras:
-                index = palavras.index("modelo:")
+            if "MODELO:" in palavras:
+                index = palavras.index("MODELO:")
                 if index + 1 < len(palavras):
                     modelo_busca = palavras[index + 1].upper()
                     if len(self.produtos_filtrados) > 0:
@@ -176,8 +176,8 @@ class TelaEstoque(Screen):
                             if produto.get_modelo() == modelo_busca:
                                 self.produtos_filtrados.append(produto)
 
-            if "cor:" in palavras:
-                index = palavras.index("cor:")
+            if "COR:" in palavras:
+                index = palavras.index("COR:")
                 if index + 1 < len(palavras) and len(palavras[index + 1]) > 3:
                     cor_busca = palavras[index + 1]
                     if len(self.produtos_filtrados) > 0:
@@ -192,8 +192,8 @@ class TelaEstoque(Screen):
                             if produto.get_cor() == cor_busca:
                                 self.produtos_filtrados.append(produto)
 
-            if "id:" in palavras:
-                index = palavras.index("id:")
+            if "ID:" in palavras:
+                index = palavras.index("ID:")
                 if index + 1 < len(palavras):
                     try:
                         id_busca = int(palavras[index + 1])
@@ -211,8 +211,8 @@ class TelaEstoque(Screen):
                     except ValueError:
                         self.notify("Valor inválido")
 
-            if "categoria:" in palavras:
-                index = palavras.index("categoria:")
+            if "CATEGORIA:" in palavras:
+                index = palavras.index("CATEGORIA:")
                 if index + 1 < len(palavras):
                     categoria_busca = palavras[index + 1]
                     if len(self.produtos_filtrados) > 0:

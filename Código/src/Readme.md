@@ -11,8 +11,8 @@
 - Ver qual é a diferença dessas classes. Se não tiver diferença, então remover elas
 #### model/Produto e Pessoa:
 - Separar view, model e controller em editar_campo()
-#### view/TelaProduto:
-- Usar o Select() e as Checkboxes() que existem no código mas não estão implementadas com a pesquisa
+#### view/TelaEstoque:
+- Combinar input com checkbox e select. Quando eu apago marca:SONY do input mesmo com o checkbox marcado ele reseta a visualização
 
 # Modelagem: 
 ## Pessoa
