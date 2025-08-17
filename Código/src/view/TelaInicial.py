@@ -14,6 +14,7 @@ class ScreenInicial(Screen):
             yield Button("Fornecedor")
             yield Button("Funcionario")
             yield Button("Estoque", id="bt_estoque")
+            yield Button("Clientela", id="bt_clientela")
             yield Button("Sair", id="bt_sair")
         yield Footer()
 
@@ -27,3 +28,5 @@ class ScreenInicial(Screen):
                 self.screen.app.switch_screen("tela_produto")
             case "bt_sair":
                 self.screen.app.exit()
+            case "bt_clientela":
+                self.screen.app.switch_screen("tela_clientela")

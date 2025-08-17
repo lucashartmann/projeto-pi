@@ -1,7 +1,7 @@
 from textual.widgets import Input, Label, Pretty, Button, TabbedContent, TabPane, Footer, Header
 from textual.screen import Screen
 from textual.containers import Container
-from controller.Controller import Controller
+from controller.Controller_Telas import Controller
 from model import Init
 
 

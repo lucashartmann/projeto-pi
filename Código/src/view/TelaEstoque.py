@@ -1,7 +1,7 @@
 from textual.widgets import Input, Pretty, TextArea, Button, Checkbox, Footer, Header, Select
 from textual.screen import Screen
 from textual.containers import HorizontalGroup
-from controller.Controller import Controller
+from controller.Controller_Telas import Controller
 from textual import on
 
 
@@ -125,6 +125,7 @@ class TelaEstoque(Screen):
         if len(palavras) > 0:
             if self.filtrou_select == False and self.filtrou_checkbox == False:
                 self.produtos_filtrados = []
+
             if "MARCA:" in palavras:  # TODO: Permitir multiplas marcas
                 index = palavras.index("MARCA:")
                 if index + 1 < len(palavras):

@@ -1,16 +1,39 @@
-from model import Init, Carrinho, Cliente, Estoque, Produto, Pessoa, Fornecedor, Funcionario, Venda, Loja
+from model import Init
+from view import View
+from controller import Controller
+import sys
+
+def menu_cmd():
+    match comando:
+        case ["cadastrar_cliente"]:
+            pass
+        case ["editar_cliente"]:
+            pass
+        case ["cadastrar_fornecedor"]:
+            pass
+        case ["editar_fornecedor"]:
+            pass
+        case ["cadastrar_funcionario"]:
+            pass
+        case ["editar_funcionario"]:
+            pass
+        case ["cadastrar produto"]
+            pass
+        case ["editar produto"]:
+            pass
+
+
+comando = sys.argv[1:]
+
+if len(comando) > 0:
+    menu_cmd(comando)
 
 
 def login():
     while True:
-        menu = '''
-## Login ## 
-1. Cliente 
-2. Admin 
-3. Encerrar programa
-        '''
-        print(menu)
-        usuario = int(input("Digite o número correspondente ao usuário: "))
+        View.menu_login()
+        usuario = int(View.receber_dado(
+            "Digite o número correspondente ao usuário"))
         match usuario:
             case 1:
                 cliente(usuario, Init.cliente_atual)
@@ -19,394 +42,54 @@ def login():
             case 3:
                 break
             case _:
-                print("Erro. Opção inválida. Tente novamente.")
+                View.mostrar_mensagem("Erro. Opção inválida. Tente novamente.")
 
 
 def cliente(usuario, cliente_atual):
     while True:
-        menu = '''
-## Menu Cliente ##
-1. Cadastrar
-2. Editar cadastro
-3. Ver cadastro
-4. Carrinho de compras
-5. Realizar compra
-6. Ver últimas compras
-7. Sair do menu
-        '''
-        print(menu)
-        opcao = int(input('Digite o número correspondente a opção: '))
-        print()
+        View.menu_cliente()
+        opcao = int(View.receber_dado(
+            "Digite o número correspondente ao usuário"))
+        View.mostrar_mensagem("")
         match opcao:
             case 1:
-                cliente_atual = cadastroPessoa(usuario)
+                cliente_atual = Controller.cadastro_pessoa(usuario)
             case 2:
-                edicaoPessoa(usuario, cliente_atual)
+                Controller.edicao_pessoa(usuario, cliente_atual)
             case 3:
-                print(cliente_atual)
+                View.mostrar_mensagem(cliente_atual)
             case 4:
-                carrinho(cliente_atual)
+                Controller.carrinho(cliente_atual)
             case 5:
-                realizar_compra(cliente_atual)
+                Controller.realizar_compra(cliente_atual)
             case 7:
                 break
             case _:
-                print('Erro. Opção errada, tente novamente')
+                View.mostrar_mensagem('Erro. Opção errada, tente novamente')
 
 
 def admin(usuario):
     while True:
-        menu = '''
-## Menu Admin ##
-1. Cadastrar Produto
-2. Editar Produto
-3. Cadastrar Pessoa
-4. Editar Pessoa
-5. Ver produto por nome
-6. Ver produtos por marca
-7. Ver produtos por categoria
-8. Ver quantidade de tudo
-9. Ver quantidade de produtos por marca
-10. Ver quantidade de produtos por categoria
-11. Ver quantidade de produtos por modelo
-12. Sair do menu
-        '''
-        print(menu)
-        opcao = int(input('Digite o número correspondente a opção: '))
-        print()
+        View.menu_admin()
+        opcao = int(View.receber_dado(
+            'Digite o número correspondente a opção'))
+        View.mostrar_mensagem("")
         match opcao:
             case 1:
-                cadastroProduto()
+                Controller.cadastro_produto()
             case 2:
-                edicaoProduto()
+                Controller.edicao_produto()
             case 3:
-                cadastroPessoa(usuario)
+                Controller.cadastro_pessoa(usuario)
             case 4:
-                edicaoPessoa(usuario, Init.cliente_atual)
+                Controller.edicao_pessoa(usuario, Init.cliente_atual)
             case 5 | 6 | 7:
-                procurarProduto(opcao)
+                Controller.procurar_produto(opcao)
             case 8:
-                print("Quantidade de Produtos: ", Init.loja.get_estoque().get_quantidade_produtos(), "\nQuantidade de clientes: ", Init.loja.get_quantidade_clientes(), "\nQuantidade de funcionários: ",
-                      Init.loja.get_quantidade_funcionarios(), "\nQuantidade de fornecedores: ", Init.loja.get_quantidade_fornecedores())
+                Controller.dados()
             case 9 | 10 | 11:
-                verQuantidadeProduto(opcao)
+                Controller.ver_quantidade_produto(opcao)
             case 12:
                 break
             case _:
-                print('Erro. Opção errada, tente novamente')
-
-
-def verQuantidadeProduto(opcao):
-    campos = {
-        9: ("marca", Init.loja.get_estoque().get_quantidade_produto_por_marca),
-        10: ("categoria", Init.loja.get_estoque().get_quantidade_produto_por_categoria),
-        11: ("modelo", Init.loja.get_estoque().get_quantidade_produto_por_modelo)
-    }
-
-    nome_campo, func = campos[opcao]
-    valor = input(f"Digite a {nome_campo} do produto: ").upper()
-    quantidade = func(valor)
-
-    if quantidade is None:
-        print("Erro. Produto não encontrado!")
-        return
-
-    print(f"Quantidade de produtos da {nome_campo} {valor}: {quantidade}")
-
-
-def procurarProduto(opcao):
-    campos = {
-        5: ("nome", Init.loja.get_estoque().get_produtos_por_nome),
-        6: ("marca", Init.loja.get_estoque().get_produtos_por_marca),
-        7: ("categoria", Init.loja.get_estoque().get_produtos_por_categoria)
-    }
-
-    nome_campo, func = campos[opcao]
-    valor = input(f"Digite a {nome_campo} do produto: ").upper()
-    produtos = func(valor)
-
-    if not produtos:
-        print("Erro. Produto não encontrado!")
-        return
-
-    print("Produtos encontrados:")
-    for produto in produtos:
-        print(produto)
-
-
-def validar(string):
-    while True:
-        campo = input(f"Digite {string}: ").upper()
-        if len(campo) > 0:
-            if "CPF" in string:
-                if len(campo) == 11:
-                    cpf_ja_cadastrado = Init.loja.is_cpf_cadastrado(campo)
-                    if not cpf_ja_cadastrado:
-                        return campo
-                    print("Erro. CPF já cadastrado!")
-            elif "RG" in string:
-                if len(campo) == 9:
-                    rg_ja_cadastrado = Init.loja.is_rg_cadastrado(campo)
-                    if not rg_ja_cadastrado:
-                        return campo
-                    print("Erro. RG já cadastrado!")
-            elif "telefone" in string:
-                if len(campo) == 11:
-                    telefone_ja_cadastrado = Init.loja.is_telefone_cadastrado(
-                        campo)
-                    if not telefone_ja_cadastrado:
-                        return campo
-                    print("Erro. Telefone já cadastrado!")
-            else:
-                return campo
-        print(f"Erro. {campo} inválido!")
-
-
-def cadastroPessoa(usuario):
-    nome = validar("o seu nome")
-    cpf = validar("o seu CPF")
-    telefone = validar("o seu telefone")
-    email = validar("o seu email")
-    rg = validar("a sua RG")
-    endereco = validar("o seu endereço")
-    if usuario == 1:
-        cliente_atual = Cliente(nome, cpf, rg, telefone, endereco, email)
-        if Init.loja.cadastrar(cliente_atual):
-            Init.loja.cadastrar(cliente_atual)
-            cliente_atual.set_is_cadastrado(True)
-            print("Cliente cadastrado com sucesso!")
-            print(cliente_atual)
-            return cliente_atual
-        else:
-            print("Erro. Cliente não cadastrado!")
-    else:
-        print("1 - Funcionário")
-        print("2 - Fornecedor")
-        tipo = int(input("Digite o tipo de pessoa: "))
-        if tipo == 1:
-            funcionario = Funcionario(nome, cpf, rg, telefone, endereco, email)
-            if Init.loja.cadastrar(funcionario):
-                Init.loja.cadastrar(funcionario)
-                print("Funcionário cadastrado com sucesso!")
-            else:
-                print("Erro. Funcionário não cadastrado!")
-        else:
-            fornecedor = Fornecedor(nome, cpf, rg, telefone, endereco, email)
-            if Init.loja.cadastrar(fornecedor):
-                Init.loja.cadastrar(fornecedor)
-                print("Fornecedor cadastrado com sucesso!")
-            else:
-                print("Erro. Fornecedor não cadastrado!")
-
-
-def edicaoPessoa(usuario, cliente_atual):
-    if usuario == 1:
-        if not cliente_atual.get_is_cadastrado():
-            print("Erro. Você não está cadastrado!")
-            return
-        pessoa_atual = cliente_atual
-    else:
-        cpf = input("Digite o CPF do cliente que deseja editar: ")
-        pessoa_atual = Init.loja.get_cliente_por_cpf(cpf)
-        if pessoa_atual is None:
-            print("Erro. Cliente não encontrado!")
-            return
-    while True:
-        menu = '''
-## Menu de Edição ##
-1. Editar nome
-2. Editar CPF
-3. Editar telefone
-4. Editar email
-5. Editar RG
-6. Editar endereço
-7. Sair
-        '''
-        print(menu)
-        opcao = int(input("Digite o número correspondente à opção: "))
-        match opcao:
-            case 1:
-                pessoa_atual.editar_campo("nome", pessoa_atual.set_nome)
-            case 2:
-                pessoa_atual.editar_campo("CPF", pessoa_atual.set_cpf)
-            case 3:
-                pessoa_atual.editar_campo(
-                    "telefone", pessoa_atual.set_telefone)
-            case 4:
-                pessoa_atual.editar_campo("email", pessoa_atual.set_email)
-            case 5:
-                pessoa_atual.editar_campo("RG", pessoa_atual.set_rg)
-            case 6:
-                pessoa_atual.editar_campo(
-                    "endereço", pessoa_atual.set_endereco)
-            case 7:
-                print("Saindo da edição...")
-                break
-            case _:
-                print("Erro. Opção inválida. Tente novamente.")
-        print(pessoa_atual)
-
-
-def cadastroProduto():
-    nome = validar("o nome do produto")
-    marca = validar("a marca do produto")
-    modelo = validar("o modelo do produto")
-    cor = validar("a cor do produto")
-    preco = float(validar("o preço do produto"))
-    quantidade = int(validar("a quantidade do produto"))
-    novo_produto = Produto(nome, marca, modelo, cor, preco, quantidade)
-    cadastrado = Init.loja.get_estoque().adicionar_produto(novo_produto)
-    if cadastrado:
-        print("\nProduto cadastrado com sucesso!")
-        print(novo_produto)
-    else:
-        print("\nErro. Não foi possivel cadastrar o produto")
-
-
-def edicaoProduto():
-    id = int(input("Digite o ID do produto que deseja editar: "))
-    produto = Init.loja.get_estoque().get_produto_por_id(id)
-    if produto is None:
-        print("Erro. Produto não encontrado!")
-        return
-    while True:
-        menu = '''
-## Menu de Edição ## 
-1. Editar nome
-2. Editar marca
-3. Editar modelo
-4. Editar cor
-5. Editar preço
-6. Editar quantidade
-7. Sair
-        '''
-        print(menu)
-        opcao = int(input("Digite o número correspondente a opção: "))
-        match opcao:
-            case 1:
-                produto.editar_campo("nome", produto.set_nome)
-            case 2:
-                produto.editar_campo("marca", produto.set_marca)
-            case 3:
-                produto.editar_campo(
-                    "modelo", produto.set_modelo)
-            case 4:
-                produto.editar_campo("cor", produto.set_cor)
-            case 5:
-                produto.editar_campo("preco", produto.set_preco)
-            case 6:
-                produto.editar_campo(
-                    "quantidade", produto.set_quantidade)
-            case 7:
-                break
-            case _:
-                print("Erro. Opção inválida. Tente novamente.")
-        print(produto)
-
-
-def realizar_compra(cliente_atual):
-    if not cliente_atual.get_is_cadastrado():
-        print("Erro. Você não está cadastrado!")
-        return
-    carrinho = cliente_atual.get_carrinho()
-    if carrinho.esta_vazio():
-        print("Erro. Carrinho vazio!")
-        return
-    print("Produtos no carrinho:")
-    for produto in carrinho.listar_produtos():
-        print(produto)
-    menu = '''
-## Menu de Pagamento ##
-1. Cartão de crédito
-2. Cartão de débito
-3. Pix
-    '''
-    print(menu)
-    opcao = int(input("Digite o número correspondente à opção: "))
-    match opcao:
-        case 1:
-            parcelas = int(input("Parcelas: "))
-        case 2 | 3:
-            parcelas = 1
-        case _:
-            print("Erro. Opção inválida.")
-            return
-    modo_pagamento = opcao
-    venda = Venda(cliente_atual, carrinho,
-                  modo_pagamento)
-    venda.set_parcelas(parcelas)
-    venda.aplicar_venda(Init.loja)
-    print(venda.gerar_recibo(Init.loja))
-    carrinho.limpar()
-    quit()
-
-
-def carrinho(cliente_atual):
-    if not cliente_atual.get_is_cadastrado():
-        print("Você não está cadastrado!")
-        return
-    carrinho = cliente_atual.get_carrinho()
-    while True:
-        menu = '''
-### Menu Carrinho ###
-1. Ver todos os produtos da loja para adicionar no carrinho
-2. Pesquisar produto para adicionar no carrinho
-3. Remover produto do carrinho
-4. Ver produtos no carrinho
-5. Sair do menu
-        '''
-        print(menu)
-        opcao = int(input("Digite o número correspondente à opção: "))
-        match opcao:
-            case 1:
-                produtos_estoque = Init.loja.get_estoque().get_lista_produtos()
-                for produto in produtos_estoque:
-                    print(produto)
-            case 2:
-                nome = input("Nome do produto: ")
-                nome = nome.upper()
-                produtos = Init.loja.get_estoque().get_produtos_por_nome(nome)
-                if not produtos:
-                    print(f"Erro. Nenhum produto {nome} no estoque")
-                else:
-                    for p in produtos:
-                        print(p)
-            case 3:
-                id = int(input("ID do produto a remover: "))
-                removido = carrinho.remover_produto_por_id(id)
-                if removido:
-                    print("Removido com sucesso.")
-                else:
-                    print("Erro. Produto não encontrado.")
-            case 4:
-                itens = carrinho.listar_produtos()
-                if not itens:
-                    print("Erro. Carrinho vazio.")
-                else:
-                    print("Produtos no carrinho:")
-                    for produto, quantidade in itens.items():
-                        print(produto, "Quantidade:", quantidade)
-            case 5:
-                return carrinho
-            case _:
-                print("Opção inválida.")
-        if opcao == 1 or opcao == 2:
-            while True:
-                id = int(input("ID do produto (ou 0 para sair): "))
-                if id == 0:
-                    break
-                produto = Init.loja.get_estoque().get_produto_por_id(id)
-                if produto:
-                    qtd = int(input("Quantidade: "))
-                    adicionar = carrinho.adicionar_produto(produto, qtd)
-                    if adicionar:
-                        print("Produto adicionado!")
-                        print(produto)
-                    else:
-                        print("Erro. Quantidade inválida!")
-                else:
-                    print("Erro. Produto não encontrado.")
-
-
-if __name__ == '__main__':
-    login()
+                View.mostrar_mensagem('Erro. Opção errada, tente novamente')

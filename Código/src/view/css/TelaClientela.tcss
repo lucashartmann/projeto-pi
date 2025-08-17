@@ -1,0 +1,16 @@
+TextArea {
+    height: 5;
+}
+
+Checkbox {
+    margin: 1;
+}
+
+Input {
+    width: 90%;
+}
+
+#hg_pesquisa {
+    margin: 1;
+}
+
