@@ -1,8 +1,40 @@
-from textual.widgets import Input, Label, Button, Footer, Header
+from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header
 from textual.screen import Screen
-from textual.containers import HorizontalGroup, Container, VerticalGroup
+from textual.containers import Container
 from controller.Controller import Controller
 from model import Init
+
+
+class TelaCadastrar(Container):
+    def compose(self):
+
+        yield Label("Nome:")
+        yield Input(placeholder="Nome aqui")
+        yield Label("CPF:")
+        yield Input(placeholder="CPF aqui")
+        yield Label("RG:")
+        yield Input(placeholder="RG aqui")
+        yield Label("Telefone:")
+        yield Input(placeholder="Telefone aqui")
+        yield Label("Endereço:")
+        yield Input(placeholder="Endereço aqui")
+        yield Label("Email:")
+        yield Input(placeholder="Email aqui")
+        yield Button("Limpar", id="bt_limpar")
+        yield Button("Cadastrar", id="bt_cadastrar")
+        yield Button("Voltar", id="bt_voltar")
+
+    def cadastro(self):
+        dados = []
+        for input in self.query(Input):
+            dados.append(input.value.upper())
+        resultado = Controller.cadastrar_cliente(dados)
+        self.notify(resultado)
+
+    def on_button_pressed(self, evento: Button.Pressed):
+        match evento.button.id:
+            case "bt_cadastrar":
+                self.cadastro()
 
 
 class TelaRemover(Container):
@@ -21,33 +53,23 @@ class TelaEditar(Container):
     cliente = None
 
     def compose(self):
-        with HorizontalGroup():
-            with VerticalGroup():
-                with HorizontalGroup():
-                    yield Label("ID do Cliente:")
-                    yield Input(placeholder="ID aqui", id="input_id")
-                with HorizontalGroup():
-                    yield Label("Nome:")
-                    yield Input(placeholder="Nome aqui")
-                with HorizontalGroup():
-                    yield Label("CPF:")
-                    yield Input(placeholder="CPF aqui")
-                with HorizontalGroup():
-                    yield Label("RG:")
-                    yield Input(placeholder="RG aqui")
-                with HorizontalGroup():
-                    yield Label("Telefone:")
-                    yield Input(placeholder="Telefone aqui")
-                with HorizontalGroup():
-                    yield Label("Endereço:")
-                    yield Input(placeholder="Endereço aqui")
-                with HorizontalGroup():
-                    yield Label("Email:")
-                    yield Input(placeholder="Email aqui")
-            with VerticalGroup():
-                yield Button("Limpar", id="bt_limpar")
-                yield Button("Editar", id="bt_editar")
-                yield Button("Voltar", id="bt_voltar")
+        yield Label("ID do Cliente:")
+        yield Input(placeholder="ID aqui", id="input_id")
+        yield Label("Nome:")
+        yield Input(placeholder="Nome aqui")
+        yield Label("CPF:")
+        yield Input(placeholder="CPF aqui")
+        yield Label("RG:")
+        yield Input(placeholder="RG aqui")
+        yield Label("Telefone:")
+        yield Input(placeholder="Telefone aqui")
+        yield Label("Endereço:")
+        yield Input(placeholder="Endereço aqui")
+        yield Label("Email:")
+        yield Input(placeholder="Email aqui")
+        yield Button("Limpar", id="bt_limpar")
+        yield Button("Editar", id="bt_editar")
+        yield Button("Voltar", id="bt_voltar")
 
     def on_input_changed(self, evento: Input.Changed):
         if evento.input.id == "input_id":
@@ -74,26 +96,13 @@ class TelaCliente(Screen):
 
     def compose(self):
         yield Header()
-        with HorizontalGroup():
-            yield Label("Nome:")
-            yield Input(placeholder="Nome aqui")
-        with HorizontalGroup():
-            yield Label("CPF:")
-            yield Input(placeholder="CPF aqui")
-        with HorizontalGroup():
-            yield Label("RG:")
-            yield Input(placeholder="RG aqui")
-        with HorizontalGroup():
-            yield Label("Telefone:")
-            yield Input(placeholder="Telefone aqui")
-        with HorizontalGroup():
-            yield Label("Endereço:")
-            yield Input(placeholder="Endereço aqui")
-        with HorizontalGroup():
-            yield Label("Email:")
-            yield Input(placeholder="Email aqui")
-        yield Button("Cadastrar")
-        yield Button("Voltar", id="bt_voltar")
+        with TabbedContent():
+            with TabPane("Cadastrar"):
+                yield TelaCadastrar()
+            with TabPane("Editar"):
+                yield TelaEditar()
+            with TabPane("Remover"):
+                yield TelaRemover()
         yield Footer()
 
     def on_button_pressed(self, evento: Button.Pressed):
@@ -105,10 +114,3 @@ class TelaCliente(Screen):
             case "bt_limpar":
                 for input in self.query(Input):
                     input.value = ""
-
-    def cadastro(self):
-        dados = []
-        for input in self.query(Input):
-            dados.append(input.value.upper())
-        resultado = Controller.cadastrar_cliente(dados)
-        self.notify(resultado)

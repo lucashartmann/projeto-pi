@@ -1,10 +1,6 @@
-from textual.app import App
 from textual.containers import Grid
 from textual.widgets import Button, Footer, Header
 from textual.screen import Screen
-from view.TelaEstoque import TelaEstoque
-from view.TelaCliente import TelaCliente
-from view.TelaProduto import TelaProduto
 
 
 class ScreenInicial(Screen):
@@ -31,15 +27,3 @@ class ScreenInicial(Screen):
                 self.screen.app.switch_screen("tela_produto")
             case "bt_sair":
                 self.screen.app.exit()
-
-
-class TelaInicial(App):
-    SCREENS = {
-        "tela_inicial": ScreenInicial,
-        "tela_estoque": TelaEstoque,
-        "tela_cliente": TelaCliente,
-        "tela_produto": TelaProduto
-    }
-
-    def on_mount(self):
-        self.push_screen("tela_inicial")

@@ -1,11 +1,11 @@
 from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header
 from textual.screen import Screen
-from textual.containers import HorizontalGroup, Container, VerticalGroup, VerticalScroll
+from textual.containers import Container
 from controller.Controller import Controller
 from model import Init
 
 
-class TelaCadastrar(VerticalScroll):
+class TelaCadastrar(Container):
     def compose(self):
         yield Label("Nome:")
         yield Input(placeholder="Nome aqui")
@@ -24,6 +24,18 @@ class TelaCadastrar(VerticalScroll):
         yield Button("Limpar", id="bt_limpar")
         yield Button("Cadastrar", id="bt_cadastrar")
         yield Button("Voltar", id="bt_voltar")
+
+    def cadastro(self):
+        dados = []
+        for input in self.query(Input):
+            dados.append(input.value.upper())
+        resultado = Controller.cadastrar_produto(Controller, dados)
+        self.notify(resultado)
+
+    def on_button_pressed(self, evento: Button.Pressed):
+        match evento.button.id:
+            case "bt_cadastrar":
+                self.cadastro()
 
 
 class TelaRemover(Container):
@@ -97,15 +109,6 @@ class TelaProduto(Screen):
         match evento.button.id:
             case "bt_voltar":
                 self.screen.app.switch_screen("tela_inicial")
-            case "bt_cadastrar":
-                self.cadastro()
             case "bt_limpar":
                 for input in self.query(Input):
                     input.value = ""
-
-    def cadastro(self):
-        dados = []
-        for input in self.query(Input):
-            dados.append(input.value.upper())
-        resultado = Controller.cadastrar_produto(Controller, dados)
-        self.notify(resultado)

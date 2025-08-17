@@ -1,3 +1,5 @@
-from view.TelaInicial import TelaInicial
+from view.App import App
 
-TelaInicial().run()
+if __name__ == "__main__":
+    app = App()
+    app.run()

@@ -33,11 +33,18 @@ class TelaEstoque(Screen):
                 self.query_one(Select).set_options(
                     [(categoria, categoria) for categoria in lista_categorias])
 
+    def setup_dados(self):
+        if len(self.produtos_filtrados) > 0:
+            quant = len(self.produtos_filtrados)
+        else:
+            quant = len(self.produtos)
+        self.query_one(TextArea).text = f"Quantidade de produtos: {quant}"
+
     def on_mount(self):
-        Controller.init(Controller)
         produtos_str = [str(produto) for produto in self.produtos]
         self.mount(Pretty(produtos_str))
         self.montar_checkboxes()
+        self.setup_dados()
 
     def on_button_pressed(self):
         self.screen.app.switch_screen("tela_inicial")
@@ -45,8 +52,10 @@ class TelaEstoque(Screen):
     @on(Select.Changed)
     def select_changed(self, evento: Select.Changed):
         if evento.select.is_blank():
+            self.produtos_filtrados = []
             produtos_str = [str(produto) for produto in self.produtos]
             self.query_one(Pretty).update(produtos_str)
+            self.setup_dados()
         else:
             valor_select = str(evento.value)
             self.produtos_filtrados = []
@@ -55,13 +64,16 @@ class TelaEstoque(Screen):
                     self.produtos_filtrados.append(produto)
             produtos_str = [str(produto)for produto in self.produtos_filtrados]
             self.query_one(Pretty).update(produtos_str)
+            self.setup_dados()
 
     @on(Checkbox.Changed)
     def checkbox_changed(self, evento: Checkbox.Changed):
         valor_checkbox = str(evento.checkbox.label)
         if evento.checkbox.value is False:
+            self.produtos_filtrados = []
             produtos_str = [str(produto) for produto in self.produtos]
             self.query_one(Pretty).update(produtos_str)
+            self.setup_dados()
         else:
             self.produtos_filtrados = []
             for produto in self.produtos:
@@ -69,6 +81,7 @@ class TelaEstoque(Screen):
                     self.produtos_filtrados.append(produto)
             produtos_str = [str(produto)for produto in self.produtos_filtrados]
             self.query_one(Pretty).update(produtos_str)
+            self.setup_dados()
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value
@@ -218,9 +231,12 @@ class TelaEstoque(Screen):
                 produtos_str = [str(produto)
                                 for produto in self.produtos_filtrados]
                 resultado.update(produtos_str)
+                self.setup_dados()
             else:
                 produtos_str = [str(produto) for produto in self.produtos]
                 resultado.update(produtos_str)
+                self.setup_dados()
         else:
             produtos_str = [str(produto) for produto in self.produtos]
             resultado.update(produtos_str)
+            self.setup_dados()
