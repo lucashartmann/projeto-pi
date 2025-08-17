@@ -24,6 +24,8 @@ class Controller():
             except ValueError:
                 return (f"O valor {lista[5]} está incorreto")
             produto.set_quantidade(lista[5])
+        if lista[6] != "":
+            produto.set_categoria(lista[6])
         return "Produto editado com sucesso"
 
     def editar_cliente(self, cliente, dados):
@@ -36,7 +38,7 @@ class Controller():
         if dados[3] != "":
             cliente.set_telefone(dados[3])
         if dados[4] != "":
-            cliente.endereo(dados[4])
+            cliente.set_endereco(dados[4])
         if dados[5] != "":
             cliente.set_email(dados[5])
         return "Cliente editado com sucesso"

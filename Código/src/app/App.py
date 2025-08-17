@@ -1,13 +1,15 @@
 from model import Init
 from view import View
-from controller import Controller
+from controller.Controller_CMD import Controller
 import sys
 
-def menu_cmd():
+
+def menu_cmd(comando):
     match comando:
-        case ["cadastrar_cliente"]:
-            pass
-        case ["editar_cliente"]:
+        case ["cadastrar_cliente", nome, cpf, rg, telefone, endereco, email]:
+            Controller.cadastrar_cliente(
+                nome, cpf, rg, telefone, endereco, email)
+        case ["editar_cliente", cpf, dados]:
             pass
         case ["cadastrar_fornecedor"]:
             pass
@@ -17,10 +19,12 @@ def menu_cmd():
             pass
         case ["editar_funcionario"]:
             pass
-        case ["cadastrar produto"]
-            pass
-        case ["editar produto"]:
-            pass
+        case ["cadastrar produto", nome, marca, modelo, cor, preco, quantidade, categoria]:
+            Controller.cadastrar_produto(
+                nome, marca, modelo, cor, preco, quantidade, categoria)
+        case ["editar produto", id, nome, marca, modelo, cor, preco, quantidade, categoria]:
+            Controller.editar_produto(id, nome, marca, modelo, cor, preco, quantidade, categoria)
+
 
 
 comando = sys.argv[1:]

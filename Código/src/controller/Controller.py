@@ -284,6 +284,8 @@ def carrinho(cliente_atual):
                         View.mostrar_mensagem("Erro. Quantidade inválida!")
                 else:
                     View.mostrar_mensagem("Erro. Produto não encontrado.")
+
+
 def dados():
     View.mostrar_mensagem("Quantidade de Produtos: ", Init.loja.get_estoque().get_quantidade_produtos(), "\nQuantidade de clientes: ", Init.loja.get_quantidade_clientes(), "\nQuantidade de funcionários: ",
-                                      Init.loja.get_quantidade_funcionarios(), "\nQuantidade de fornecedores: ", Init.loja.get_quantidade_fornecedores())
+                          Init.loja.get_quantidade_funcionarios(), "\nQuantidade de fornecedores: ", Init.loja.get_quantidade_fornecedores())
