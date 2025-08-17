@@ -1,7 +1,18 @@
-Input {
-    width: 50%;
+TelaCadastrar {
+    layout: grid;
+    grid-size: 4 5;
 }
 
-Screen {
-    background: pink;
+Input {
+    width: 20;
+}
+
+TelaRemover {
+    layout: grid;
+    grid-size: 4 5;
+}
+
+TelaEditar {
+    layout: grid;
+    grid-size: 4 5;
 }
