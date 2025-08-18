@@ -83,6 +83,8 @@ class TelaEditar(Container):
         yield Input(placeholder="Preço aqui")
         yield Label("Quantidade:")
         yield Input(placeholder="Quantidade aqui")
+        yield Label("Categoria:")
+        yield Input(placeholder="Categoria aqui")
         yield Button("Limpar", id="bt_limpar")
         yield Button("Editar", id="bt_editar")
         yield Button("Voltar", id="bt_voltar")
