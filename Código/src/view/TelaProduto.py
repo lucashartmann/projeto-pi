@@ -1,8 +1,9 @@
-from textual.widgets import Input, Pretty, Label, Button, TabbedContent, TabPane, Footer, Header
+from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header, Select
 from textual.screen import Screen
 from textual.containers import Container
 from controller.Controller_Telas import Controller
 from model import Init
+from textual import on
 
 
 class TelaCadastrar(Container):
@@ -68,6 +69,8 @@ class TelaRemover(Container):
 
 
 class TelaEditar(Container):
+    montou = False
+
     def compose(self):
         yield Label("ID do Produto:", id="lb_id")
         yield Input(placeholder="ID aqui", id="input_id")
@@ -83,15 +86,37 @@ class TelaEditar(Container):
         yield Input(placeholder="Preço aqui")
         yield Label("Quantidade:")
         yield Input(placeholder="Quantidade aqui")
-        yield Label("Categoria:")
-        yield Input(placeholder="Categoria aqui")
+        yield Select([("produto", 'produto')])
         yield Button("Limpar", id="bt_limpar")
         yield Button("Editar", id="bt_editar")
         yield Button("Voltar", id="bt_voltar")
 
+    def on_mount(self):
+        produtos = Controller.ver_produtos_estoque(Controller)
+        lista_categorias = []
+        for produto in produtos:
+            if produto.get_categoria() not in lista_categorias:
+                lista_categorias.append(produto.get_categoria())
+        if "Nova categoria" not in lista_categorias:
+            lista_categorias.append("Nova categoria")
+        self.query_one(Select).set_options(
+            [(categoria, categoria) for categoria in lista_categorias])
+
+    @on(Select.Changed)
+    def select_changed(self, evento: Select.Changed):
+        valor_select = str(evento.value)
+        if valor_select == "Nova categoria":
+            self.mount(Label("Categoria", id="lbl_categoria"))
+            self.mount(Input(placeholder="Categoria aqui", id="inpt_categoria"))
+            self.montou = True
+
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_editar":
+                if self.montou:
+                    self.montou = False
+                    self.query_one("#lbl_categoria").remove()
+                    self.query_one("#inpt_categoria").remove()
                 input_id = self.query_one("#input_id").value
                 if len(input_id) >= 1:
                     input_id = int(input_id)

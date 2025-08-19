@@ -35,7 +35,7 @@ class TelaEstoque(Screen):
             if produto.get_categoria() not in lista_categorias:
                 horizontal.mount(Checkbox(produto.get_categoria()))
                 lista_categorias.append(produto.get_categoria())
-                self.query_one(Select).set_options(
+        self.query_one(Select).set_options(
                     [(categoria, categoria) for categoria in lista_categorias])
 
     def setup_dados(self):
