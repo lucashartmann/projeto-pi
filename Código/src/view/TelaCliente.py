@@ -1,8 +1,7 @@
-from textual.widgets import Input, Label, Pretty, Button, TabbedContent, TabPane, Footer, Header
+from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header
 from textual.screen import Screen
 from textual.containers import Container
-from controller.Controller_Telas import Controller
-from model import Init
+from controller.Controller import Controller
 
 
 class TelaCadastrar(Container):
@@ -27,9 +26,6 @@ class TelaCadastrar(Container):
     def cadastro(self):
         dados = []
         for input in self.query(Input):
-            if input.value == "":
-                self.notify(f"{input.placeholder} está vazio, tente novamente")
-                return
             dados.append(input.value.upper())
         resultado = Controller.cadastrar_cliente(dados)
         self.notify(resultado)
@@ -51,18 +47,10 @@ class TelaRemover(Container):
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_remover":
-                input_cpf = self.query_one("#input_cpf").value
-                if len(input_cpf) == 11:
-                    cliente = Init.loja.get_cliente_por_cpf(input_cpf)
-                    if not cliente:
-                        self.notify(
-                            f"Cliente com CPF {input_cpf} não encontrado")
-                    else:
-                        mensagem = Controller.remover_cliente(
-                            Controller, cliente)
-                        self.notify(mensagem)
-                else:
-                    self.notify("CPF precisa ter 11 digitos")
+                input_cpf = self.query_one("#input_cpf", Input).value
+                mensagem = Controller.remover_cliente(
+                    Controller, input_cpf)
+                self.notify(mensagem)
 
 
 class TelaEditar(Container):
@@ -89,21 +77,13 @@ class TelaEditar(Container):
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_editar":
-                input_cpf = self.query_one("#input_cpf").value
-                if len(input_cpf) == 11:
-                    cliente = Init.loja.get_cliente_por_cpf(input_cpf)
-                    if not cliente:
-                        self.notify(
-                            f"Cliente com CPF {input_cpf} não encontrado")
-                    else:
-                        dados = []
-                        for input in self.query(Input)[1:]:
-                            dados.append(input.value.upper())
-                        mensagem = Controller.editar_cliente(
-                            Controller, cliente, dados)
-                        self.notify(mensagem)
-                else:
-                    self.notify("CPF precisa ter 11 digitos")
+                input_cpf = self.query_one("#input_cpf", Input).value
+                dados = []
+                for input in self.query(Input)[1:]:
+                    dados.append(input.value.upper())
+                mensagem = Controller.editar_cliente(
+                    Controller, input_cpf, dados)
+                self.notify(mensagem)
 
 
 class TelaCliente(Screen):

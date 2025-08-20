@@ -1,7 +1,7 @@
 from textual.widgets import Input, Pretty, TextArea, Button, Checkbox, Footer, Header, Select
 from textual.screen import Screen
 from textual.containers import HorizontalGroup
-from controller.Controller_Telas import Controller
+from controller.Controller import Controller
 from textual import on
 
 
@@ -36,7 +36,7 @@ class TelaEstoque(Screen):
                 horizontal.mount(Checkbox(produto.get_categoria()))
                 lista_categorias.append(produto.get_categoria())
         self.query_one(Select).set_options(
-                    [(categoria, categoria) for categoria in lista_categorias])
+            [(categoria, categoria) for categoria in lista_categorias])
 
     def setup_dados(self):
         if len(self.produtos_filtrados) > 0:

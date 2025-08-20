@@ -1,4 +1,4 @@
-from textual.widgets import Input, Pretty, TextArea, Button, Footer, Header, Select
+from textual.widgets import Input, Pretty, TextArea, Button, Footer, Header
 from textual.screen import Screen
 from textual.containers import HorizontalGroup
 from model import Init
