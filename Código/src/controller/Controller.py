@@ -79,12 +79,12 @@ class Controller:
             return "ERRO ao cadastrar produto"
 
     def editar_produto(self, id, lista):
+        if len(id) < 1:
+            View.mostrar_mensagem("ERRO")
+            return "ERRO"
         try:
             id = int(id)
         except ValueError:
-            View.mostrar_mensagem("ERRO")
-            return "ERRO"
-        if len(id) < 1:
             View.mostrar_mensagem("ERRO")
             return "ERRO"
         produto = Init.loja.get_estoque().get_produto_por_id(id)
