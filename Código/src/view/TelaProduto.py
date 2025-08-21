@@ -40,7 +40,8 @@ class TelaCadastrar(Container):
         else:
             dados.append("")
         resultado = Controller.cadastrar_produto(Controller, dados)
-        self.notify(resultado)
+        self.notify(str(resultado), markup=False)
+        self.screen.on_mount()
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
@@ -66,7 +67,7 @@ class TelaRemover(Container):
                 input_id = self.query_one("#input_id").value
                 mensagem = Controller.remover_produto(
                     Controller, input_id)
-                self.notify(mensagem)
+                self.notify(str(mensagem), markup=False)
 
 
 class TelaEditar(Container):
@@ -117,7 +118,8 @@ class TelaEditar(Container):
                     dados.append("")
                 mensagem = Controller.editar_produto(
                     Controller, input_id, dados)
-                self.notify(mensagem)
+                self.notify(str(mensagem), markup=False)
+                self.screen.on_mount()
 
 
 class TelaProduto(Screen):
