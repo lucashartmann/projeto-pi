@@ -191,12 +191,12 @@ class Controller:
             return f"ERRO ao remover cliente"
 
     def remover_produto(self, id):
+        if len(id) < 1:
+            View.mostrar_mensagem("ERRO")
+            return "ERRO"
         try:
             id = int(id)
         except ValueError:
-            View.mostrar_mensagem("ERRO")
-            return "ERRO"
-        if len(id) < 1:
             View.mostrar_mensagem("ERRO")
             return "ERRO"
         produto = Init.loja.get_estoque().get_produto_por_id(id)
