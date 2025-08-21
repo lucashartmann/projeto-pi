@@ -1,7 +1,7 @@
 from textual.widgets import Input, Pretty, TextArea, Button, Footer, Header
 from textual.screen import Screen
 from textual.containers import HorizontalGroup
-from model import Init
+from controller import Controller
 
 
 class TelaClientela(Screen):
@@ -18,7 +18,7 @@ class TelaClientela(Screen):
             pass
         yield Footer()
 
-    clientes = Init.loja.get_lista_clientes()
+    clientes = Controller.get_clientes_cadastrados()
     clientes_filtrados = []
 
     def setup_dados(self):

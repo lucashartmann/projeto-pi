@@ -5,6 +5,9 @@ from view import View
 def ver_produtos_estoque():
     return Init.loja.get_estoque().get_lista_produtos()
 
+def get_clientes_cadastrados():
+    return Init.loja.get_lista_clientes()
+
 
 def cadastrar_cliente(lista):
     if lista[0] == "":

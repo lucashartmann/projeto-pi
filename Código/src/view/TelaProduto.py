@@ -39,7 +39,7 @@ class TelaCadastrar(Container):
             dados.append(self.query_one("#inpt_categoria", Input).value)
         else:
             dados.append("")
-        resultado = Controller.cadastrar_produto(Controller, dados)
+        resultado = Controller.cadastrar_produto(dados)
         self.notify(str(resultado), markup=False)
         self.screen.on_mount()
 
@@ -65,8 +65,7 @@ class TelaRemover(Container):
         match evento.button.id:
             case "bt_remover":
                 input_id = self.query_one("#input_id").value
-                mensagem = Controller.remover_produto(
-                    Controller, input_id)
+                mensagem = Controller.remover_produto(input_id)
                 self.notify(str(mensagem), markup=False)
 
 
@@ -116,8 +115,7 @@ class TelaEditar(Container):
                         "#inpt_categoria", Input).value)
                 else:
                     dados.append("")
-                mensagem = Controller.editar_produto(
-                    Controller, input_id, dados)
+                mensagem = Controller.editar_produto(input_id, dados)
                 self.notify(str(mensagem), markup=False)
                 self.screen.on_mount()
 
@@ -148,7 +146,7 @@ class TelaProduto(Screen):
     valor_select = ""
 
     def on_mount(self):
-        produtos = Controller.ver_produtos_estoque(Controller)
+        produtos = Controller.ver_produtos_estoque()
         lista_categorias = []
         for produto in produtos:
             if produto.get_categoria() not in lista_categorias:
