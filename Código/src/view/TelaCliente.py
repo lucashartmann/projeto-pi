@@ -28,7 +28,7 @@ class TelaCadastrar(Container):
         for input in self.query(Input):
             dados.append(input.value.upper())
         resultado = Controller.cadastrar_cliente(dados)
-        self.notify(resultado)
+        self.notify(str(resultado), markup=False)
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
@@ -49,7 +49,7 @@ class TelaRemover(Container):
             case "bt_remover":
                 input_cpf = self.query_one("#input_cpf", Input).value
                 mensagem = Controller.remover_cliente(input_cpf)
-                self.notify(mensagem)
+                self.notify(str(mensagem), markup=False)
 
 
 class TelaEditar(Container):
@@ -81,7 +81,7 @@ class TelaEditar(Container):
                 for input in self.query(Input)[1:]:
                     dados.append(input.value.upper())
                 mensagem = Controller.editar_cliente(input_cpf, dados)
-                self.notify(mensagem)
+                self.notify(str(mensagem), markup=False)
 
 
 class TelaCliente(Screen):
