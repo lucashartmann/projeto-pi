@@ -1,5 +1,5 @@
 from view.App import App
-from controller.Controller import Controller
+from controller import Controller
 import sys
 
 comando = sys.argv[1:]

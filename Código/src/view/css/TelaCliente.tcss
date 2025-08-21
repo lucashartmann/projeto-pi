@@ -1,7 +1,4 @@
-TelaCadastrar {
-    layout: grid;
-    grid-size: 4 5;
-}
+
 
 Input {
     width: 20;

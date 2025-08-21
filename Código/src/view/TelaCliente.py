@@ -1,7 +1,7 @@
 from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header
 from textual.screen import Screen
 from textual.containers import Container
-from controller.Controller import Controller
+from controller import Controller
 
 
 class TelaCadastrar(Container):
@@ -48,8 +48,7 @@ class TelaRemover(Container):
         match evento.button.id:
             case "bt_remover":
                 input_cpf = self.query_one("#input_cpf", Input).value
-                mensagem = Controller.remover_cliente(
-                    Controller, input_cpf)
+                mensagem = Controller.remover_cliente(input_cpf)
                 self.notify(mensagem)
 
 
@@ -81,14 +80,36 @@ class TelaEditar(Container):
                 dados = []
                 for input in self.query(Input)[1:]:
                     dados.append(input.value.upper())
-                mensagem = Controller.editar_cliente(
-                    Controller, input_cpf, dados)
+                mensagem = Controller.editar_cliente(input_cpf, dados)
                 self.notify(mensagem)
 
 
 class TelaCliente(Screen):
 
     CSS_PATH = "css/TelaCliente.tcss"
+
+    # def montar(self):
+    #     lero = HorizontalGroup()
+    #     self.mount(lero)
+    #     lero1 = HorizontalGroup()
+    #     self.mount(lero1)
+    #     lero2 = HorizontalGroup()
+    #     self.mount(lero2)
+
+    #     lero.mount(Label("Nome:"))
+    #     lero.mount(Input(placeholder="Nome aqui"))
+    #     lero.mount(Label("CPF:"))
+    #     lero.mount(Input(placeholder="CPF aqui"))
+
+    #     lero1.mount(Label("RG:"))
+    #     lero1.mount(Input(placeholder="RG aqui"))
+    #     lero1.mount(Label("Telefone:"))
+    #     lero1.mount(Input(placeholder="Telefone aqui"))
+
+    #     lero2.mount(Label("Endereço:"))
+    #     lero2.mount(Input(placeholder="Endereço aqui"))
+    #     lero2.mount(Label("Email:"))
+    #     lero2.mount(Input(placeholder="Email aqui"))
 
     def compose(self):
         yield Header()

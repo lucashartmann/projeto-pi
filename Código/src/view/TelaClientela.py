@@ -114,7 +114,7 @@ class TelaClientela(Screen):
                     except ValueError:
                         self.notify("Valor inválido")
 
-            if "ENDERECO:" in palavras:
+            if "ENDERECO:" in palavras: 
                 index = palavras.index("ENDERECO:")
                 if index + 1 < len(palavras):
                     endereco_busca = palavras[index + 1].upper()

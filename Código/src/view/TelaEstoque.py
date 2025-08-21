@@ -1,7 +1,7 @@
 from textual.widgets import Input, Pretty, TextArea, Button, Checkbox, Footer, Header, Select
 from textual.screen import Screen
 from textual.containers import HorizontalGroup
-from controller.Controller import Controller
+from controller import Controller
 from textual import on
 
 

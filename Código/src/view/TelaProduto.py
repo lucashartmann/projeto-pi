@@ -1,7 +1,7 @@
 from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header, Select
 from textual.screen import Screen
 from textual.containers import Container, HorizontalGroup
-from controller.Controller import Controller
+from controller import Controller
 from textual import on
 
 
