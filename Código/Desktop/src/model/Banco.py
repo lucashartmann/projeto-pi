@@ -36,8 +36,10 @@ class Banco:
             )
                             ''')
 
+    
         self.conexao.commit()
 
+   
     def cadastrar_cliente(self, cliente):
         try:
             sql_query = ''' 
@@ -107,6 +109,17 @@ class Banco:
 
             lista.append(cliente)
         return lista
+    
+    def get_cliente_por_email(self, email):
+        self.cursor.execute(
+            f'SELECT * FROM Cliente WHERE email = ?', (email,))
+        registro = self.cursor.fetchone()
+        if not registro:
+            return None
+
+        cliente = Cliente.Cliente(*registro)
+
+        return cliente
 
     def get_cliente_por_cpf(self, cpf):
         self.cursor.execute(
