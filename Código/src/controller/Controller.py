@@ -2,13 +2,6 @@ from model import Cliente, Produto, Init
 from view import View
 
 
-def ver_produtos_estoque():
-    return Init.loja.get_estoque().get_lista_produtos()
-
-def get_clientes_cadastrados():
-    return Init.loja.get_lista_clientes()
-
-
 def cadastrar_cliente(lista):
     if lista[0] == "":
         View.mostrar_mensagem("Nome está vazio")
@@ -197,23 +190,24 @@ def remover_cliente(cpf):
         View.mostrar_mensagem(f"ERRO ao remover cliente")
         return f"ERRO ao remover cliente"
 
-    def remover_produto(self, id):
-        if len(id) < 1:
-            View.mostrar_mensagem("ERRO")
-            return "ERRO"
-        try:
-            id = int(id)
-        except ValueError:
-            View.mostrar_mensagem("ERRO")
-            return "ERRO"
-        produto = Init.loja.get_estoque().get_produto_por_id(id)
-        if not produto:
-            View.mostrar_mensagem("ERRO")
-            return "ERRO"
-        remocao = Init.loja.get_estoque().remover_produto(produto)
-        if remocao:
-            View.mostrar_mensagem(f"Produto removido com sucesso")
-            return f"Produto removido com sucesso"
-        else:
-            View.mostrar_mensagem(f"ERRO ao remover produto")
-            return f"ERRO ao remover produto"
+
+def remover_produto(self, id):
+    if len(id) < 1:
+        View.mostrar_mensagem("ERRO")
+        return "ERRO"
+    try:
+        id = int(id)
+    except ValueError:
+        View.mostrar_mensagem("ERRO")
+        return "ERRO"
+    produto = Init.loja.get_estoque().get_produto_por_id(id)
+    if not produto:
+        View.mostrar_mensagem("ERRO")
+        return "ERRO"
+    remocao = Init.loja.get_estoque().remover_produto(produto)
+    if remocao:
+        View.mostrar_mensagem(f"Produto removido com sucesso")
+        return f"Produto removido com sucesso"
+    else:
+        View.mostrar_mensagem(f"ERRO ao remover produto")
+        return f"ERRO ao remover produto"

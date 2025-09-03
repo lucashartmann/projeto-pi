@@ -1,10 +1,8 @@
 class Produto:
-    id = 0
 
     def __init__(self, nome, marca, modelo, cor, preco, quantidade, categoria):
-        self.id = self.gerar_id()
+        self.id = 0
         self.nome = nome
-        self.codigo = None  # Implementar o código ou deixar só id
         self.cor = cor
         self.preco = preco
         self.marca = marca
@@ -27,12 +25,9 @@ class Produto:
 
     def get_nome(self):
         return self.nome
-    
+
     def get_categoria(self):
         return self.categoria
-
-    def get_codigo(self):
-        return self.codigo
 
     def get_marca(self):
         return self.marca
@@ -49,13 +44,12 @@ class Produto:
     def get_id(self):
         return self.id
 
-    def gerar_id(self):
-        Produto.id += 1
-        return Produto.id
+    def set_id(self, id):
+        self.id = id
 
     def set_nome(self, nome):
         self.nome = nome
-        
+
     def set_categoria(self, categoria):
         self.categoria = categoria
 

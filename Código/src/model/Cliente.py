@@ -6,7 +6,7 @@ class Cliente(Pessoa):
     def __init__(self, nome, cpf, rg, telefone, endereco, email):
         super().__init__(nome, cpf, rg, telefone, endereco, email)
         self.carrinho = Carrinho()
-    
+
     def get_carrinho(self):
         return self.carrinho
 
