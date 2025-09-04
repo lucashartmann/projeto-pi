@@ -38,38 +38,29 @@ nav a:hover {
 }
 
 
-#banner {
-    height: 200px;
-    width: 1100px;
-    margin: 20px 10px 0px 10px;
-}
-
-.produtos {
-    margin-top: 40px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    text-decoration: none;
-}
-
-.produto_view {
-    background-color: white;
-    border: 1px solid #cfcfcf;
-    padding: 10px;
-    margin-bottom: 20px;
-    margin-left: 50px;
-    width: 70%;
-    height: 300px auto;
-    align-items: center;
-    text-align: center;
-    text-decoration: none;
-}
-
-img {
-    max-width: 70%;
-    height: auto;
-}
-
 button {
     background-color: yellow;
     color: black;
+}
+
+#carrinho {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+#produtos_carrinho {
+    background-color: rgb(170, 161, 161);
+    border: 1px solid #cfcfcf;
+    margin-top: 40px;
+    width: 65%;
+    text-decoration: none;
+}
+
+#pagamento {
+    background-color: white;
+    border: 1px solid #cfcfcf;
+    margin: 40px;
+    width: 30%;
+    text-align: left;
 }
