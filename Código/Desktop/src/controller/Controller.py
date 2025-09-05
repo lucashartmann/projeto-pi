@@ -6,9 +6,9 @@ def cadastrar_cliente(lista):
     if lista[0] == "":
         View.mostrar_mensagem("Nome está vazio")
         return "Nome está vazio"
-    validar(lista[1])
-    validar(lista[2])
-    validar(lista[3])
+    # validar(lista[1])
+    # validar(lista[2])
+    # validar(lista[3])
     if lista[4] == "":
         View.mostrar_mensagem("Endereco está vazio")
         return "Endereco está vazio"
@@ -18,6 +18,7 @@ def cadastrar_cliente(lista):
 
     cliente = Cliente.Cliente(lista[0], lista[1], lista[2],
                               lista[3], lista[4], lista[5])
+    
     cadastrado = Init.loja.cadastrar(cliente)
 
     if cadastrado:

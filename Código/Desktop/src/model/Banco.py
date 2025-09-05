@@ -8,52 +8,56 @@ class Banco:
         diretorio = "data"
         if not os.path.isdir(diretorio):
             os.makedirs(diretorio)
-        self.conexao = sqlite3.connect("data\\Loja.db")
+        self.conexao = sqlite3.connect("data\\Loja.db", check_same_thread=False)
         self.cursor = self.conexao.cursor()
         self.init_tabelas()
 
     def init_tabelas(self):
         self.cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS Cliente(
-                nome VARCHAR NOT NULL,
-                cpf VARCHAR(11) PRIMARY KEY,
-                rg VARCHAR NOT NULL,
-                telefone VARCHAR NOT NULL,
-                endereco VARCHAR NOT NULL,
-                email VARCHAR NOT NULL
+                nome TEXT NOT NULL,
+                cpf TEXT PRIMARY KEY,
+                rg TEXT NOT NULL,
+                telefone TEXT NOT NULL,
+                endereco TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE
             )
                             ''')
         self.cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS Produto(
                 id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome VARCHAR NOT NULL,
-                marca VARCHAR NOT NULL,
-                modelo VARCHAR NOT NULL,
-                cor VARCHAR NOT NULL,
+                nome TEXT NOT NULL,
+                marca TEXT NOT NULL,
+                modelo TEXT NOT NULL,
+                cor TEXT NOT NULL,
                 preco FLOAT NOT NULL,
                 quantidade INT NOT NULL,
-                categoria VARCHAR NOT NULL
+                categoria TEXT NOT NULL
             )
                             ''')
 
-    
         self.conexao.commit()
 
-   
     def cadastrar_cliente(self, cliente):
         try:
             sql_query = ''' 
             INSERT INTO Cliente(nome, cpf, rg, telefone, endereco, email) 
             VALUES(?, ?, ?, ?, ?, ?)
-                                
-                                '''
-            self.cursor.executemany(sql_query, [(cliente.get_nome(), cliente.get_cpf(), cliente.get_rg(
-            ), cliente.get_telefone(), cliente.get_endereco(), cliente.get_email())])
+            '''
+            self.cursor.execute(sql_query, (
+                cliente.get_nome(),
+                cliente.get_cpf(),
+                cliente.get_rg(),
+                cliente.get_telefone(),
+                cliente.get_endereco(),
+                cliente.get_email()
+            ))
             self.conexao.commit()
             return True
         except Exception as e:
-            print(e)
+            print("Erro ao cadastrar cliente:", e)
             return False
+
 
     def remove_cliente(self, cpf):
         try:
@@ -66,7 +70,8 @@ class Banco:
             self.conexao.commit()
 
             return True
-        except:
+        except Exception as e:
+            print(e)
             return False
 
     def remover_produto(self, id):
@@ -80,7 +85,8 @@ class Banco:
             self.conexao.commit()
 
             return True
-        except:
+        except Exception as e:
+            print(e)
             return False
 
     # def set_quantidade(self):
@@ -109,7 +115,7 @@ class Banco:
 
             lista.append(cliente)
         return lista
-    
+
     def get_cliente_por_email(self, email):
         self.cursor.execute(
             f'SELECT * FROM Cliente WHERE email = ?', (email,))
@@ -151,7 +157,7 @@ class Banco:
             VALUES(?, ?, ?, ?, ?, ?, ?)
                                 
                                 '''
-            self.cursor.executemany(sql_query, [(produto.get_nome(), produto.get_marca(), produto.get_modelo(
+            self.cursor.execute(sql_query, [(produto.get_nome(), produto.get_marca(), produto.get_modelo(
             ), produto.get_cor(), produto.get_preco(), produto.get_quantidade(), produto.get_categoria())])
             self.conexao.commit()
             return True
