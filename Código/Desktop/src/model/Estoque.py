@@ -1,10 +1,10 @@
-from model import Banco
+from model.Banco import Banco
 
 
 class Estoque:
 
     def __init__(self):
-        self.banco_dados = Banco.Banco()
+        self.banco_dados = Banco()
 
     def adicionar_produto(self, produto):
         return self.banco_dados.adicionar_produto(produto)

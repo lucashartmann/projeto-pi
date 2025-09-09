@@ -8,23 +8,24 @@ class Banco:
         diretorio = "data"
         if not os.path.isdir(diretorio):
             os.makedirs(diretorio)
-        self.conexao = sqlite3.connect("data\\Loja.db", check_same_thread=False)
+        self.conexao = sqlite3.connect(
+            "data\\Loja.db", check_same_thread=False)
         self.cursor = self.conexao.cursor()
         self.init_tabelas()
 
     def init_tabelas(self):
         self.cursor.execute(f'''
-            CREATE TABLE IF NOT EXISTS Cliente(
+            CREATE TABLE IF NOT EXISTS Cliente (
                 nome TEXT NOT NULL,
                 cpf TEXT PRIMARY KEY,
                 rg TEXT NOT NULL,
                 telefone TEXT NOT NULL,
                 endereco TEXT NOT NULL,
                 email TEXT NOT NULL UNIQUE
-            )
+            );
                             ''')
         self.cursor.execute(f'''
-            CREATE TABLE IF NOT EXISTS Produto(
+            CREATE TABLE IF NOT EXISTS Produto (
                 id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 marca TEXT NOT NULL,
@@ -33,7 +34,7 @@ class Banco:
                 preco FLOAT NOT NULL,
                 quantidade INT NOT NULL,
                 categoria TEXT NOT NULL
-            )
+            );
                             ''')
 
         self.conexao.commit()
@@ -41,7 +42,7 @@ class Banco:
     def cadastrar_cliente(self, cliente):
         try:
             sql_query = ''' 
-            INSERT INTO Cliente(nome, cpf, rg, telefone, endereco, email) 
+            INSERT INTO Cliente (nome, cpf, rg, telefone, endereco, email) 
             VALUES(?, ?, ?, ?, ?, ?)
             '''
             self.cursor.execute(sql_query, (
@@ -58,17 +59,14 @@ class Banco:
             print("Erro ao cadastrar cliente:", e)
             return False
 
-
     def remove_cliente(self, cpf):
         try:
-
             sql_delete_query = """
-                DELETE FROM Livro
-                WHERE cpf = ?;
+                DELETE FROM Cliente
+                WHERE cpf = ?
                 """
-            self.cursor.execute(sql_delete_query, cpf)
+            self.cursor.execute(sql_delete_query, (cpf,))
             self.conexao.commit()
-
             return True
         except Exception as e:
             print(e)
@@ -76,14 +74,12 @@ class Banco:
 
     def remover_produto(self, id):
         try:
-
             sql_delete_query = """
-                DELETE FROM Livro
-                WHERE coluna1 = ?;
+                DELETE FROM Produto
+                WHERE id_produto = ?
                 """
-            self.cursor.execute(sql_delete_query, id)
+            self.cursor.execute(sql_delete_query, (id,))
             self.conexao.commit()
-
             return True
         except Exception as e:
             print(e)
@@ -103,16 +99,10 @@ class Banco:
 
     def get_lista_clientes(self):
         lista = []
-
         self.cursor.execute("SELECT * FROM Cliente")
         resultados = self.cursor.fetchall()
-
-        if not resultados:
-            return None
         for dados in resultados:
-
             cliente = Cliente.Cliente(*dados)
-
             lista.append(cliente)
         return lista
 
@@ -122,9 +112,7 @@ class Banco:
         registro = self.cursor.fetchone()
         if not registro:
             return None
-
         cliente = Cliente.Cliente(*registro)
-
         return cliente
 
     def get_cliente_por_cpf(self, cpf):
@@ -133,9 +121,7 @@ class Banco:
         registro = self.cursor.fetchone()
         if not registro:
             return None
-
         cliente = Cliente.Cliente(*registro)
-
         return cliente
 
     def get_produto_por_id(self, id):
@@ -144,21 +130,25 @@ class Banco:
         registro = self.cursor.fetchone()
         if not registro:
             return None
-
         produto = Produto.Produto(*registro[1:])
         produto.set_id(registro[0])
-
         return produto
 
     def adicionar_produto(self, produto):
         try:
             sql_query = ''' 
-            INSERT INTO Produto(nome, marca, modelo, cor, preco, quantidade, categoria) 
+            INSERT INTO Produto (nome, marca, modelo, cor, preco, quantidade, categoria) 
             VALUES(?, ?, ?, ?, ?, ?, ?)
-                                
                                 '''
-            self.cursor.execute(sql_query, [(produto.get_nome(), produto.get_marca(), produto.get_modelo(
-            ), produto.get_cor(), produto.get_preco(), produto.get_quantidade(), produto.get_categoria())])
+            self.cursor.execute(sql_query, (
+                produto.get_nome(),
+                produto.get_marca(),
+                produto.get_modelo(),
+                produto.get_cor(),
+                produto.get_preco(),
+                produto.get_quantidade(),
+                produto.get_categoria()
+            ))
             self.conexao.commit()
             return True
         except Exception as e:
@@ -167,17 +157,11 @@ class Banco:
 
     def get_lista_produtos(self):
         lista = []
-
         self.cursor.execute("SELECT * FROM Produto")
         resultados = self.cursor.fetchall()
-
-        if not resultados:
-            return None
         for dados in resultados:
-
             produto = Produto.Produto(*dados[1:])
             produto.set_id(dados[0])
-
             lista.append(produto)
         return lista
 
@@ -185,64 +169,44 @@ class Banco:
         self.cursor.execute(
             f'SELECT * FROM Produto WHERE nome = ?', (nome,))
         lista_registros = self.cursor.fetchall()
-        if not lista_registros:
-            return None
-
         lista_produtos = []
-
         for registro in lista_registros:
             produto = Produto.Produto(*registro[1:])
             produto.set_id(registro[0])
             lista_produtos.append(registro)
-
         return lista_produtos
 
     def get_produtos_por_marca(self, marca):
         self.cursor.execute(
             f'SELECT * FROM Produto WHERE marca = ?', (marca,))
         lista_registros = self.cursor.fetchall()
-        if not lista_registros:
-            return None
-
         lista_produtos = []
-
         for registro in lista_registros:
             produto = Produto.Produto(*registro[1:])
             produto.set_id(registro[0])
             lista_produtos.append(registro)
-
         return lista_produtos
 
     def get_produtos_por_modelo(self, modelo):
         self.cursor.execute(
             f'SELECT * FROM Produto WHERE modelo = ?', (modelo,))
         lista_registros = self.cursor.fetchall()
-        if not lista_registros:
-            return None
-
         lista_produtos = []
-
         for registro in lista_registros:
             produto = Produto.Produto(*registro[1:])
             produto.set_id(registro[0])
             lista_produtos.append(registro)
-
         return lista_produtos
 
     def get_produtos_por_categoria(self, categoria):
         self.cursor.execute(
             f'SELECT * FROM Produto WHERE categoria = ?', (categoria,))
         lista_registros = self.cursor.fetchall()
-        if not lista_registros:
-            return None
-
         lista_produtos = []
-
         for registro in lista_registros:
             produto = Produto.Produto(*registro[1:])
             produto.set_id(registro[0])
             lista_produtos.append(registro)
-
         return lista_produtos
 
     def get_quantidade_produto_por_marca(self, marca):

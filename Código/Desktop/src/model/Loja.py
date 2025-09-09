@@ -59,6 +59,6 @@ class Loja:
 
     def get_produto_por_id(self, id):
         return self.banco_dados.get_produto_por_id(id)
-    
+
     def get_cliente_por_email(self, email):
         return self.banco_dados.get_cliente_por_email(email)

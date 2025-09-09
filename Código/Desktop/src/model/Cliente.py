@@ -1,6 +1,7 @@
-from model import Pessoa
+from model.Pessoa import Pessoa
 
-class Cliente(Pessoa.Pessoa):
+
+class Cliente(Pessoa):
     def __init__(self, nome, cpf, rg, telefone, endereco, email):
         super().__init__(nome, cpf, rg, telefone, endereco, email)
 
