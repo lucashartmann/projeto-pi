@@ -27,7 +27,7 @@ jobs:
       - name: Build executable with PyInstaller
         run: |
           pyinstaller --onedir `
-              --add-data "view;view" `
+              --add-data "Código/Desktop/src/view/css;view/css" `
               Código/Desktop/src/Main.py
 
       - name: Fazer upload do artefato
