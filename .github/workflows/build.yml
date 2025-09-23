@@ -28,7 +28,7 @@ jobs:
         run: |
           pyinstaller --onedir `
               --add-data "view;view" `
-              Main.py
+              Código/Desktop/src/Main.py
 
       - name: Fazer upload do artefato
         uses: actions/upload-artifact@v4
