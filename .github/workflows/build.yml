@@ -28,6 +28,8 @@ jobs:
         run: |
           pyinstaller --onedir `
               --add-data "Código/Desktop/src/view/css;view/css" `
+              --hidden-import textual.widgets._tab_pane `
+              --name StoreSystem `
               Código/Desktop/src/Main.py
 
       - name: Fazer upload do artefato
