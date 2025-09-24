@@ -1,0 +1,44 @@
+
+TelaConsulta {
+    background: rgb(200, 200, 200);
+}
+
+TelaConsulta TextArea {
+    color: rgba(19, 243, 67, 1);
+    height: 20%;
+    margin: 2;
+}
+
+TelaConsulta HorizontalGroup {
+    margin: 2;
+}
+
+TelaConsulta DataTable {
+    margin: 2;
+}
+
+TelaConsulta DataTable Row {
+    margin: 2;
+}
+
+TelaConsulta DataTable Column {
+    margin: 2;
+}
+
+TelaConsulta Select {
+    width: 22%;
+}
+
+Input {
+    width: 70%;
+}
+
+Tab {
+    color: black;    
+}
+
+SelectionList {
+    width: 25%;
+    height: 100%;
+}
+

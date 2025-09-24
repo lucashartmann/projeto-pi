@@ -1,0 +1,8 @@
+Login {
+    align: center middle;
+}
+
+Input {
+    margin-bottom: 1;
+    width: 70%;
+}

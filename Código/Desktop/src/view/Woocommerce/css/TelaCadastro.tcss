@@ -1,0 +1,31 @@
+Input {
+    width: 70%;
+}
+
+TelaCadastro Grid {
+    grid-size: 2;
+    align: center middle;
+}
+
+TelaCadastro {
+    background: rgb(200, 200, 200);
+    color: black;
+}
+
+TelaCadastro #stt_nome {
+    column-span: 3;
+}
+
+TelaCadastro #input_descricao {
+    width: auto;
+    height: auto;
+}
+
+Tab {
+    color: black;    
+}
+
+SelectionList {
+    width: 25%;
+    height: 100%;
+}
