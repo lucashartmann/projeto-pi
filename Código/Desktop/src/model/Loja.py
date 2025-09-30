@@ -1,4 +1,5 @@
-from model import Banco, Estoque
+from Desktop.src.database import Banco
+from model import Estoque
 
 
 class Loja:

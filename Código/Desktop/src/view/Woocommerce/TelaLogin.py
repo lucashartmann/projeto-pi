@@ -31,7 +31,7 @@ class Login(Screen):
 
         lista_inputs = self.query(Input)
 
-        if valor_select == "MYSQL":
+        if valor_select == "SQLITE":
             lista_inputs[0].placeholder = "host"
             lista_inputs[1].placeholder = "user"
             lista_inputs[2].placeholder = "password"

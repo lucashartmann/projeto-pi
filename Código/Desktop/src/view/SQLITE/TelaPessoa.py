@@ -2,7 +2,7 @@ from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer
 from textual.screen import Screen
 from textual.containers import Container
 from controller import Controller
-from view import TelaPessoal
+from Desktop.src.view.SQLITE import TelaPessoal
 from textual import on
 
 

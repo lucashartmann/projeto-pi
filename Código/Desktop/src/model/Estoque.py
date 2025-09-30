@@ -1,4 +1,4 @@
-from model.Banco import Banco
+from Desktop.src.database.Banco import Banco
 
 
 class Estoque:

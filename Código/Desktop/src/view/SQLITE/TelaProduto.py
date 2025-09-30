@@ -4,7 +4,7 @@ from textual.containers import Container, HorizontalGroup
 from controller import Controller
 from textual import on
 from model import Init
-from view import TelaEstoque
+from Desktop.src.view.SQLITE import TelaEstoque
 
 class TelaCadastrar(Container):
     def compose(self):

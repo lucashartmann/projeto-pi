@@ -1,5 +1,6 @@
 from textual.app import App
-from view import TelaPessoa, TelaProduto, TelaInicial
+from Desktop.src.view.SQLITE import TelaInicial, TelaPessoa
+from Desktop.src.view.SQLITE import TelaProduto
 
 
 class App(App):
