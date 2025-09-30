@@ -1,16 +1,12 @@
-from textual.widgets import Input, Pretty, TextArea, Button, Checkbox, Footer, Header, Select
-from textual.screen import Screen
-from textual.containers import HorizontalGroup
+from textual.widgets import Input, Pretty, TextArea, Button, Select
+from textual.containers import HorizontalGroup, Container
 from textual import on
 from model import Init
 
 
-class TelaEstoque(Screen):
-
-    CSS_PATH = "css/TelaEstoque.tcss"
+class TelaEstoque(Container):
 
     def compose(self):
-        yield Header()
         with HorizontalGroup(id="hg_pesquisa"):
             yield Select([("produto", 'produto')])
             yield Input()
@@ -18,25 +14,12 @@ class TelaEstoque(Screen):
         yield TextArea(disabled=True)
         with HorizontalGroup(id="container"):
             pass
-        yield Footer()
 
     produtos = Init.loja.get_estoque().get_lista_produtos()
     produtos_filtrados = []
-    filtrou_checkbox = False
     filtrou_select = False
     filtrou_input = False
     select_evento = ""
-    checkbox_evento = ""
-
-    def montar_checkboxes(self):
-        lista_categorias = []
-        horizontal = self.query_one("#container", HorizontalGroup)
-        for produto in self.produtos:
-            if produto.get_categoria() not in lista_categorias:
-                horizontal.mount(Checkbox(produto.get_categoria()))
-                lista_categorias.append(produto.get_categoria())
-        self.query_one(Select).set_options(
-            [(categoria, categoria) for categoria in lista_categorias])
 
     def setup_dados(self):
         if len(self.produtos_filtrados) > 0:
@@ -49,7 +32,6 @@ class TelaEstoque(Screen):
         self.produtos = Init.loja.get_estoque().get_lista_produtos()
         produtos_str = [str(produto) for produto in self.produtos]
         self.mount(Pretty(produtos_str))
-        self.montar_checkboxes()
         self.setup_dados()
 
     def on_button_pressed(self):
@@ -58,13 +40,11 @@ class TelaEstoque(Screen):
     def atualizar(self):
         resultado = self.query_one(Pretty)
 
-        if len(self.produtos_filtrados) > 0 and self.filtrou_select == False and self.filtrou_checkbox == False:
+        if len(self.produtos_filtrados) > 0 and self.filtrou_select == False:
             produtos_str = [str(produto)
                             for produto in self.produtos_filtrados]
             resultado.update(produtos_str)
             self.setup_dados()
-        elif self.filtrou_checkbox:
-            self.checkbox_changed(self.checkbox_evento)
         elif self.filtrou_select:
             self.select_changed(self.select_evento)
         else:
@@ -75,7 +55,7 @@ class TelaEstoque(Screen):
     @on(Select.Changed)
     def select_changed(self, evento: Select.Changed):
         if evento.select.is_blank():
-            if self.filtrou_input == False and self.filtrou_checkbox == False and self.filtrou_select:
+            if self.filtrou_input == False and self.filtrou_select:
                 self.produtos_filtrados = []
             produtos_str = [str(produto) for produto in self.produtos]
             self.query_one(Pretty).update(produtos_str)
@@ -84,7 +64,7 @@ class TelaEstoque(Screen):
         else:
             valor_select = str(evento.value)
             valor_antigo = ""
-            if valor_select != valor_antigo and self.filtrou_input == False and self.filtrou_checkbox == False and self.filtrou_select:
+            if valor_select != valor_antigo and self.filtrou_input == False and self.filtrou_select:
                 self.produtos_filtrados = []
                 valor_antigo = valor_select
             if len(self.produtos_filtrados) == 0:
@@ -104,36 +84,6 @@ class TelaEstoque(Screen):
             self.setup_dados()
             self.filtrou_select = True
             self.select_evento = evento
-
-    @on(Checkbox.Changed)
-    def checkbox_changed(self, evento: Checkbox.Changed):
-        valor_checkbox = str(evento.checkbox.label)
-        if evento.checkbox.value is False:
-            if self.filtrou_input == False and self.filtrou_select == False and self.filtrou_checkbox:
-                self.produtos_filtrados = []
-            produtos_str = [str(produto) for produto in self.produtos]
-            self.query_one(Pretty).update(produtos_str)
-            self.setup_dados()
-            self.filtrou_checkbox = False
-        else:
-            if self.filtrou_input == False and self.filtrou_select == False and self.filtrou_checkbox:
-                self.produtos_filtrados = []
-            if len(self.produtos_filtrados) == 0:
-                for produto in self.produtos:
-                    if produto.get_categoria() == valor_checkbox:
-                        self.produtos_filtrados.append(produto)
-            else:
-                produtos_temp = []
-                for produto in self.produtos_filtrados:
-                    if produto.get_categoria() == valor_checkbox:
-                        produtos_temp.append(produto)
-                if len(produtos_temp) > 0:
-                    self.produtos_filtrados = produtos_temp
-            produtos_str = [str(produto)for produto in self.produtos_filtrados]
-            self.query_one(Pretty).update(produtos_str)
-            self.setup_dados()
-            self.filtrou_checkbox = True
-            self.checkbox_evento = evento
 
     def filtro(self, palavras, index, filtro_recebido):
         lista_filtros = ["valor", "quantidade", "id"]
@@ -210,7 +160,7 @@ class TelaEstoque(Screen):
         palavras = texto.split()
 
         if len(palavras) > 0:
-            if self.filtrou_select == False and self.filtrou_checkbox == False:
+            if self.filtrou_select == False:
                 self.produtos_filtrados = []
 
             for palavra in palavras:

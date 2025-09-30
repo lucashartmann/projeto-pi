@@ -1,22 +1,18 @@
-from textual.widgets import Input, Pretty, TextArea, Button, Footer, Header
-from textual.screen import Screen
-from textual.containers import HorizontalGroup
+from textual.widgets import Input, Pretty, TextArea, Button, Select
+from textual.containers import HorizontalGroup, Container
 from model import Init
 
 
-class TelaClientela(Screen):
-
-    CSS_PATH = "css/TelaClientela.tcss"
+class TelaPessoal(Container):
 
     def compose(self):
-        yield Header()
         with HorizontalGroup(id="hg_pesquisa"):
+            yield Select([("Cliente", "Cliente"), ("Funcionário", "Funcionário")])
             yield Input()
             yield Button("Voltar", id="bt_voltar")
         yield TextArea(disabled=True)
         with HorizontalGroup(id="container"):
             pass
-        yield Footer()
 
     clientes = Init.loja.get_lista_clientes()
     clientes_filtrados = []

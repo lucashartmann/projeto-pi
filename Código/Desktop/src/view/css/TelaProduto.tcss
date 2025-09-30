@@ -11,12 +11,6 @@ TelaProduto {
     align: center middle;
 }
 
-
-TelaRemover {
-    layout: grid;
-    grid-size: 4 5;
-}
-
 Button {
     margin: 2 0 0 0;
 }
@@ -82,26 +76,18 @@ TelaCadastrar #lbl_quant {
     margin: 3 10 0 25; 
 }
 
-TelaEditar #lbl_id {
-    margin: 3 7 0 25; 
+TelaEstoque TextArea {
+    height: 5;
 }
 
-TelaEditar #lbl_cor {
-    margin: 3 17 0 25; 
+TelaEstoque Checkbox {
+    margin: 1;
 }
 
-TelaEditar #lbl_quant {
-    margin: 3 10 0 25; 
+TelaEstoque Input {
+    width: 70%;
 }
 
-TelaEditar #lbl_modelo {
-    margin: 3 10 0 25; 
-}
-
-TelaEditar #lbl_preco {
-    margin: 3 11 0 25; 
-}
-
-TelaEditar #lbl_nome {
-    margin: 3 12 0 25; 
+TelaEstoque #hg_pesquisa {
+    margin: 1;
 }

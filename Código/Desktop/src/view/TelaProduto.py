@@ -3,10 +3,14 @@ from textual.screen import Screen
 from textual.containers import Container, HorizontalGroup
 from controller import Controller
 from textual import on
-
+from model import Init
+from view import TelaEstoque
 
 class TelaCadastrar(Container):
     def compose(self):
+        with HorizontalGroup():
+            yield Label("ID do Produto:", id="lb_id")
+            yield Input(placeholder="ID aqui", id="input_id")
         with HorizontalGroup():
             yield Label("Nome:", id="lbl_nome")
             yield Input(placeholder="Nome aqui", id="inpt_nome")
@@ -51,54 +55,10 @@ class TelaCadastrar(Container):
                     self.query_one("#lbl_categoria").remove()
                     self.query_one("#inpt_categoria").remove()
                 self.cadastro()
-
-
-class TelaRemover(Container):
-    def compose(self):
-        yield Label("ID do Produto:", id="lb_id")
-        yield Input(placeholder="ID aqui", id="input_id")
-        yield Button("Limpar", id="bt_limpar")
-        yield Button("Remover", id="bt_remover")
-        yield Button("Voltar", id="bt_voltar")
-
-    def on_button_pressed(self, evento: Button.Pressed):
-        match evento.button.id:
             case "bt_remover":
                 input_id = self.query_one("#input_id").value
                 mensagem = Controller.remover_produto(input_id)
                 self.notify(str(mensagem), markup=False)
-
-
-class TelaEditar(Container):
-
-    def compose(self):
-        with HorizontalGroup():
-            yield Label("ID do Produto:", id="lbl_id")
-            yield Input(placeholder="ID aqui", id="input_id")
-            yield Label("Nome:", id="lbl_nome")
-            yield Input(placeholder="Nome aqui", id="inpt_nome")
-        with HorizontalGroup():
-            yield Label("Marca:", id="lbl_marca")
-            yield Input(placeholder="Marca aqui", id="inpt_marca")
-            yield Label("Modelo:", id="lbl_modelo")
-            yield Input(placeholder="Modelo aqui", id="inpt_modelo")
-        with HorizontalGroup():
-            yield Label("Cor:", id="lbl_cor")
-            yield Input(placeholder="Cor aqui", id="inpt_cor")
-            yield Label("Preço:", id="lbl_preco")
-            yield Input(placeholder="Preço aqui", id="inpt_preco")
-        with HorizontalGroup():
-            yield Label("Quantidade:", id="lbl_quant")
-            yield Input(placeholder="Quantidade aqui", id="inpt_quant")
-        with HorizontalGroup(id="categoria_slot"):
-            yield Select([("produto", 'produto')])
-        with HorizontalGroup():
-            yield Button("Editar", id="bt_editar")
-            yield Button("Limpar", id="bt_limpar")
-            yield Button("Voltar", id="bt_voltar")
-
-    def on_button_pressed(self, evento: Button.Pressed):
-        match evento.button.id:
             case "bt_editar":
                 if self.screen.montou:
                     self.screen.montou = False
@@ -120,6 +80,7 @@ class TelaEditar(Container):
                 self.screen.on_mount()
 
 
+
 class TelaProduto(Screen):
     CSS_PATH = "css/TelaProduto.tcss"
 
@@ -128,10 +89,8 @@ class TelaProduto(Screen):
         with TabbedContent():
             with TabPane("Cadastrar"):
                 yield TelaCadastrar()
-            with TabPane("Editar"):
-                yield TelaEditar()
-            with TabPane("Remover"):
-                yield TelaRemover()
+            with TabPane("Estoque"):
+                yield TelaEstoque.TelaEstoque()
         yield Footer()
 
     def on_button_pressed(self, evento: Button.Pressed):
@@ -146,7 +105,7 @@ class TelaProduto(Screen):
     valor_select = ""
 
     def on_mount(self):
-        produtos = Controller.ver_produtos_estoque()
+        produtos = Init.loja.get_estoque().get_lista_produtos()
         lista_categorias = []
         for produto in produtos:
             if produto.get_categoria() not in lista_categorias:

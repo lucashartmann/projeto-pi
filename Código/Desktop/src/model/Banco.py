@@ -36,6 +36,19 @@ class Banco:
                     categoria TEXT NOT NULL
                 );
                                 ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Venda (
+                    id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
+                    cpf_cliente INTEGER,
+                    FOREIGN KEY cpf_cliente REFERENCES Cliente (cpf_cliente)
+                    );
+                                ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Venda_Produtos (
+                    FOREIGN KEY id_venda REFERENCES Venda (id_venda),
+                    FOREIGN KEY id_produto REFERENCES Produto (id_produto)
+                    );
+                                ''')
 
             conexao.commit()
 

@@ -1,0 +1,29 @@
+TelaCadastrar {
+    layout: grid;
+    grid-size: 4 5;
+    align: center middle;
+}
+
+TelaCadastrar Input {
+    width: 20%;
+}
+
+TelaPessoa Input {
+    width: 80%;
+}
+
+TelaPessoal TextArea {
+    height: 5;
+}
+
+TelaPessoal Checkbox {
+    margin: 1;
+}
+
+TelaPessoal Input {
+    width: 70%;
+}
+
+TelaPessoal #hg_pesquisa {
+    margin: 1;
+}

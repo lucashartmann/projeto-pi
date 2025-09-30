@@ -1,12 +1,18 @@
-from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header
+from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header, Select
 from textual.screen import Screen
 from textual.containers import Container
 from controller import Controller
+from view import TelaPessoal
+from textual import on
 
 
 class TelaCadastrar(Container):
-    def compose(self):
 
+    valor_select = ""
+
+    def compose(self):
+        yield Label("ID da Pessoa:")
+        yield Input(placeholder="ID aqui", id="input_id")
         yield Label("Nome:")
         yield Input(placeholder="Nome aqui")
         yield Label("CPF:")
@@ -19,74 +25,54 @@ class TelaCadastrar(Container):
         yield Input(placeholder="Endereço aqui")
         yield Label("Email:")
         yield Input(placeholder="Email aqui")
+        yield Select([("Cliente", "Cliente"), ("Funcionario", "Funcionario")])
         yield Button("Limpar", id="bt_limpar")
         yield Button("Cadastrar", id="bt_cadastrar")
         yield Button("Voltar", id="bt_voltar")
 
     def cadastro(self):
         dados = []
-        for input in self.query(Input):
+        for input in self.query(Input)[1:]:
             dados.append(input.value.upper())
-        resultado = Controller.cadastrar_cliente(dados)
+        dados.append(self.valor_select)
+        resultado = Controller.cadastrar_pessoa(dados)
         self.notify(str(resultado), markup=False)
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_cadastrar":
-                self.cadastro()
-
-
-class TelaRemover(Container):
-    def compose(self):
-        yield Label("ID do Cliente:")
-        yield Input(placeholder="ID aqui", id="input_id")
-        yield Button("Limpar", id="bt_limpar")
-        yield Button("Remover", id="bt_remover")
-        yield Button("Voltar", id="bt_voltar")
-
-    def on_button_pressed(self, evento: Button.Pressed):
-        match evento.button.id:
+                if self.valor_select:
+                    self.cadastro()
+                else:
+                    self.notify("ERRO! Selecione um valor no select")
             case "bt_remover":
-                input_cpf = self.query_one("#input_cpf", Input).value
-                mensagem = Controller.remover_cliente(input_cpf)
-                self.notify(str(mensagem), markup=False)
-
-
-class TelaEditar(Container):
-
-    def compose(self):
-        yield Label("ID do Cliente:")
-        yield Input(placeholder="ID aqui", id="input_id")
-        yield Label("Nome:")
-        yield Input(placeholder="Nome aqui")
-        yield Label("CPF:")
-        yield Input(placeholder="CPF aqui", id="input_cpf")
-        yield Label("RG:")
-        yield Input(placeholder="RG aqui")
-        yield Label("Telefone:")
-        yield Input(placeholder="Telefone aqui")
-        yield Label("Endereço:")
-        yield Input(placeholder="Endereço aqui")
-        yield Label("Email:")
-        yield Input(placeholder="Email aqui")
-        yield Button("Limpar", id="bt_limpar")
-        yield Button("Editar", id="bt_editar")
-        yield Button("Voltar", id="bt_voltar")
-
-    def on_button_pressed(self, evento: Button.Pressed):
-        match evento.button.id:
+                if self.valor_select:
+                    input_cpf = self.query_one("#input_cpf", Input).value
+                    mensagem = Controller.remover_pessoa(
+                        input_cpf, self.valor_select)
+                    self.notify(str(mensagem), markup=False)
+                else:
+                    self.notify("ERRO! Selecione um valor no select")
             case "bt_editar":
-                input_cpf = self.query_one("#input_cpf", Input).value
-                dados = []
-                for input in self.query(Input)[1:]:
-                    dados.append(input.value.upper())
-                mensagem = Controller.editar_cliente(input_cpf, dados)
-                self.notify(str(mensagem), markup=False)
+                if self.valor_select:
+                    input_cpf = self.query_one("#input_cpf", Input).value
+                    dados = []
+                    for input in self.query(Input)[1:]:
+                        dados.append(input.value.upper())
+                    dados.append(self.valor_select)
+                    mensagem = Controller.editar_pessoa(input_cpf, dados)
+                    self.notify(str(mensagem), markup=False)
+                else:
+                    self.notify("ERRO! Selecione um valor no select")
+
+    @on(Select.Changed)
+    def select_changed(self, evento: Select.Changed):
+        self.valor_select = str(evento.value)
 
 
-class TelaCliente(Screen):
+class TelaPessoa(Screen):
 
-    CSS_PATH = "css/TelaCliente.tcss"
+    CSS_PATH = "css/TelaPessoa.tcss"
 
     # def montar(self):
     #     lero = HorizontalGroup()
@@ -116,10 +102,8 @@ class TelaCliente(Screen):
         with TabbedContent():
             with TabPane("Cadastrar"):
                 yield TelaCadastrar()
-            with TabPane("Editar"):
-                yield TelaEditar()
-            with TabPane("Remover"):
-                yield TelaRemover()
+            with TabPane("Pessoas Cadastradas"):
+                yield TelaPessoal.TelaPessoal()
         yield Footer()
 
     def on_button_pressed(self, evento: Button.Pressed):

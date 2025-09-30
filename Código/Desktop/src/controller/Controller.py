@@ -1,13 +1,13 @@
-from model import Cliente, Produto, Init
+from model import Cliente, Produto, Init, Funcionario
 
 
-def cadastrar_cliente(lista):
+def cadastrar_pessoa(lista):
     if lista[0] == "":
         return "Nome está vazio"
 
-    # validar(lista[1])
-    # validar(lista[2])
-    # validar(lista[3])
+    validar(lista[1], "CPF")
+    validar(lista[2], "RG")
+    validar(lista[3], "TELEFONE")
 
     if lista[4] == "":
         return "Endereco está vazio"
@@ -15,15 +15,19 @@ def cadastrar_cliente(lista):
     if lista[5] == "":
         return "Email está vazio"
 
-    cliente = Cliente.Cliente(lista[0], lista[1], lista[2],
-                              lista[3], lista[4], lista[5])
+    if lista[-1] == "Cliente":
+        pessoa = Cliente.Cliente(lista[0], lista[1], lista[2],
+                                 lista[3], lista[4], lista[5])
+    else:
+        pessoa = Funcionario.Funcionario(lista[0], lista[1], lista[2],
+                                         lista[3], lista[4], lista[5])
 
-    cadastrado = Init.loja.cadastrar(cliente)
+    cadastrado = Init.loja.cadastrar(pessoa)
 
     if cadastrado:
-        return f"Cliente cadastrado!\n {cliente}"
+        return f"Pessoa cadastrado!\n {pessoa}"
     else:
-        return "ERRO ao cadastrar cliente"
+        return "ERRO ao cadastrar pessoa"
 
 
 def cadastrar_produto(lista):
@@ -111,31 +115,34 @@ def editar_produto(id, lista):
     return f"Produto editado com sucesso\n {produto}"
 
 
-def editar_cliente(cpf, dados):
+def editar_pessoa(cpf, dados):
     validar(cpf, "CPF")
 
-    cliente = Init.loja.get_cliente_por_cpf(cpf)
+    if dados[-1] == "Cliente":
+        pessoa = Init.loja.get_cliente_por_cpf(cpf)
+    else:
+        pessoa = Init.loja.get_funcionario_por_cpf(cpf)
 
-    if not cliente:
-        return f"Cliente com CPF {cpf} não encontrado"
+    if not pessoa:
+        return f"Pessoa com CPF {cpf} não encontrado"
 
     if dados[0] != "":
-        cliente.set_nome(dados[0])
+        pessoa.set_nome(dados[0])
     if dados[1] != "":
         validar(dados[1])
-        cliente.set_cpf(dados[1])
+        pessoa.set_cpf(dados[1])
     if dados[2] != "":
         validar(dados[2])
-        cliente.set_rg(dados[2])
+        pessoa.set_rg(dados[2])
     if dados[3] != "":
         validar(dados[3])
-        cliente.set_telefone(dados[3])
+        pessoa.set_telefone(dados[3])
     if dados[4] != "":
-        cliente.set_endereco(dados[4])
+        pessoa.set_endereco(dados[4])
     if dados[5] != "":
-        cliente.set_email(dados[5])
+        pessoa.set_email(dados[5])
 
-    return f"Cliente editado com sucesso\n {cliente}"
+    return f"Pessoa editado com sucesso\n {pessoa}"
 
 
 def validar(valor, tipo):
@@ -167,20 +174,24 @@ def validar(valor, tipo):
                 return f"ERRO. {valor} precisa ter 11 digitos"
 
 
-def remover_cliente(cpf):
+def remover_pessoa(cpf, tipo_pessoa):
+
     validar(cpf, "CPF")
 
-    cliente = Init.loja.get_cliente_por_cpf(cpf)
+    if tipo_pessoa == "Cliente":
+        pessoa = Init.loja.get_cliente_por_cpf(cpf)
+    else:
+        pessoa = Init.loja.get_funcionario_por_cpf(cpf)
 
-    if not cliente:
-        return f"Cliente com CPF {cpf} não encontrado"
+    if not pessoa:
+        return f"Pessoa com CPF {cpf} não encontrado"
 
-    remocao = Init.loja.remover(cliente)
+    remocao = Init.loja.remover(pessoa)
 
     if remocao:
-        return f"Cliente removido com sucesso"
+        return f"Pessoa removida com sucesso"
     else:
-        return f"ERRO ao remover cliente"
+        return f"ERRO ao remover pessoa"
 
 
 def remover_produto(id):
