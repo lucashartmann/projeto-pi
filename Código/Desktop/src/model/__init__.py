@@ -1,10 +1,22 @@
-from model import Cliente, Loja, Produto
+from model import Cliente, Loja, Produto, Cupom, Taxa, Reembolso, Relatorio, Pedido
 
 
 class Init:
     usuario = 0
     cliente_atual = None
     loja = Loja.Loja("GameStart", "00000000000")
+    
+    um_produto = Produto.Produto()
+    um_cliente = Cliente.Cliente("asds")
+    um_pedido = Pedido.Pedido()
+    um_cupom = Cupom.Cupom("qwdsadas")
+    uma_taxa = Taxa.Taxa()
+    um_reembolso = Reembolso.Reembolso()
+    um_relatorio = Relatorio.Relatorio()
+
+    dict_objetos = {
+        "products": um_produto, "orders": um_pedido,  "customers": um_cliente, "coupons": um_cupom,   "taxes": uma_taxa,  "refunds": um_reembolso, "reports": um_relatorio
+    }
 
     if not loja.get_lista_clientes():
 

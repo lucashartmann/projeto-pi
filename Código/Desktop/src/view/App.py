@@ -1,14 +1,14 @@
 from textual.app import App
-from Desktop.src.view.SQLITE import TelaInicial, TelaPessoa
-from Desktop.src.view.SQLITE import TelaProduto
+from view import TelaCadastro, TelaConsulta
+from view import TelaLogin
 
 
 class App(App):
     SCREENS = {
-        "tela_inicial": TelaInicial.ScreenInicial,
-        "tela_pessoa": TelaPessoa.TelaPessoa,
-        "tela_produto": TelaProduto.TelaProduto,
+        "tela_consulta": TelaCadastro.TelaCadastro,
+        "tela_cadastro": TelaConsulta.TelaConsulta,
+        "tela_login": TelaLogin.Login
     }
 
     def on_mount(self):
-        self.push_screen("tela_inicial")
+        self.push_screen("tela_login")
