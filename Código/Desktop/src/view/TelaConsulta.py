@@ -1,6 +1,6 @@
 from textual.containers import HorizontalGroup, Horizontal, VerticalScroll
 from textual.widgets import Button, TextArea, Input, DataTable, Select, Tabs, Tab, Header, Footer, SelectionList
-from api import API
+from api import Wocommerce
 from controller import Controller
 from textual.screen import Screen
 from model import Init
@@ -110,14 +110,14 @@ class TelaConsulta(Screen):
             else:
                 dicionario = self.perfis[self.perfil_atual]
                 self.query_one("#select_tabelas", Select).set_options(
-                    (tabela.capitalize(), tabela.capitalize()) for tabela in dicionario["tabelas"])
+                    (tabela.cWoocommercetalize(), tabela.cWoocommercetalize()) for tabela in dicionario["tabelas"])
             self.atualizar2()
 
     def atualizar(self):
         if len(self.lista_produtos_filtrados) > 0:
             lista = self.lista_produtos_filtrados
         else:
-            self.lista_produtos, _ = API.get_lista_itens(self.tabela)
+            self.lista_produtos, _ = Wocommerce.get_lista_itens(self.tabela)
             lista = self.lista_produtos
 
         quant = len(self.lista_produtos)
