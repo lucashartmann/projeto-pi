@@ -1,24 +1,30 @@
-
 TelaConsulta {
     background: rgb(200, 200, 200);
+}
+
+TelaConsulta Tab {
+    color: black;
+}
+
+TelaConsulta Tabs Horizontal {
+    margin: 0;
 }
 
 TelaConsulta TextArea {
     color: rgba(19, 243, 67, 1);
     height: 20%;
+    width: 100%;
     margin: 2;
 }
 
 TelaConsulta HorizontalGroup {
     margin: 2;
+    width: 100%;
 }
 
 TelaConsulta DataTable {
-    margin: 2;
-}
-
-TelaConsulta DataTable Row {
-    margin: 2;
+    height: 100%;
+    width: 100%;
 }
 
 TelaConsulta DataTable Column {
@@ -29,16 +35,28 @@ TelaConsulta Select {
     width: 22%;
 }
 
-Input {
-    width: 70%;
+TelaConsulta Input {
+    width: 92%;
 }
 
-Tab {
-    color: black;    
-}
 
-SelectionList {
-    width: 25%;
+TelaConsulta SelectionList {
+    width: 100%;
     height: 100%;
 }
 
+TelaConsulta #v_left {
+    width: 18%;
+    background: rgba(95, 77, 77, 1);
+    margin-left: 1;
+}
+
+TelaConsulta #v_left Select{
+    width: 100%;
+    margin: 0;
+}
+
+TelaConsulta Horizontal {
+    margin: 2;
+    width: 100%;
+}

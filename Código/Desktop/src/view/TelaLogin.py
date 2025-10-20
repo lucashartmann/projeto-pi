@@ -10,7 +10,7 @@ class Login(Screen):
     montou = False
 
     def compose(self):
-        yield Select([("WoocommerceAPI", "WoocommerceAPI"), ("SQLIRTE", "SQLIRTE")], value="WoocommerceAPI", allow_blank=False)
+        yield Select([("WoocommerceAPI", "WoocommerceAPI"), ("MYSQL", "MYSQL")], value="WoocommerceAPI", allow_blank=False)
         yield Input(placeholder="url")
         yield Input(placeholder="consumer_key")
         yield Input(placeholder="cosumer_secret")
@@ -29,8 +29,24 @@ class Login(Screen):
     def select_changed(self, evento: Select.Changed):
         valor_select = str(evento.value)
 
-        if valor_select == "SQLITE":
-            self.remove_children(Input)
+        lista_inputs = self.query(Input)
+
+        if valor_select == "MYSQL":
+            lista_inputs[0].placeholder = "host"
+            lista_inputs[1].placeholder = "user"
+            lista_inputs[2].placeholder = "password"
+            self.mount(Input(placeholder="database", id="input_database"))
+
+            lista_inputs = self.query(Input)
+
+            lista_valores = []
+
+            for input in lista_inputs:
+                lista_valores.append(input.value)
+
+            self.montou = True
+
+            # Shelve.salvar("dados.db", "login", lista_valores)
 
         else:
             if self.montou:
