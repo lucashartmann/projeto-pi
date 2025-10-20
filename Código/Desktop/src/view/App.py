@@ -1,8 +1,9 @@
 from textual.app import App
 from view import TelaLogin
-from database import Shelve
+from database import Banco
 from view import TelaCadastro, TelaConsulta, TelaPerfil
 from controller import Controller
+from model import Init
 
 class App(App):
 
@@ -14,9 +15,11 @@ class App(App):
     }
 
     def on_mount(self):
-        dados = Shelve.carregar("dados.db", "login")
+
+        dados = Banco.Banco.carregar_login()
         if dados:
             logon = Controller.carregar_login(dados)
+            Init.inicializar()
             if "ERRO!" in logon:
                 self.notify(logon)
             else:

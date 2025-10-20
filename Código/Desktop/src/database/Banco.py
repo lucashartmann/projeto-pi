@@ -49,8 +49,37 @@ class Banco:
                     FOREIGN KEY id_produto REFERENCES Produto (id_produto)
                     );
                                 ''')
+            
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS login (
+                    url TEXT NOT NULL,
+                    consumer_key TEXT NOT NULL,
+                    consumer_secret TEXT NOT NULL
+                    );
+                                ''')
 
             conexao.commit()
+            
+    def salvar_login(self, dados):
+        with sqlite3.connect(
+                "data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+                cursor.execute("DELETE FROM login")
+                sql_query = ''' 
+                INSERT INTO login (url, consumer_key, consumer_secret) 
+                VALUES(?, ?, ?)
+                '''
+                cursor.execute(sql_query, (
+                    dados[0],
+                    dados[1],
+                    dados[2]
+                ))
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("Erro ao salvar login:", e)
+                return False
 
     def cadastrar_cliente(self, cliente):
         with sqlite3.connect(
@@ -74,6 +103,16 @@ class Banco:
             except Exception as e:
                 print("Erro ao cadastrar cliente:", e)
                 return False
+            
+    def carregar_login(self):
+        with sqlite3.connect(
+                "data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            cursor.execute("SELECT * FROM login")
+            registro = cursor.fetchone()
+            if not registro:
+                return None
+            return registro
 
     def remove_cliente(self, cpf):
         with sqlite3.connect(
