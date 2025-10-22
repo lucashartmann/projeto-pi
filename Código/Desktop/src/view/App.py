@@ -1,16 +1,30 @@
 from textual.app import App
-from view import TelaInicial, TelaPessoa, TelaProduto, TelaLogin, TelaEstoque, TelaPessoal
-
+from view import TelaLogin
+from database import Banco
+from view import TelaCadastro, TelaConsulta, TelaPerfil
+from controller import Controller
+from model import Init
 
 class App(App):
+
     SCREENS = {
-        "tela_inicial": TelaInicial.ScreenInicial,
-        "tela_pessoa": TelaPessoa.TelaPessoa,
-        "tela_produto": TelaProduto.TelaProduto,
-        "tela_login": TelaLogin.TelaLogin,
-        "tela_estoque": TelaEstoque.TelaEstoque,
-        "tela_pessoal": TelaPessoal.TelaPessoal
+        "tela_login": TelaLogin.Login,
+        "tela_cadastro": TelaCadastro.TelaCadastro,
+        "tela_consultar": TelaConsulta.TelaConsulta,
+        "tela_perfil": TelaPerfil.TelaPerfil
     }
 
     def on_mount(self):
-        self.push_screen("tela_inicial")
+
+        dados = Banco.Banco.carregar_login()
+        if dados:
+            logon = Controller.carregar_login(dados)
+            Init.inicializar()
+            if "ERRO!" in logon:
+                self.notify(logon)
+            else:
+                self.push_screen("tela_cadastro")
+        else:
+            self.push_screen("tela_login")
+
+  
