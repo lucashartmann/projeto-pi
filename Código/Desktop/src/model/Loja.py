@@ -1,4 +1,4 @@
-from Desktop.src.database import Banco
+from database import Banco
 from model import Estoque
 
 
@@ -12,6 +12,9 @@ class Loja:
         self.quantidade_clientes = self.set_quantidade()
         self.quantidade_fornecedores = self.set_quantidade()
         self.faturamento = 0
+    
+    def cadastrar_usuario(self, usuario):
+        return self.banco_dados.cadastrar_usuario(usuario)
 
     def cadastrar(self, cliente):
         return self.banco_dados.cadastrar_cliente(cliente)

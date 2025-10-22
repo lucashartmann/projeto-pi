@@ -2,7 +2,7 @@ from model import Cliente, Loja, Produto
 
 
 class Init:
-    usuario = 0
+    tipo_usuario = ""
     cliente_atual = None
     loja = Loja.Loja("GameStart", "00000000000")
 

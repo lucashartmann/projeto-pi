@@ -49,8 +49,39 @@ class Banco:
                     FOREIGN KEY id_produto REFERENCES Produto (id_produto)
                     );
                                 ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Usuario (
+                    id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nome TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    tipo TEXT NOT NULL CHECK (tipo IN ('Cliente', 'Gerente', 'Funcionario', 'Administrador'))
+                    );
+                                ''')
 
             conexao.commit()
+            
+    def cadastrar_usuario(self, usuario):
+         with sqlite3.connect(
+                "data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_query = ''' 
+                INSERT INTO Usuario (nome, email, senha, tipo) 
+                VALUES(?, ?, ?, ?)
+                '''
+                cursor.execute(sql_query, (
+                    usuario.get_nome(),
+                    usuario.get_email(),
+                    usuario.get_senha(),
+                    usuario.get_tipo()
+                ))
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("Erro ao cadastrar usuario:", e)
+                return False
+
 
     def cadastrar_cliente(self, cliente):
         with sqlite3.connect(

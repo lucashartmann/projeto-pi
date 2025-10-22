@@ -1,6 +1,5 @@
 from textual.app import App
-from Desktop.src.view.SQLITE import TelaInicial, TelaPessoa
-from Desktop.src.view.SQLITE import TelaProduto
+from view import TelaInicial, TelaPessoa, TelaProduto, TelaLogin, TelaEstoque, TelaPessoal
 
 
 class App(App):
@@ -8,6 +7,9 @@ class App(App):
         "tela_inicial": TelaInicial.ScreenInicial,
         "tela_pessoa": TelaPessoa.TelaPessoa,
         "tela_produto": TelaProduto.TelaProduto,
+        "tela_login": TelaLogin.TelaLogin,
+        "tela_estoque": TelaEstoque.TelaEstoque,
+        "tela_pessoal": TelaPessoal.TelaPessoal
     }
 
     def on_mount(self):
