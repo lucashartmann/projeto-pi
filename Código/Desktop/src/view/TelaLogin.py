@@ -7,7 +7,8 @@ from controller import Controller
 from model import Init, Usuario
 
 
-class TelaLogin(Screen):
+
+class Login(Screen):
 
     CSS_PATH = "css/TelaLogin.tcss"
     montou = False

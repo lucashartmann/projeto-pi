@@ -6,6 +6,7 @@ from view import TelaClientela, TelaInicial, TelaPessoa, TelaProduto, TelaLogin,
 from controller import Controller
 
 class App(App):
+
     SCREENS = {
         "tela_inicial": TelaInicial.ScreenInicial,
         "tela_pessoa": TelaPessoa.TelaPessoa,
