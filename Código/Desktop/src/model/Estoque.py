@@ -1,4 +1,4 @@
-from Desktop.src.database.Banco import Banco
+from database.Banco import Banco
 
 
 class Estoque:

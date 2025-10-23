@@ -1,16 +1,16 @@
-TextArea {
+TelaClientela TextArea {
     height: 5;
 }
 
-Checkbox {
+TelaClientela Checkbox {
     margin: 1;
 }
 
-Input {
+TelaClientela Input {
     width: 90%;
 }
 
-#hg_pesquisa {
+TelaClientela #hg_pesquisa {
     margin: 1;
 }
 

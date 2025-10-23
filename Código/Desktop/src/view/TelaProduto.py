@@ -1,37 +1,50 @@
-from textual.widgets import Input, Label, Button, TabbedContent, TabPane, Footer, Header, Select
+from textual.widgets import Input, Label, Button, Footer, Header, Select, Tab, Tabs
 from textual.screen import Screen
-from textual.containers import Container, HorizontalGroup
+from textual.containers import HorizontalGroup, Grid
 from controller import Controller
-from textual import on
-from model import Init
-from Desktop.src.view.SQLITE import TelaEstoque
 
-class TelaCadastrar(Container):
+
+class TelaProduto(Screen):
+    
+    CSS_PATH = "css/TelaProduto.tcss"
+    
     def compose(self):
-        with HorizontalGroup():
+        yield Header()
+        # TODO
+        yield Tabs(Tab("TelaPerfil", id="tab_perfil"), Tab("TelaCadastrar", id="tab_cadastrar"), Tab("TelaConsultar", id="tab_consultar"))
+
+        with Grid():
             yield Label("ID do Produto:", id="lb_id")
             yield Input(placeholder="ID aqui", id="input_id")
-        with HorizontalGroup():
             yield Label("Nome:", id="lbl_nome")
             yield Input(placeholder="Nome aqui", id="inpt_nome")
             yield Label("Marca:")
             yield Input(placeholder="Marca aqui", id="inpt_marca")
-        with HorizontalGroup():
             yield Label("Modelo:", id="lbl_modelo")
             yield Input(placeholder="Modelo aqui", id="inpt_modelo")
             yield Label("Cor:", id="lbl_cor")
             yield Input(placeholder="Cor aqui", id="inpt_cor")
-        with HorizontalGroup():
             yield Label("Preço:", id="lbl_preco")
             yield Input(placeholder="Preço aqui", id="inpt_preco")
             yield Label("Quantidade:", id="lbl_quant")
             yield Input(placeholder="Quantidade aqui", id="inpt_quant")
-        with HorizontalGroup(id="categoria_slot"):
             yield Select([("produto", 'produto')])
-        with HorizontalGroup():
+        with HorizontalGroup(id="hg_operacoes"):
             yield Button("Limpar", id="bt_limpar")
             yield Button("Cadastrar", id="bt_cadastrar")
             yield Button("Voltar", id="bt_voltar")
+        yield Footer()
+
+    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+        # TODO
+        if event.tabs.active == self.query_one("#tab_consultar", Tab).id:
+            self.app.switch_screen("tela_consultar")
+        elif event.tabs.active == self.query_one("#tab_perfil", Tab).id:
+            self.app.switch_screen("tela_perfil")
+
+    def on_screen_resume(self):
+        # TODO
+        self.query_one(Tabs).active = self.query_one("#tab_cadastrar", Tab).id
 
     def cadastro(self):
         dados = []
@@ -78,55 +91,3 @@ class TelaCadastrar(Container):
                 mensagem = Controller.editar_produto(input_id, dados)
                 self.notify(str(mensagem), markup=False)
                 self.screen.on_mount()
-
-
-
-class TelaProduto(Screen):
-    CSS_PATH = "css/TelaProduto.tcss"
-
-    def compose(self):
-        yield Header()
-        with TabbedContent():
-            with TabPane("Cadastrar"):
-                yield TelaCadastrar()
-            with TabPane("Estoque"):
-                yield TelaEstoque.TelaEstoque()
-        yield Footer()
-
-    def on_button_pressed(self, evento: Button.Pressed):
-        match evento.button.id:
-            case "bt_voltar":
-                self.screen.app.switch_screen("tela_inicial")
-            case "bt_limpar":
-                for input in self.query(Input):
-                    input.value = ""
-
-    montou = False
-    valor_select = ""
-
-    def on_mount(self):
-        produtos = Init.loja.get_estoque().get_lista_produtos()
-        lista_categorias = []
-        for produto in produtos:
-            if produto.get_categoria() not in lista_categorias:
-                lista_categorias.append(produto.get_categoria())
-        if "Nova categoria" not in lista_categorias:
-            lista_categorias.append("Nova categoria")
-        for select in self.query(Select):
-            select.set_options(
-                [(categoria, categoria) for categoria in lista_categorias])
-
-    @on(Select.Changed)
-    def select_changed(self, evento: Select.Changed):
-        self.valor_select = str(evento.value)
-        select = evento._sender
-        container = select.parent
-        if self.valor_select == "Nova categoria" and not self.montou:
-            container.mount(Label("Categoria:", id="lbl_categoria"))
-            container.mount(
-                Input(placeholder="Categoria aqui", id="inpt_categoria"))
-            self.montou = True
-        elif self.valor_select != "Nova categoria" and self.montou:
-            self.query_one("#lbl_categoria").remove()
-            self.query_one("#inpt_categoria").remove()
-            self.montou = False

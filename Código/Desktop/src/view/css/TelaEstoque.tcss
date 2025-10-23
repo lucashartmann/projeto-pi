@@ -1,0 +1,15 @@
+TelaEstoque TextArea {
+    height: 5;
+}
+
+TelaEstoque Checkbox {
+    margin: 1;
+}
+
+TelaEstoque Input {
+    width: 70%;
+}
+
+TelaEstoque #hg_pesquisa {
+    margin: 1;
+}

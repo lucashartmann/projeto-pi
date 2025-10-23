@@ -1,11 +1,18 @@
 class Pessoa:
     def __init__(self, nome, cpf, rg, telefone, endereco, email):
+        self.id = 0
         self.nome = nome
         self.cpf = cpf
         self.rg = rg
         self.telefone = telefone
         self.endereco = endereco
         self.email = email
+
+    def get_id(self):
+        return self.id
+
+    def set_id(self, id):
+        self.id = id
 
     def editar_campo(self, nome_campo, setter):
         while True:

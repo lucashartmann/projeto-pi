@@ -16,8 +16,9 @@ class Banco:
             cursor = conexao.cursor()
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Cliente (
+                    id_cliente INTEGER PRIMARY KEY AUTOINCREMENT,
                     nome TEXT NOT NULL,
-                    cpf TEXT PRIMARY KEY,
+                    cpf TEXT NOT NULL UNIQUE,
                     rg TEXT NOT NULL,
                     telefone TEXT NOT NULL,
                     endereco TEXT NOT NULL,
@@ -39,14 +40,16 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Venda (
                     id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
-                    cpf_cliente INTEGER,
-                    FOREIGN KEY cpf_cliente REFERENCES Cliente (cpf_cliente)
+                    cpf_cliente TEXT,
+                    FOREIGN KEY (cpf_cliente) REFERENCES Cliente (cpf)
                     );
                                 ''')
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Venda_Produtos (
-                    FOREIGN KEY id_venda REFERENCES Venda (id_venda),
-                    FOREIGN KEY id_produto REFERENCES Produto (id_produto)
+                    id_venda INTEGER,
+                    id_produto INTEGER,
+                    FOREIGN KEY (id_venda) REFERENCES Venda (id_venda),
+                    FOREIGN KEY (id_produto) REFERENCES Produto (id_produto)
                     );
                                 ''')
             cursor.execute(f'''
@@ -60,9 +63,9 @@ class Banco:
                                 ''')
 
             conexao.commit()
-            
+
     def cadastrar_usuario(self, usuario):
-         with sqlite3.connect(
+        with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
@@ -81,7 +84,6 @@ class Banco:
             except Exception as e:
                 print("Erro ao cadastrar usuario:", e)
                 return False
-
 
     def cadastrar_cliente(self, cliente):
         with sqlite3.connect(
@@ -158,7 +160,8 @@ class Banco:
             cursor.execute("SELECT * FROM Cliente")
             resultados = cursor.fetchall()
             for dados in resultados:
-                cliente = Cliente.Cliente(*dados)
+                cliente = Cliente.Cliente(*dados[1:])
+                cliente.set_id(dados[0])
                 lista.append(cliente)
             return lista
 
@@ -171,7 +174,10 @@ class Banco:
             registro = cursor.fetchone()
             if not registro:
                 return None
-            cliente = Cliente.Cliente(*registro)
+            
+            cliente = Cliente.Cliente(*registro[1:])
+            cliente.set_id(registro[0])
+            
             return cliente
 
     def get_cliente_por_cpf(self, cpf):
@@ -183,7 +189,8 @@ class Banco:
             registro = cursor.fetchone()
             if not registro:
                 return None
-            cliente = Cliente.Cliente(*registro)
+            cliente = Cliente.Cliente(*registro[1:])
+            cliente.set_id(registro[0])
             return cliente
 
     def get_produto_por_id(self, id):
