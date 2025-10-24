@@ -6,7 +6,7 @@ from model import Init, Produto
 
 
 class TelaEstoque(Screen):
-    
+
     CSS_PATH = "css/TelaEstoque.tcss"
 
     produtos = Init.loja.get_estoque().get_lista_produtos()
@@ -42,13 +42,39 @@ class TelaEstoque(Screen):
     def on_mount(self):
         self.ROWS = [list(Init.um_produto.__dict__.keys())]
         self.atualizar()
-        
+        self.setup_dados()
+
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         if event.tabs.active == self.query_one("#tab_cadastrar", Tab).id:
             self.app.switch_screen("tela_produto")
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
+
+    def atualizar(self):
+        self.ROWS = [self.ROWS[0]]
+
+        table = self.query_one(DataTable)
+        table.clear(columns=True)
+
+        if len(self.produtos_filtrados) > 0:
+            lista_atual = self.produtos_filtrados
+        else:
+            self.produtos = Init.loja.get_estoque().get_lista_produtos()
+            lista_atual = self.produtos
+
+        for produto in lista_atual:
+            lista = []
+            for valor in produto.__dict__.values():
+                lista.append(valor)
+            self.ROWS.append(lista)
+
+        table.add_columns(*self.ROWS[0])
+
+        for row in self.ROWS[1:]:
+            table.add_row(*row, height=3)
+
+        self.setup_dados()
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value
@@ -64,32 +90,9 @@ class TelaEstoque(Screen):
         else:
             self.atualizar()
 
-    def atualizar(self):
-        if len(self.produtos_filtrados) > 0:
-            lista = self.produtos_filtrados
-        else:
-
-            lista = self.produtos
-
-        for produto in lista:
-            lista = []
-            for valor in produto.__dict__.values():
-                lista.append(valor)
-            self.ROWS.append(lista)
-
-        table = self.query_one(DataTable)
-        table.clear(columns=True)
-
-        table.add_columns(*self.ROWS[0])
-        
-        for row in self.ROWS[1:]:
-            table.add_row(*row, height=3)
-
-       
-
     def filtro(self, palavras, index, filtro_recebido):
-        um_produto = Produto.Produto("", "", "", "", 0.0, 0, "")
         nova_lista = []
+        campo = f"get_{filtro_recebido}"
 
         if index + 1 < len(palavras):
             filtro = " ".join((palavras[index+1:]))
@@ -108,20 +111,20 @@ class TelaEstoque(Screen):
                     for p in nova_lista:
                         for produto in self.produtos_filtrados:
                             try:
-                                if p in produto[filtro_recebido] and produto not in produtos_temp:
+                                if p in getattr(produto, campo)() and produto not in produtos_temp:
                                     produtos_temp.append(
                                         produto)
                             except:
-                                if p == produto[filtro_recebido] and produto not in produtos_temp:
+                                if p == getattr(produto, campo)() and produto not in produtos_temp:
                                     produtos_temp.append(
                                         produto)
                 else:
                     for produto in self.produtos_filtrados:
                         try:
-                            if filtro in produto[filtro_recebido] and produto not in produtos_temp:
+                            if filtro in getattr(produto, campo)() and produto not in produtos_temp:
                                 produtos_temp.append(produto)
                         except:
-                            if filtro == produto[filtro_recebido] and produto not in produtos_temp:
+                            if filtro == getattr(produto, campo)() and produto not in produtos_temp:
                                 produtos_temp.append(produto)
 
                 if len(produtos_temp) > 0:
@@ -131,19 +134,19 @@ class TelaEstoque(Screen):
                     for p in nova_lista:
                         for produto in self.produtos:
                             try:
-                                if p in produto[filtro_recebido] and produto not in self.produtos_filtrados:
+                                if p in getattr(produto, campo)() and produto not in self.produtos_filtrados:
                                     self.produtos_filtrados.append(
                                         produto)
                             except:
-                                if p == produto[filtro_recebido] and produto not in self.produtos_filtrados:
+                                if p == getattr(produto, campo)() and produto not in self.produtos_filtrados:
                                     self.produtos_filtrados.append(
                                         produto)
 
                 else:
                     for produto in self.produtos:
                         try:
-                            if filtro in produto[filtro_recebido] and produto not in self.produtos_filtrados:
+                            if filtro in getattr(produto, campo)() and produto not in self.produtos_filtrados:
                                 self.produtos_filtrados.append(produto)
                         except:
-                            if filtro == produto[filtro_recebido] and produto not in self.produtos_filtrados:
+                            if filtro == getattr(produto, campo)() and produto not in self.produtos_filtrados:
                                 self.produtos_filtrados.append(produto)

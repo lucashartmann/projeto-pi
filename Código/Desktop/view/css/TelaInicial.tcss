@@ -1,6 +1,6 @@
 Grid {
     align: center middle;
-    grid-size: 1 3;
+    grid-size: 1;
     grid-gutter: 1 2;  
 }
 

@@ -1,13 +1,19 @@
 from model import Cliente, Loja, Produto, Cupom, Reembolso, Relatorio, Pedido, Usuario
+import io
 
 class Init:
 
-    usuario = ""
+    # usuario = ""
+
+    usuario = Usuario.Usuario("administrador", "administrador", "administrador", "administrador")
     cliente_atual = None
     loja = Loja.Loja("GameStart", "00000000000")
 
     um_produto = Produto.Produto(
                 "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
+    
+  
+    
     um_cliente = Cliente.Cliente("MARCOS", "11111111111", "11111111111",
                                        "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
     um_pedido = Pedido.Pedido()
@@ -81,12 +87,23 @@ class Init:
                                        "30 SERIES", "BRANCO", 1000.00, 3, "PLACA DE VIDEO")
             produto7 = Produto.Produto(
                 "DUALSHOCK 4", "SONY", "SLIM", "PRETO", 200.00, 10, "PERIFÉRICOS")
+            
+            with open(r"assets/produto.png", "rb") as img:
+                img_bytes = img.read()
+                
+            produto2.set_imagem(img_bytes)
+            produto3.set_imagem(img_bytes)
+            produto7.set_imagem(img_bytes)
+            
+            
             produto9 = Produto.Produto(
                 "VOLANTE GAMER", "LOGITECH", "G29", "PRETO", 500.00, 5, "PERIFÉRICOS")
             produto10 = Produto.Produto(
                 "MOUSE GAMER", "LOGITECH", "G502", "PRETO", 100.00, 10, "PERIFÉRICOS")
             produto11 = Produto.Produto(
                 "PLAYSTATION 5", "SONY", "PRO", "BRANCO", 6000.00, 30, "CONSOLE")
+            
+                     
 
             Init.loja.get_estoque().adicionar_produto(produto2)
             Init.loja.get_estoque().adicionar_produto(produto3)

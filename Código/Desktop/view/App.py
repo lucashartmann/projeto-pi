@@ -1,8 +1,9 @@
 from textual.app import App
 from textual.widgets import Input, Label, Button, Select
+from textual.binding import Binding
 
 from model import Init
-from view import TelaClientela, TelaInicial, TelaPessoa, TelaProduto, TelaLogin, TelaEstoque
+from view import TelaClientela, TelaInicial, TelaPessoa, TelaProduto, TelaLogin, TelaEstoque, TelaEstoqueCliente
 from controller import Controller
 
 
@@ -15,8 +16,15 @@ class App(App):
         "tela_produto": TelaProduto.TelaProduto,
         "tela_login": TelaLogin.TelaLogin,
         "tela_estoque": TelaEstoque.TelaEstoque,
-        "tela_clientela": TelaClientela.TelaClientela
+        "tela_clientela": TelaClientela.TelaClientela,
+        "tela_estoque_cliente": TelaEstoqueCliente.TelaEstoqueCliente
     }
+    
+    
+    BINDINGS = {
+        Binding("ctrl+l", "switch_screen('tela_estoque_cliente')", "Tela Estoque"),
+    }
+
 
     def on_mount(self):
         Init.inicializar()

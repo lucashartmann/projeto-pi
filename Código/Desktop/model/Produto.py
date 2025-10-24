@@ -1,10 +1,11 @@
-from datetime import datetime
+import string
+import random
 
 class Produto:
 
     def __init__(self, nome, marca, modelo, cor, preco, quantidade, categoria):
         self.id = 0
-        self.codigo = ""
+        self.codigo = self.gerar_codigo_com_prefixo(prefixo='SKU-')
         self.nome = nome
         self.cor = cor
         self.preco = preco
@@ -13,6 +14,32 @@ class Produto:
         self.quantidade = quantidade
         self.categoria = categoria
         self.descricao = ""
+        self.imagem = ""
+        
+    
+    def gerar_codigo_com_prefixo(self, prefixo='PROD-', tamanho_sufixo=6):
+        sufixo_caracteres = string.ascii_uppercase + string.digits
+        sufixo = ''.join(random.choice(sufixo_caracteres) for _ in range(tamanho_sufixo))
+        codigo = f'{prefixo}{sufixo}'
+        return codigo
+    
+    def get_codigo(self):
+        return self.codigo
+    
+    def set_codigo(self, novo_codigo):
+        self.codigo = novo_codigo
+
+    def get_descricao(self):
+        return self.descricao
+    
+    def set_descricao(self, descricao):
+        self.descricao = descricao
+        
+    def get_imagem(self):
+        return self.imagem
+
+    def set_imagem(self, imagem):
+        self.imagem = imagem
 
     def editar_campo(self, nome_campo, setter):
         while True:

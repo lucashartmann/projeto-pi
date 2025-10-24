@@ -52,13 +52,16 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Produto (
                     id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
+                    codigo TEXT NOT NULL UNIQUE,
                     nome TEXT NOT NULL,
                     marca TEXT NOT NULL,
                     modelo TEXT NOT NULL,
                     cor TEXT NOT NULL,
                     preco FLOAT NOT NULL,
-                    quantidade INT NOT NULL,
-                    categoria TEXT NOT NULL
+                    quantidade INT NULL,
+                    categoria TEXT NOT NULL,
+                    descricao TEXT NULL,
+                    imagem BLOB NULL
                 );
                                 ''')
             cursor.execute(f'''
@@ -269,7 +272,9 @@ class Banco:
             registro = cursor.fetchone()
             if not registro:
                 return None
-            produto = Produto.Produto(*registro[1:])
+            produto = Produto.Produto(*registro[1:8])
+            produto.set_descricao(registro[-2])
+            produto.set_imagem(registro[-1])
             produto.set_id(registro[0])
             return produto
 
@@ -279,17 +284,20 @@ class Banco:
             cursor = conexao.cursor()
             try:
                 sql_query = ''' 
-                INSERT INTO Produto (nome, marca, modelo, cor, preco, quantidade, categoria) 
-                VALUES(?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO Produto (codigo, nome, marca, modelo, cor, preco, quantidade, categoria, descricao, imagem) 
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                     '''
                 cursor.execute(sql_query, (
+                    produto.get_codigo(),
                     produto.get_nome(),
                     produto.get_marca(),
                     produto.get_modelo(),
                     produto.get_cor(),
                     produto.get_preco(),
                     produto.get_quantidade(),
-                    produto.get_categoria()
+                    produto.get_categoria(),
+                    produto.get_descricao(),
+                    produto.get_imagem()
                 ))
                 conexao.commit()
                 return True
@@ -305,8 +313,11 @@ class Banco:
             cursor.execute("SELECT * FROM Produto")
             resultados = cursor.fetchall()
             for dados in resultados:
-                produto = Produto.Produto(*dados[1:])
+                produto = Produto.Produto(*dados[1:8])
+                produto.set_descricao(dados[-2])
+                produto.set_imagem(dados[-1])
                 produto.set_id(dados[0])
+                produto.set_codigo(dados[1])
                 lista.append(produto)
             return lista
 
@@ -319,9 +330,13 @@ class Banco:
             lista_registros = cursor.fetchall()
             lista_produtos = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[1:])
+                produto = Produto.Produto(*registro[1:8])
+                produto.set_descricao(registro[-2])
+                produto.set_imagem(registro[-1])
                 produto.set_id(registro[0])
-                lista_produtos.append(registro)
+                produto.set_codigo(registro[1])
+
+                lista_produtos.append(produto)
             return lista_produtos
 
     def get_produtos_por_marca(self, marca):
@@ -333,9 +348,14 @@ class Banco:
             lista_registros = cursor.fetchall()
             lista_produtos = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[1:])
+                produto = Produto.Produto(*registro[1:8])
+                produto.set_descricao(registro[-2])
+                produto.set_imagem(registro[-1])
                 produto.set_id(registro[0])
-                lista_produtos.append(registro)
+                produto.set_codigo(registro[1])
+
+                lista_produtos.append(produto)
+                
             return lista_produtos
 
     def get_produtos_por_modelo(self, modelo):
@@ -347,9 +367,13 @@ class Banco:
             lista_registros = cursor.fetchall()
             lista_produtos = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[1:])
+                produto = Produto.Produto(*registro[1:8])
+                produto.set_descricao(registro[-2])
+                produto.set_imagem(registro[-1])
                 produto.set_id(registro[0])
-                lista_produtos.append(registro)
+                produto.set_codigo(registro[1])
+
+                lista_produtos.append(produto)
             return lista_produtos
 
     def get_produtos_por_categoria(self, categoria):
@@ -361,7 +385,11 @@ class Banco:
             lista_registros = cursor.fetchall()
             lista_produtos = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[1:])
+                produto = Produto.Produto(*registro[1:8])
+                produto.set_descricao(registro[-2])
+                produto.set_imagem(registro[-1])
                 produto.set_id(registro[0])
-                lista_produtos.append(registro)
+                produto.set_codigo(registro[1])
+
+                lista_produtos.append(produto)
             return lista_produtos

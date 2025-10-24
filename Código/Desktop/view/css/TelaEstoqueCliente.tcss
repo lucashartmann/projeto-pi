@@ -1,0 +1,62 @@
+TelaEstoqueCliente {
+        background: rgba(4, 43, 7, 1);
+}
+
+TelaEstoqueCliente Footer {
+    background: rgba(9, 66, 14, 1);
+
+}
+
+TelaEstoqueCliente Header {
+    background: rgba(9, 66, 14, 1);
+}
+
+TelaEstoqueCliente Input{
+        width: 70%;
+        background:black;
+        color: white;
+}
+
+TelaEstoqueCliente #hg_pesquisa {
+    margin: 1;
+}
+
+TelaEstoqueCliente Select Static{
+    color: white;
+}
+
+
+TelaEstoqueCliente ListView {
+        layout: grid;
+        grid-size: 3;
+        grid-gutter: 1;
+        background: rgba(4, 43, 7, 1);
+        align: center middle;
+        height: auto;
+}
+    
+TelaEstoqueCliente ListItem {
+        background: rgba(78, 90, 78, 1);
+        height: auto;
+        color: green;
+        align: center middle;
+}
+
+TelaEstoqueCliente .item {
+        width: 85%;
+        max-width: 85%;
+}
+
+TelaEstoqueCliente ContainerProduto {
+        background: rgba(69, 70, 69, 1);
+        height: auto;
+        color: black;
+        align: center middle;
+}
+
+TelaEstoqueCliente ContainerProduto #tx_preco {
+        color: rgba(88, 238, 18, 1);
+        text-align: center;
+        width: auto;
+        align: center middle;
+}

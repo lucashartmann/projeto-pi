@@ -42,14 +42,16 @@ class TelaClientela(Screen):
         uma_pessoa = Pessoa.Pessoa("", "", "", "", "", "")
         self.ROWS = [list(uma_pessoa.__dict__.keys())]
         self.atualizar()
-        
+
     def atualizar(self):
-        self.clientes = Init.loja.get_lista_clientes()
+        self.ROWS = [self.ROWS[0]]
+        table = self.query_one(DataTable)
+        table.clear(columns=True)
 
         if len(self.clientes_filtrados) > 0:
             lista = self.clientes_filtrados
         else:
-
+            self.clientes = Init.loja.get_lista_clientes()
             lista = self.clientes
 
         for pessoa in lista:
@@ -57,9 +59,6 @@ class TelaClientela(Screen):
             for valor in pessoa.__dict__.values():
                 lista.append(valor)
             self.ROWS.append(lista)
-
-        table = self.query_one(DataTable)
-        table.clear(columns=True)
 
         table.add_columns(*self.ROWS[0])
 
@@ -82,6 +81,7 @@ class TelaClientela(Screen):
 
     def filtro(self, palavras, index, filtro_recebido):
         nova_lista = []
+        campo = f"get_{filtro_recebido}"
 
         if index + 1 < len(palavras):
             filtro = " ".join((palavras[index+1:]))
@@ -100,20 +100,20 @@ class TelaClientela(Screen):
                     for p in nova_lista:
                         for cliente in self.clientes_filtrados:
                             try:
-                                if p in cliente[filtro_recebido] and cliente not in clientes_temp:
+                                if p in getattr(cliente, campo)() and cliente not in clientes_temp:
                                     clientes_temp.append(
                                         cliente)
                             except:
-                                if p == cliente[filtro_recebido] and cliente not in clientes_temp:
+                                if p == getattr(cliente, campo)() and cliente not in clientes_temp:
                                     clientes_temp.append(
                                         cliente)
                 else:
                     for cliente in self.clientes_filtrados:
                         try:
-                            if filtro in cliente[filtro_recebido] and cliente not in clientes_temp:
+                            if filtro in getattr(cliente, campo)() and cliente not in clientes_temp:
                                 clientes_temp.append(cliente)
                         except:
-                            if filtro == cliente[filtro_recebido] and cliente not in clientes_temp:
+                            if filtro == getattr(cliente, campo)() and cliente not in clientes_temp:
                                 clientes_temp.append(cliente)
 
                 if len(clientes_temp) > 0:
@@ -123,19 +123,19 @@ class TelaClientela(Screen):
                     for p in nova_lista:
                         for cliente in self.clientes:
                             try:
-                                if p in cliente[filtro_recebido] and cliente not in self.clientes_filtrados:
+                                if p in getattr(cliente, campo)() and cliente not in self.clientes_filtrados:
                                     self.clientes_filtrados.append(
                                         cliente)
                             except:
-                                if p == cliente[filtro_recebido] and cliente not in self.clientes_filtrados:
+                                if p == getattr(cliente, campo)() and cliente not in self.clientes_filtrados:
                                     self.clientes_filtrados.append(
                                         cliente)
 
                 else:
                     for cliente in self.clientes:
                         try:
-                            if filtro in cliente[filtro_recebido] and cliente not in self.clientes_filtrados:
+                            if filtro in getattr(cliente, campo)() and cliente not in self.clientes_filtrados:
                                 self.clientes_filtrados.append(cliente)
                         except:
-                            if filtro == cliente[filtro_recebido] and cliente not in self.clientes_filtrados:
+                            if filtro == getattr(cliente, campo)() and cliente not in self.clientes_filtrados:
                                 self.clientes_filtrados.append(cliente)
