@@ -8,13 +8,12 @@ from controller import Controller
 
 class TelaPessoa(Screen):
 
-    CSS_PATH = "css/TelaPessoa.css"
+    CSS_PATH = "css/TelaPessoa.tcss"
 
     valor_select = ""
 
     def compose(self):
-        # TODO
-        yield Tabs(Tab("TelaPerfil", id="tab_perfil"), Tab("TelaCadastrar", id="tab_cadastrar"), Tab("TelaConsultar", id="tab_consultar"))
+        yield Tabs(Tab("Cadastro", id="tab_cadastrar"), Tab("Consulta", id="tab_consultar"))
         with Grid():
             yield Label("ID da Pessoa:")
             yield Input(placeholder="ID aqui", id="input_id")
@@ -37,14 +36,10 @@ class TelaPessoa(Screen):
             yield Button("Voltar", id="bt_voltar")
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        # TODO
         if event.tabs.active == self.query_one("#tab_consultar", Tab).id:
-            self.app.switch_screen("tela_consultar")
-        elif event.tabs.active == self.query_one("#tab_perfil", Tab).id:
-            self.app.switch_screen("tela_perfil")
+            self.app.switch_screen("tela_clientela")
 
     def on_screen_resume(self):
-        # TODO
         self.query_one(Tabs).active = self.query_one("#tab_cadastrar", Tab).id
 
     def cadastro(self):

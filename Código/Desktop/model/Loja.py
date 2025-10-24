@@ -12,15 +12,21 @@ class Loja:
         self.quantidade_clientes = self.set_quantidade()
         self.quantidade_fornecedores = self.set_quantidade()
         self.faturamento = 0
+        
+    def get_lista_usuarios(self):
+        return self.banco_dados.get_lista_usuarios()
+    
+    def verificar_usuario(self, usuario):
+        return self.banco_dados.verificar_usuario(usuario)
     
     def cadastrar_usuario(self, usuario):
         return self.banco_dados.cadastrar_usuario(usuario)
 
     def cadastrar(self, cliente):
-        return self.banco_dados.cadastrar_cliente(cliente)
+        return self.banco_dados.cadastrar_pessoa(cliente)
 
     def remover(self, cliente):
-        return self.banco_dados.remover_cliente(cliente.get_cpf())
+        return self.banco_dados.remove_pessoa_por_cpf(cliente.get_cpf())
 
     def set_quantidade(self):
         self.quantidade_clientes = 0
@@ -59,10 +65,10 @@ class Loja:
         return self.faturamento
 
     def get_cliente_por_cpf(self, cpf):
-        return self.banco_dados.get_cliente_por_cpf(cpf)
+        return self.banco_dados.get_pessoa_por_cpf(cpf)
 
     def get_produto_por_id(self, id):
         return self.banco_dados.get_produto_por_id(id)
 
     def get_cliente_por_email(self, email):
-        return self.banco_dados.get_cliente_por_email(email)
+        return self.banco_dados.get_pessoa_por_email(email)

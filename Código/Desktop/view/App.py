@@ -1,12 +1,14 @@
 from textual.app import App
 from textual.widgets import Input, Label, Button, Select
 
-from model import Init, Usuario
+from model import Init
 from view import TelaClientela, TelaInicial, TelaPessoa, TelaProduto, TelaLogin, TelaEstoque
 from controller import Controller
 
-class App(App):
 
+class App(App):
+    CSS_PATH = "css/Base.tcss"
+    
     SCREENS = {
         "tela_inicial": TelaInicial.ScreenInicial,
         "tela_pessoa": TelaPessoa.TelaPessoa,
@@ -17,7 +19,9 @@ class App(App):
     }
 
     def on_mount(self):
-        self.push_screen("tela_login")
+        Init.inicializar()
+        self.push_screen("tela_inicial")
+        # self.push_screen("tela_login")
         
     def action_cadastro(self):
         email = self.query(Input)[0].value
@@ -30,8 +34,8 @@ class App(App):
         tela_login.mount(Input(placeholder="Email"), before=tela_login.query_one(Input))
         tela_login.query_one(Label).display = "none"
         tela_login.query_one(Button).label = "Criar conta"
-        Init.usuario = Usuario.Usuario(nome, senha, email, tipo_usuario)
-        login = Controller.carregar_login(Init.usuario)
+        dados = [nome, senha, email, tipo_usuario]
+        login = Controller.salvar_login(dados)
         tela_login.notify(login)
         if "ERRO" not in login:
             self.app.switch_screen("tela_inicial")

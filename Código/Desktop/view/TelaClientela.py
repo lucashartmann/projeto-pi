@@ -6,12 +6,11 @@ from model import Init, Pessoa
 
 
 class TelaClientela(Screen):
-    
+
     CSS_PATH = "css/TelaClientela.tcss"
 
     def compose(self):
-        # TODO
-        yield Tabs(Tab("TelaPerfil", id="tab_perfil"), Tab("TelaCadastrar", id="tab_cadastrar"), Tab("TelaConsultar", id="tab_consultar"))
+        yield Tabs(Tab("Cadastro", id="tab_cadastrar"), Tab("Consulta", id="tab_consultar"))
         with HorizontalGroup(id="hg_pesquisa"):
             yield Select([("Cliente", "Cliente"), ("Funcionário", "Funcionário")])
             yield Input()
@@ -23,15 +22,11 @@ class TelaClientela(Screen):
     clientes_filtrados = []
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        # TODO
-        if event.tabs.active == self.query_one("#tab_consultar", Tab).id:
-            self.app.switch_screen("tela_consultar")
-        elif event.tabs.active == self.query_one("#tab_perfil", Tab).id:
-            self.app.switch_screen("tela_perfil")
+        if event.tabs.active == self.query_one("#tab_cadastrar", Tab).id:
+            self.app.switch_screen("tela_pessoa")
 
     def on_screen_resume(self):
-        # TODO
-        self.query_one(Tabs).active = self.query_one("#tab_cadastrar", Tab).id
+        self.query_one(Tabs).active = self.query_one("#tab_consultar", Tab).id
 
     def setup_dados(self):
         if len(self.clientes_filtrados) > 0:
@@ -44,13 +39,13 @@ class TelaClientela(Screen):
         self.screen.app.switch_screen("tela_inicial")
 
     def on_mount(self):
-        self.ROWS = list(Pessoa.Pessoa.__dict__.keys())
+        uma_pessoa = Pessoa.Pessoa("", "", "", "", "", "")
+        self.ROWS = [list(uma_pessoa.__dict__.keys())]
+        self.atualizar()
         
-        
-
     def atualizar(self):
         self.clientes = Init.loja.get_lista_clientes()
-        
+
         if len(self.clientes_filtrados) > 0:
             lista = self.clientes_filtrados
         else:

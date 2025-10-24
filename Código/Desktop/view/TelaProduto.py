@@ -5,14 +5,12 @@ from controller import Controller
 
 
 class TelaProduto(Screen):
-    
+
     CSS_PATH = "css/TelaProduto.tcss"
-    
+
     def compose(self):
         yield Header()
-        # TODO
-        yield Tabs(Tab("TelaPerfil", id="tab_perfil"), Tab("TelaCadastrar", id="tab_cadastrar"), Tab("TelaConsultar", id="tab_consultar"))
-
+        yield Tabs(Tab("Cadastro", id="tab_cadastrar"), Tab("Estoque", id="tab_estoque"))
         with Grid():
             yield Label("ID do Produto:", id="lb_id")
             yield Input(placeholder="ID aqui", id="input_id")
@@ -36,14 +34,10 @@ class TelaProduto(Screen):
         yield Footer()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        # TODO
-        if event.tabs.active == self.query_one("#tab_consultar", Tab).id:
-            self.app.switch_screen("tela_consultar")
-        elif event.tabs.active == self.query_one("#tab_perfil", Tab).id:
-            self.app.switch_screen("tela_perfil")
+        if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+            self.app.switch_screen("tela_estoque")
 
     def on_screen_resume(self):
-        # TODO
         self.query_one(Tabs).active = self.query_one("#tab_cadastrar", Tab).id
 
     def cadastro(self):

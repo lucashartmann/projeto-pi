@@ -14,3 +14,7 @@ TelaClientela #hg_pesquisa {
     margin: 1;
 }
 
+TelaClientela DataTable {
+    margin: 2;
+    width: 100%;
+}

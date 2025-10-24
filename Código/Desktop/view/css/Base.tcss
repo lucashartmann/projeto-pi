@@ -1,0 +1,4 @@
+Screen {
+    background: rgba(156, 137, 137, 1);
+    color: black;
+}

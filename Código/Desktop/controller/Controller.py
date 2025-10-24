@@ -1,8 +1,5 @@
-from database import Banco
 from model import Cliente, Produto, Init, Funcionario, Usuario
-from database import Banco
 
-banco = Banco.Banco()
 
 def cadastrar_pessoa(lista):
     if lista[0] == "":
@@ -217,15 +214,39 @@ def remover_produto(id):
         return f"Produto removido com sucesso"
     else:
         return f"ERRO ao remover produto"
-    
-def salvar_login(dados):
+
+
+def verificar_login(dados):
     nome = dados[0]
     senha = dados[1]
-    
-    um_usuario = Usuario.Usuario(nome, senha)
-    consulta = Banco.Banco.cadastrar_usuario(um_usuario)
+    tipo_usuario = dados[2]
+
+    if "@" in nome:
+        email = nome
+        usuario = Usuario.Usuario("", email, senha, tipo_usuario, gerar_hash_senha=False)
+    else:
+        usuario = Usuario.Usuario(nome, "", senha, tipo_usuario, gerar_hash_senha=False)
+
+    consulta = Init.loja.verificar_usuario(usuario)
 
     if consulta:
+        Init.usuario = consulta
+        return "Login realizado com sucesso"
+    else:
+        return "ERRO ao realizar login"
+
+
+def salvar_login(dados):
+    nome = dados[0]
+    email = dados[1]
+    senha = dados[2]
+    tipo_usuario = dados[3]
+
+    um_usuario = Usuario.Usuario(nome, email, senha, tipo_usuario)
+    consulta = Init.loja.cadastrar_usuario(um_usuario)
+
+    if consulta:
+        Init.usuario = um_usuario
         return "Login salvo com sucesso"
     else:
         return "ERRO ao salvar login"

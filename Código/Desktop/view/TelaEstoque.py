@@ -6,6 +6,8 @@ from model import Init, Produto
 
 
 class TelaEstoque(Screen):
+    
+    CSS_PATH = "css/TelaEstoque.tcss"
 
     produtos = Init.loja.get_estoque().get_lista_produtos()
     produtos_filtrados = []
@@ -16,8 +18,7 @@ class TelaEstoque(Screen):
 
     def compose(self):
         yield Header()
-        # TODO
-        yield Tabs(Tab("TelaPerfil", id="tab_perfil"), Tab("TelaCadastrar", id="tab_cadastrar"), Tab("TelaConsultar", id="tab_consultar"))
+        yield Tabs(Tab("Cadastro", id="tab_cadastrar"), Tab("Estoque", id="tab_estoque"))
         with HorizontalGroup(id="hg_pesquisa"):
             yield Input()
             yield Button("Voltar", id="bt_voltar")
@@ -39,18 +40,15 @@ class TelaEstoque(Screen):
         self.produtos = Init.loja.get_estoque().get_produtos()
 
     def on_mount(self):
-        self.ROWS = list(Produto.Produto.__dict__.keys())
-
+        self.ROWS = [list(Init.um_produto.__dict__.keys())]
+        self.atualizar()
+        
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        # TODO
-        if event.tabs.active == self.query_one("#tab_consultar", Tab).id:
-            self.app.switch_screen("tela_consultar")
-        elif event.tabs.active == self.query_one("#tab_perfil", Tab).id:
-            self.app.switch_screen("tela_perfil")
+        if event.tabs.active == self.query_one("#tab_cadastrar", Tab).id:
+            self.app.switch_screen("tela_produto")
 
     def on_screen_resume(self):
-        # TODO
-        self.query_one(Tabs).active = self.query_one("#tab_cadastrar", Tab).id
+        self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value
@@ -83,11 +81,14 @@ class TelaEstoque(Screen):
         table.clear(columns=True)
 
         table.add_columns(*self.ROWS[0])
-
+        
         for row in self.ROWS[1:]:
             table.add_row(*row, height=3)
 
+       
+
     def filtro(self, palavras, index, filtro_recebido):
+        um_produto = Produto.Produto("", "", "", "", 0.0, 0, "")
         nova_lista = []
 
         if index + 1 < len(palavras):

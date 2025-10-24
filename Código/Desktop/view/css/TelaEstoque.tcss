@@ -13,3 +13,8 @@ TelaEstoque Input {
 TelaEstoque #hg_pesquisa {
     margin: 1;
 }
+
+TelaEstoque DataTable {
+    margin: 2;
+    width: 100%;
+}
