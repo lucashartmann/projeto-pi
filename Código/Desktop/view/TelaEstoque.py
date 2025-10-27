@@ -1,8 +1,8 @@
 from textual.widgets import Input, TextArea, Button, DataTable, Footer, Header, Tab, Tabs
-from textual.containers import HorizontalGroup, HorizontalScroll
+from textual.containers import HorizontalGroup
 from textual import on
 from textual.screen import Screen
-from model import Init, Produto
+from model import Init
 
 
 class TelaEstoque(Screen):

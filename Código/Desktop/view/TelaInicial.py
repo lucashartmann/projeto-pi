@@ -17,12 +17,12 @@ class ScreenInicial(Screen):
                     yield Button("Comprar", id="bt_produto")
                     yield Button("Dados", id="bt_pessoa")
                 case TipoUsuario.GERENTE:
-                    yield Button("Produto", id="bt_produto")
-                    yield Button("Pessoa", id="bt_pessoa")
+                    yield Button("Cadastro Produto", id="bt_produto")
+                    yield Button("Cadastro Pessoa", id="bt_pessoa")
                 case TipoUsuario.ADMINISTRADOR:
-                    yield Button("Produto", id="bt_produto")
-                    yield Button("Pessoa", id="bt_pessoa")
-                    yield Button("Usuario", id="bt_usuario")
+                    yield Button("Cadastro Produto", id="bt_produto")
+                    yield Button("Cadastro Pessoa", id="bt_pessoa")
+                    yield Button("Cadastro Usuario", id="bt_usuario")
                 case TipoUsuario.FUNCIONARIO:
                     pass
             yield Button("Sair", id="bt_sair")

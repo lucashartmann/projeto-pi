@@ -1,6 +1,7 @@
 import bcrypt
 from enum import Enum
 
+
 class TipoUsuario(Enum):
     CLIENTE = 1
     GERENTE = 4
