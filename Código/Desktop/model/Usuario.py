@@ -1,4 +1,12 @@
 import bcrypt
+from enum import Enum
+
+class TipoUsuario(Enum):
+    CLIENTE = 1
+    GERENTE = 4
+    FUNCIONARIO = 2
+    ADMINISTRADOR = 3
+
 
 class Usuario:
     def __init__(self, nome, email, senha, tipo, gerar_hash_senha=True):

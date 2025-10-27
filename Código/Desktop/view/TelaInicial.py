@@ -3,6 +3,8 @@ from textual.widgets import Button, Footer, Header
 from textual.screen import Screen
 
 from model import Init
+from model.Usuario import TipoUsuario
+
 
 class ScreenInicial(Screen):
     CSS_PATH = "css/TelaInicial.tcss"
@@ -11,16 +13,18 @@ class ScreenInicial(Screen):
         yield Header()
         with Grid():
             match Init.usuario.get_tipo():
-                case "cliente":
+                case TipoUsuario.CLIENTE:
                     yield Button("Comprar", id="bt_produto")
                     yield Button("Dados", id="bt_pessoa")
-                case "gerente":
+                case TipoUsuario.GERENTE:
                     yield Button("Produto", id="bt_produto")
                     yield Button("Pessoa", id="bt_pessoa")
-                case "administrador":
+                case TipoUsuario.ADMINISTRADOR:
                     yield Button("Produto", id="bt_produto")
                     yield Button("Pessoa", id="bt_pessoa")
                     yield Button("Usuario", id="bt_usuario")
+                case TipoUsuario.FUNCIONARIO:
+                    pass
             yield Button("Sair", id="bt_sair")
         yield Footer()
 

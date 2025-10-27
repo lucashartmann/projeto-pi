@@ -80,16 +80,37 @@ class Banco:
                     );
                                 ''')
             cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Tipo_Usuario (
+                    id_tipo INTEGER PRIMARY KEY AUTOINCREMENT,
+                    tipo TEXT UNIQUE NOT NULL
+                    );
+                                ''')
+            cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Usuario (
                     id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
                     nome TEXT NOT NULL,
                     email TEXT NOT NULL UNIQUE,
                     senha TEXT NOT NULL,
-                    tipo TEXT NOT NULL CHECK (tipo IN ('cliente', 'gerente', 'funcionario', 'administrador'))
+                    tipo INTEGER NOT NULL,
+                    FOREIGN KEY (tipo) REFERENCES Tipo_Usuario (id_tipo)
                     );
+                    
                                 ''')
 
+            try:
+                cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
+                    VALUES(?)''', ("cliente",))
+                cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
+                    VALUES(?)''', ("funcionario",))
+                cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
+                    VALUES(?)''', ("administrador",))
+                cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
+                    VALUES(?)''', ("gerente",))
+            except:
+                pass
+
             conexao.commit()
+            
 
     def get_lista_usuarios(self):
         with sqlite3.connect(
@@ -155,11 +176,12 @@ class Banco:
                 INSERT INTO Usuario (nome, email, senha, tipo) 
                 VALUES(?, ?, ?, ?)
                 '''
+                
                 cursor.execute(sql_query, (
                     usuario.get_nome(),
                     usuario.get_email(),
                     usuario.get_senha(),
-                    usuario.get_tipo()
+                    usuario.get_tipo().value
                 ))
                 conexao.commit()
                 return True

@@ -1,11 +1,11 @@
 from model import Cliente, Loja, Produto, Cupom, Reembolso, Relatorio, Pedido, Usuario
-import io
+from model.Usuario import TipoUsuario
 
 class Init:
 
     # usuario = ""
 
-    usuario = Usuario.Usuario("administrador", "administrador", "administrador", "administrador")
+    usuario = Usuario.Usuario("administrador", "administrador", "administrador", tipo=TipoUsuario.ADMINISTRADOR)
     cliente_atual = None
     loja = Loja.Loja("GameStart", "00000000000")
 
@@ -30,10 +30,10 @@ class Init:
         
             
         if not Init.loja.get_lista_usuarios():
-            admin = Usuario.Usuario("admin", "admin", "admin", "administrador")
-            gerente = Usuario.Usuario("gerente", "gerente", "gerente", "gerente")
-            funcionario = Usuario.Usuario("funcionario", "funcionario", "funcionario", "funcionario")
-            cliente = Usuario.Usuario("cliente", "cliente", "cliente", "cliente")
+            admin = Usuario.Usuario("admin", "admin", "admin", tipo=TipoUsuario.ADMINISTRADOR)
+            gerente = Usuario.Usuario("gerente", "gerente", "gerente", tipo=TipoUsuario.GERENTE)
+            funcionario = Usuario.Usuario("funcionario", "funcionario", "funcionario", tipo=TipoUsuario.FUNCIONARIO)
+            cliente = Usuario.Usuario("cliente", "cliente", "cliente", tipo=TipoUsuario.CLIENTE)
 
             Init.loja.cadastrar_usuario(admin)
             Init.loja.cadastrar_usuario(gerente)
