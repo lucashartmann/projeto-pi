@@ -1,8 +1,10 @@
 from textual.screen import Screen
 from textual.widgets import Input, Button, Select, Label
 from textual.containers import VerticalGroup
+from textual.events import Click
 
 from textual_image.widget import Image
+from textual_image.widget.sixel import _ImageSixelImpl
 
 from controller import Controller
 
@@ -13,12 +15,26 @@ from model import Init, Cliente
 class MyInput(Input):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
+       
         
     def compose(self):
-        yield Image("Enviar")
+        yield Image("assets/olho_fechado.png")
         
     def on_mount(self):
         self.query_one(Image).styles.dock = "right"
+        
+    def on_click(self, evento: Click):
+        if isinstance(evento.widget, _ImageSixelImpl):
+            
+            if self.password:
+                self.password = False
+                self.query_one(Image).image = "assets/olho_aberto.png"
+                
+            else:
+                self.password = True
+                self.query_one(Image).image = "assets/olho_fechado.png"
+                
+        
 
 class TelaLogin(Screen):
 
@@ -28,7 +44,7 @@ class TelaLogin(Screen):
     def compose(self):
         with VerticalGroup():
             yield Input(placeholder="Usuário")
-            yield Input(placeholder="Senha")
+            yield MyInput(placeholder="Senha",password=True)
             yield Select([("Cliente", "Cliente"), ("Gerente", "Gerente"), ("Funcionario", "Funcionario"), ("Administrador", "Administrador")], value="Cliente", allow_blank=False)
             yield Button("Entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")

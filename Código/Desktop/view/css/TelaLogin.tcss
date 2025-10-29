@@ -53,3 +53,12 @@ TelaLogin #bt_criar_conta {
     margin: 1;
     color: white;
 }
+
+MyInput Image {
+    width: 5;
+    height: 2;
+}
+
+MyInput {
+    height: 25%;
+}

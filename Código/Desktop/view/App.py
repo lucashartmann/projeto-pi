@@ -31,8 +31,8 @@ class App(App):
 
     def on_mount(self):
         Init.inicializar()
-        self.push_screen("tela_estoque_cliente")
-        # self.push_screen("tela_login")
+        # self.push_screen("tela_estoque_cliente")
+        self.push_screen("tela_login")
 
     def action_cadastro(self):
         tela_login = self.get_screen("tela_login")
