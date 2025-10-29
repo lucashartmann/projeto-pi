@@ -1,9 +1,0 @@
-Grid {
-    align: center middle;
-    grid-size: 1;
-    grid-gutter: 1 2;  
-}
-
-ScreenInicial {
-    background: rgba(202, 96, 96, 1);
-}

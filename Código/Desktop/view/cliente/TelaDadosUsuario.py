@@ -2,8 +2,8 @@
 # Dados de login
 
 from textual.screen import Screen
-from textual.widgets import TextArea, Pretty
-from textual.containers import HorizontalGroup
+from textual.widgets import TextArea, Pretty, Static, Tab, Tabs
+from textual.containers import HorizontalGroup, Grid
 
 from textual_image.widget import Image
 
@@ -12,39 +12,79 @@ from model import Init
 
 class TelaDadosUsuario(Screen):
 
-    CSS_PATH = "css/TelaDadosUsuario.css"
-
-    dados = f'''
-    Username {Init.usuario.get_nome()}
-    Nome {Init.cliente_atual.get_nome()}
-    CPF {Init.cliente_atual.get_cpf()}
-    RG {Init.cliente_atual.get_rg()}
-    Telefone {Init.cliente_atual.get_telefone()}
-    Endereco {Init.cliente_atual.get_endereco()}
-    Email {Init.usuario.get_email()}
-    Senha {Init.usuario.get_senha()}
-    '''
+    CSS_PATH = "css/TelaDadosUsuario.tcss"
 
     compras = Init.loja.get_compras_usuario_por_cpf(
         Init.cliente_atual.get_cpf())
 
     def dados_compra(self):
-        for chave, valor in self.compras.items():
-            dados = ''
+        if self.compras:
+            for chave, valor in self.compras.items():
+                dados = ''
 
-            dados += f"Data da Compra: {chave}\n"
-            for produto in valor:
-                dados += f"{produto}\n"
+                dados += f"Data da Compra: {chave}\n"
+                for produto in valor:
+                    dados += f"{produto}\n"
 
-            if dados:
-                self.mount(Pretty(dados))
+                if dados:
+                    self.mount(Pretty(dados))
 
     def atualizar_compras(self):
         self.compras = Init.loja.get_compras_usuario_por_cpf(
             Init.cliente_atual.get_cpf())
 
+    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+        if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+            self.app.switch_screen("tela_estoque_cliente")
+        elif event.tabs.active == self.query_one("#tab_carrinho_compras", Tab).id:
+            self.app.switch_screen("tela_carrinho_compras")
+
+    def atualizar_dados(self):
+        grid = self.query_one(Grid)
+        if Init.usuario:
+            grid.mount(Static("Username"))
+            grid.mount(TextArea(Init.usuario.get_nome()))
+            grid.mount(Static("Nome"))
+            grid.mount(TextArea(Init.cliente_atual.get_nome()))
+            grid.mount(Static("CPF"))
+            grid.mount(TextArea(Init.cliente_atual.get_cpf()))
+            grid.mount(Static("RG"))
+            grid.mount(TextArea(Init.cliente_atual.get_rg()))
+            grid.mount(Static("Telefone"))
+            grid.mount(TextArea(Init.cliente_atual.get_telefone()))
+            grid.mount(Static("Endereco"))
+            grid.mount(TextArea(Init.cliente_atual.get_endereco()))
+            grid.mount(Static("Email"))
+            grid.mount(TextArea(Init.cliente_atual.get_email()))
+            grid.mount(Static("Senha"))
+            grid.mount(TextArea(Init.usuario.get_senha()))
+            
+
     def compose(self):
-        with HorizontalGroup():
-            yield Image("assets/usuario.png")
-            yield TextArea(self.dados)
-        yield TextArea("Compras recentes do usuário")
+        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"))
+        with HorizontalGroup():           
+
+            yield Image("assets/usuario2.png")
+            with Grid():
+                yield Static("Username")
+                yield TextArea(Init.usuario.get_nome())
+                yield Static("Nome")
+                yield TextArea(Init.cliente_atual.get_nome())
+                yield Static("CPF")
+                yield TextArea(Init.cliente_atual.get_cpf())
+                yield Static("RG")
+                yield TextArea(Init.cliente_atual.get_rg())
+                yield Static("Telefone")
+                yield TextArea(Init.cliente_atual.get_telefone())
+                yield Static("Endereco")
+                yield TextArea(Init.cliente_atual.get_endereco())
+                yield Static("Email")
+                yield TextArea(Init.cliente_atual.get_email())
+                yield Static("Senha")
+                yield TextArea("*******")
+
+        yield Static("Compras recentes do usuário", id="stt_compras")
+
+    def on_screen_resume(self):
+        self.query_one(Tabs).active = self.query_one(
+            "#tab_dados_usuario", Tab).id

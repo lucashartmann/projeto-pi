@@ -1,0 +1,15 @@
+TelaCarrinhoCompras #produtos {
+    background: pink;
+    height: 97%;
+    
+}
+
+TelaCarrinhoCompras HorizontalGroup {
+    width: 100%;
+    height: 100%;
+}
+
+TelaCarrinhoCompras #pagamento {
+    background: rgb(200,200,200);
+    height: 87%;
+}

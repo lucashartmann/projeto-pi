@@ -1,4 +1,4 @@
-from textual.widgets import Label, Button, ListItem, ListView, Footer, Header, Select, Input
+from textual.widgets import Label, Button, ListItem, ListView, Footer, Header, Select, Input, Tab, Tabs
 from textual import on
 from textual.screen import Screen
 from textual.containers import VerticalScroll, HorizontalGroup, Container
@@ -64,7 +64,22 @@ class TelaEstoqueCliente(Screen):
                     list_item.styles.width = 30
                     list_item.styles.height = 30
 
+    def compose(self):
+        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"))
+        yield Header()
+        with VerticalScroll():
+            with HorizontalGroup(id="hg_pesquisa"):
+                yield Select([("genero", 'genero')])
+                yield Input()
+                yield Button("Remover", id="bt_remover")
+                yield Button("Voltar", id="bt_voltar")
+            yield ListView(id="lst_item")
+            yield Label("item", id="tx_info")
+
+            yield Footer()
+            
     def _on_screen_resume(self):
+        self.query_one(Tabs).active = self.query_one("#tab_comprar", Tab).id
         self.produtos = Init.loja.get_estoque().get_lista_produtos()
 
         self.atualizar_imagens()
@@ -77,18 +92,13 @@ class TelaEstoqueCliente(Screen):
             [(categoria, categoria) for categoria in lista_categorias])
         self.atualizar_imagens()
 
-    def compose(self):
-        yield Header()
-        with VerticalScroll():
-            with HorizontalGroup(id="hg_pesquisa"):
-                yield Select([("genero", 'genero')])
-                yield Input()
-                yield Button("Remover", id="bt_remover")
-                yield Button("Voltar", id="bt_voltar")
-            yield ListView(id="lst_item")
-            yield Label("item", id="tx_info")
-
-            yield Footer()
+            
+    
+    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+        if event.tabs.active == self.query_one("#tab_carrinho_compras", Tab).id:
+            self.app.switch_screen("tela_carrinho_compras")
+        elif event.tabs.active == self.query_one("#tab_dados_usuario", Tab).id:
+            self.app.switch_screen("tela_dados_usuario")
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:

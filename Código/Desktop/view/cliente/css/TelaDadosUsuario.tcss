@@ -1,0 +1,34 @@
+TelaDadosUsuario Grid {
+    grid-size: 2;
+    margin-left: 1;
+    background: rgba(17, 16, 16, 1);
+    width: 100%;
+    height: 32;
+
+}
+
+TelaDadosUsuario {
+    background: rgba(77, 70, 70, 1);
+    color: white;
+}
+
+TelaDadosUsuario Grid TextArea {
+    max-height: 80%;
+    width: 100%;
+}
+
+TelaDadosUsuario Image{
+    height: 18;
+    width: 40;
+}
+
+
+TelaDadosUsuario Tab {
+    color: white;
+}
+
+TelaDadosUsuario #stt_compras {
+    height: 4%;
+    text-align: center;
+    background: rgba(36, 33, 33, 1);
+}

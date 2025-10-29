@@ -337,10 +337,13 @@ class Banco:
             registro = cursor.fetchone()
             if not registro:
                 return None
-            produto = Produto.Produto(*registro[1:8])
+            produto = Produto.Produto(*registro[2:9])
+            produto.set_preco(float(produto.get_preco()))
+            produto.set_quantidade(int(produto.get_quantidade()))
             produto.set_descricao(registro[-2])
             produto.set_imagem(registro[-1])
-            produto.set_id(registro[0])
+            produto.set_id(int(registro[0]))
+            produto.set_codigo(registro[1])
             return produto
 
     def adicionar_produto(self, produto):
@@ -378,10 +381,12 @@ class Banco:
             cursor.execute("SELECT * FROM Produto")
             resultados = cursor.fetchall()
             for dados in resultados:
-                produto = Produto.Produto(*dados[1:8])
+                produto = Produto.Produto(*dados[2:9])
+                produto.set_preco(float(produto.get_preco()))
+                produto.set_quantidade(int(produto.get_quantidade()))
                 produto.set_descricao(dados[-2])
                 produto.set_imagem(dados[-1])
-                produto.set_id(dados[0])
+                produto.set_id(int(dados[0]))
                 produto.set_codigo(dados[1])
                 lista.append(produto)
             return lista
@@ -395,10 +400,12 @@ class Banco:
             lista_registros = cursor.fetchall()
             lista_produtos = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[1:8])
+                produto = Produto.Produto(*registro[2:9])
+                produto.set_preco(float(produto.get_preco()))
+                produto.set_quantidade(int(produto.get_quantidade()))
                 produto.set_descricao(registro[-2])
                 produto.set_imagem(registro[-1])
-                produto.set_id(registro[0])
+                produto.set_id(int(registro[0]))
                 produto.set_codigo(registro[1])
 
                 lista_produtos.append(produto)
@@ -413,10 +420,12 @@ class Banco:
             lista_registros = cursor.fetchall()
             lista_produtos = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[1:8])
+                produto = Produto.Produto(*registro[2:9])
+                produto.set_preco(float(produto.get_preco()))
+                produto.set_quantidade(int(produto.get_quantidade()))
                 produto.set_descricao(registro[-2])
                 produto.set_imagem(registro[-1])
-                produto.set_id(registro[0])
+                produto.set_id(int(registro[0]))
                 produto.set_codigo(registro[1])
 
                 lista_produtos.append(produto)
@@ -432,10 +441,12 @@ class Banco:
             lista_registros = cursor.fetchall()
             lista_produtos = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[1:8])
+                produto = Produto.Produto(*registro[2:9])
+                produto.set_preco(float(produto.get_preco()))
+                produto.set_quantidade(int(produto.get_quantidade()))
                 produto.set_descricao(registro[-2])
                 produto.set_imagem(registro[-1])
-                produto.set_id(registro[0])
+                produto.set_id(int(registro[0]))
                 produto.set_codigo(registro[1])
 
                 lista_produtos.append(produto)
@@ -450,10 +461,12 @@ class Banco:
             lista_registros = cursor.fetchall()
             lista_produtos = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[1:8])
+                produto = Produto.Produto(*registro[2:9])
+                produto.set_preco(float(produto.get_preco()))
+                produto.set_quantidade(int(produto.get_quantidade()))
                 produto.set_descricao(registro[-2])
                 produto.set_imagem(registro[-1])
-                produto.set_id(registro[0])
+                produto.set_id(int(registro[0]))
                 produto.set_codigo(registro[1])
 
                 lista_produtos.append(produto)
