@@ -5,6 +5,9 @@ from textual.containers import VerticalGroup
 
 from controller import Controller
 
+from model.Usuario import TipoUsuario
+from model import Init, Cliente
+
 
 class TelaLogin(Screen):
 
@@ -19,13 +22,39 @@ class TelaLogin(Screen):
             yield Button("Entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")
 
+    def montar_cadastro(self):
+        self.query_one(Select).disabled = True
+        self.query_one(Input).placeholder = "Username"
+        self.mount(Input(placeholder="Email"), before=self.query_one(Input))
+        self.query_one(Label).display = "none"
+        self.montou = True
+        self.query_one(Button).label = "Criar conta"
+
     def on_button_pressed(self):
+
         nome = self.query(Input)[0].value
         senha = self.query(Input)[1].value
-        tipo_usuario = self.query_one(Select).value
-        dados = [nome, senha, tipo_usuario]
+        tipo_usuario = ""
+
+        match self.query_one(Select).value:
+            case "Cliente":
+                tipo_usuario = TipoUsuario.CLIENTE
+            case "Gerente":
+                tipo_usuario = TipoUsuario.GERENTE
+            case "Funcionario":
+                tipo_usuario = TipoUsuario.FUNCIONARIO
+            case "Administrador":
+                tipo_usuario = TipoUsuario.ADMINISTRADOR
+
+        if self.montou:
+            email = self.query(Input)[0].value
+            dados = [nome, senha, email, TipoUsuario.CLIENTE]
+        else:
+            dados = [nome, senha, tipo_usuario]
 
         login = Controller.verificar_login(dados)
         self.notify(login)
         if "ERRO" not in login:
+            if tipo_usuario == TipoUsuario.CLIENTE:
+                Init.cliente_atual = Cliente.Cliente(nome, "", "", "", "", email)
             self.app.switch_screen("tela_inicial")
