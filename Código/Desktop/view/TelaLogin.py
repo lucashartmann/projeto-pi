@@ -13,28 +13,26 @@ from model import Init, Cliente
 
 
 class MyInput(Input):
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-       
-        
+
     def compose(self):
         yield Image("assets/olho_fechado.png")
-        
+
     def on_mount(self):
         self.query_one(Image).styles.dock = "right"
-        
+
     def on_click(self, evento: Click):
         if isinstance(evento.widget, _ImageSixelImpl):
-            
+
             if self.password:
                 self.password = False
                 self.query_one(Image).image = "assets/olho_aberto.png"
-                
+
             else:
                 self.password = True
                 self.query_one(Image).image = "assets/olho_fechado.png"
-                
-        
+
 
 class TelaLogin(Screen):
 
@@ -44,7 +42,7 @@ class TelaLogin(Screen):
     def compose(self):
         with VerticalGroup():
             yield Input(placeholder="Usuário")
-            yield MyInput(placeholder="Senha",password=True)
+            yield MyInput(placeholder="Senha", password=True)
             yield Select([("Cliente", "Cliente"), ("Gerente", "Gerente"), ("Funcionario", "Funcionario"), ("Administrador", "Administrador")], value="Cliente", allow_blank=False)
             yield Button("Entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")
@@ -86,7 +84,8 @@ class TelaLogin(Screen):
                 Init.cliente_atual = Cliente.Cliente(
                     nome, "", "", "", "", email)
             elif tipo_usuario == TipoUsuario.CLIENTE:
-                consulta = Init.loja.get_cliente_por_email(email) #TODO: Arrumar. Podemos não ter o email
+                # TODO: Arrumar. Podemos não ter o email
+                consulta = Init.loja.get_cliente_por_email(email)
                 if consulta:
                     Init.cliente_atual = consulta
                 else:
@@ -100,8 +99,8 @@ class TelaLogin(Screen):
                 case TipoUsuario.CLIENTE:
                     self.app.switch_screen("tela_estoque_cliente")
                 case TipoUsuario.GERENTE:
-                    self.app.switch_screen("tela_estoque_cliente") #TODO Arrumar
+                    self.app.switch_screen("tela_produto")
                 case TipoUsuario.ADMINISTRADOR:
-                    self.app.switch_screen("tela_estoque_cliente") #TODO Arrumar
+                    self.app.switch_screen("tela_usuario")
                 case TipoUsuario.FUNCIONARIO:
                     pass

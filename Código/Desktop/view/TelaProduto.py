@@ -2,6 +2,8 @@ from textual.widgets import Input, Label, Button, Footer, Header, Select, Tab, T
 from textual.screen import Screen
 from textual.containers import HorizontalGroup, Grid
 from controller import Controller
+from model.Usuario import TipoUsuario
+from model import Init
 
 
 class TelaProduto(Screen):
@@ -10,7 +12,12 @@ class TelaProduto(Screen):
 
     def compose(self):
         yield Header()
-        yield Tabs(Tab("Cadastro", id="tab_cadastrar"), Tab("Estoque", id="tab_estoque"))
+        if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
+
+            yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"), Tab("Cadastro Usuario", id="tab_cadastro_usuario"), Tab("Usuarios Cadastrados", id="tab_usuario_cadastrados"), Tab("Dados da Loja", id="tab_dados_loja"))
+        else:
+            yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"), Tab("Dados da Loja", id="tab_dados_loja"))
+
         with Grid():
             yield Label("ID do Produto:", id="lb_id")
             yield Input(placeholder="ID aqui", id="input_id")
@@ -36,9 +43,18 @@ class TelaProduto(Screen):
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
             self.app.switch_screen("tela_estoque")
+        elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+            self.app.switch_screen("tela_pessoa")
+        elif event.tabs.active == self.query_one("#tab_clientela", Tab).id:
+            self.app.switch_screen("tela_clientela")
+        elif event.tabs.active == self.query_one("#tab_cadastro_usuario", Tab).id:
+            self.app.switch_screen("tela_usuario")
+        elif event.tabs.active == self.query_one("#tab_usuarios_cadastrados", Tab).id:
+            self.app.switch_screen("tela_usuarios_cadastrados")
 
     def on_screen_resume(self):
-        self.query_one(Tabs).active = self.query_one("#tab_cadastrar", Tab).id
+        self.query_one(Tabs).active = self.query_one(
+            "#tab_cadastro_produto", Tab).id
 
     def cadastro(self):
         dados = []
