@@ -1,8 +1,8 @@
 import sqlite3
-
 import bcrypt
-from model import Cliente, Produto, Usuario
 import os
+
+from model import Cliente, Produto, Usuario
 
 
 class Banco:
@@ -68,6 +68,7 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS Venda (
                     id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
                     cpf_cliente TEXT,
+                    data_venda TEXT NOT NULL,
                     FOREIGN KEY (cpf_cliente) REFERENCES Cliente (cpf)
                     );
                                 ''')
@@ -97,6 +98,16 @@ class Banco:
                     
                                 ''')
 
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Carrinho_Compras (
+                    cpf_cliente TEXT,
+                    id_produto INTEGER,
+                    quantidade INTEGER,
+                    FOREIGN KEY (id_produto) REFERENCES Produto (id_produto),
+                    FOREIGN KEY (cpf_cliente) REFERENCES Cliente (cpf)
+                    );
+                                ''')
+
             try:
                 cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
                     VALUES(?)''', ("cliente",))
@@ -110,7 +121,39 @@ class Banco:
                 pass
 
             conexao.commit()
-            
+
+    def get_compras_usuario_por_cpf(self, cpf):
+        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
+
+            try:
+                cursor = conexao.cursor()
+                cursor.execute('''
+                    SELECT id_venda FROM Venda WHERE cpf_cliente = ?
+                ''', (cpf,))
+                vendas = cursor.fetchall()
+
+                dicionario_venda = {}
+
+                for id in vendas:
+
+                    cursor.execute('''
+                        SELECT * FROM Venda_Produtos WHERE id_venda = ?
+                    ''', (id,))
+                    produtos = cursor.fetchall()
+                    lista = []
+                    for produto in produtos:
+                        lista.append(produto)
+
+                    if lista:
+                        dicionario_venda[id[1]] = lista
+
+                if not dicionario_venda:
+                    return {}
+
+                return dicionario_venda
+            except Exception as e:
+                print("Erro ao buscar compras do usuário:", e)
+                return {}
 
     def get_lista_usuarios(self):
         with sqlite3.connect(
@@ -176,7 +219,7 @@ class Banco:
                 INSERT INTO Usuario (nome, email, senha, tipo) 
                 VALUES(?, ?, ?, ?)
                 '''
-                
+
                 cursor.execute(sql_query, (
                     usuario.get_nome(),
                     usuario.get_email(),
@@ -377,7 +420,7 @@ class Banco:
                 produto.set_codigo(registro[1])
 
                 lista_produtos.append(produto)
-                
+
             return lista_produtos
 
     def get_produtos_por_modelo(self, modelo):

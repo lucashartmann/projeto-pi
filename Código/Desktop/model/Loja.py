@@ -12,13 +12,16 @@ class Loja:
         self.quantidade_clientes = self.set_quantidade()
         self.quantidade_fornecedores = self.set_quantidade()
         self.faturamento = 0
-        
+
+    def get_compras_usuario_por_cpf(self, cpf):
+        return self.banco_dados.get_compras_usuario_por_cpf(cpf)
+
     def get_lista_usuarios(self):
         return self.banco_dados.get_lista_usuarios()
-    
+
     def verificar_usuario(self, usuario):
         return self.banco_dados.verificar_usuario(usuario)
-    
+
     def cadastrar_usuario(self, usuario):
         return self.banco_dados.cadastrar_usuario(usuario)
 

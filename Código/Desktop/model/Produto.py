@@ -1,6 +1,7 @@
 import string
 import random
 
+
 class Produto:
 
     def __init__(self, nome, marca, modelo, cor, preco, quantidade, categoria):
@@ -15,26 +16,26 @@ class Produto:
         self.categoria = categoria
         self.descricao = ""
         self.imagem = ""
-        
-    
+
     def gerar_codigo_com_prefixo(self, prefixo='PROD-', tamanho_sufixo=6):
         sufixo_caracteres = string.ascii_uppercase + string.digits
-        sufixo = ''.join(random.choice(sufixo_caracteres) for _ in range(tamanho_sufixo))
+        sufixo = ''.join(random.choice(sufixo_caracteres)
+                         for _ in range(tamanho_sufixo))
         codigo = f'{prefixo}{sufixo}'
         return codigo
-    
+
     def get_codigo(self):
         return self.codigo
-    
+
     def set_codigo(self, novo_codigo):
         self.codigo = novo_codigo
 
     def get_descricao(self):
         return self.descricao
-    
+
     def set_descricao(self, descricao):
         self.descricao = descricao
-        
+
     def get_imagem(self):
         return self.imagem
 
@@ -102,4 +103,3 @@ class Produto:
     def __str__(self):
         return (f"Produto [id = {self.get_id()}, nome = {self.get_nome()}, marca = {self.get_marca()}, modelo = {self.get_modelo()}, cor = {self.get_cor()}, "
                 f"preco = {self.get_preco()}, quantidade = {self.get_quantidade()}, categoria = {self.get_categoria()}]")
-

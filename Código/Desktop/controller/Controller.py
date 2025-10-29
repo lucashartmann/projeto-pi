@@ -223,9 +223,11 @@ def verificar_login(dados):
 
     if "@" in nome:
         email = nome
-        usuario = Usuario.Usuario("", email, senha, tipo_usuario, gerar_hash_senha=False)
+        usuario = Usuario.Usuario(
+            "", email, senha, tipo_usuario, gerar_hash_senha=False)
     else:
-        usuario = Usuario.Usuario(nome, "", senha, tipo_usuario, gerar_hash_senha=False)
+        usuario = Usuario.Usuario(
+            nome, "", senha, tipo_usuario, gerar_hash_senha=False)
 
     consulta = Init.loja.verificar_usuario(usuario)
 

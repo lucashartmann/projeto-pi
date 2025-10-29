@@ -7,16 +7,18 @@ from model import Init
 from textual_image.widget import Image as TextualImage
 from io import BytesIO
 
+
 class ContainerProduto(Container):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def compose(self):
-    #     yield TextualImage("")
-    #     yield Label("Dualshock")
-    #     yield Label("R$ 299,99")
+        #     yield TextualImage("")
+        #     yield Label("Dualshock")
+        #     yield Label("R$ 299,99")
         yield Button("Comprar")
-        
+
+
 class TelaEstoqueCliente(Screen):
 
     CSS_PATH = "css/TelaEstoqueCliente.tcss"
@@ -42,7 +44,7 @@ class TelaEstoqueCliente(Screen):
         lista = self.produtos
         if len(self.produtos_filtrados) > 0:
             lista = self.produtos_filtrados
-        
+
         for produto in lista:
             if produto.get_codigo() not in self.produtos_etiquetados.keys():
                 if produto.get_imagem():
@@ -54,12 +56,13 @@ class TelaEstoqueCliente(Screen):
                     imagem.styles.height = 13
                     imagem.styles.width = 30
                     container.mount(imagem, before=container.query_one(Button))
-                    container.mount(Label(content=produto.get_nome(), id="tx_nome"), after=container.query_one(TextualImage))
-                    container.mount(Label(content=f"R$ {produto.get_preco():.2f}", id="tx_preco"), after=container.query_one("#tx_nome"))
-                    
+                    container.mount(Label(content=produto.get_nome(
+                    ), id="tx_nome"), after=container.query_one(TextualImage))
+                    container.mount(Label(
+                        content=f"R$ {produto.get_preco():.2f}", id="tx_preco"), after=container.query_one("#tx_nome"))
+
                     list_item.styles.width = 30
                     list_item.styles.height = 30
-
 
     def _on_screen_resume(self):
         self.produtos = Init.loja.get_estoque().get_lista_produtos()

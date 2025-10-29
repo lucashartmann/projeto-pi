@@ -1,6 +1,5 @@
 from textual.screen import Screen
 from textual.widgets import Input, Button, Select, Label
-from textual import on
 from textual.containers import VerticalGroup
 
 from controller import Controller

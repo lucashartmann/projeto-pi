@@ -1,39 +1,41 @@
 from model import Cliente, Loja, Produto, Cupom, Reembolso, Relatorio, Pedido, Usuario
 from model.Usuario import TipoUsuario
 
+
 class Init:
 
     # usuario = ""
 
-    usuario = Usuario.Usuario("administrador", "administrador", "administrador", tipo=TipoUsuario.ADMINISTRADOR)
+    usuario = Usuario.Usuario(
+        "administrador", "administrador", "administrador", tipo=TipoUsuario.ADMINISTRADOR)
     cliente_atual = None
     loja = Loja.Loja("GameStart", "00000000000")
 
     um_produto = Produto.Produto(
-                "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
-    
-  
-    
+        "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
+
     um_cliente = Cliente.Cliente("MARCOS", "11111111111", "11111111111",
-                                       "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
+                                 "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
     um_pedido = Pedido.Pedido()
     um_cupom = Cupom.Cupom("qwdsadas")
     um_reembolso = Reembolso.Reembolso()
     um_relatorio = Relatorio.Relatorio()
-  
 
     dict_objetos = {
         "products": um_produto, "orders": um_pedido,  "customers": um_cliente, "coupons": um_cupom,  "refunds": um_reembolso, "reports": um_relatorio
     }
 
     def inicializar():
-        
-            
+
         if not Init.loja.get_lista_usuarios():
-            admin = Usuario.Usuario("admin", "admin", "admin", tipo=TipoUsuario.ADMINISTRADOR)
-            gerente = Usuario.Usuario("gerente", "gerente", "gerente", tipo=TipoUsuario.GERENTE)
-            funcionario = Usuario.Usuario("funcionario", "funcionario", "funcionario", tipo=TipoUsuario.FUNCIONARIO)
-            cliente = Usuario.Usuario("cliente", "cliente", "cliente", tipo=TipoUsuario.CLIENTE)
+            admin = Usuario.Usuario(
+                "admin", "admin", "admin", tipo=TipoUsuario.ADMINISTRADOR)
+            gerente = Usuario.Usuario(
+                "gerente", "gerente", "gerente", tipo=TipoUsuario.GERENTE)
+            funcionario = Usuario.Usuario(
+                "funcionario", "funcionario", "funcionario", tipo=TipoUsuario.FUNCIONARIO)
+            cliente = Usuario.Usuario(
+                "cliente", "cliente", "cliente", tipo=TipoUsuario.CLIENTE)
 
             Init.loja.cadastrar_usuario(admin)
             Init.loja.cadastrar_usuario(gerente)
@@ -42,7 +44,6 @@ class Init:
 
         if not Init.loja.get_lista_clientes():
 
-          
             cliente2 = Cliente.Cliente("PEDRO", "22222222222", "22222222222",
                                        "22222222222", "RUA 2", "PEDRO@GMAIL.COM")
             cliente3 = Cliente.Cliente("JULIA", "33333333333", "33333333333",
@@ -74,7 +75,6 @@ class Init:
 
         if not Init.loja.get_estoque().get_lista_produtos():
 
-          
             produto2 = Produto.Produto("XBOX SERIES X", "MICROSOFT",
                                        "SLIM", "PRETO", 4000.00, 10, "CONSOLE")
             produto3 = Produto.Produto("NINTENDO SWITCH", "NINTENDO",
@@ -87,23 +87,20 @@ class Init:
                                        "30 SERIES", "BRANCO", 1000.00, 3, "PLACA DE VIDEO")
             produto7 = Produto.Produto(
                 "DUALSHOCK 4", "SONY", "SLIM", "PRETO", 200.00, 10, "PERIFÉRICOS")
-            
+
             with open(r"assets/produto.png", "rb") as img:
                 img_bytes = img.read()
-                
+
             produto2.set_imagem(img_bytes)
             produto3.set_imagem(img_bytes)
             produto7.set_imagem(img_bytes)
-            
-            
+
             produto9 = Produto.Produto(
                 "VOLANTE GAMER", "LOGITECH", "G29", "PRETO", 500.00, 5, "PERIFÉRICOS")
             produto10 = Produto.Produto(
                 "MOUSE GAMER", "LOGITECH", "G502", "PRETO", 100.00, 10, "PERIFÉRICOS")
             produto11 = Produto.Produto(
                 "PLAYSTATION 5", "SONY", "PRO", "BRANCO", 6000.00, 30, "CONSOLE")
-            
-                     
 
             Init.loja.get_estoque().adicionar_produto(produto2)
             Init.loja.get_estoque().adicionar_produto(produto3)
