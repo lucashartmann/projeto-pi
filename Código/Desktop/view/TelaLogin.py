@@ -6,10 +6,9 @@ from textual.events import Click
 from textual_image.widget import Image
 from textual_image.widget.sixel import _ImageSixelImpl
 
-from controller import Controller
 
 from model.Usuario import TipoUsuario
-from model import Init, Cliente
+from model import Init
 
 
 class MyInput(Input):
@@ -57,50 +56,56 @@ class TelaLogin(Screen):
 
     def on_button_pressed(self):
 
-        nome = self.query(Input)[0].value
-        senha = self.query(Input)[1].value
-        tipo_usuario = ""
+        # nome = self.query(Input)[0].value
+        # senha = self.query(Input)[1].value
+        # tipo_usuario = ""
 
-        match self.query_one(Select).value:
+        # match self.query_one(Select).value:
+        #     case "Cliente":
+        #         tipo_usuario = TipoUsuario.CLIENTE
+        #     case "Gerente":
+        #         tipo_usuario = TipoUsuario.GERENTE
+        #     case "Funcionario":
+        #         tipo_usuario = TipoUsuario.FUNCIONARIO
+        #     case "Administrador":
+        #         tipo_usuario = TipoUsuario.ADMINISTRADOR
+
+        # if self.montou:
+        #     email = self.query(Input)[0].value
+        #     dados = [nome, senha, email, TipoUsuario.CLIENTE]
+        # else:
+        #     dados = [nome, senha, tipo_usuario]
+
+        # login = Controller.verificar_login(dados)
+        # self.notify(login)
+        # if "ERRO" not in login:
+        #     if self.montou:
+        #         Init.cliente_atual = Cliente.Cliente(
+        #             nome, "", "", "", "", email)
+        #     elif tipo_usuario == TipoUsuario.CLIENTE:
+        #         # TODO: Arrumar. Podemos não ter o email
+        #         consulta = Init.loja.get_cliente_por_email(email)
+        #         if consulta:
+        #             Init.cliente_atual = consulta
+        #         else:
+        #             if email:
+        #                 Init.cliente_atual = Cliente.Cliente(
+        #                     "", "", "", "", "", email)
+        #             else:
+        #                 Init.cliente_atual = Cliente.Cliente(
+        #                     "", "", "", "", "", "")
+
+        match self.query_one(Select).value: # Todo: Isso é só para testes, remover depois
             case "Cliente":
-                tipo_usuario = TipoUsuario.CLIENTE
+                Init.usuario.set_tipo(TipoUsuario.CLIENTE)
             case "Gerente":
-                tipo_usuario = TipoUsuario.GERENTE
+                Init.usuario.set_tipo(TipoUsuario.GERENTE)
             case "Funcionario":
-                tipo_usuario = TipoUsuario.FUNCIONARIO
+                Init.usuario.set_tipo(TipoUsuario.FUNCIONARIO)
             case "Administrador":
-                tipo_usuario = TipoUsuario.ADMINISTRADOR
+                Init.usuario.set_tipo(TipoUsuario.ADMINISTRADOR)
 
-        if self.montou:
-            email = self.query(Input)[0].value
-            dados = [nome, senha, email, TipoUsuario.CLIENTE]
+        if Init.usuario.get_tipo() == TipoUsuario.CLIENTE:
+            self.app.switch_screen("tela_estoque_cliente")
         else:
-            dados = [nome, senha, tipo_usuario]
-
-        login = Controller.verificar_login(dados)
-        self.notify(login)
-        if "ERRO" not in login:
-            if self.montou:
-                Init.cliente_atual = Cliente.Cliente(
-                    nome, "", "", "", "", email)
-            elif tipo_usuario == TipoUsuario.CLIENTE:
-                # TODO: Arrumar. Podemos não ter o email
-                consulta = Init.loja.get_cliente_por_email(email)
-                if consulta:
-                    Init.cliente_atual = consulta
-                else:
-                    if email:
-                        Init.cliente_atual = Cliente.Cliente(
-                            "", "", "", "", "", email)
-                    else:
-                        Init.cliente_atual = Cliente.Cliente(
-                            "", "", "", "", "", "")
-            match Init.usuario.get_tipo():
-                case TipoUsuario.CLIENTE:
-                    self.app.switch_screen("tela_estoque_cliente")
-                case TipoUsuario.GERENTE:
-                    self.app.switch_screen("tela_produto")
-                case TipoUsuario.ADMINISTRADOR:
-                    self.app.switch_screen("tela_usuario")
-                case TipoUsuario.FUNCIONARIO:
-                    pass
+            self.app.switch_screen("tela_cadastro")

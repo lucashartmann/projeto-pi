@@ -4,10 +4,22 @@ from model.Usuario import TipoUsuario
 
 class Init:
 
-    # usuario = ""
-
+    um_pedido = Pedido.Pedido()
+    um_cupom = Cupom.Cupom("qwdsadas")
+    um_reembolso = Reembolso.Reembolso()
+    um_relatorio = Relatorio.Relatorio()
+    um_produto = Produto.Produto(
+        "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
+    um_cliente = Cliente.Cliente("MARCOS", "11111111111", "11111111111",
+                                 "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
     usuario = Usuario.Usuario(
         "administrador", "administrador", "administrador", tipo=TipoUsuario.CLIENTE)
+
+    dict_objetos = {
+        "produto": um_produto, "pedido": um_pedido,  "cliente": um_cliente, "cupom": um_cupom,   "reembolso": um_reembolso, "relatorio": um_relatorio, "usuario": usuario
+    }
+
+    
 
     cliente_atual = Cliente.Cliente("MARCOS", "11111111111", "11111111111",
                                     "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
@@ -16,19 +28,6 @@ class Init:
 
     loja.cadastrar(cliente_atual)
 
-    um_produto = Produto.Produto(
-        "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
-
-    um_cliente = Cliente.Cliente("MARCOS", "11111111111", "11111111111",
-                                 "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
-    um_pedido = Pedido.Pedido()
-    um_cupom = Cupom.Cupom("qwdsadas")
-    um_reembolso = Reembolso.Reembolso()
-    um_relatorio = Relatorio.Relatorio()
-
-    dict_objetos = {
-        "products": um_produto, "orders": um_pedido,  "customers": um_cliente, "coupons": um_cupom,  "refunds": um_reembolso, "reports": um_relatorio
-    }
 
     def inicializar():
 

@@ -121,7 +121,7 @@ class Banco:
                 pass
 
             conexao.commit()
-            
+
     def get_lista_produtos_carrinho(self, cpf):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
@@ -134,7 +134,7 @@ class Banco:
             for registro in lista_registros:
                 lista_produtos.append(self.get_produto_por_id(registro[1]))
             return lista_produtos
-            
+
     def get_item_carrinho_por_id(self, cpf, id_produto):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
@@ -145,7 +145,7 @@ class Banco:
                 return None
             else:
                 return self.get_produto_por_id(registro[1])
-            
+
     def get_quantidade_item_carrinho(self, id_produto):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
@@ -156,7 +156,7 @@ class Banco:
                 return 0
             else:
                 return registro[0]
-            
+
     def remover_item_carrinho(self, cpf, id_produto):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
@@ -172,7 +172,7 @@ class Banco:
             except Exception as e:
                 print(e)
                 return False
-        
+
     def atualizar_quantidade_item_carrinho(self, cpf, id_produto, quantidade):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
@@ -277,7 +277,7 @@ class Banco:
             except Exception as e:
                 print("Erro ao buscar usuario:", e)
                 return None
-            
+
     def adicionar_carrinho(self, cpf_cliente, id_produto, quantidade):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
@@ -479,9 +479,9 @@ class Banco:
                 produto.set_codigo(dados[1])
                 lista.append(produto)
             return lista
-        
+
     def get_lista_produtos_disponiveis(self):
-         with sqlite3.connect(
+        with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             lista = []

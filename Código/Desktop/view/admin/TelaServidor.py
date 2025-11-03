@@ -8,21 +8,20 @@ from ngrok import ngrok
 
 from textual.screen import Screen
 from textual.widgets import Switch, Static, Pretty, Input, Tab, Tabs
-from textual.binding import Binding
 
 from database.Banco import Banco
 import socket
+
 
 class TelaServidor(Screen):
 
     banco = Banco()
 
-    BINDINGS = {
-        Binding("q", "self.app.exit()", "Encerrar")
-    }
+    CSS_PATH = "css/TelaServidor.tcss"
 
     def compose(self):
-        yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"), Tab("Cadastro Usuario", id="tab_cadastro_usuario"), Tab("Usuarios Cadastrados", id="tab_usuario_cadastrados"), Tab("Dados da Loja", id="tab_dados_loja"), Tab("Servidor", id="tab_servidor"))
+        yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"))
+
         yield Input(placeholder="auth_token do ngrok")
         yield Static("Ligar Local:")
         yield Switch(value=False)
@@ -30,6 +29,16 @@ class TelaServidor(Screen):
         yield Switch(value=False, id="ngrok")
 
         yield Pretty("Servidor desligado")
+
+    def on_screen_resume(self):
+        self.query_one(Tabs).active = self.query_one(
+            "#tab_servidor", Tab).id
+
+    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+        if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+            self.app.switch_screen("tela_estoque")
+        elif event.tabs.active == self.query_one("#tab_cadastro", Tab).id:
+            self.app.switch_screen("tela_cadastro")
 
     async def on_switch_changed(self, evento: Switch.Changed):
         if evento.switch.id == "ngrok":

@@ -1,5 +1,4 @@
 TelaCarrinhoCompras #produtos {
-    background: pink;
     height: auto;
     
 }
@@ -10,7 +9,6 @@ TelaCarrinhoCompras .item_produto {
 }
 
 TelaCarrinhoCompras .item_produto Static{
-    background: pink;
     width: auto;
     margin-left: 1;
     align-vertical: middle;
@@ -22,11 +20,16 @@ TelaCarrinhoCompras .item_produto Button{
     margin-left: 1;
 }
 
+#produtos Button {
+    margin-bottom: 2;
+}
 
 
 TelaCarrinhoCompras #pagamento {
     background: rgb(200,200,200);
     height: auto;
+    width: auto;
+    min-width: 29%;
 }
 
 TelaCarrinhoCompras #pagamento Checkbox{

@@ -94,7 +94,6 @@ class TelaEstoqueCliente(Screen):
                 yield Select([("genero", 'genero')], id="select_categoria")
                 yield Input()
                 yield Button("Remover", id="bt_remover")
-                yield Button("Voltar", id="bt_voltar")
             yield ListView(id="lst_item")
             yield Footer()
 

@@ -22,15 +22,14 @@ class TelaEstoque(Screen):
         yield Header()
         if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
 
-            yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"), Tab("Cadastro Usuario", id="tab_cadastro_usuario"), Tab("Usuarios Cadastrados", id="tab_usuario_cadastrados"), Tab("Dados da Loja", id="tab_dados_loja"), Tab("Servidor", id="tab_servidor"))
+            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"))
         elif Init.usuario.get_tipo() == TipoUsuario.GERENTE:
-            yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"), Tab("Dados da Loja", id="tab_dados_loja"))
+            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Dados da Loja", id="tab_dados_loja"))
         else:
-            yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"))
+            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"))
 
         with HorizontalGroup(id="hg_pesquisa"):
             yield Input()
-            yield Button("Voltar", id="bt_voltar")
         yield TextArea(disabled=True)
         yield DataTable()
         yield Footer()
@@ -56,12 +55,14 @@ class TelaEstoque(Screen):
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
             self.app.switch_screen("tela_estoque")
-        elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-            self.app.switch_screen("tela_pessoa")
-        elif event.tabs.active == self.query_one("#tab_clientela", Tab).id:
-            self.app.switch_screen("tela_clientela")
-        elif event.tabs.active == self.query_one("#tab_cadastro_usuario", Tab).id:
-            self.app.switch_screen("tela_usuario")
+        elif event.tabs.active == self.query_one("#tab_cadastro", Tab).id:
+            self.app.switch_screen("tela_cadastro")
+        if Init.usuario.get_tipo() == TipoUsuario.GERENTE:
+            if event.tabs.active == self.query_one("#tab_dados_loja", Tab).id:
+                self.app.switch_screen("tela_dados_loja")
+        if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
+            if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                self.app.switch_screen("tela_servidor")
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
