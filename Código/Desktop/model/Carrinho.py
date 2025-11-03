@@ -8,9 +8,8 @@ class Carrinho:
     def adicionar_item(self, cpf, id_produto, quantidade):
         self.banco_dados.adicionar_carrinho(cpf, id_produto, quantidade)
 
-    def remover_item(self, item):
-        # TODO: implementar remoção de item do carrinho
-        pass
+    def remover_item(self,  cpf, id_produto):
+        return self.banco_dados.remover_item_carrinho(cpf, id_produto)
 
     def listar_itens(self, cpf):
         return self.banco_dados.get_lista_produtos_carrinho(cpf)
@@ -20,3 +19,6 @@ class Carrinho:
 
     def atualizar_quantidade_item(self, cpf, id_produto, quantidade):
         self.banco_dados.atualizar_quantidade_item_carrinho(cpf, id_produto, quantidade)
+        
+    def get_quantidade(self, id_produto):
+        return self.banco_dados.get_quantidade_item_carrinho(id_produto)

@@ -8,15 +8,12 @@ class Init:
 
     usuario = Usuario.Usuario(
         "administrador", "administrador", "administrador", tipo=TipoUsuario.CLIENTE)
-    
-    
-    
-    
+
     cliente_atual = Cliente.Cliente("MARCOS", "11111111111", "11111111111",
                                     "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
 
     loja = Loja.Loja("GameStart", "00000000000")
-    
+
     loja.cadastrar(cliente_atual)
 
     um_produto = Produto.Produto(

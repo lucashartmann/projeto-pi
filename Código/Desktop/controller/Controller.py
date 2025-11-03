@@ -1,6 +1,27 @@
 from model import Cliente, Produto, Init, Funcionario, Usuario
 
+
+def remover_do_carrinho(produto_id):
+    produto_id = int(produto_id)
+
+    remocao = Init.cliente_atual.carrinho.remover_item(
+        Init.cliente_atual.get_cpf(), produto_id)
+
+    if remocao:
+        return "Item removido com sucesso do carrinho"
+    else:
+        return "ERRO ao remover item do carrinho"
+
+
 def atualizar_quantidade_carrinho(produto_id, nova_quantidade):
+    produto_id = int(produto_id)
+    nova_quantidade = int(nova_quantidade)
+
+    consulta_estoque = Init.loja.get_estoque().get_produto_por_id(produto_id)
+
+    if nova_quantidade > consulta_estoque.get_quantidade():
+        return "ERRO Quantidade solicitada maior que a disponível em estoque"
+
     consulta = Init.cliente_atual.carrinho.get_item_por_id(
         Init.cliente_atual.get_cpf(), produto_id)
 
@@ -11,6 +32,7 @@ def atualizar_quantidade_carrinho(produto_id, nova_quantidade):
         Init.cliente_atual.get_cpf(), produto_id, nova_quantidade)
 
     return "Quantidade do item atualizada com sucesso no carrinho"
+
 
 def adicionar_no_carrinho(produto_id, quantidade):
 

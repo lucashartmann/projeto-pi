@@ -21,13 +21,22 @@ class TelaCarrinhoCompras(Screen):
         with HorizontalGroup():
             with VerticalGroup(id="produtos"):
                 pass
-            with VerticalGroup(id="pagamento"):
+            with VerticalGroup(id="pagamento"): # TODO: implementar funcionalidade de pagamento
                 yield Static("Total: [green]R$ 0,00 [/]")
                 yield Static("Forma de Pagamento:")
                 yield Checkbox("Cartão de Débito")
                 yield Checkbox("Cartão de Crédito", id="chx_cartao_credito")
                 yield Checkbox("Boleto")
                 yield Checkbox("Pix")
+                
+
+    def on_checkbox_changed(self, evento: Checkbox.Changed):
+        for checkbox in self.query(Checkbox):
+            if checkbox.value == True and evento.checkbox.value == True and checkbox.label != evento.checkbox.label:
+                evento.checkbox.value = False
+                self.notify("Selecione apenas uma forma de pagamento.")
+                break
+                # TODO: arrumar
 
     def on_mount(self):
         self.montar_itens()
@@ -41,7 +50,8 @@ class TelaCarrinhoCompras(Screen):
     def montar_itens(self):
         if self.lista_produtos:
             for produto in self.lista_produtos:
-                horizontal = HorizontalGroup(name=produto.get_id(), classes="item_produto")
+                horizontal = HorizontalGroup(
+                    name=produto.get_id(), classes="item_produto")
                 self.query_one("#produtos").mount(horizontal)
                 if produto.get_imagem():
                     imagem = Image(BytesIO(produto.get_imagem()))
@@ -53,10 +63,10 @@ class TelaCarrinhoCompras(Screen):
                 horizontal.mount(
                     Static(f"Preço: R$ {produto.get_preco()}", classes="preco_produto"))
                 horizontal.mount(
-                    Static(f"Quantidade: {produto.get_quantidade()}", classes="quantidade_produto"))
+                    Static(f"Quantidade: {Init.cliente_atual.carrinho.get_quantidade(produto.get_id())}", classes="quantidade_produto"))
                 horizontal.mount(Button("+"))
                 horizontal.mount(Button("-"))
-                
+                horizontal.mount(Checkbox()) # TODO: implementar
 
         else:
             self.query_one("#produtos").mount(Static("Carrinho Vazio"))
@@ -64,16 +74,28 @@ class TelaCarrinhoCompras(Screen):
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.label == "+" or evento.button.label == "-":
             quantidade_atual = int(evento.button.parent.query_one(
-                Static, classes="quantidade_produto").content)
+                ".quantidade_produto").content.split(": ")[1])
 
             if evento.button.label == "+":
                 nova_quantidade = quantidade_atual + 1
             elif evento.button.label == "-":
                 nova_quantidade = quantidade_atual - 1
 
+            if nova_quantidade < 1:
+                for hg in self.query("#produtos").query(HorizontalGroup):
+                    if hg.name == evento.button.parent.name:
+                        remocao = Controller.remover_do_carrinho(hg.name)
+                        if "ERRO" not in remocao:
+                            hg.remove()
+                        self.notify(remocao)
+                        break
+
             mensagem = Controller.atualizar_quantidade_carrinho(
-                evento.button.parent.id, nova_quantidade)
+                evento.button.parent.name, nova_quantidade)
             self.notify(mensagem)
+
+            if "ERRO" not in mensagem:
+                self.atualizar()
 
     def on_checkbox_changed(self, evento: Checkbox.Changed):
         if evento.checkbox.id == "#chx_cartao_credito" and evento.checkbox.value == True:

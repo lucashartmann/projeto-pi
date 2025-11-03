@@ -145,6 +145,33 @@ class Banco:
                 return None
             else:
                 return self.get_produto_por_id(registro[1])
+            
+    def get_quantidade_item_carrinho(self, id_produto):
+        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            cursor.execute(
+                f'SELECT quantidade FROM Carrinho_Compras WHERE id_produto = ?', (id_produto,))
+            registro = cursor.fetchone()
+            if not registro:
+                return 0
+            else:
+                return registro[0]
+            
+    def remover_item_carrinho(self, cpf, id_produto):
+        with sqlite3.connect(
+                "data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_delete_query = """
+                    DELETE FROM Carrinho_Compras
+                    WHERE cpf_cliente = ? AND id_produto = ?
+                    """
+                cursor.execute(sql_delete_query, (cpf, id_produto))
+                conexao.commit()
+                return True
+            except Exception as e:
+                print(e)
+                return False
         
     def atualizar_quantidade_item_carrinho(self, cpf, id_produto, quantidade):
         with sqlite3.connect(
