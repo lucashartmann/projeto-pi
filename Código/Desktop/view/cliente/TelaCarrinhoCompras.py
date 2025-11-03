@@ -1,12 +1,20 @@
 from textual.screen import Screen
-from textual.widgets import Static, Checkbox, Select, Tab, Tabs
+from textual.widgets import Static, Checkbox, Select, Tab, Tabs, Button
 from textual.containers import HorizontalGroup, VerticalGroup
 
 from textual_image.widget import Image
 
+from model import Init
+from controller import Controller
+
+from io import BytesIO
+
 
 class TelaCarrinhoCompras(Screen):
     CSS_PATH = "css/TelaCarrinhoCompras.tcss"
+
+    lista_produtos = Init.cliente_atual.carrinho.listar_itens(
+        Init.cliente_atual.get_cpf())
 
     def compose(self):
         yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"))
@@ -20,6 +28,52 @@ class TelaCarrinhoCompras(Screen):
                 yield Checkbox("Cartão de Crédito", id="chx_cartao_credito")
                 yield Checkbox("Boleto")
                 yield Checkbox("Pix")
+
+    def on_mount(self):
+        self.montar_itens()
+
+    def atualizar(self):
+        self.lista_produtos = Init.cliente_atual.carrinho.listar_itens(
+            Init.cliente_atual.get_cpf())
+        self.query_one("#produtos").remove_children()
+        self.montar_itens()
+
+    def montar_itens(self):
+        if self.lista_produtos:
+            for produto in self.lista_produtos:
+                horizontal = HorizontalGroup(name=produto.get_id(), classes="item_produto")
+                self.query_one("#produtos").mount(horizontal)
+                if produto.get_imagem():
+                    imagem = Image(BytesIO(produto.get_imagem()))
+                    imagem.styles.width = 12
+                    imagem.styles.height = 5
+                    horizontal.mount(imagem)
+                horizontal.mount(
+                    Static(f"Nome: {produto.get_nome()}", classes="nome_produto"))
+                horizontal.mount(
+                    Static(f"Preço: R$ {produto.get_preco()}", classes="preco_produto"))
+                horizontal.mount(
+                    Static(f"Quantidade: {produto.get_quantidade()}", classes="quantidade_produto"))
+                horizontal.mount(Button("+"))
+                horizontal.mount(Button("-"))
+                
+
+        else:
+            self.query_one("#produtos").mount(Static("Carrinho Vazio"))
+
+    def on_button_pressed(self, evento: Button.Pressed):
+        if evento.button.label == "+" or evento.button.label == "-":
+            quantidade_atual = int(evento.button.parent.query_one(
+                Static, classes="quantidade_produto").content)
+
+            if evento.button.label == "+":
+                nova_quantidade = quantidade_atual + 1
+            elif evento.button.label == "-":
+                nova_quantidade = quantidade_atual - 1
+
+            mensagem = Controller.atualizar_quantidade_carrinho(
+                evento.button.parent.id, nova_quantidade)
+            self.notify(mensagem)
 
     def on_checkbox_changed(self, evento: Checkbox.Changed):
         if evento.checkbox.id == "#chx_cartao_credito" and evento.checkbox.value == True:

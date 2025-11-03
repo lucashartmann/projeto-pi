@@ -14,6 +14,9 @@ class Estoque:
 
     def get_lista_produtos(self):
         return self.banco_dados.get_lista_produtos()
+    
+    def get_lista_produtos_disponiveis(self):
+        return self.banco_dados.get_lista_produtos_disponiveis()
 
     def get_produtos_por_nome(self, nome):
         return self.banco_dados.get_produtos_por_nome(nome)

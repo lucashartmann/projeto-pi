@@ -2,12 +2,13 @@
 # Dados de login
 
 from textual.screen import Screen
-from textual.widgets import TextArea, Pretty, Static, Tab, Tabs
+from textual.widgets import TextArea, Pretty, Static, Tab, Tabs, Button
 from textual.containers import HorizontalGroup, Grid
 
 from textual_image.widget import Image
 
 from model import Init
+from controller import Controller
 
 
 class TelaDadosUsuario(Screen):
@@ -39,6 +40,18 @@ class TelaDadosUsuario(Screen):
         elif event.tabs.active == self.query_one("#tab_carrinho_compras", Tab).id:
             self.app.switch_screen("tela_carrinho_compras")
 
+    def on_button_pressed(self, evento: Button.Pressed):
+        if evento.button.label == "Salvar":
+            dados = []
+            for ta in self.query_one(Grid).query(TextArea):
+                texto = ta.text
+                dados.append(texto)
+
+            mensagem = Controller.editar_pessoa(
+                Init.cliente_atual.get_cpf(), dados)
+
+            self.notify(mensagem, markup=False)
+
     def atualizar_dados(self):
         grid = self.query_one(Grid)
         if Init.usuario:
@@ -58,11 +71,10 @@ class TelaDadosUsuario(Screen):
             grid.mount(TextArea(Init.cliente_atual.get_email()))
             grid.mount(Static("Senha"))
             grid.mount(TextArea(Init.usuario.get_senha()))
-            
 
     def compose(self):
         yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"))
-        with HorizontalGroup():           
+        with HorizontalGroup():
 
             yield Image("assets/usuario2.png")
             with Grid():
@@ -82,7 +94,7 @@ class TelaDadosUsuario(Screen):
                 yield TextArea(Init.cliente_atual.get_email())
                 yield Static("Senha")
                 yield TextArea("*******")
-
+        yield Button("Salvar")
         yield Static("Compras recentes do usuário", id="stt_compras")
 
     def on_screen_resume(self):

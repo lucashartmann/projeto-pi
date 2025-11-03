@@ -1,33 +1,47 @@
-from textual.widgets import Label, Button, ListItem, ListView, Footer, Header, Select, Input, Tab, Tabs
+from textual.widgets import Static, Button, ListItem, ListView, Footer, Header, Select, Input, Tab, Tabs
 from textual import on
 from textual.screen import Screen
 from textual.containers import VerticalScroll, HorizontalGroup, Container
-from textual.binding import Binding
-from model import Init
+
 from textual_image.widget import Image as TextualImage
+
+from model import Init
+from controller import Controller
+
 from io import BytesIO
 
 
 class ContainerProduto(Container):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.id_produto = ""
 
     def compose(self):
-        #     yield TextualImage("")
-        #     yield Label("Dualshock")
-        #     yield Label("R$ 299,99")
-        yield Button("Comprar")
+        yield TextualImage("")
+        yield Static("Dualshock", id="tx_nome")
+        yield Static("R$ 299,99", id="tx_preco")
+        yield Select([("1", 1)])
+        yield Button("Adicionar ao carrinho", id="bt_comprar")
+
+    def on_button_pressed(self, evento: Button.Pressed):
+        if evento.button.id == "bt_comprar":
+            mensagem = Controller.adicionar_no_carrinho(
+                self.id_produto, self.query_one(Select).value)
+            self.screen.notify(mensagem)
+            if "ERRO" not in mensagem:
+                if self.app.get_screen("tela_carrinho_compras"):
+                    try:
+                        self.app.get_screen(
+                            "tela_carrinho_compras").atualizar()
+                    except Exception as e:
+                        pass
 
 
 class TelaEstoqueCliente(Screen):
 
     CSS_PATH = "css/TelaEstoqueCliente.tcss"
 
-    BINDINGS = [
-        Binding("ctrl+l", "app.switch_screen('tela_inicial')", "Voltar")
-    ]
-
-    produtos = Init.loja.get_estoque().get_lista_produtos()
+    produtos = Init.loja.get_estoque().get_lista_produtos_disponiveis()
     produtos_filtrados = []
 
     filtrou_select = False
@@ -35,10 +49,8 @@ class TelaEstoqueCliente(Screen):
     select_evento = ""
     montou = False
 
-    produtos_etiquetados = dict()
-
     def atualizar_imagens(self):
-        self.produtos = Init.loja.get_estoque().get_lista_produtos()
+        self.produtos = Init.loja.get_estoque().get_lista_produtos_disponiveis()
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
         lista = self.produtos
@@ -46,41 +58,49 @@ class TelaEstoqueCliente(Screen):
             lista = self.produtos_filtrados
 
         for produto in lista:
-            if produto.get_codigo() not in self.produtos_etiquetados.keys():
-                if produto.get_imagem():
-                    container = ContainerProduto()
-                    list_item = ListItem(name=produto.get_nome())
-                    list_view.append(list_item)
-                    list_item.mount(container)
-                    imagem = TextualImage(BytesIO(produto.get_imagem()))
-                    imagem.styles.height = 13
-                    imagem.styles.width = 30
-                    container.mount(imagem, before=container.query_one(Button))
-                    container.mount(Label(content=produto.get_nome(
-                    ), id="tx_nome"), after=container.query_one(TextualImage))
-                    container.mount(Label(
-                        content=f"R$ {produto.get_preco():.2f}", id="tx_preco"), after=container.query_one("#tx_nome"))
+            if produto.get_imagem():
+                container = ContainerProduto()
+                list_item = ListItem(name=produto.get_nome())
+                list_view.append(list_item)
+                list_item.mount(container)
+                container.query_one(TextualImage).image = BytesIO(
+                    produto.get_imagem())
 
-                    list_item.styles.width = 30
-                    list_item.styles.height = 30
+                container.query_one(TextualImage).styles.height = 13
+                container.query_one(TextualImage).styles.width = 30
+
+                container.query_one("#tx_nome").content = produto.get_nome(
+                )
+
+                container.query_one(
+                    "#tx_preco").content = f"R$ {produto.get_preco():.2f}"
+
+                lista = []
+                for i in range(produto.get_quantidade()):
+                    lista.append((str(i+1), i+1))
+
+                container.query_one(Select).set_options(lista)
+
+                container.id_produto = produto.get_id()
+
+                list_item.styles.width = 30
+                list_item.styles.height = 30
 
     def compose(self):
         yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"))
         yield Header()
         with VerticalScroll():
             with HorizontalGroup(id="hg_pesquisa"):
-                yield Select([("genero", 'genero')])
+                yield Select([("genero", 'genero')], id="select_categoria")
                 yield Input()
                 yield Button("Remover", id="bt_remover")
                 yield Button("Voltar", id="bt_voltar")
             yield ListView(id="lst_item")
-            yield Label("item", id="tx_info")
-
             yield Footer()
-            
-    def _on_screen_resume(self):
+
+    def on_mount(self):
         self.query_one(Tabs).active = self.query_one("#tab_comprar", Tab).id
-        self.produtos = Init.loja.get_estoque().get_lista_produtos()
+        # self.produtos = Init.loja.get_estoque().get_lista_produtos_disponiveis()
 
         self.atualizar_imagens()
 
@@ -92,8 +112,6 @@ class TelaEstoqueCliente(Screen):
             [(categoria, categoria) for categoria in lista_categorias])
         self.atualizar_imagens()
 
-            
-    
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         if event.tabs.active == self.query_one("#tab_carrinho_compras", Tab).id:
             self.app.switch_screen("tela_carrinho_compras")
@@ -108,38 +126,35 @@ class TelaEstoqueCliente(Screen):
                 input_id = self.query_one(Input).value
                 self.atualizar_imagens()
 
-    def on_list_view_highlighted(self, evento: ListView.Highlighted):
-        self.query_one("#tx_info", Label).update(
-            evento.list_view.highlighted_child.name)
-
     @on(Select.Changed)
     def select_changed(self, evento: Select.Changed):
-        if evento.select.is_blank():
-            if self.filtrou_input == False and self.filtrou_select:
-                self.produtos_filtrados = []
-            self.filtrou_select = False
-            self.atualizar_imagens()
-        else:
-            valor_select = str(evento.value)
-            valor_antigo = ""
-            if valor_select != valor_antigo and self.filtrou_input == False and self.filtrou_select:
-                self.produtos_filtrados = []
-                valor_antigo = valor_select
-            if len(self.produtos_filtrados) == 0:
-                for produto in self.produtos:
-                    if produto.get_categoria() == valor_select:
-                        self.produtos_filtrados.append(produto)
+        if evento.select.id == "#select_categoria":
+            if evento.select.is_blank():
+                if self.filtrou_input == False and self.filtrou_select:
+                    self.produtos_filtrados = []
+                self.filtrou_select = False
+                self.atualizar_imagens()
             else:
-                produtos_temp = []
-                for produto in self.produtos_filtrados:
-                    if produto.get_categoria() == valor_select:
-                        produtos_temp.append(produto)
-                if len(produtos_temp) > 0:
-                    self.produtos_filtrados = produtos_temp
+                valor_select = str(evento.value)
+                valor_antigo = ""
+                if valor_select != valor_antigo and self.filtrou_input == False and self.filtrou_select:
+                    self.produtos_filtrados = []
+                    valor_antigo = valor_select
+                if len(self.produtos_filtrados) == 0:
+                    for produto in self.produtos:
+                        if produto.get_categoria() == valor_select:
+                            self.produtos_filtrados.append(produto)
+                else:
+                    produtos_temp = []
+                    for produto in self.produtos_filtrados:
+                        if produto.get_categoria() == valor_select:
+                            produtos_temp.append(produto)
+                    if len(produtos_temp) > 0:
+                        self.produtos_filtrados = produtos_temp
 
-            self.filtrou_select = True
-            self.select_evento = evento
-            self.atualizar_imagens()
+                self.filtrou_select = True
+                self.select_evento = evento
+                self.atualizar_imagens()
 
     def filtro(self, palavras, index, filtro_recebido):
         lista_filtros = ["quant", "codigo"]

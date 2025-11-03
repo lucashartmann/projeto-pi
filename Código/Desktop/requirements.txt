@@ -11,3 +11,7 @@ textual==6.4.0
 textual-image==0.8.4
 typing_extensions==4.15.0
 uc-micro-py==1.0.3
+bcrypt
+psutil
+requests
+ngrok

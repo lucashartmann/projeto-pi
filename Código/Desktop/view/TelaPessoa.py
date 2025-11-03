@@ -16,9 +16,12 @@ class TelaPessoa(Screen):
 
     def compose(self):
         if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
-            yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"), Tab("Cadastro Usuario", id="tab_cadastro_usuario"), Tab("Usuarios Cadastrados", id="tab_usuario_cadastrados"), Tab("Dados da Loja", id="tab_dados_loja"))
-        else:
+            yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"), Tab("Cadastro Usuario", id="tab_cadastro_usuario"), Tab("Usuarios Cadastrados", id="tab_usuario_cadastrados"), Tab("Dados da Loja", id="tab_dados_loja"), Tab("Servidor", id="tab_servidor"))
+        elif Init.usuario.get_tipo() == TipoUsuario.GERENTE:
             yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"), Tab("Dados da Loja", id="tab_dados_loja"))
+        else:
+            yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Clientela", id="tab_clientela"))
+            
         with Grid():
             yield Label("ID da Pessoa:")
             yield Input(placeholder="ID aqui", id="input_id")
@@ -34,7 +37,12 @@ class TelaPessoa(Screen):
             yield Input(placeholder="Endereço aqui")
             yield Label("Email:")
             yield Input(placeholder="Email aqui")
-            yield Select([("Cliente", "Cliente"), ("Funcionario", "Funcionario")])
+            if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
+                yield Select([("Cliente", "Cliente"), ("Funcionario", "Funcionario"), ("Fornecedor", "Fornecedor"), ("Gerente", "Gerente"), ("Administrador", "Administrador")])
+            elif Init.usuario.get_tipo() == TipoUsuario.GERENTE:
+                yield Select([("Cliente", "Cliente"), ("Funcionario", "Funcionario"), ("Fornecedor", "Fornecedor")])
+            else:
+                yield Select([("Cliente", "Cliente")])
         with HorizontalGroup():
             yield Button("Limpar", id="bt_limpar")
             yield Button("Cadastrar", id="bt_cadastrar")

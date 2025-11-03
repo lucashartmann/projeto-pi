@@ -121,6 +121,47 @@ class Banco:
                 pass
 
             conexao.commit()
+            
+    def get_lista_produtos_carrinho(self, cpf):
+        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            cursor.execute(
+                f'SELECT * FROM Carrinho_Compras WHERE cpf_cliente = ?', (cpf,))
+            lista_registros = cursor.fetchall()
+            if not lista_registros:
+                return []
+            lista_produtos = []
+            for registro in lista_registros:
+                lista_produtos.append(self.get_produto_por_id(registro[1]))
+            return lista_produtos
+            
+    def get_item_carrinho_por_id(self, cpf, id_produto):
+        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            cursor.execute(
+                f'SELECT * FROM Carrinho_Compras WHERE cpf_cliente = ? AND id_produto = ?', (cpf, id_produto))
+            registro = cursor.fetchone()
+            if not registro:
+                return None
+            else:
+                return self.get_produto_por_id(registro[1])
+        
+    def atualizar_quantidade_item_carrinho(self, cpf, id_produto, quantidade):
+        with sqlite3.connect(
+                "data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_update_query = """
+                    UPDATE Carrinho_Compras
+                    SET quantidade = ?
+                    WHERE cpf_cliente = ? AND id_produto = ?
+                    """
+                cursor.execute(sql_update_query, (quantidade, cpf, id_produto))
+                conexao.commit()
+                return True
+            except Exception as e:
+                print(e)
+                return False
 
     def get_compras_usuario_por_cpf(self, cpf):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
@@ -209,6 +250,27 @@ class Banco:
             except Exception as e:
                 print("Erro ao buscar usuario:", e)
                 return None
+            
+    def adicionar_carrinho(self, cpf_cliente, id_produto, quantidade):
+        with sqlite3.connect(
+                "data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_query = ''' 
+                INSERT INTO Carrinho_Compras (cpf_cliente, id_produto, quantidade) 
+                VALUES(?, ?, ?)
+                '''
+
+                cursor.execute(sql_query, (
+                    cpf_cliente,
+                    id_produto,
+                    quantidade
+                ))
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("Erro ao adicionar no carrinho:", e)
+                return False
 
     def cadastrar_usuario(self, usuario):
         with sqlite3.connect(
@@ -379,6 +441,24 @@ class Banco:
             cursor = conexao.cursor()
             lista = []
             cursor.execute("SELECT * FROM Produto")
+            resultados = cursor.fetchall()
+            for dados in resultados:
+                produto = Produto.Produto(*dados[2:9])
+                produto.set_preco(float(produto.get_preco()))
+                produto.set_quantidade(int(produto.get_quantidade()))
+                produto.set_descricao(dados[-2])
+                produto.set_imagem(dados[-1])
+                produto.set_id(int(dados[0]))
+                produto.set_codigo(dados[1])
+                lista.append(produto)
+            return lista
+        
+    def get_lista_produtos_disponiveis(self):
+         with sqlite3.connect(
+                "data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            lista = []
+            cursor.execute("SELECT * FROM Produto WHERE quantidade > 0")
             resultados = cursor.fetchall()
             for dados in resultados:
                 produto = Produto.Produto(*dados[2:9])

@@ -1,24 +1,31 @@
 TelaEstoqueCliente {
-        background: rgba(4, 43, 7, 1);
+        background: rgba(188, 209, 190, 1);
 }
 
 TelaEstoqueCliente Footer {
-    background: rgba(9, 66, 14, 1);
+    background: rgba(188, 209, 190, 1);
 
 }
 
 TelaEstoqueCliente Header {
-    background: rgba(9, 66, 14, 1);
+    background: rgba(188, 209, 190, 1);
 }
 
 TelaEstoqueCliente Input{
-        width: 70%;
+        max-width: 70%;
+        width: auto;
+        min-width: 30%;
         background:black;
         color: white;
 }
 
 TelaEstoqueCliente #hg_pesquisa {
     margin: 1;
+    width: 100%;
+}
+
+TelaEstoqueCliente Button {
+    margin-left: 1;
 }
 
 TelaEstoqueCliente Select Static{
@@ -26,11 +33,40 @@ TelaEstoqueCliente Select Static{
 }
 
 
+TelaEstoqueCliente Select {
+        width: auto;
+        max-width: 30%;
+}
+
+
+TelaEstoqueCliente ListItem Select {
+        margin: 1;
+        width: 60%;
+        height: auto;
+        max-width: 100%;
+        align: center middle;
+}
+
+TelaEstoqueCliente ListItem Select Static{
+        margin: 0;
+}
+
+TelaEstoqueCliente ContainerProduto Static {
+        margin: 1;
+        align: center middle;
+        text-align: center;
+}
+
+TelaEstoqueCliente ListItem Button {
+        margin: 1;
+        align: center middle;
+}
+
 TelaEstoqueCliente ListView {
         layout: grid;
         grid-size: 3;
         grid-gutter: 1;
-        background: rgba(4, 43, 7, 1);
+        background: rgba(188, 209, 190, 1);
         align: center middle;
         height: auto;
 }
@@ -52,6 +88,7 @@ TelaEstoqueCliente ContainerProduto {
         height: auto;
         color: black;
         align: center middle;
+        
 }
 
 TelaEstoqueCliente ContainerProduto #tx_preco {

@@ -5,7 +5,7 @@ from model import Init
 
 from view import TelaClientela, TelaPessoa, TelaProduto, TelaLogin, TelaEstoque, TelaDadosLoja
 from view.cliente import TelaEstoqueCliente, TelaCarrinhoCompras, TelaDadosUsuario
-from view.admin import TelaUsuario, TelaUsuariosCadastrados
+from view.admin import TelaUsuario, TelaUsuariosCadastrados, TelaServidor
 
 
 class App(App):
@@ -22,17 +22,18 @@ class App(App):
         "tela_dados_usuario": TelaDadosUsuario.TelaDadosUsuario,
         "tela_dados_loja": TelaDadosLoja.TelaDadosLoja,
         "tela_usuario": TelaUsuario.TelaUsuario,
-        "tela_usuarios_cadastrados": TelaUsuariosCadastrados.TelaUsuariosCadastrados
+        "tela_usuarios_cadastrados": TelaUsuariosCadastrados.TelaUsuariosCadastrados,
+        "tela_servidor": TelaServidor.TelaServidor,
     }
 
     BINDINGS = {
-        Binding("ctrl+l", "switch_screen('tela_estoque_cliente')", "Tela Estoque"),
+        Binding("ctrl+q", "app.quit", "Sair"),
     }
 
     def on_mount(self):
         Init.inicializar()
-        # self.push_screen("tela_estoque_cliente")
-        self.push_screen("tela_login")
+        self.push_screen("tela_estoque_cliente")
+        # self.push_screen("tela_login")
 
     def action_cadastro(self):
         tela_login = self.get_screen("tela_login")

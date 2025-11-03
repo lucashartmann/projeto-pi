@@ -1,5 +1,36 @@
 from model import Cliente, Produto, Init, Funcionario, Usuario
 
+def atualizar_quantidade_carrinho(produto_id, nova_quantidade):
+    consulta = Init.cliente_atual.carrinho.get_item_por_id(
+        Init.cliente_atual.get_cpf(), produto_id)
+
+    if not consulta:
+        return "ERRO Produto não encontrado no carrinho"
+
+    Init.cliente_atual.carrinho.atualizar_quantidade_item(
+        Init.cliente_atual.get_cpf(), produto_id, nova_quantidade)
+
+    return "Quantidade do item atualizada com sucesso no carrinho"
+
+def adicionar_no_carrinho(produto_id, quantidade):
+
+    consulta = Init.cliente_atual.carrinho.get_item_por_id(
+        Init.cliente_atual.get_cpf(), produto_id)
+
+    if consulta:
+        nova_quantidade = consulta.get_quantidade() + quantidade
+        Init.cliente_atual.carrinho.atualizar_quantidade_item(
+            Init.cliente_atual.get_cpf(), produto_id, nova_quantidade)
+        return "Quantidade do item atualizada no carrinho com sucesso"
+
+    adicao = Init.cliente_atual.carrinho.adicionar_item(
+        Init.cliente_atual.get_cpf(), produto_id, quantidade)
+
+    if adicao:
+        return "Item adicionado ao carrinho com sucesso"
+    else:
+        return "ERRO ao adicionar item ao carrinho"
+
 
 def cadastrar_pessoa(lista):
     if lista[0] == "":
