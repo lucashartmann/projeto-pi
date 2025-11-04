@@ -1,10 +1,13 @@
-from textual.widgets import Input, TextArea, Button, DataTable, Footer, Header, Tab, Tabs
-from textual.containers import HorizontalGroup
+from textual.widgets import Input, TextArea, Button, DataTable, Footer, Header, Tab, Tabs, Select, SelectionList
+from textual.containers import HorizontalGroup, VerticalScroll, Horizontal
 from textual import on
 from textual.screen import Screen
+
 from model import Init
 from model.Usuario import TipoUsuario
 from model import Init
+
+from controller import Controller
 
 
 class TelaEstoque(Screen):
@@ -29,9 +32,14 @@ class TelaEstoque(Screen):
             yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"))
 
         with HorizontalGroup(id="hg_pesquisa"):
-            yield Input()
-        yield TextArea(disabled=True)
-        yield DataTable()
+            yield Input(placeholder="pesquise aqui")
+            yield Button("Remover")
+        yield TextArea(read_only=True)
+        with Horizontal():
+            with VerticalScroll(id="v_left"):
+                yield Select([("Produtos", "Produtos"), ("Pedidos", "Pedidos"), ("Clientes", "Clientes"), ("Cupons", "Cupons"), ("Impostos", "Impostos")], allow_blank=False, id="select_tabelas")
+                yield SelectionList[str]()
+            yield DataTable()
         yield Footer()
 
     def setup_dados(self):
@@ -42,15 +50,42 @@ class TelaEstoque(Screen):
         self.query_one(TextArea).text = f"Quantidade de produtos: {quant}"
 
     def on_button_pressed(self):
-        self.screen.app.switch_screen("tela_inicial")
+        id_produto = self.query_one(Input).value
+        # TODO: arrumar
+        # remocao = Controller.remover_item(self.tabela, id_produto)
+        # self.notify(remocao)
+        self.atualizar()
+        for input in self.query(Input):
+            input.value = ""
 
     def atualizar_lista(self):
         self.produtos = Init.loja.get_estoque().get_produtos()
+
+    def on_select_changed(self, evento: Select.Changed):
+        if evento.select.id == "select_tabelas":
+            self.tabela = evento.select.value.lower()
+
 
     def on_mount(self):
         self.ROWS = [list(Init.um_produto.__dict__.keys())]
         self.atualizar()
         self.setup_dados()
+
+    @on(SelectionList.SelectedChanged)
+    def update_selected_view(self):
+        lista_selecionados = self.query_one(SelectionList).selected
+
+        for valor in self.montados:
+            if valor not in lista_selecionados:
+                self.montados.remove(valor)
+            if valor in lista_selecionados:
+                lista_selecionados.remove(valor)
+
+        if len(lista_selecionados) > 0:
+            for valor in lista_selecionados:
+                self.montados.append(valor)
+
+        self.atualizar()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
