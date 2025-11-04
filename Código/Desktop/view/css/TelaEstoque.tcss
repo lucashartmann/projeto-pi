@@ -1,5 +1,6 @@
 TelaEstoque TextArea {
     height: 5;
+    margin: 1;
 }
 
 TelaEstoque Checkbox {
@@ -7,14 +8,24 @@ TelaEstoque Checkbox {
 }
 
 TelaEstoque Input {
-    width: 70%;
+    max-width: 85%;
 }
 
 TelaEstoque #hg_pesquisa {
     margin: 1;
+    width: 100%;
 }
 
 TelaEstoque DataTable {
-    margin: 2;
+    margin: 1 1 1 0;
     width: 100%;
+}
+
+#v_left {
+    width: 24%;
+    margin: 1 0 0 0;
+}
+
+Footer {
+    color: black;
 }
