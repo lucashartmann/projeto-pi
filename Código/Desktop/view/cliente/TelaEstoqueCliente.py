@@ -87,8 +87,8 @@ class TelaEstoqueCliente(Screen):
                 list_item.styles.height = 30
 
     def compose(self):
-        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"))
         yield Header()
+        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
         with VerticalScroll():
             with HorizontalGroup(id="hg_pesquisa"):
                 yield Select([("genero", 'genero')], id="select_categoria")
@@ -116,6 +116,8 @@ class TelaEstoqueCliente(Screen):
             self.app.switch_screen("tela_carrinho_compras")
         elif event.tabs.active == self.query_one("#tab_dados_usuario", Tab).id:
             self.app.switch_screen("tela_dados_usuario")
+        elif event.tabs.active == self.query_one("#tab_montar_pc", Tab).id:
+            self.app.switch_screen("tela_montar_pc")
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:

@@ -18,7 +18,7 @@ class TelaCarrinhoCompras(Screen):
     lista_selecionados = []
 
     def compose(self):
-        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"))
+        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
         with HorizontalGroup():
             with VerticalGroup(id="produtos"):
                 if self.lista_produtos:
@@ -147,6 +147,8 @@ class TelaCarrinhoCompras(Screen):
             self.app.switch_screen("tela_estoque_cliente")
         elif event.tabs.active == self.query_one("#tab_dados_usuario", Tab).id:
             self.app.switch_screen("tela_dados_usuario")
+        elif event.tabs.active == self.query_one("#tab_montar_pc", Tab).id:
+            self.app.switch_screen("tela_montar_pc")
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(

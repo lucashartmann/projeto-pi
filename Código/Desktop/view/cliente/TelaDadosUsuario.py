@@ -39,6 +39,8 @@ class TelaDadosUsuario(Screen):
             self.app.switch_screen("tela_estoque_cliente")
         elif event.tabs.active == self.query_one("#tab_carrinho_compras", Tab).id:
             self.app.switch_screen("tela_carrinho_compras")
+        elif event.tabs.active == self.query_one("#tab_montar_pc", Tab).id:
+            self.app.switch_screen("tela_montar_pc")
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.label == "Salvar":
@@ -73,7 +75,7 @@ class TelaDadosUsuario(Screen):
             grid.mount(TextArea(Init.usuario.get_senha()))
 
     def compose(self):
-        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"))
+        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
         with HorizontalGroup():
 
             yield Image("assets/usuario2.png")
