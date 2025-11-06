@@ -121,6 +121,21 @@ class Banco:
                 pass
 
             conexao.commit()
+    
+    def atualizar_dado_cliente(self, cpf, campo, dado):
+        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
+            try:
+                cursor = conexao.cursor()
+                cursor.execute(f'''
+                    UPDATE Cliente
+                    SET {campo} = ?
+                    WHERE cpf = ?
+                ''', (dado, cpf))
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("Erro ao atualizar dado do cliente:", e)
+                return False
 
     def get_lista_produtos_carrinho(self, cpf):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:

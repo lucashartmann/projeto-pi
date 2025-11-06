@@ -7,8 +7,8 @@ class TelaMontarPC(Screen):
     CSS_PATH = "css/TelaMontarPC.tcss"
 
     def compose(self):
-        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
         yield Header()
+        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
         yield Horizontal(Static("CPU"), Button("Escolher"), id="ct_cpu")
         yield Horizontal(Static("Placa Mãe"), Button("Escolher"), id="ct_motherboard")
         yield Horizontal(Static("Memória RAM"), Button("Escolher"), id="ct_ram")

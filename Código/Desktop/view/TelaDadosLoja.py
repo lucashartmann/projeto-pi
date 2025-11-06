@@ -2,7 +2,7 @@
 # Quantidade de produtos vendidos
 
 from textual.screen import Screen
-from textual.widgets import Tab, Tabs, Static
+from textual.widgets import Tab, Tabs, Static, Header, Footer
 from textual.containers import VerticalGroup
 
 
@@ -13,11 +13,13 @@ from model import Init
 class TelaDadosLoja(Screen):
 
     def compose(self):
+        yield Header()
         if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
             yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"),  Tab("Servidor", id="tab_servidor"))
         else:
             yield Tabs(Tab("Cadastro Produto", id="tab_cadastro_produto"), Tab("Estoque", id="tab_estoque"), Tab("Cadastro Pessoa", id="tab_cadastro_pessoa"), Tab("Dados da Loja", id="tab_dados_loja"))
-
+        yield Footer()
+        
     def on_mount(self):
         self.atualizar()
 

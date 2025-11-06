@@ -1,5 +1,5 @@
 TelaLogin {
-    background: rgba(194, 216, 204, 1);
+    background: rgb(194, 205, 216);
     align: center middle;
     
 }
@@ -12,10 +12,10 @@ TelaLogin VerticalGroup {
     max-height: 70%;
 }
 
-TelaLogin Input {
+TelaLogin Input, TelaLogin MyInput {
     margin-top: 1;
     max-width: 100%;
-    background: rgba(102, 119, 110, 1);
+    background: rgba(175, 180, 177, 1);
     color: black;
 }
 
@@ -24,7 +24,7 @@ TelaLogin Input{
 }
 
 TelaLogin Select Horizontal{
-    background: rgba(102, 119, 110, 1);
+    background: rgba(175, 180, 177, 1);
 }
 
 TelaLogin Select Static {
@@ -32,7 +32,7 @@ TelaLogin Select Static {
 }
 
 TelaLogin Select SelectOverlay{
-    background: rgba(102, 119, 110, 1);
+    background: rgba(175, 180, 177, 1);
     color: black;
 }
 
@@ -44,7 +44,7 @@ TelaLogin Select {
 TelaLogin Button {
     width: 99%;
     margin: 1 0 1 1;
-    background: rgba(102, 119, 110, 1);
+    background: rgba(175, 180, 177, 1);
     color: black;
 }
 
@@ -54,11 +54,9 @@ TelaLogin #bt_criar_conta {
     color: white;
 }
 
-MyInput Image {
-    width: 5;
-    height: 2;
+TelaLogin MyInput Image {
+    width: 3;
+    height: 1;
+    background: transparent;
 }
 
-MyInput {
-    height: 25%;
-}

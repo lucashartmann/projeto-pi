@@ -1,5 +1,5 @@
 from textual.screen import Screen
-from textual.widgets import Static, Checkbox, Select, Tab, Tabs, Button
+from textual.widgets import Static, Checkbox, Select, Tab, Tabs, Button, Footer, Header
 from textual.containers import HorizontalGroup, VerticalGroup
 
 from textual_image.widget import Image
@@ -18,6 +18,7 @@ class TelaCarrinhoCompras(Screen):
     lista_selecionados = []
 
     def compose(self):
+        yield Header()
         yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
         with HorizontalGroup():
             with VerticalGroup(id="produtos"):
@@ -32,7 +33,8 @@ class TelaCarrinhoCompras(Screen):
                 yield Checkbox("Boleto", classes="chbx_pagamento")
                 yield Checkbox("Pix", classes="chbx_pagamento")
                 yield Button("Finalizar Pagamento")
-
+        yield Footer()
+        
     def atualizar_total(self):
         total = 0.0
 

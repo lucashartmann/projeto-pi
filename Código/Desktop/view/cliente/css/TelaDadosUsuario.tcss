@@ -7,11 +7,6 @@ TelaDadosUsuario Grid {
 
 }
 
-TelaDadosUsuario {
-    background: rgba(77, 70, 70, 1);
-    color: white;
-}
-
 TelaDadosUsuario Grid TextArea {
     max-height: 80%;
     width: 100%;
@@ -22,10 +17,6 @@ TelaDadosUsuario Image{
     width: 40;
 }
 
-
-TelaDadosUsuario Tab {
-    color: white;
-}
 
 TelaDadosUsuario #stt_compras {
     height: 4%;

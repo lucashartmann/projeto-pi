@@ -2,7 +2,7 @@
 # Dados de login
 
 from textual.screen import Screen
-from textual.widgets import TextArea, Pretty, Static, Tab, Tabs, Button
+from textual.widgets import TextArea, Pretty, Static, Tab, Tabs, Button, Footer, Header
 from textual.containers import HorizontalGroup, Grid
 
 from textual_image.widget import Image
@@ -49,8 +49,7 @@ class TelaDadosUsuario(Screen):
                 texto = ta.text
                 dados.append(texto)
 
-            mensagem = Controller.editar_pessoa(
-                Init.cliente_atual.get_cpf(), dados)
+            mensagem = Controller.atualizar_dado_cliente(dados)
 
             self.notify(mensagem, markup=False)
 
@@ -73,8 +72,11 @@ class TelaDadosUsuario(Screen):
             grid.mount(TextArea(Init.cliente_atual.get_email()))
             grid.mount(Static("Senha"))
             grid.mount(TextArea(Init.usuario.get_senha()))
+            
+    TITLE = "Tela de dados"
 
     def compose(self):
+        yield Header()
         yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
         with HorizontalGroup():
 
@@ -98,6 +100,7 @@ class TelaDadosUsuario(Screen):
                 yield TextArea("*******")
         yield Button("Salvar")
         yield Static("Compras recentes do usuário", id="stt_compras")
+        yield Footer()
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(

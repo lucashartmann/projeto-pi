@@ -49,5 +49,6 @@ if __name__ == "__main__":
     if comando:
         menu_cmd(comando)
     else:
-        app = App(ansi_color=True)
+        # app = App(ansi_color=True)
+        app = App()
         app.run()

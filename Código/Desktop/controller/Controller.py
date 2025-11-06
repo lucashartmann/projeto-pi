@@ -247,6 +247,92 @@ def remover_pessoa(cpf, tipo_pessoa):
         return f"ERRO ao remover pessoa"
 
 
+def atualizar_dado_cliente(dados):
+    username = dados[0].split()
+    nome = dados[1]
+    novo_cpf = dados[2].split()
+    rg = dados[3].split()
+    telefone = dados[4].split()
+    endereco = dados[5]
+    email = dados[6].split()
+    senha = dados[7].split()
+
+    cpf = Init.cliente_atual.get_cpf()
+
+    mensagem = []
+
+    if not cpf:
+        return f"Cliente com CPF {cpf} não encontrado"
+
+    if nome and nome != Init.cliente_atual.get_nome():
+
+        atualizacao = Init.loja.atualizar_dado_cliente(cpf, "nome", nome)
+
+        if atualizacao is False:
+            mensagem += f"ERRO ao atualizar nome"
+        else:
+            mensagem += f"Nome atualizado com sucesso"
+            Init.cliente_atual.set_nome(nome)
+
+    elif novo_cpf and novo_cpf != cpf:
+
+        validar(novo_cpf, "CPF")
+        atualizacao = Init.loja.atualizar_dado_cliente(cpf, "cpf", novo_cpf)
+        cpf = novo_cpf
+
+        if atualizacao is False:
+            mensagem += f"ERRO ao atualizar CPF"
+        else:
+            mensagem += f"CPF atualizado com sucesso"
+            Init.cliente_atual.set_cpf(novo_cpf)
+
+    elif rg and rg != Init.cliente_atual.get_rg():
+
+        validar(rg, "RG")
+        atualizacao = Init.loja.atualizar_dado_cliente(cpf, "rg", rg)
+
+        if atualizacao is False:
+            mensagem += f"ERRO ao atualizar RG"
+        else:
+            mensagem += f"RG atualizado com sucesso"
+            Init.cliente_atual.set_rg(rg)
+
+    elif telefone and telefone != Init.cliente_atual.get_telefone():
+
+        validar(telefone, "TELEFONE")
+        atualizacao = Init.loja.atualizar_dado_cliente(
+            cpf, "telefone", telefone)
+
+        if atualizacao is False:
+            mensagem += f"ERRO ao atualizar telefone"
+        else:
+            mensagem += f"Telefone atualizado com sucesso"
+            Init.cliente_atual.set_telefone(telefone)
+
+    elif endereco and endereco != Init.cliente_atual.get_endereco():
+
+        atualizacao = Init.loja.atualizar_dado_cliente(
+            cpf, "endereco", endereco)
+
+        if atualizacao is False:
+            mensagem += f"ERRO ao atualizar endereco"
+        else:
+            mensagem += f"Endereço atualizado com sucesso"
+            Init.cliente_atual.set_endereco(endereco)
+
+    elif email and email != Init.cliente_atual.get_email():
+
+        atualizacao = Init.loja.atualizar_dado_cliente(cpf, "email", email)
+
+        if atualizacao is False:
+            mensagem += f"ERRO ao atualizar email"
+        else:
+            mensagem += f"Email atualizado com sucesso"
+            Init.cliente_atual.set_email(email)
+
+    return mensagem
+
+
 def remover_produto(id):
     if len(id) < 1:
         return "ERRO"

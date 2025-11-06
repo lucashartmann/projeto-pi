@@ -1,5 +1,5 @@
 from textual.screen import Screen
-from textual.widgets import Input, Button, Select, Label
+from textual.widgets import Input, Button, Select, Label, Header, Footer
 from textual.containers import VerticalGroup
 from textual.events import Click
 
@@ -9,7 +9,7 @@ from textual_image.widget.sixel import _ImageSixelImpl
 
 from model.Usuario import TipoUsuario
 from model import Init
-
+from controller import Controller
 
 class MyInput(Input):
     def __init__(self, *args, **kwargs):
@@ -39,20 +39,30 @@ class TelaLogin(Screen):
     montou = False
 
     def compose(self):
+        yield Header()
         with VerticalGroup():
             yield Input(placeholder="Usuário")
             yield MyInput(placeholder="Senha", password=True)
             yield Select([("Cliente", "Cliente"), ("Gerente", "Gerente"), ("Funcionario", "Funcionario"), ("Administrador", "Administrador")], value="Cliente", allow_blank=False)
             yield Button("Entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")
+        yield Footer()
+            
+    def voltar(self):
+        self.query_one(Select).styles.display = "block"
+        self.query_one(Input).placeholder = "Usuário"
+        self.query_one(Button).label = "Entrar"
+        self.query_one("#inpt_email").remove()
+        self.query_one(Label).update("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]")
+        self.montou = False
 
     def montar_cadastro(self):
-        self.query_one(Select).disabled = True
+        self.query_one(Select).styles.display = "none"
         self.query_one(Input).placeholder = "Username"
-        self.mount(Input(placeholder="Email"), before=self.query_one(Input))
-        self.query_one(Label).display = "none"
+        self.mount(Input(placeholder="Email", id="inpt_email"), before=self.query_one(Input))
         self.montou = True
         self.query_one(Button).label = "Criar conta"
+        self.query_one(Label).update("[@click=app.voltar]Voltar[/]")
 
     def on_button_pressed(self):
 

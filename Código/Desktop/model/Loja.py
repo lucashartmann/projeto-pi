@@ -12,6 +12,9 @@ class Loja:
         self.quantidade_clientes = self.set_quantidade()
         self.quantidade_fornecedores = self.set_quantidade()
         self.faturamento = 0
+        
+    def atualizar_dado_cliente(self, cpf, campo, dado):
+        return self.banco_dados.atualizar_dado_cliente(cpf, campo, dado)
 
     def get_compras_usuario_por_cpf(self, cpf):
         return self.banco_dados.get_compras_usuario_por_cpf(cpf)

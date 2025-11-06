@@ -1,4 +1,17 @@
 Screen {
-    background: rgba(156, 137, 137, 1);
+    background: rgb(194, 205, 216);
+    color: black;
+}
+
+Footer, Header {
+    background: black;
+    color: white;
+}
+
+Tab {
+    color: black;
+}
+
+Underline .underline--bar {
     color: black;
 }

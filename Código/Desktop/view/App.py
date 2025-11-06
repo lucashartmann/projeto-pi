@@ -34,3 +34,7 @@ class App(App):
     def action_cadastro(self):
         tela_login = self.get_screen("tela_login")
         tela_login.montar_cadastro()
+
+    def action_voltar(self):
+        tela_login = self.get_screen("tela_login")
+        tela_login.voltar()

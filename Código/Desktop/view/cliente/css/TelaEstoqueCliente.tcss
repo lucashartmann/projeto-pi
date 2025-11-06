@@ -1,20 +1,7 @@
-TelaEstoqueCliente {
-        background: rgba(188, 209, 190, 1);
-}
-
-TelaEstoqueCliente Footer {
-    background: rgba(188, 209, 190, 1);
-
-}
-
-TelaEstoqueCliente Header {
-    background: rgba(188, 209, 190, 1);
-}
-
 TelaEstoqueCliente Input{
         max-width: 70%;
         width: auto;
-        min-width: 30%;
+        min-width: 52%;
         background:black;
         color: white;
 }
@@ -41,7 +28,7 @@ TelaEstoqueCliente Select {
 
 TelaEstoqueCliente ListItem Select {
         margin: 1;
-        width: 60%;
+        width: auto;
         height: auto;
         max-width: 100%;
         align: center middle;
@@ -58,8 +45,9 @@ TelaEstoqueCliente ContainerProduto Static {
 }
 
 TelaEstoqueCliente ListItem Button {
-        margin: 1;
+        margin: 1 2 1 2;
         align: center middle;
+        width: 100%;
 }
 
 TelaEstoqueCliente ListView {
@@ -93,7 +81,5 @@ TelaEstoqueCliente ContainerProduto {
 
 TelaEstoqueCliente ContainerProduto #tx_preco {
         color: rgba(88, 238, 18, 1);
-        text-align: center;
-        width: auto;
         align: center middle;
 }
