@@ -2,7 +2,7 @@ import sqlite3
 import bcrypt
 import os
 
-from model import Cliente, Produto, Usuario
+from model import Cliente, Imovel, Usuario
 
 
 class Banco:
@@ -17,67 +17,135 @@ class Banco:
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Cliente (
+                CREATE TABLE IF NOT EXISTS Comprador (
                     id_cliente INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
                     nome TEXT NOT NULL,
                     cpf TEXT NOT NULL UNIQUE,
                     rg TEXT NOT NULL,
                     telefone TEXT NOT NULL,
                     endereco TEXT NOT NULL,
-                    email TEXT NOT NULL UNIQUE
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NOT NULL
                 );
                                 ''')
+
             cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Funcionario (
-                    id_funcionario INTEGER PRIMARY KEY AUTOINCREMENT,
+                CREATE TABLE IF NOT EXISTS Proprietario (
+                    id_cliente INTEGER PRIMARY KEY AUTOINCREMENT,
+                    email TEXT NOT NULL UNIQUE,
                     nome TEXT NOT NULL,
                     cpf TEXT NOT NULL UNIQUE,
                     rg TEXT NOT NULL,
                     telefone TEXT NOT NULL,
                     endereco TEXT NOT NULL,
-                    email TEXT NOT NULL UNIQUE
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NOT NULL
                 );
                                 ''')
+
             cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Fornecedor (
-                    id_fornecedor INTEGER PRIMARY KEY AUTOINCREMENT,
+                CREATE TABLE IF NOT EXISTS Captador (
+                    id_captador INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
                     nome TEXT NOT NULL,
                     cpf TEXT NOT NULL UNIQUE,
                     rg TEXT NOT NULL,
                     telefone TEXT NOT NULL,
                     endereco TEXT NOT NULL,
-                    email TEXT NOT NULL UNIQUE
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NOT NULL,
+                    turno TEXT NULL,
+                    salario REAL NULL,
+                    matricula TEXT NULL,
                 );
                                 ''')
             cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Produto (
-                    id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
+                CREATE TABLE IF NOT EXISTS Corretor (
+                    id_corretor INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf TEXT NOT NULL UNIQUE,
+                    rg TEXT NOT NULL,
+                    telefone TEXT NOT NULL,
+                    endereco TEXT NOT NULL,
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NOT NULL,
+                    turno TEXT NULL,
+                    salario REAL NULL,
+                    matricula TEXT NULL,
+                );
+                                ''')
+
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Imovel (
+                    id_imovel INTEGER PRIMARY KEY AUTOINCREMENT,
                     codigo TEXT NOT NULL UNIQUE,
-                    nome TEXT NOT NULL,
-                    marca TEXT NOT NULL,
-                    modelo TEXT NOT NULL,
-                    cor TEXT NOT NULL,
-                    preco FLOAT NOT NULL,
-                    quantidade INT NULL,
-                    categoria TEXT NOT NULL,
+                    valor_venda REAL NULL,
+                    valor_aluguel REAL NULL,
+                    quant_quartos INTEGER NULL,
+                    quant_salas INTEGER NULL,
+                    quant_vagas INTEGER NULL,
+                    quant_banheiros INTEGER NULL,
+                    quant_varandas INTEGER NULL,
+                    nome_condominio TEXT NULL,
+                    cor TEXT NULL,
+                    categoria = TEXT NULL,
                     descricao TEXT NULL,
-                    imagem BLOB NULL
+                    endereco TEXT NOT NULL,
+                    status = TEXT NULL,
+                    iptu REAL NULL,
+                    valor_condominio REAL NULL,
+                    andar INTEGER NULL,
+                    estado = TEXT NULL,
+                    numero INTEGER NULL,
+                    complemento TEXT NULL,
+                    bloco TEXT NULL,
+                    ano_construcao INTEGER NULL,
+                    area_total REAL NULL,
+                    area_privativa REAL NULL,
+                    bairro TEXT NOT NULL, 
+                    rua TEXT NOT NULL,
+                    cidade TEXT NULL,
+                    situacao = TEXT NULL,
+                    ocupacao = TEXT NULL,
+                    cpf_proprietario TEXT NOT NULL,
+                    cpf_corretor TEXT NOT NULL,
+                    FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
+                    FOREIGN KEY (cpf_corretor) references Corretor (cpf)
                 );
                                 ''')
+
             cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Venda (
-                    id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
-                    cpf_cliente TEXT,
-                    data_venda TEXT NOT NULL,
-                    FOREIGN KEY (cpf_cliente) REFERENCES Cliente (cpf)
-                    );
+                CREATE TABLE IF NOT EXISTS Midia_Imovel (
+                    id_imovel INTEGER PRIMARY KEY AUTOINCREMENT,
+                    midia BLOB NOT NULL,
+                    tipo TEXT NOT NULL,
+                    FOREIGN KEY (id_imovel) references Imovel (id_imovel)
+                );
                                 ''')
+
             cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Venda_Produtos (
-                    id_venda INTEGER,
-                    id_produto INTEGER,
-                    FOREIGN KEY (id_venda) REFERENCES Venda (id_venda),
-                    FOREIGN KEY (id_produto) REFERENCES Produto (id_produto)
+                CREATE TABLE IF NOT EXISTS Venda_Aluguel (
+                    id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
+                    cpf_cliente TEXT NOT NULL,
+                    cpf_proprietario TEXT NOT NULL, 
+                    cpf_captador TEXT NULL,
+                    cpf_corretor TEXT NOT NULL,
+                    data_venda TEXT NOT NULL,
+                    id_imovel INTEGER NOT NULL,
+                    comissao_captador REAL NULL,
+                    comissao_corretor REAL NULL,
+                    FOREIGN KEY (id_imovel) REFERENCES Imovel (id_imovel),
+                    FOREIGN KEY (cpf_cliente) REFERENCES Cliente (cpf),
+                    FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
+                    FOREIGN KEY (cpf_corretor) references Corretor (cpf)
                     );
                                 ''')
             cursor.execute(f'''
@@ -89,7 +157,7 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Usuario (
                     id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nome TEXT NOT NULL,
+                    nome TEXT NOT NULL UNIQUE,
                     email TEXT NOT NULL UNIQUE,
                     senha TEXT NOT NULL,
                     tipo INTEGER NOT NULL,
@@ -98,30 +166,26 @@ class Banco:
                     
                                 ''')
 
-            cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Carrinho_Compras (
-                    cpf_cliente TEXT,
-                    id_produto INTEGER,
-                    quantidade INTEGER,
-                    FOREIGN KEY (id_produto) REFERENCES Produto (id_produto),
-                    FOREIGN KEY (cpf_cliente) REFERENCES Cliente (cpf)
-                    );
-                                ''')
-
             try:
-                cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
-                    VALUES(?)''', ("cliente",))
-                cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
-                    VALUES(?)''', ("funcionario",))
-                cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
-                    VALUES(?)''', ("administrador",))
-                cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
-                    VALUES(?)''', ("gerente",))
+                self.init_tabelas()
+
             except:
                 pass
 
             conexao.commit()
-    
+
+    def init_tabelas(self):
+        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
+                        VALUES(?)''', ("Administrador",))
+            cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
+                        VALUES(?)''', ("Corretor",))
+            cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
+                        VALUES(?)''', ("Cliente",))
+            cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
+                        VALUES(?)''', ("Captador",))
+
     def atualizar_dado_cliente(self, cpf, campo, dado):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
             try:
@@ -137,7 +201,7 @@ class Banco:
                 print("Erro ao atualizar dado do cliente:", e)
                 return False
 
-    def get_lista_produtos_carrinho(self, cpf):
+    def get_lista_imoveis_carrinho(self, cpf):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(
@@ -145,50 +209,50 @@ class Banco:
             lista_registros = cursor.fetchall()
             if not lista_registros:
                 return []
-            lista_produtos = []
+            lista_imoveis = []
             for registro in lista_registros:
-                lista_produtos.append(self.get_produto_por_id(registro[1]))
-            return lista_produtos
+                lista_imoveis.append(self.get_imovel_por_id(registro[1]))
+            return lista_imoveis
 
-    def get_item_carrinho_por_id(self, cpf, id_produto):
+    def get_item_carrinho_por_id(self, cpf, id_imovel):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                f'SELECT * FROM Carrinho_Compras WHERE cpf_cliente = ? AND id_produto = ?', (cpf, id_produto))
+                f'SELECT * FROM Carrinho_Compras WHERE cpf_cliente = ? AND id_imovel = ?', (cpf, id_imovel))
             registro = cursor.fetchone()
             if not registro:
                 return None
             else:
-                return self.get_produto_por_id(registro[1])
+                return self.get_imovel_por_id(registro[1])
 
-    def get_quantidade_item_carrinho(self, id_produto):
+    def get_quantidade_item_carrinho(self, id_imovel):
         with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                f'SELECT quantidade FROM Carrinho_Compras WHERE id_produto = ?', (id_produto,))
+                f'SELECT quantidade FROM Carrinho_Compras WHERE id_imovel = ?', (id_imovel,))
             registro = cursor.fetchone()
             if not registro:
                 return 0
             else:
                 return registro[0]
 
-    def remover_item_carrinho(self, cpf, id_produto):
+    def remover_item_carrinho(self, cpf, id_imovel):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
                 sql_delete_query = """
                     DELETE FROM Carrinho_Compras
-                    WHERE cpf_cliente = ? AND id_produto = ?
+                    WHERE cpf_cliente = ? AND id_imovel = ?
                     """
-                cursor.execute(sql_delete_query, (cpf, id_produto))
+                cursor.execute(sql_delete_query, (cpf, id_imovel))
                 conexao.commit()
                 return True
             except Exception as e:
                 print(e)
                 return False
 
-    def atualizar_quantidade_item_carrinho(self, cpf, id_produto, quantidade):
+    def atualizar_quantidade_item_carrinho(self, cpf, id_imovel, quantidade):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
@@ -196,9 +260,9 @@ class Banco:
                 sql_update_query = """
                     UPDATE Carrinho_Compras
                     SET quantidade = ?
-                    WHERE cpf_cliente = ? AND id_produto = ?
+                    WHERE cpf_cliente = ? AND id_imovel = ?
                     """
-                cursor.execute(sql_update_query, (quantidade, cpf, id_produto))
+                cursor.execute(sql_update_query, (quantidade, cpf, id_imovel))
                 conexao.commit()
                 return True
             except Exception as e:
@@ -220,12 +284,12 @@ class Banco:
                 for id in vendas:
 
                     cursor.execute('''
-                        SELECT * FROM Venda_Produtos WHERE id_venda = ?
+                        SELECT * FROM Venda_imoveis WHERE id_venda = ?
                     ''', (id,))
-                    produtos = cursor.fetchall()
+                    imoveis = cursor.fetchall()
                     lista = []
-                    for produto in produtos:
-                        lista.append(produto)
+                    for imovel in imoveis:
+                        lista.append(imovel)
 
                     if lista:
                         dicionario_venda[id[1]] = lista
@@ -272,40 +336,33 @@ class Banco:
                     cursor.execute('''
                         SELECT * FROM Usuario WHERE nome = ?
                     ''', (usuario.get_nome(),))
-                    registro = cursor.fetchall()
+                    registro = cursor.fetchone()
                 if not registro:
                     return None
 
-                if isinstance(registro, list):
-                    for reg in registro:
-                        senha_hash = reg[3]
-                        print(usuario.get_senha().encode('utf-8'), senha_hash)
-                        if bcrypt.checkpw(usuario.get_senha().encode('utf-8'), senha_hash):
-                            return Usuario.Usuario(*reg[1:], gerar_hash_senha=False)
+                senha_hash = registro[3]
+                print(usuario.get_senha().encode('utf-8'), senha_hash)
+                if bcrypt.checkpw(usuario.get_senha().encode('utf-8'), senha_hash):
+                    return Usuario.Usuario(*registro[1:], gerar_hash_senha=False)
                 else:
-                    senha_hash = registro[3]
-                    print(usuario.get_senha().encode('utf-8'), senha_hash)
-                    if bcrypt.checkpw(usuario.get_senha().encode('utf-8'), senha_hash):
-                        return Usuario.Usuario(*registro[1:], gerar_hash_senha=False)
-                    else:
-                        return None
+                    return None
             except Exception as e:
                 print("Erro ao buscar usuario:", e)
                 return None
 
-    def adicionar_carrinho(self, cpf_cliente, id_produto, quantidade):
+    def adicionar_carrinho(self, cpf_cliente, id_imovel, quantidade):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
                 sql_query = ''' 
-                INSERT INTO Carrinho_Compras (cpf_cliente, id_produto, quantidade) 
+                INSERT INTO Carrinho_Compras (cpf_cliente, id_imovel, quantidade) 
                 VALUES(?, ?, ?)
                 '''
 
                 cursor.execute(sql_query, (
                     cpf_cliente,
-                    id_produto,
+                    id_imovel,
                     quantidade
                 ))
                 conexao.commit()
@@ -416,14 +473,14 @@ class Banco:
             cliente.set_id(registro[0])
             return cliente
 
-    def remover_produto(self, id):
+    def remover_imovel(self, id):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
                 sql_delete_query = """
-                    DELETE FROM Produto
-                    WHERE id_produto = ?
+                    DELETE FROM imovel
+                    WHERE id_imovel = ?
                     """
                 cursor.execute(sql_delete_query, (id,))
                 conexao.commit()
@@ -432,164 +489,164 @@ class Banco:
                 print(e)
                 return False
 
-    def get_produto_por_id(self, id):
+    def get_imovel_por_id(self, id):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                f'SELECT * FROM Produto WHERE id_produto = ?', (id,))
+                f'SELECT * FROM imovel WHERE id_imovel = ?', (id,))
             registro = cursor.fetchone()
             if not registro:
                 return None
-            produto = Produto.Produto(*registro[2:9])
-            produto.set_preco(float(produto.get_preco()))
-            produto.set_quantidade(int(produto.get_quantidade()))
-            produto.set_descricao(registro[-2])
-            produto.set_imagem(registro[-1])
-            produto.set_id(int(registro[0]))
-            produto.set_codigo(registro[1])
-            return produto
+            imovel = Imovel.imovel(*registro[2:9])
+            imovel.set_preco(float(imovel.get_preco()))
+            imovel.set_quantidade(int(imovel.get_quantidade()))
+            imovel.set_descricao(registro[-2])
+            imovel.set_imagem(registro[-1])
+            imovel.set_id(int(registro[0]))
+            imovel.set_codigo(registro[1])
+            return imovel
 
-    def adicionar_produto(self, produto):
+    def adicionar_imovel(self, imovel):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
                 sql_query = ''' 
-                INSERT INTO Produto (codigo, nome, marca, modelo, cor, preco, quantidade, categoria, descricao, imagem) 
+                INSERT INTO imovel (codigo, nome, marca, modelo, cor, preco, quantidade, categoria, descricao, imagem) 
                 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                     '''
                 cursor.execute(sql_query, (
-                    produto.get_codigo(),
-                    produto.get_nome(),
-                    produto.get_marca(),
-                    produto.get_modelo(),
-                    produto.get_cor(),
-                    produto.get_preco(),
-                    produto.get_quantidade(),
-                    produto.get_categoria(),
-                    produto.get_descricao(),
-                    produto.get_imagem()
+                    imovel.get_codigo(),
+                    imovel.get_nome(),
+                    imovel.get_marca(),
+                    imovel.get_modelo(),
+                    imovel.get_cor(),
+                    imovel.get_preco(),
+                    imovel.get_quantidade(),
+                    imovel.get_categoria(),
+                    imovel.get_descricao(),
+                    imovel.get_imagem()
                 ))
                 conexao.commit()
                 return True
             except Exception as e:
-                print(f"Erro ao adicionar produto: {e}")
+                print(f"Erro ao adicionar imovel: {e}")
                 return False
 
-    def get_lista_produtos(self):
+    def get_lista_imoveis(self):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             lista = []
-            cursor.execute("SELECT * FROM Produto")
+            cursor.execute("SELECT * FROM imovel")
             resultados = cursor.fetchall()
             for dados in resultados:
-                produto = Produto.Produto(*dados[2:9])
-                produto.set_preco(float(produto.get_preco()))
-                produto.set_quantidade(int(produto.get_quantidade()))
-                produto.set_descricao(dados[-2])
-                produto.set_imagem(dados[-1])
-                produto.set_id(int(dados[0]))
-                produto.set_codigo(dados[1])
-                lista.append(produto)
+                imovel = Imovel.imovel(*dados[2:9])
+                imovel.set_preco(float(imovel.get_preco()))
+                imovel.set_quantidade(int(imovel.get_quantidade()))
+                imovel.set_descricao(dados[-2])
+                imovel.set_imagem(dados[-1])
+                imovel.set_id(int(dados[0]))
+                imovel.set_codigo(dados[1])
+                lista.append(imovel)
             return lista
 
-    def get_lista_produtos_disponiveis(self):
+    def get_lista_imoveis_disponiveis(self):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             lista = []
-            cursor.execute("SELECT * FROM Produto WHERE quantidade > 0")
+            cursor.execute("SELECT * FROM imovel WHERE quantidade > 0")
             resultados = cursor.fetchall()
             for dados in resultados:
-                produto = Produto.Produto(*dados[2:9])
-                produto.set_preco(float(produto.get_preco()))
-                produto.set_quantidade(int(produto.get_quantidade()))
-                produto.set_descricao(dados[-2])
-                produto.set_imagem(dados[-1])
-                produto.set_id(int(dados[0]))
-                produto.set_codigo(dados[1])
-                lista.append(produto)
+                imovel = Imovel.imovel(*dados[2:9])
+                imovel.set_preco(float(imovel.get_preco()))
+                imovel.set_quantidade(int(imovel.get_quantidade()))
+                imovel.set_descricao(dados[-2])
+                imovel.set_imagem(dados[-1])
+                imovel.set_id(int(dados[0]))
+                imovel.set_codigo(dados[1])
+                lista.append(imovel)
             return lista
 
-    def get_produtos_por_nome(self, nome):
+    def get_imoveis_por_nome(self, nome):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                f'SELECT * FROM Produto WHERE nome = ?', (nome,))
+                f'SELECT * FROM imovel WHERE nome = ?', (nome,))
             lista_registros = cursor.fetchall()
-            lista_produtos = []
+            lista_imoveis = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[2:9])
-                produto.set_preco(float(produto.get_preco()))
-                produto.set_quantidade(int(produto.get_quantidade()))
-                produto.set_descricao(registro[-2])
-                produto.set_imagem(registro[-1])
-                produto.set_id(int(registro[0]))
-                produto.set_codigo(registro[1])
+                imovel = Imovel.imovel(*registro[2:9])
+                imovel.set_preco(float(imovel.get_preco()))
+                imovel.set_quantidade(int(imovel.get_quantidade()))
+                imovel.set_descricao(registro[-2])
+                imovel.set_imagem(registro[-1])
+                imovel.set_id(int(registro[0]))
+                imovel.set_codigo(registro[1])
 
-                lista_produtos.append(produto)
-            return lista_produtos
+                lista_imoveis.append(imovel)
+            return lista_imoveis
 
-    def get_produtos_por_marca(self, marca):
+    def get_imoveis_por_marca(self, marca):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                f'SELECT * FROM Produto WHERE marca = ?', (marca,))
+                f'SELECT * FROM imovel WHERE marca = ?', (marca,))
             lista_registros = cursor.fetchall()
-            lista_produtos = []
+            lista_imoveis = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[2:9])
-                produto.set_preco(float(produto.get_preco()))
-                produto.set_quantidade(int(produto.get_quantidade()))
-                produto.set_descricao(registro[-2])
-                produto.set_imagem(registro[-1])
-                produto.set_id(int(registro[0]))
-                produto.set_codigo(registro[1])
+                imovel = Imovel.imovel(*registro[2:9])
+                imovel.set_preco(float(imovel.get_preco()))
+                imovel.set_quantidade(int(imovel.get_quantidade()))
+                imovel.set_descricao(registro[-2])
+                imovel.set_imagem(registro[-1])
+                imovel.set_id(int(registro[0]))
+                imovel.set_codigo(registro[1])
 
-                lista_produtos.append(produto)
+                lista_imoveis.append(imovel)
 
-            return lista_produtos
+            return lista_imoveis
 
-    def get_produtos_por_modelo(self, modelo):
+    def get_imoveis_por_modelo(self, modelo):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                f'SELECT * FROM Produto WHERE modelo = ?', (modelo,))
+                f'SELECT * FROM imovel WHERE modelo = ?', (modelo,))
             lista_registros = cursor.fetchall()
-            lista_produtos = []
+            lista_imoveis = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[2:9])
-                produto.set_preco(float(produto.get_preco()))
-                produto.set_quantidade(int(produto.get_quantidade()))
-                produto.set_descricao(registro[-2])
-                produto.set_imagem(registro[-1])
-                produto.set_id(int(registro[0]))
-                produto.set_codigo(registro[1])
+                imovel = Imovel.imovel(*registro[2:9])
+                imovel.set_preco(float(imovel.get_preco()))
+                imovel.set_quantidade(int(imovel.get_quantidade()))
+                imovel.set_descricao(registro[-2])
+                imovel.set_imagem(registro[-1])
+                imovel.set_id(int(registro[0]))
+                imovel.set_codigo(registro[1])
 
-                lista_produtos.append(produto)
-            return lista_produtos
+                lista_imoveis.append(imovel)
+            return lista_imoveis
 
-    def get_produtos_por_categoria(self, categoria):
+    def get_imoveis_por_categoria(self, categoria):
         with sqlite3.connect(
                 "data\\Loja.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                f'SELECT * FROM Produto WHERE categoria = ?', (categoria,))
+                f'SELECT * FROM imovel WHERE categoria = ?', (categoria,))
             lista_registros = cursor.fetchall()
-            lista_produtos = []
+            lista_imoveis = []
             for registro in lista_registros:
-                produto = Produto.Produto(*registro[2:9])
-                produto.set_preco(float(produto.get_preco()))
-                produto.set_quantidade(int(produto.get_quantidade()))
-                produto.set_descricao(registro[-2])
-                produto.set_imagem(registro[-1])
-                produto.set_id(int(registro[0]))
-                produto.set_codigo(registro[1])
+                imovel = Imovel.imovel(*registro[2:9])
+                imovel.set_preco(float(imovel.get_preco()))
+                imovel.set_quantidade(int(imovel.get_quantidade()))
+                imovel.set_descricao(registro[-2])
+                imovel.set_imagem(registro[-1])
+                imovel.set_id(int(registro[0]))
+                imovel.set_codigo(registro[1])
 
-                lista_produtos.append(produto)
-            return lista_produtos
+                lista_imoveis.append(imovel)
+            return lista_imoveis

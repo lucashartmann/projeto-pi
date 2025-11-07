@@ -4,8 +4,6 @@ from textual import on
 from textual.screen import Screen
 
 from model import Init
-from model.Usuario import TipoUsuario
-from model import Init
 
 from controller import Controller
 

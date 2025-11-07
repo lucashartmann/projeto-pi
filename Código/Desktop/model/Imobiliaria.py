@@ -2,7 +2,7 @@ from database import Banco
 from model import Estoque
 
 
-class Loja:
+class Imobiliaria:
     def __init__(self, nome, cnpj):
         self.banco_dados = Banco.Banco()
         self.nome = nome

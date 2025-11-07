@@ -1,2 +1,0 @@
-class Relatorio:
-    pass

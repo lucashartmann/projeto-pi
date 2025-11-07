@@ -5,7 +5,6 @@ from textual.containers import Grid, HorizontalGroup, VerticalGroup
 from textual import on
 
 from controller import Controller
-from model.Usuario import TipoUsuario
 from model import Init
 
 

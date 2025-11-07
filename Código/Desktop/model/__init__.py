@@ -1,5 +1,4 @@
-from model import Cliente, Loja, Produto, Cupom, Reembolso, Relatorio, Pedido, Usuario
-from model.Usuario import TipoUsuario
+from model import Cliente, Imobiliaria, Imovel, Cupom, Reembolso, Relatorio, Pedido, Usuario, Corretor, Captador
 
 
 class Init:
@@ -8,45 +7,39 @@ class Init:
     um_cupom = Cupom.Cupom("qwdsadas")
     um_reembolso = Reembolso.Reembolso()
     um_relatorio = Relatorio.Relatorio()
-    um_produto = Produto.Produto(
-        "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
-    um_cliente = Cliente.Cliente("MARCOS", "11111111111", "11111111111",
+    um_imovel = Imovel.Imovel()
+    
+    usuario_atual = ""
+    
+    cliente = Cliente.Comprador("MARCOS", "11111111111", "11111111111",
                                  "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
-    usuario = Usuario.Usuario(
-        "administrador", "administrador", "administrador", tipo=TipoUsuario.CLIENTE)
+    
+    captador = Captador.Captador("lucas", "00000000000", "00000000", "00000000000", "bento", "lucas@email")
 
+    corretor = Corretor.Corretor("lucas", "00000000000", "00000000", "00000000000", "bento", "lucas@email")
+    
     dict_objetos = {
-        "produto": um_produto, "pedido": um_pedido,  "cliente": um_cliente, "cupom": um_cupom,   "reembolso": um_reembolso, "relatorio": um_relatorio, "usuario": usuario
+        "imovel": um_imovel, "pedido": um_pedido,  "cliente": cliente, "cupom": um_cupom,   "reembolso": um_reembolso, "relatorio": um_relatorio, "captador": captador, "corretor": corretor,
     }
 
-    
 
-    cliente_atual = Cliente.Cliente("MARCOS", "11111111111", "11111111111",
-                                    "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
-
-    loja = Loja.Loja("GameStart", "00000000000")
-
-    loja.cadastrar(cliente_atual)
-
+    imobiliaria = Imobiliaria.Imobiliaria("GameStart", "00000000000")
 
     def inicializar():
 
-        if not Init.loja.get_lista_usuarios():
+        if not Init.imobiliaria.get_lista_usuarios():
             admin = Usuario.Usuario(
-                "admin", "admin", "admin", tipo=TipoUsuario.ADMINISTRADOR)
-            gerente = Usuario.Usuario(
-                "gerente", "gerente", "gerente", tipo=TipoUsuario.GERENTE)
-            funcionario = Usuario.Usuario(
-                "funcionario", "funcionario", "funcionario", tipo=TipoUsuario.FUNCIONARIO)
-            cliente = Usuario.Usuario(
-                "cliente", "cliente", "cliente", tipo=TipoUsuario.CLIENTE)
+                "admin", "admin", "admin")
+            corretor = Corretor.Corretor()
+            captador = Captador.Captador()
+            cliente = Cliente.Cliente()
 
-            Init.loja.cadastrar_usuario(admin)
-            Init.loja.cadastrar_usuario(gerente)
-            Init.loja.cadastrar_usuario(funcionario)
-            Init.loja.cadastrar_usuario(cliente)
+            Init.imobiliaria.cadastrar_usuario(admin)
+            Init.imobiliaria.cadastrar_usuario(corretor)
+            Init.imobiliaria.cadastrar_usuario(captador)
+            Init.imobiliaria.cadastrar_usuario(cliente)
 
-        if not Init.loja.get_lista_clientes():
+        if not Init.imobiliaria.get_lista_clientes():
 
             cliente2 = Cliente.Cliente("PEDRO", "22222222222", "22222222222",
                                        "22222222222", "RUA 2", "PEDRO@GMAIL.COM")
@@ -67,51 +60,42 @@ class Init:
             cliente10 = Cliente.Cliente("FERNANDA", "10101010101", "10101010101",
                                         "10101010101", "RUA 10", "FERNANDA@GMAIL.COM")
 
-            Init.loja.cadastrar(cliente3)
-            Init.loja.cadastrar(cliente2)
-            Init.loja.cadastrar(cliente4)
-            Init.loja.cadastrar(cliente5)
-            Init.loja.cadastrar(cliente6)
-            Init.loja.cadastrar(cliente7)
-            Init.loja.cadastrar(cliente8)
-            Init.loja.cadastrar(cliente9)
-            Init.loja.cadastrar(cliente10)
+            Init.imobiliaria.cadastrar(cliente3)
+            Init.imobiliaria.cadastrar(cliente2)
+            Init.imobiliaria.cadastrar(cliente4)
+            Init.imobiliaria.cadastrar(cliente5)
+            Init.imobiliaria.cadastrar(cliente6)
+            Init.imobiliaria.cadastrar(cliente7)
+            Init.imobiliaria.cadastrar(cliente8)
+            Init.imobiliaria.cadastrar(cliente9)
+            Init.imobiliaria.cadastrar(cliente10)
 
-        if not Init.loja.get_estoque().get_lista_produtos():
+        if not Init.imobiliaria.get_estoque().get_lista_imovels():
 
-            produto2 = Produto.Produto("XBOX SERIES X", "MICROSOFT",
-                                       "SLIM", "PRETO", 4000.00, 10, "CONSOLE")
-            produto3 = Produto.Produto("NINTENDO SWITCH", "NINTENDO",
-                                       "SLIM", "PRETO", 3000.00, 10, "CONSOLE")
-            produto4 = Produto.Produto("GEFORCE RTX 3080 TI", "NVIDIA",
-                                       "TI", "BRANCO", 2000.00, 3, "PLACA DE VIDEO")
-            produto5 = Produto.Produto(
-                "RX 6900 XT", "AMD", "60 SERIES", "BRANCO", 1000.00, 3, "PLACA DE VIDEO")
-            produto6 = Produto.Produto("GEFORCE RTX 3090", "NVIDIA",
-                                       "30 SERIES", "BRANCO", 1000.00, 3, "PLACA DE VIDEO")
-            produto7 = Produto.Produto(
-                "DUALSHOCK 4", "SONY", "SLIM", "PRETO", 200.00, 10, "PERIFÉRICOS")
+            imovel2 = Imovel.Imovel()
+            imovel3 = Imovel.Imovel()
+            imovel4 = Imovel.Imovel()
+            imovel5 = Imovel.Imovel()
+            imovel6 = Imovel.Imovel()
+            imovel7 = Imovel.Imovel()
 
-            with open(r"assets/produto.png", "rb") as img:
-                img_bytes = img.read()
+            # with open(r"assets/imovel.png", "rb") as img:
+            #     img_bytes = img.read()
 
-            produto2.set_imagem(img_bytes)
-            produto3.set_imagem(img_bytes)
-            produto7.set_imagem(img_bytes)
+            # imovel2.set_imagem(img_bytes)
+            # imovel3.set_imagem(img_bytes)
+            # imovel7.set_imagem(img_bytes)
 
-            produto9 = Produto.Produto(
-                "VOLANTE GAMER", "LOGITECH", "G29", "PRETO", 500.00, 5, "PERIFÉRICOS")
-            produto10 = Produto.Produto(
-                "MOUSE GAMER", "LOGITECH", "G502", "PRETO", 100.00, 10, "PERIFÉRICOS")
-            produto11 = Produto.Produto(
-                "PLAYSTATION 5", "SONY", "PRO", "BRANCO", 6000.00, 30, "CONSOLE")
+            imovel9 = Imovel.Imovel()
+            imovel10 = Imovel.Imovel()
+            imovel11 = Imovel.Imovel()
 
-            Init.loja.get_estoque().adicionar_produto(produto2)
-            Init.loja.get_estoque().adicionar_produto(produto3)
-            Init.loja.get_estoque().adicionar_produto(produto4)
-            Init.loja.get_estoque().adicionar_produto(produto5)
-            Init.loja.get_estoque().adicionar_produto(produto6)
-            Init.loja.get_estoque().adicionar_produto(produto7)
-            Init.loja.get_estoque().adicionar_produto(produto9)
-            Init.loja.get_estoque().adicionar_produto(produto10)
-            Init.loja.get_estoque().adicionar_produto(produto11)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel2)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel3)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel4)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel5)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel6)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel7)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel9)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel10)
+            Init.imobiliaria.get_estoque().adicionar_imovel(imovel11)

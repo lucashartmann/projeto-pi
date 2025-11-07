@@ -6,8 +6,6 @@ from textual.events import Click
 from textual_image.widget import Image
 from textual_image.widget.sixel import _ImageSixelImpl
 
-
-from model.Usuario import TipoUsuario
 from model import Init
 from controller import Controller
 
@@ -43,7 +41,7 @@ class TelaLogin(Screen):
         with VerticalGroup():
             yield Input(placeholder="Usuário")
             yield MyInput(placeholder="Senha", password=True)
-            yield Select([("Cliente", "Cliente"), ("Gerente", "Gerente"), ("Funcionario", "Funcionario"), ("Administrador", "Administrador")], value="Cliente", allow_blank=False)
+            yield Select([("Cliente", "Cliente"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")], value="Cliente", allow_blank=False)
             yield Button("Entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")
         yield Footer()
@@ -107,15 +105,18 @@ class TelaLogin(Screen):
 
         match self.query_one(Select).value: # Todo: Isso é só para testes, remover depois
             case "Cliente":
-                Init.usuario.set_tipo(TipoUsuario.CLIENTE)
-            case "Gerente":
-                Init.usuario.set_tipo(TipoUsuario.GERENTE)
-            case "Funcionario":
-                Init.usuario.set_tipo(TipoUsuario.FUNCIONARIO)
+                Init.usuario = Init.cliente
+            case "Corretor":
+                Init.usuario = Init.corretor
+            case "Captador":
+                Init.usuario = Init.captador
             case "Administrador":
-                Init.usuario.set_tipo(TipoUsuario.ADMINISTRADOR)
+                pass
+        
+        if self.query_one(Select).value != "Administrador":
+            Init.imobiliaria.cadastrar(Init.usuario_atual)
 
-        if Init.usuario.get_tipo() == TipoUsuario.CLIENTE:
+        if self.query_one(Select).value == "Cliente":
             self.app.switch_screen("tela_estoque_cliente")
         else:
             self.app.switch_screen("tela_cadastro")

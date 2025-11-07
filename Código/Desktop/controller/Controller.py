@@ -1,4 +1,4 @@
-from model import Cliente, Produto, Init, Funcionario, Usuario
+from model import Cliente, Corretor, Imovel, Init, Usuario
 
 
 def remover_do_carrinho(produto_id):
@@ -72,7 +72,7 @@ def cadastrar_pessoa(lista):
         pessoa = Cliente.Cliente(lista[0], lista[1], lista[2],
                                  lista[3], lista[4], lista[5])
     else:
-        pessoa = Funcionario.Funcionario(lista[0], lista[1], lista[2],
+        pessoa = Corretor.Funcionario(lista[0], lista[1], lista[2],
                                          lista[3], lista[4], lista[5])
 
     cadastrado = Init.loja.cadastrar(pessoa)
@@ -115,7 +115,7 @@ def cadastrar_produto(lista):
     except ValueError:
         return "ERRO Quantidade incorreta"
 
-    produto = Produto.Produto(lista[0], lista[1], lista[2],
+    produto = Imovel.Produto(lista[0], lista[1], lista[2],
                               lista[3], lista[4], lista[5], lista[6])
     cadastrado = Init.loja.get_estoque().adicionar_produto(produto)
 

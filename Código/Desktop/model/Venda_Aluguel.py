@@ -3,8 +3,14 @@ class Venda:
     def __init__(self):
         self.id_venda = 0
         self.cpf_cliente = 0
+        self.cliente = ""
+        self.proprietario = ""
+        self.captador = ""
+        self.corretor = ""
+        self.imovel = ""
         self.data_venda = ""
-        self.produtos = []
+        self.comissao_captador = 0
+        self.comissao_corretor = 0
 
     def get_id_venda(self):
         return self.id_venda

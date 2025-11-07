@@ -6,7 +6,6 @@ from textual.widgets import Tab, Tabs, Static, Header, Footer
 from textual.containers import VerticalGroup
 
 
-from model.Usuario import TipoUsuario
 from model import Init
 
 
