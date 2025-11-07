@@ -1,5 +1,5 @@
 import sqlite3
-import bcrypt
+import hashlib
 import os
 
 from model import Cliente, Imovel, Usuario
@@ -14,11 +14,11 @@ class Banco:
 
     def init_tabelas(self):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Comprador (
-                    id_cliente INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id_comprador INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT NOT NULL UNIQUE,
                     senha TEXT NOT NULL,
                     email TEXT NOT NULL UNIQUE,
@@ -34,7 +34,7 @@ class Banco:
 
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Proprietario (
-                    id_cliente INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id_proprietario INTEGER PRIMARY KEY AUTOINCREMENT,
                     email TEXT NOT NULL UNIQUE,
                     nome TEXT NOT NULL,
                     cpf TEXT NOT NULL UNIQUE,
@@ -96,14 +96,14 @@ class Banco:
                     quant_varandas INTEGER NULL,
                     nome_condominio TEXT NULL,
                     cor TEXT NULL,
-                    categoria = TEXT NULL,
+                    categoria TEXT NULL,
                     descricao TEXT NULL,
                     endereco TEXT NOT NULL,
-                    status = TEXT NULL,
+                    status TEXT NULL,
                     iptu REAL NULL,
                     valor_condominio REAL NULL,
                     andar INTEGER NULL,
-                    estado = TEXT NULL,
+                    estado TEXT NULL,
                     numero INTEGER NULL,
                     complemento TEXT NULL,
                     bloco TEXT NULL,
@@ -113,8 +113,8 @@ class Banco:
                     bairro TEXT NOT NULL, 
                     rua TEXT NOT NULL,
                     cidade TEXT NULL,
-                    situacao = TEXT NULL,
-                    ocupacao = TEXT NULL,
+                    situacao TEXT NULL,
+                    ocupacao TEXT NULL,
                     cpf_proprietario TEXT NOT NULL,
                     cpf_corretor TEXT NOT NULL,
                     FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
@@ -148,505 +148,255 @@ class Banco:
                     FOREIGN KEY (cpf_corretor) references Corretor (cpf)
                     );
                                 ''')
-            cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Tipo_Usuario (
-                    id_tipo INTEGER PRIMARY KEY AUTOINCREMENT,
-                    tipo TEXT UNIQUE NOT NULL
-                    );
-                                ''')
-            cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Usuario (
-                    id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nome TEXT NOT NULL UNIQUE,
-                    email TEXT NOT NULL UNIQUE,
-                    senha TEXT NOT NULL,
-                    tipo INTEGER NOT NULL,
-                    FOREIGN KEY (tipo) REFERENCES Tipo_Usuario (id_tipo)
-                    );
-                    
-                                ''')
 
-            try:
-                self.init_tabelas()
-
-            except:
-                pass
 
             conexao.commit()
 
-    def init_tabelas(self):
-        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
-                        VALUES(?)''', ("Administrador",))
-            cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
-                        VALUES(?)''', ("Corretor",))
-            cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
-                        VALUES(?)''', ("Cliente",))
-            cursor.execute('''INSERT INTO Tipo_Usuario (tipo) 
-                        VALUES(?)''', ("Captador",))
-
-    def atualizar_dado_cliente(self, cpf, campo, dado):
-        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
-            try:
-                cursor = conexao.cursor()
-                cursor.execute(f'''
-                    UPDATE Cliente
-                    SET {campo} = ?
-                    WHERE cpf = ?
-                ''', (dado, cpf))
-                conexao.commit()
-                return True
-            except Exception as e:
-                print("Erro ao atualizar dado do cliente:", e)
-                return False
-
-    def get_lista_imoveis_carrinho(self, cpf):
-        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM Carrinho_Compras WHERE cpf_cliente = ?', (cpf,))
-            lista_registros = cursor.fetchall()
-            if not lista_registros:
-                return []
-            lista_imoveis = []
-            for registro in lista_registros:
-                lista_imoveis.append(self.get_imovel_por_id(registro[1]))
-            return lista_imoveis
-
-    def get_item_carrinho_por_id(self, cpf, id_imovel):
-        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM Carrinho_Compras WHERE cpf_cliente = ? AND id_imovel = ?', (cpf, id_imovel))
-            registro = cursor.fetchone()
-            if not registro:
-                return None
-            else:
-                return self.get_imovel_por_id(registro[1])
-
-    def get_quantidade_item_carrinho(self, id_imovel):
-        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT quantidade FROM Carrinho_Compras WHERE id_imovel = ?', (id_imovel,))
-            registro = cursor.fetchone()
-            if not registro:
-                return 0
-            else:
-                return registro[0]
-
-    def remover_item_carrinho(self, cpf, id_imovel):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            try:
-                sql_delete_query = """
-                    DELETE FROM Carrinho_Compras
-                    WHERE cpf_cliente = ? AND id_imovel = ?
-                    """
-                cursor.execute(sql_delete_query, (cpf, id_imovel))
-                conexao.commit()
-                return True
-            except Exception as e:
-                print(e)
-                return False
-
-    def atualizar_quantidade_item_carrinho(self, cpf, id_imovel, quantidade):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            try:
-                sql_update_query = """
-                    UPDATE Carrinho_Compras
-                    SET quantidade = ?
-                    WHERE cpf_cliente = ? AND id_imovel = ?
-                    """
-                cursor.execute(sql_update_query, (quantidade, cpf, id_imovel))
-                conexao.commit()
-                return True
-            except Exception as e:
-                print(e)
-                return False
-
-    def get_compras_usuario_por_cpf(self, cpf):
-        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
-
-            try:
-                cursor = conexao.cursor()
-                cursor.execute('''
-                    SELECT id_venda FROM Venda WHERE cpf_cliente = ?
-                ''', (cpf,))
-                vendas = cursor.fetchall()
-
-                dicionario_venda = {}
-
-                for id in vendas:
-
-                    cursor.execute('''
-                        SELECT * FROM Venda_imoveis WHERE id_venda = ?
-                    ''', (id,))
-                    imoveis = cursor.fetchall()
-                    lista = []
-                    for imovel in imoveis:
-                        lista.append(imovel)
-
-                    if lista:
-                        dicionario_venda[id[1]] = lista
-
-                if not dicionario_venda:
-                    return {}
-
-                return dicionario_venda
-            except Exception as e:
-                print("Erro ao buscar compras do usuário:", e)
-                return {}
-
-    def get_lista_usuarios(self):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-
-            try:
-                cursor = conexao.cursor()
-                lista = []
-                cursor.execute("SELECT * FROM Usuario")
-                resultados = cursor.fetchall()
-                if not resultados:
-                    return []
-                for dados in resultados:
-                    usuario = Usuario.Usuario(*dados[1:])
-                    usuario.set_id(dados[0])
-                    lista.append(usuario)
-                return lista
-            except Exception as e:
-                print("Erro ao buscar usuarios:", e)
-                return []
-
-    def verificar_usuario(self, usuario):
-        with sqlite3.connect("data\\Loja.db", check_same_thread=False) as conexao:
+    def verificar_usuario(self, usuario, tabela):
+        with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
             try:
                 cursor = conexao.cursor()
                 registro = None
                 if usuario.get_email():
-                    cursor.execute('''
-                        SELECT * FROM Usuario WHERE email = ?
+                    cursor.execute(f'''
+                        SELECT * FROM {tabela} WHERE email = ?
                     ''', (usuario.get_email(),))
                     registro = cursor.fetchone()
                 else:
-                    cursor.execute('''
-                        SELECT * FROM Usuario WHERE nome = ?
-                    ''', (usuario.get_nome(),))
+                    cursor.execute(f'''
+                        SELECT * FROM {tabela} WHERE username = ?
+                    ''', (usuario.get_username(),))
                     registro = cursor.fetchone()
                 if not registro:
-                    return None
+                    raise Exception("Usuário não encontrado")
 
-                senha_hash = registro[3]
-                print(usuario.get_senha().encode('utf-8'), senha_hash)
-                if bcrypt.checkpw(usuario.get_senha().encode('utf-8'), senha_hash):
-                    return Usuario.Usuario(*registro[1:], gerar_hash_senha=False)
+                senha_hash_banco = registro[3]
+
+                senha_hash = hashlib.sha256(
+                    usuario.get_senha().encode('utf-8')).hexdigest()
+
+                if senha_hash_banco == senha_hash:
+                    return Usuario.Usuario(*registro[1:]), ""
                 else:
-                    return None
-            except Exception as e:
-                print("Erro ao buscar usuario:", e)
-                return None
+                    raise Exception("Senha errada!")
 
-    def adicionar_carrinho(self, cpf_cliente, id_imovel, quantidade):
+            except Exception as e:
+                erro = "Banco.verificar_usuario: ERRO!", e
+                return None, erro
+
+    def cadastrar_proprietario(self, proprietario):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
-                sql_query = ''' 
-                INSERT INTO Carrinho_Compras (cpf_cliente, id_imovel, quantidade) 
-                VALUES(?, ?, ?)
-                '''
+                if isinstance(proprietario, Cliente.Proprietario):
 
-                cursor.execute(sql_query, (
-                    cpf_cliente,
-                    id_imovel,
-                    quantidade
-                ))
-                conexao.commit()
-                return True
+                    sql_query = f''' 
+                    INSERT INTO Proprietario (email, nome, cpf, email, rg, telefone, endereco, idade, data_nascimento) 
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    '''
+                    cursor.execute(sql_query, (
+                        proprietario.get_email(),
+                        proprietario.get_nome(),
+                        proprietario.get_cpf(),
+                        proprietario.get_rg(),
+                        proprietario.get_telefone(),
+                        proprietario.get_endereco(),
+                        proprietario.get_idade(),
+                        proprietario.get_data_nascimento()
+                    ))
+                    conexao.commit()
+                    return True, ""
             except Exception as e:
-                print("Erro ao adicionar no carrinho:", e)
-                return False
+                erro = f"Banco.cadastrar_cliente: ERRO! {e}"
+                return False, erro
 
-    def cadastrar_usuario(self, usuario):
+    def cadastrar_comprador(self, comprador):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
-                sql_query = ''' 
-                INSERT INTO Usuario (nome, email, senha, tipo) 
-                VALUES(?, ?, ?, ?)
-                '''
+                if isinstance(comprador, Cliente.Comprador):
+                    senha_hash = hashlib.sha256(
+                        comprador.get_senha().encode('utf-8')).hexdigest()
+                    sql_query = f''' 
+                    INSERT INTO Comprador (username, senha, email, nome, cpf, rg, telefone, endereco, idade, data_nascimento) 
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    '''
+                    cursor.execute(sql_query, (
+                        comprador.get_username(),
+                        senha_hash,
+                        comprador.get_email(),
+                        comprador.get_nome(),
+                        comprador.get_cpf(),
+                        comprador.get_rg(),
+                        comprador.get_telefone(),
+                        comprador.get_endereco(),
+                        comprador.get_idade(),
+                        comprador.get_data_nascimento()
+                    ))
 
-                cursor.execute(sql_query, (
-                    usuario.get_nome(),
-                    usuario.get_email(),
-                    usuario.get_senha(),
-                    usuario.get_tipo().value
-                ))
-                conexao.commit()
-                return True
+                    conexao.commit()
+                    return True, ""
             except Exception as e:
-                print("Erro ao cadastrar usuario:", e)
-                return False
+                erro = f"Banco.cadastrar_cliente: ERRO! {e}"
+                return False, erro
 
-    def cadastrar_pessoa(self, cliente):
+    def remover_imovel(self, codigo):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            try:
-                sql_query = f''' 
-                INSERT INTO {cliente.__class__.__name__} (nome, cpf, rg, telefone, endereco, email) 
-                VALUES(?, ?, ?, ?, ?, ?)
-                '''
-                cursor.execute(sql_query, (
-                    cliente.get_nome(),
-                    cliente.get_cpf(),
-                    cliente.get_rg(),
-                    cliente.get_telefone(),
-                    cliente.get_endereco(),
-                    cliente.get_email()
-                ))
-                conexao.commit()
-                return True
-            except Exception as e:
-                print("Erro ao cadastrar cliente:", e)
-                return False
-
-    def remove_pessoa_por_cpf(self, cpf):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            try:
-                sql_delete_query = """
-                    DELETE FROM Cliente
-                    WHERE cpf = ?
-                    """
-                cursor.execute(sql_delete_query, (cpf,))
-                conexao.commit()
-                return True
-            except Exception as e:
-                print(e)
-                return False
-
-    def get_lista_clientes(self):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            lista = []
-            cursor.execute("SELECT * FROM Cliente")
-            resultados = cursor.fetchall()
-            for dados in resultados:
-                cliente = Cliente.Cliente(*dados[1:])
-                cliente.set_id(dados[0])
-                lista.append(cliente)
-            return lista
-
-    def get_pessoa_por_email(self, email):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM Cliente WHERE email = ?', (email,))
-            registro = cursor.fetchone()
-            if not registro:
-                return None
-
-            cliente = Cliente.Cliente(*registro[1:])
-            cliente.set_id(registro[0])
-
-            return cliente
-
-    def get_pessoa_por_cpf(self, cpf):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM Cliente WHERE cpf = ?', (cpf,))
-            registro = cursor.fetchone()
-            if not registro:
-                return None
-            cliente = Cliente.Cliente(*registro[1:])
-            cliente.set_id(registro[0])
-            return cliente
-
-    def remover_imovel(self, id):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
                 sql_delete_query = """
                     DELETE FROM imovel
-                    WHERE id_imovel = ?
+                    WHERE codigo = ?
                     """
-                cursor.execute(sql_delete_query, (id,))
+                cursor.execute(sql_delete_query, (codigo,))
                 conexao.commit()
-                return True
+                return True, ""
             except Exception as e:
-                print(e)
-                return False
+                erro = f"Banco.remover_imovel: ERRO! {e}"
+                return False, erro
 
-    def get_imovel_por_id(self, id):
+    def get_imovel_por_codigo(self, codigo):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM imovel WHERE id_imovel = ?', (id,))
-            registro = cursor.fetchone()
-            if not registro:
-                return None
-            imovel = Imovel.imovel(*registro[2:9])
-            imovel.set_preco(float(imovel.get_preco()))
-            imovel.set_quantidade(int(imovel.get_quantidade()))
-            imovel.set_descricao(registro[-2])
-            imovel.set_imagem(registro[-1])
-            imovel.set_id(int(registro[0]))
-            imovel.set_codigo(registro[1])
-            return imovel
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            try:
+                cursor = conexao.cursor()
+                cursor.execute(
+                    f'SELECT * FROM Imovel WHERE codigo = ?', (codigo,))
+                registro = cursor.fetchone()
+                if not registro:
+                    raise Exception(f"Nenhum imóvel com codigo {codigo}")
+                imovel = Imovel.Imovel(*registro[2:9])
+                imovel.set_preco(float(imovel.get_preco()))
+                imovel.set_quantidade(int(imovel.get_quantidade()))
+                imovel.set_descricao(registro[-2])
+                imovel.set_imagem(registro[-1])
+                imovel.set_id(int(registro[0]))
+                imovel.set_codigo(registro[1])
+                return imovel
+            except Exception as e:
+                erro = f"Banco.get_imovel_por_id: ERRO! {e}"
+                return None, erro
 
-    def adicionar_imovel(self, imovel):
+    def cadastrar_imovel(self, imovel):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
                 sql_query = ''' 
-                INSERT INTO imovel (codigo, nome, marca, modelo, cor, preco, quantidade, categoria, descricao, imagem) 
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO Imovel(codigo, valor_venda, valor_aluguel, quant_quartos, quant_salas, quant_vagas, quant_banheiros, quant_varandas, nome_condominio, cor, categoria, descricao, endereço, status, iptu, valor_condominio, andar, estado, numero, complemento, bloco, ano_construcao, area_total, area_privativa, bairro, rua, cidade, situacao, ocupacao, cpf_proprietario, cpf_corretor) 
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                     '''
                 cursor.execute(sql_query, (
                     imovel.get_codigo(),
-                    imovel.get_nome(),
-                    imovel.get_marca(),
-                    imovel.get_modelo(),
+                    imovel.get_valor_venda(),
+                    imovel.get_valor_aluguel(),
+                    imovel.get_quant_quartos(),
+                    imovel.get_quant_salas(),
+                    imovel.get_quant_vagas(),
+                    imovel.get_quant_banheiros(),
+                    imovel.get_quant_varandas(),
+                    imovel.get_nome_condominio(),
                     imovel.get_cor(),
-                    imovel.get_preco(),
-                    imovel.get_quantidade(),
                     imovel.get_categoria(),
                     imovel.get_descricao(),
-                    imovel.get_imagem()
+                    imovel.get_endereço(),
+                    imovel.get_status(),
+                    imovel.get_iptu(),
+                    imovel.get_estado(),
+                    imovel.get_valor_condominio(),
+                    imovel.get_andar(),
+                    imovel.get_estado(),
+                    imovel.get_numero(),
+                    imovel.get_complemento(),
+                    imovel.get_ano_construcao(),
+                    imovel.get_area_total(),
+                    imovel.get_area_privativa(),
+                    imovel.get_bairro(),
+                    imovel.get_rua(),
+                    imovel.get_situacao(),
+                    imovel.get_ocupacao(),
+                    imovel.get_cpf_proprietario(),
+                    imovel.get_cpf_corretor(),
                 ))
                 conexao.commit()
-                return True
+                return True, ""
             except Exception as e:
-                print(f"Erro ao adicionar imovel: {e}")
-                return False
+                erro = f"Banco.cadastrar_imovel: ERRO! {e}"
+                return False, erro
 
     def get_lista_imoveis(self):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            lista = []
-            cursor.execute("SELECT * FROM imovel")
-            resultados = cursor.fetchall()
-            for dados in resultados:
-                imovel = Imovel.imovel(*dados[2:9])
-                imovel.set_preco(float(imovel.get_preco()))
-                imovel.set_quantidade(int(imovel.get_quantidade()))
-                imovel.set_descricao(dados[-2])
-                imovel.set_imagem(dados[-1])
-                imovel.set_id(int(dados[0]))
-                imovel.set_codigo(dados[1])
-                lista.append(imovel)
-            return lista
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            try:
+                cursor = conexao.cursor()
+                lista = []
+                cursor.execute("SELECT * FROM Imovel")
+                resultados = cursor.fetchall()
+                if not resultados:
+                    raise Exception(f"Tabela imovel esta vázia")
+                for dados in resultados:
+                    imovel = Imovel.Imovel(*dados[2:9])
+                    imovel.set_preco(float(imovel.get_preco()))
+                    imovel.set_quantidade(int(imovel.get_quantidade()))
+                    imovel.set_descricao(dados[-2])
+                    imovel.set_imagem(dados[-1])
+                    imovel.set_id(int(dados[0]))
+                    imovel.set_codigo(dados[1])
+                    lista.append(imovel)
+                return lista
+            except Exception as e:
+                erro = f"Banco.get_lista_imoveis: ERRO! {e}"
+                return [], erro
 
     def get_lista_imoveis_disponiveis(self):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            lista = []
-            cursor.execute("SELECT * FROM imovel WHERE quantidade > 0")
-            resultados = cursor.fetchall()
-            for dados in resultados:
-                imovel = Imovel.imovel(*dados[2:9])
-                imovel.set_preco(float(imovel.get_preco()))
-                imovel.set_quantidade(int(imovel.get_quantidade()))
-                imovel.set_descricao(dados[-2])
-                imovel.set_imagem(dados[-1])
-                imovel.set_id(int(dados[0]))
-                imovel.set_codigo(dados[1])
-                lista.append(imovel)
-            return lista
-
-    def get_imoveis_por_nome(self, nome):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM imovel WHERE nome = ?', (nome,))
-            lista_registros = cursor.fetchall()
-            lista_imoveis = []
-            for registro in lista_registros:
-                imovel = Imovel.imovel(*registro[2:9])
-                imovel.set_preco(float(imovel.get_preco()))
-                imovel.set_quantidade(int(imovel.get_quantidade()))
-                imovel.set_descricao(registro[-2])
-                imovel.set_imagem(registro[-1])
-                imovel.set_id(int(registro[0]))
-                imovel.set_codigo(registro[1])
-
-                lista_imoveis.append(imovel)
-            return lista_imoveis
-
-    def get_imoveis_por_marca(self, marca):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM imovel WHERE marca = ?', (marca,))
-            lista_registros = cursor.fetchall()
-            lista_imoveis = []
-            for registro in lista_registros:
-                imovel = Imovel.imovel(*registro[2:9])
-                imovel.set_preco(float(imovel.get_preco()))
-                imovel.set_quantidade(int(imovel.get_quantidade()))
-                imovel.set_descricao(registro[-2])
-                imovel.set_imagem(registro[-1])
-                imovel.set_id(int(registro[0]))
-                imovel.set_codigo(registro[1])
-
-                lista_imoveis.append(imovel)
-
-            return lista_imoveis
-
-    def get_imoveis_por_modelo(self, modelo):
-        with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM imovel WHERE modelo = ?', (modelo,))
-            lista_registros = cursor.fetchall()
-            lista_imoveis = []
-            for registro in lista_registros:
-                imovel = Imovel.imovel(*registro[2:9])
-                imovel.set_preco(float(imovel.get_preco()))
-                imovel.set_quantidade(int(imovel.get_quantidade()))
-                imovel.set_descricao(registro[-2])
-                imovel.set_imagem(registro[-1])
-                imovel.set_id(int(registro[0]))
-                imovel.set_codigo(registro[1])
-
-                lista_imoveis.append(imovel)
-            return lista_imoveis
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            try:
+                cursor = conexao.cursor()
+                lista = []
+                cursor.execute("SELECT * FROM Imovel WHERE quantidade > 0")
+                resultados = cursor.fetchall()
+                if not resultados:
+                    raise Exception(f"Tabela imovel esta vázia")
+                for dados in resultados:
+                    imovel = Imovel.Imovel(*dados[2:9])
+                    imovel.set_preco(float(imovel.get_preco()))
+                    imovel.set_quantidade(int(imovel.get_quantidade()))
+                    imovel.set_descricao(dados[-2])
+                    imovel.set_imagem(dados[-1])
+                    imovel.set_id(int(dados[0]))
+                    imovel.set_codigo(dados[1])
+                    lista.append(imovel)
+                return lista
+            except Exception as e:
+                erro = f"Banco.get_lista_imoveis_disponiveis: ERRO! {e}"
+                return [], erro
 
     def get_imoveis_por_categoria(self, categoria):
         with sqlite3.connect(
-                "data\\Loja.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            cursor.execute(
-                f'SELECT * FROM imovel WHERE categoria = ?', (categoria,))
-            lista_registros = cursor.fetchall()
-            lista_imoveis = []
-            for registro in lista_registros:
-                imovel = Imovel.imovel(*registro[2:9])
-                imovel.set_preco(float(imovel.get_preco()))
-                imovel.set_quantidade(int(imovel.get_quantidade()))
-                imovel.set_descricao(registro[-2])
-                imovel.set_imagem(registro[-1])
-                imovel.set_id(int(registro[0]))
-                imovel.set_codigo(registro[1])
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            try:
+                cursor = conexao.cursor()
+                cursor.execute(
+                    f'SELECT * FROM Imovel WHERE categoria = ?', (categoria,))
+                lista_registros = cursor.fetchall()
+                lista_imoveis = []
+                if not lista_imoveis:
+                    raise Exception(f"Tabela imovel esta vázia")
+                for registro in lista_registros:
+                    imovel = Imovel.Imovel(*registro[2:9])
+                    imovel.set_preco(float(imovel.get_preco()))
+                    imovel.set_quantidade(int(imovel.get_quantidade()))
+                    imovel.set_descricao(registro[-2])
+                    imovel.set_imagem(registro[-1])
+                    imovel.set_id(int(registro[0]))
+                    imovel.set_codigo(registro[1])
 
-                lista_imoveis.append(imovel)
-            return lista_imoveis
+                    lista_imoveis.append(imovel)
+                return lista_imoveis
+            except Exception as e:
+                erro = f"Banco.get_imoveis_por_categoria: ERRO! {e}"
+                return [], erro

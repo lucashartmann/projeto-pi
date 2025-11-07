@@ -6,41 +6,20 @@ class Estoque:
     def __init__(self):
         self.banco_dados = Banco()
 
-    def adicionar_produto(self, produto):
-        return self.banco_dados.adicionar_produto(produto)
+    def cadastrar_imovel(self, imovel):
+        return self.banco_dados.cadastrar_imovel(imovel)
 
-    def remover_produto(self, produto):
-        return self.banco_dados.remover_produto(produto.get_id())
+    def remover_imovel(self, imovel):
+        return self.banco_dados.remover_imovel(imovel.get_id())
 
-    def get_lista_produtos(self):
-        return self.banco_dados.get_lista_produtos()
-    
-    def get_lista_produtos_disponiveis(self):
-        return self.banco_dados.get_lista_produtos_disponiveis()
+    def get_lista_imoveis(self):
+        return self.banco_dados.get_lista_imoveis()
 
-    def get_produtos_por_nome(self, nome):
-        return self.banco_dados.get_produtos_por_nome(nome)
+    def get_lista_imoveis_disponiveis(self):
+        return self.banco_dados.get_lista_imoveis_disponiveis()
 
-    def get_produtos_por_marca(self, marca):
-        return self.banco_dados.get_produtos_por_marca(marca)
+    def get_imoveis_por_categoria(self, categoria):
+        return self.banco_dados.get_imoveis_por_categoria(categoria)
 
-    def get_produtos_por_modelo(self, modelo):
-        return self.banco_dados.get_produtos_por_modelo(modelo)
-
-    def get_produtos_por_categoria(self, categoria):
-        return self.banco_dados.get_produtos_por_categoria(categoria)
-
-    def get_produto_por_id(self, id):
-        return self.banco_dados.get_produto_por_id(id)
-
-    def get_quantidade_produto_por_marca(self, marca):
-        return self.banco_dados.get_quantidade_produto_por_marca(marca)
-
-    def get_quantidade_produto_por_modelo(self, modelo):
-        return self.banco_dados.get_quantidade_produto_por_modelo(modelo)
-
-    def get_quantidade_produto_por_categoria(self, categoria):
-        return self.banco_dados.get_quantidade_produto_por_categoria(categoria)
-
-    def get_quantidade_produtos(self):
-        return self.banco_dados.get_quantidade_produtos()
+    def get_imovel_por_id(self, id):
+        return self.banco_dados.get_imovel_por_id(id)

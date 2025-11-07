@@ -12,69 +12,73 @@ class Imobiliaria:
         self.quantidade_clientes = self.set_quantidade()
         self.quantidade_fornecedores = self.set_quantidade()
         self.faturamento = 0
-        
-    def atualizar_dado_cliente(self, cpf, campo, dado):
-        return self.banco_dados.atualizar_dado_cliente(cpf, campo, dado)
-
-    def get_compras_usuario_por_cpf(self, cpf):
-        return self.banco_dados.get_compras_usuario_por_cpf(cpf)
-
-    def get_lista_usuarios(self):
-        return self.banco_dados.get_lista_usuarios()
-
-    def verificar_usuario(self, usuario):
-        return self.banco_dados.verificar_usuario(usuario)
-
-    def cadastrar_usuario(self, usuario):
-        return self.banco_dados.cadastrar_usuario(usuario)
-
-    def cadastrar(self, cliente):
-        return self.banco_dados.cadastrar_pessoa(cliente)
-
-    def remover(self, cliente):
-        return self.banco_dados.remove_pessoa_por_cpf(cliente.get_cpf())
-
-    def set_quantidade(self):
-        self.quantidade_clientes = 0
-        self.quantidade_fornecedores = 0
-        self.quantidade_funcionarios = 0
-
-        # for pessoa in self.pessoas:
-        #     if isinstance(pessoa, Cliente):
-        #         self.quantidade_clientes += 1
-        #     elif isinstance(pessoa, Fornecedor):
-        #         self.quantidade_fornecedores += 1
-        #     self.quantidade_funcionarios += 1
-
-    def get_lista_clientes(self):
-        return self.banco_dados.get_lista_clientes()
-
-    def get_estoque(self):
-        return self.estoque
 
     def get_nome(self):
         return self.nome
 
+    def set_nome(self, value):
+        self.nome = value
+
     def get_cnpj(self):
         return self.cnpj
+
+    def set_cnpj(self, value):
+        self.cnpj = value
+
+    def get_estoque(self):
+        return self.estoque
+
+    def set_estoque(self, value):
+        self.estoque = value
 
     def get_quantidade_funcionarios(self):
         return self.quantidade_funcionarios
 
+    def set_quantidade_funcionarios(self, value):
+        self.quantidade_funcionarios = value
+
     def get_quantidade_clientes(self):
         return self.quantidade_clientes
+
+    def set_quantidade_clientes(self, value):
+        self.quantidade_clientes = value
 
     def get_quantidade_fornecedores(self):
         return self.quantidade_fornecedores
 
+    def set_quantidade_fornecedores(self, value):
+        self.quantidade_fornecedores = value
+
     def get_faturamento(self):
         return self.faturamento
 
-    def get_cliente_por_cpf(self, cpf):
-        return self.banco_dados.get_pessoa_por_cpf(cpf)
+    def set_faturamento(self, value):
+        self.faturamento = value
 
-    def get_produto_por_id(self, id):
-        return self.banco_dados.get_produto_por_id(id)
+        
+    def verificar_usuario(self, usuario):
+        return self.banco_dados.verificar_usuario(usuario)
 
-    def get_cliente_por_email(self, email):
-        return self.banco_dados.get_pessoa_por_email(email)
+    def cadastrar_comprador(self, comprador):
+        return self.banco_dados.cadastrar_comprador(comprador)
+    
+    def cadastrar_proprietario(self, proprietario):
+        return self.banco_dados.cadastrar_proprietario(proprietario)
+    
+    def cadastrar_captador(self, captador):
+        return self.banco_dados.cadastrar_captador(captador)
+    
+    def cadastrar_corretor(self, corretor):
+        return self.banco_dados.cadastrar_corretor(corretor)
+
+    def get_lista_corretores(self):
+        return self.banco_dados.get_lista_corretores()
+    
+    def get_lista_captadores(self):
+        return self.banco_dados.get_lista_captadores()
+    
+    def get_lista_compradores(self):
+        return self.banco_dados.get_lista_compradores()
+    
+    def get_lista_proprietarios(self):
+        return self.banco_dados.get_lista_proprietarios()

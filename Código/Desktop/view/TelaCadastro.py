@@ -5,7 +5,7 @@ from textual.containers import Grid, HorizontalGroup, VerticalGroup
 from textual import on
 
 from controller import Controller
-from model import Init
+from model import Init, Cliente, Corretor, Captador
 
 
 class TelaCadastro(Screen):
@@ -20,24 +20,27 @@ class TelaCadastro(Screen):
     perfis = None
     perfil_atual = None
 
+    def is_admin(self):
+        if not isinstance(Init.usuario_atual, Cliente.Comprador) and not isinstance(Init.usuario_atual, Cliente.Proprietario) and not isinstance(Init.usuario_atual, Captador.Captador) and not isinstance(Init.usuario_atual, Corretor.Corretor):
+            return True
+        return False
+
     def compose(self):
         yield Header()
-        if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
+        if self.is_admin:
             yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"))
-        elif Init.usuario.get_tipo() == TipoUsuario.GERENTE:
+        elif isinstance(Init.usuario_atual, Corretor.Corretor):
             yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Dados da Loja", id="tab_dados_loja"))
         else:
             yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"))
 
         with HorizontalGroup(id="hg_first"):
             with VerticalGroup(id="vg_left"):
-
-                if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
-                    yield Select([("Usuario", "Usuario")], allow_blank=False, id="select_tabelas")
-                elif Init.usuario.get_tipo() == TipoUsuario.GERENTE:
-                    yield Select([("Cliente", "Cliente"), ("Funcionario", "Funcionario"), ("Fornecedor", "Fornecedor"), ("Produto", "Produto")], allow_blank=False, id="select_tabelas")
+                if self.is_admin:
+                    yield Select([("Administrador", "Administrador"), ("Corretor", "Corretor"), ("Captador", "Captador")], allow_blank=False, id="select_tabelas")
                 else:
-                    yield Select([("Cliente", "Cliente"), ("Produto", "Produto")], allow_blank=False, id="select_tabelas")
+                    yield Select([("Comprador", "Comprador"), ("Proprietário", "Proprietario"), ("Imóvel", "Imovel")], allow_blank=False, id="select_tabelas")
+
                 yield SelectionList[str]()
             with VerticalGroup(id="vg_right"):
                 with Grid():
@@ -55,10 +58,10 @@ class TelaCadastro(Screen):
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
             self.app.switch_screen("tela_estoque")
-        if Init.usuario.get_tipo() == TipoUsuario.GERENTE:
+        if isinstance(Init.usuario_atual, Corretor.Corretor):
             if event.tabs.active == self.query_one("#tab_dados_loja", Tab).id:
                 self.app.switch_screen("tela_dados_loja")
-        if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
+        if self.is_admin:
             if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
                 self.app.switch_screen("tela_servidor")
 
@@ -116,10 +119,10 @@ class TelaCadastro(Screen):
         if evento.select.id == "select_tabelas":
             self.tabela = evento.select.value.lower()
 
-            if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
+            if self.is_admin:
                 self.query_one("#select_tabelas", Select).set_options(
-                    [("Usuario", "Usuario")])
-            elif Init.usuario.get_tipo() == TipoUsuario.GERENTE:
+                    [("usuario_atual", "usuario_atual")])
+            elif isinstance(Init.usuario_atual, Corretor.Corretor):
                 self.query_one("#select_tabelas", Select).set_options([("Cliente", "Cliente"), (
                     "Funcionario", "Funcionario"), ("Fornecedor", "Fornecedor"), ("Produto", "Produto")])
             else:

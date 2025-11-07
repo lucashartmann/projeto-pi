@@ -6,26 +6,32 @@ from textual.screen import Screen
 from model import Init
 
 from controller import Controller
+from model import Init, Cliente, Corretor, Captador
 
 
 class TelaEstoque(Screen):
 
     CSS_PATH = "css/TelaEstoque.tcss"
 
-    produtos = Init.loja.get_estoque().get_lista_produtos()
-    produtos_filtrados = []
+    imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+    imoveis_filtrados = []
     filtrou_select = False
     filtrou_input = False
     select_evento = ""
     ROWS = []
 
+    def is_admin(self):
+        if not isinstance(Init.usuario_atual, Cliente.Comprador) and not isinstance(Init.usuario_atual, Cliente.Proprietario) and not isinstance(Init.usuario_atual, Captador.Captador) and not isinstance(Init.usuario_atual, Corretor.Corretor):
+            return True
+        return False
+
     def compose(self):
         yield Header()
-        if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
+        if self.is_admin:
 
             yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"))
-        elif Init.usuario.get_tipo() == TipoUsuario.GERENTE:
-            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Dados da Loja", id="tab_dados_loja"))
+        elif isinstance(Init.usuario_atual, Corretor.Corretor):
+            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
             yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"))
 
@@ -35,37 +41,74 @@ class TelaEstoque(Screen):
         yield TextArea(read_only=True)
         with Horizontal():
             with VerticalScroll(id="v_left"):
-                yield Select([("Produtos", "Produtos"), ("Pedidos", "Pedidos"), ("Clientes", "Clientes"), ("Cupons", "Cupons"), ("Impostos", "Impostos")], allow_blank=False, id="select_tabelas")
+                yield Select([("Imoveis", "Imovel"), ("Compradores", "Comprador"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel")], allow_blank=False, id="select_tabelas")
                 yield SelectionList[str]()
             yield DataTable()
         yield Footer()
 
     def setup_dados(self):
-        if len(self.produtos_filtrados) > 0:
-            quant = len(self.produtos_filtrados)
+        if len(self.imoveis_filtrados) > 0:
+            quant = len(self.imoveis_filtrados)
         else:
-            quant = len(self.produtos)
-        self.query_one(TextArea).text = f"Quantidade de produtos: {quant}"
+            quant = len(self.imoveis)
+        self.query_one(TextArea).text = f"Quantidade de imoveis: {quant}"
 
     def on_button_pressed(self):
-        id_produto = self.query_one(Input).value
-        # TODO: arrumar
-        # remocao = Controller.remover_item(self.tabela, id_produto)
-        # self.notify(remocao)
-        self.atualizar()
-        for input in self.query(Input):
-            input.value = ""
+        codigo = self.query_one(Input).value
 
-    def atualizar_lista(self):
-        self.produtos = Init.loja.get_estoque().get_produtos()
+        match self.tabela:
+            case "Imovel":
+                remocao = Controller.remover_imovel(codigo)
+            case "Comprador":
+                remocao = Controller.remover_comprador(codigo)
+            case "Proprietario":
+                remocao = Controller.remover_proprietario(codigo)
+            case "Corretor":
+                remocao = Controller.remover_corretor(codigo)
+            case "Captador":
+                remocao = Controller.remover_captador(codigo)
+            case "Aluguel" | "venda":
+                remocao = Controller.remover_venda_aluguel(codigo)
+                
+        self.notify(remocao)
+        
+        if "ERRO" not in remocao:
+            self.atualizar()
+            for input in self.query(Input):
+                input.value = ""
 
     def on_select_changed(self, evento: Select.Changed):
         if evento.select.id == "select_tabelas":
             self.tabela = evento.select.value.lower()
 
+            match evento.value:
+                case "Imovel":
+                    self.ROWS = [list(Init.um_imovel.__dict__.keys())]
+                    self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+                case  "Comprador":
+                    self.ROWS = [list(Init.comprador.__dict__.keys())]
+                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                case "Proprietario":
+                    self.ROWS = [list(Init.proprietario.__dict__.keys())]
+                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                case "Corretor":
+                    self.ROWS = [list(Init.corretor.__dict__.keys())]
+                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                case "Captador":
+                    self.ROWS = [list(Init.captador.__dict__.keys())]
+                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                case "Venda":
+                    self.ROWS = [list(Init.uma_venda_aluguel.__dict__.keys())]
+                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                case "Aluguel":
+                    self.ROWS = [list(Init.uma_venda_aluguel.__dict__.keys())]
+                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+
+            self.imoveis_filtrados = []
+            self.atualizar()
 
     def on_mount(self):
-        self.ROWS = [list(Init.um_produto.__dict__.keys())]
+        self.ROWS = [list(Init.um_imovel.__dict__.keys())]
         self.atualizar()
         self.setup_dados()
 
@@ -90,10 +133,10 @@ class TelaEstoque(Screen):
             self.app.switch_screen("tela_estoque")
         elif event.tabs.active == self.query_one("#tab_cadastro", Tab).id:
             self.app.switch_screen("tela_cadastro")
-        if Init.usuario.get_tipo() == TipoUsuario.GERENTE:
-            if event.tabs.active == self.query_one("#tab_dados_loja", Tab).id:
-                self.app.switch_screen("tela_dados_loja")
-        if Init.usuario.get_tipo() == TipoUsuario.ADMINISTRADOR:
+        if isinstance(Init.usuario_atual, Corretor.Corretor):
+            if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                self.app.switch_screen("tela_dados_imobiliaria")
+        if self.is_admin:
             if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
                 self.app.switch_screen("tela_servidor")
 
@@ -102,19 +145,22 @@ class TelaEstoque(Screen):
 
     def atualizar(self):
         self.ROWS = [self.ROWS[0]]
+        self.query_one(SelectionList).clear_options()
+        self.query_one(SelectionList).add_options((name, name)
+                                                  for name in Init.dict_objetos[self.tabela.lower()].__dict__.keys() if not name.startswith("_"))
 
         table = self.query_one(DataTable)
         table.clear(columns=True)
 
-        if len(self.produtos_filtrados) > 0:
-            lista_atual = self.produtos_filtrados
+        if len(self.imoveis_filtrados) > 0:
+            lista_atual = self.imoveis_filtrados
         else:
-            self.produtos = Init.loja.get_estoque().get_lista_produtos()
-            lista_atual = self.produtos
+            self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+            lista_atual = self.imoveis
 
-        for produto in lista_atual:
+        for imovel in lista_atual:
             lista = []
-            for valor in produto.__dict__.values():
+            for valor in imovel.__dict__.values():
                 lista.append(valor)
             self.ROWS.append(lista)
 
@@ -130,7 +176,7 @@ class TelaEstoque(Screen):
         palavras = texto.split()
 
         if len(palavras) > 0:
-            self.produtos_filtrados = []
+            self.imoveis_filtrados = []
             for palavra in palavras:
                 if palavra[:-1].lower() in self.ROWS[0]:
                     index = palavras.index(palavra)
@@ -154,48 +200,48 @@ class TelaEstoque(Screen):
                     if filtro.index("-")+1 < len(filtro) and palavraa not in nova_lista:
                         nova_lista.append(palavraa.strip())
 
-            if len(self.produtos_filtrados) > 0:
-                produtos_temp = []
+            if len(self.imoveis_filtrados) > 0:
+                imoveis_temp = []
                 if len(nova_lista) > 0:
                     for p in nova_lista:
-                        for produto in self.produtos_filtrados:
+                        for imovel in self.imoveis_filtrados:
                             try:
-                                if p in getattr(produto, campo)() and produto not in produtos_temp:
-                                    produtos_temp.append(
-                                        produto)
+                                if p in getattr(imovel, campo)() and imovel not in imoveis_temp:
+                                    imoveis_temp.append(
+                                        imovel)
                             except:
-                                if p == getattr(produto, campo)() and produto not in produtos_temp:
-                                    produtos_temp.append(
-                                        produto)
+                                if p == getattr(imovel, campo)() and imovel not in imoveis_temp:
+                                    imoveis_temp.append(
+                                        imovel)
                 else:
-                    for produto in self.produtos_filtrados:
+                    for imovel in self.imoveis_filtrados:
                         try:
-                            if filtro in getattr(produto, campo)() and produto not in produtos_temp:
-                                produtos_temp.append(produto)
+                            if filtro in getattr(imovel, campo)() and imovel not in imoveis_temp:
+                                imoveis_temp.append(imovel)
                         except:
-                            if filtro == getattr(produto, campo)() and produto not in produtos_temp:
-                                produtos_temp.append(produto)
+                            if filtro == getattr(imovel, campo)() and imovel not in imoveis_temp:
+                                imoveis_temp.append(imovel)
 
-                if len(produtos_temp) > 0:
-                    self.produtos_filtrados = produtos_temp
+                if len(imoveis_temp) > 0:
+                    self.imoveis_filtrados = imoveis_temp
             else:
                 if len(nova_lista) > 0:
                     for p in nova_lista:
-                        for produto in self.produtos:
+                        for imovel in self.imoveis:
                             try:
-                                if p in getattr(produto, campo)() and produto not in self.produtos_filtrados:
-                                    self.produtos_filtrados.append(
-                                        produto)
+                                if p in getattr(imovel, campo)() and imovel not in self.imoveis_filtrados:
+                                    self.imoveis_filtrados.append(
+                                        imovel)
                             except:
-                                if p == getattr(produto, campo)() and produto not in self.produtos_filtrados:
-                                    self.produtos_filtrados.append(
-                                        produto)
+                                if p == getattr(imovel, campo)() and imovel not in self.imoveis_filtrados:
+                                    self.imoveis_filtrados.append(
+                                        imovel)
 
                 else:
-                    for produto in self.produtos:
+                    for imovel in self.imoveis:
                         try:
-                            if filtro in getattr(produto, campo)() and produto not in self.produtos_filtrados:
-                                self.produtos_filtrados.append(produto)
+                            if filtro in getattr(imovel, campo)() and imovel not in self.imoveis_filtrados:
+                                self.imoveis_filtrados.append(imovel)
                         except:
-                            if filtro == getattr(produto, campo)() and produto not in self.produtos_filtrados:
-                                self.produtos_filtrados.append(produto)
+                            if filtro == getattr(imovel, campo)() and imovel not in self.imoveis_filtrados:
+                                self.imoveis_filtrados.append(imovel)

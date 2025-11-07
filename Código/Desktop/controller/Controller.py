@@ -1,66 +1,16 @@
-from model import Cliente, Corretor, Imovel, Init, Usuario
-
-
-def remover_do_carrinho(produto_id):
-    produto_id = int(produto_id)
-
-    remocao = Init.cliente_atual.carrinho.remover_item(
-        Init.cliente_atual.get_cpf(), produto_id)
-
-    if remocao:
-        return "Item removido com sucesso do carrinho"
-    else:
-        return "ERRO ao remover item do carrinho"
-
-
-def atualizar_quantidade_carrinho(produto_id, nova_quantidade):
-    produto_id = int(produto_id)
-    nova_quantidade = int(nova_quantidade)
-
-    consulta_estoque = Init.loja.get_estoque().get_produto_por_id(produto_id)
-
-    if nova_quantidade > consulta_estoque.get_quantidade():
-        return "ERRO Quantidade solicitada maior que a disponível em estoque"
-
-    consulta = Init.cliente_atual.carrinho.get_item_por_id(
-        Init.cliente_atual.get_cpf(), produto_id)
-
-    if not consulta:
-        return "ERRO Produto não encontrado no carrinho"
-
-    Init.cliente_atual.carrinho.atualizar_quantidade_item(
-        Init.cliente_atual.get_cpf(), produto_id, nova_quantidade)
-
-    return "Quantidade do item atualizada com sucesso no carrinho"
-
-
-def adicionar_no_carrinho(produto_id, quantidade):
-
-    consulta = Init.cliente_atual.carrinho.get_item_por_id(
-        Init.cliente_atual.get_cpf(), produto_id)
-
-    if consulta:
-        nova_quantidade = consulta.get_quantidade() + quantidade
-        Init.cliente_atual.carrinho.atualizar_quantidade_item(
-            Init.cliente_atual.get_cpf(), produto_id, nova_quantidade)
-        return "Quantidade do item atualizada no carrinho com sucesso"
-
-    adicao = Init.cliente_atual.carrinho.adicionar_item(
-        Init.cliente_atual.get_cpf(), produto_id, quantidade)
-
-    if adicao:
-        return "Item adicionado ao carrinho com sucesso"
-    else:
-        return "ERRO ao adicionar item ao carrinho"
+from model import Cliente, Corretor, Imovel, Init, Captador
 
 
 def cadastrar_pessoa(lista):
     if lista[0] == "":
         return "Nome está vazio"
 
-    validar(lista[1], "CPF")
-    validar(lista[2], "RG")
-    validar(lista[3], "TELEFONE")
+    if lista[1] == "":
+        return "CPF está vazii"
+    if lista[2] == "":
+        return "RG está vazio"
+    if lista[3] == "":
+        "TELEFONE está vazio"
 
     if lista[4] == "":
         return "Endereco está vazio"
@@ -73,9 +23,9 @@ def cadastrar_pessoa(lista):
                                  lista[3], lista[4], lista[5])
     else:
         pessoa = Corretor.Funcionario(lista[0], lista[1], lista[2],
-                                         lista[3], lista[4], lista[5])
+                                      lista[3], lista[4], lista[5])
 
-    cadastrado = Init.loja.cadastrar(pessoa)
+    cadastrado = Init.imobiliaria.cadastrar(pessoa)
 
     if cadastrado:
         return f"Pessoa cadastrado!\n {pessoa}"
@@ -83,7 +33,7 @@ def cadastrar_pessoa(lista):
         return "ERRO ao cadastrar pessoa"
 
 
-def cadastrar_produto(lista):
+def cadastrar_imovel(lista):
     if lista[0] == "":
         return "Nome está vazio"
 
@@ -115,17 +65,17 @@ def cadastrar_produto(lista):
     except ValueError:
         return "ERRO Quantidade incorreta"
 
-    produto = Imovel.Produto(lista[0], lista[1], lista[2],
-                              lista[3], lista[4], lista[5], lista[6])
-    cadastrado = Init.loja.get_estoque().adicionar_produto(produto)
+    imovel = Imovel.imovel(lista[0], lista[1], lista[2],
+                           lista[3], lista[4], lista[5], lista[6])
+    cadastrado = Init.imobiliaria.get_estoque().adicionar_imovel(imovel)
 
     if cadastrado:
-        return f"Produto cadastrado!\n {produto}"
+        return f"imovel cadastrado!\n {imovel}"
     else:
-        return "ERRO ao cadastrar produto"
+        return "ERRO ao cadastrar imovel"
 
 
-def editar_produto(id, lista):
+def editar_imovel(id, lista):
     if len(id) < 1:
         return "ERRO"
 
@@ -134,47 +84,46 @@ def editar_produto(id, lista):
     except ValueError:
         return "ERRO"
 
-    produto = Init.loja.get_estoque().get_produto_por_id(id)
+    imovel = Init.imobiliaria.get_estoque().get_imovel_por_id(id)
 
-    if not produto:
+    if not imovel:
         return "ERRO"
 
     if lista[0] != "":
-        produto.set_nome(lista[0])
+        imovel.set_nome(lista[0])
     if lista[1] != "":
-        produto.set_marca(lista[1])
+        imovel.set_marca(lista[1])
     if lista[2] != "":
-        produto.set_modelo(lista[2])
+        imovel.set_modelo(lista[2])
     if lista[3] != "":
-        produto.set_cor(lista[3])
+        imovel.set_cor(lista[3])
 
     if lista[4] != "":
         try:
             lista[4] = float(lista[4])
         except ValueError:
             return (f"O valor {lista[4]} está incorreto")
-        produto.set_preco(lista[4])
+        imovel.set_preco(lista[4])
 
     if lista[5] != "":
         try:
             lista[5] = int(lista[5])
         except ValueError:
             return (f"O valor {lista[5]} está incorreto")
-        produto.set_quantidade(lista[5])
+        imovel.set_quantidade(lista[5])
 
     if lista[6] != "":
-        produto.set_categoria(lista[6])
+        imovel.set_categoria(lista[6])
 
-    return f"Produto editado com sucesso\n {produto}"
+    return f"imovel editado com sucesso\n {imovel}"
 
 
 def editar_pessoa(cpf, dados):
-    validar(cpf, "CPF")
 
     if dados[-1] == "Cliente":
-        pessoa = Init.loja.get_cliente_por_cpf(cpf)
+        pessoa = Init.imobiliaria.get_cliente_por_cpf(cpf)
     else:
-        pessoa = Init.loja.get_funcionario_por_cpf(cpf)
+        pessoa = Init.imobiliaria.get_funcionario_por_cpf(cpf)
 
     if not pessoa:
         return f"Pessoa com CPF {cpf} não encontrado"
@@ -182,13 +131,10 @@ def editar_pessoa(cpf, dados):
     if dados[0] != "":
         pessoa.set_nome(dados[0])
     if dados[1] != "":
-        validar(dados[1])
         pessoa.set_cpf(dados[1])
     if dados[2] != "":
-        validar(dados[2])
         pessoa.set_rg(dados[2])
     if dados[3] != "":
-        validar(dados[3])
         pessoa.set_telefone(dados[3])
     if dados[4] != "":
         pessoa.set_endereco(dados[4])
@@ -198,53 +144,65 @@ def editar_pessoa(cpf, dados):
     return f"Pessoa editado com sucesso\n {pessoa}"
 
 
-def validar(valor, tipo):
-    match tipo:
 
-        case "CPF":
-            if len(valor) == 11:
-                cpf_ja_cadastrado = Init.loja.is_cpf_cadastrado(valor)
-                if cpf_ja_cadastrado:
-                    return "Erro. CPF já cadastrado!"
-            else:
-                return f"ERRO. {valor} precisa ter 11 digitos"
+def remover_comprador(cpf):
 
-        case "RG":
-            if len(valor) == 9:
-                rg_ja_cadastrado = Init.loja.is_rg_cadastrado(valor)
-                if rg_ja_cadastrado:
-                    return "Erro. RG já cadastrado!"
-            else:
-                return f"ERRO. {valor} precisa ter 9 digitos"
+    comprador = Init.imobiliaria.get_comprador_por_cpf(cpf)
 
-        case "TELEFONE":
-            if len(valor) == 11:
-                telefone_ja_cadastrado = Init.loja.is_telefone_cadastrado(
-                    valor)
-                if telefone_ja_cadastrado:
-                    return "Erro. Telefone já cadastrado!"
-            else:
-                return f"ERRO. {valor} precisa ter 11 digitos"
+    if not comprador:
+        return f"Comprador com CPF {cpf} não encontrado"
 
-
-def remover_pessoa(cpf, tipo_pessoa):
-
-    validar(cpf, "CPF")
-
-    if tipo_pessoa == "Cliente":
-        pessoa = Init.loja.get_cliente_por_cpf(cpf)
-    else:
-        pessoa = Init.loja.get_funcionario_por_cpf(cpf)
-
-    if not pessoa:
-        return f"Pessoa com CPF {cpf} não encontrado"
-
-    remocao = Init.loja.remover(pessoa)
+    remocao = Init.imobiliaria.remover_comprador(comprador)
 
     if remocao:
-        return f"Pessoa removida com sucesso"
+        return f"Comprador removido com sucesso"
     else:
-        return f"ERRO ao remover pessoa"
+        return f"ERRO ao remover comprador"
+
+
+def remover_corretor(cpf):
+
+    corretor = Init.imobiliaria.get_corretor_por_cpf(cpf)
+
+    if not corretor:
+        return f"corretor com CPF {cpf} não encontrado"
+
+    remocao = Init.imobiliaria.remover_corretor(corretor)
+
+    if remocao:
+        return f"corretor removido com sucesso"
+    else:
+        return f"ERRO ao remover corretor"
+
+
+def remover_captador(cpf):
+
+    captador = Init.imobiliaria.get_captador_por_cpf(cpf)
+
+    if not captador:
+        return f"captador com CPF {cpf} não encontrado"
+
+    remocao = Init.imobiliaria.remover_comprador(captador)
+
+    if remocao:
+        return f"captador removido com sucesso"
+    else:
+        return f"ERRO ao remover captador"
+
+
+def remover_proprietario(cpf):
+
+    proprietario = Init.imobiliaria.get_proprietario_por_cpf(cpf)
+
+    if not proprietario:
+        return f"proprietario com CPF {cpf} não encontrado"
+
+    remocao = Init.imobiliaria.remover_proprietario(proprietario)
+
+    if remocao:
+        return f"proprietario removido com sucesso"
+    else:
+        return f"ERRO ao remover proprietario"
 
 
 def atualizar_dado_cliente(dados):
@@ -266,7 +224,8 @@ def atualizar_dado_cliente(dados):
 
     if nome and nome != Init.cliente_atual.get_nome():
 
-        atualizacao = Init.loja.atualizar_dado_cliente(cpf, "nome", nome)
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
+            cpf, "nome", nome)
 
         if atualizacao is False:
             mensagem += f"ERRO ao atualizar nome"
@@ -276,8 +235,8 @@ def atualizar_dado_cliente(dados):
 
     elif novo_cpf and novo_cpf != cpf:
 
-        validar(novo_cpf, "CPF")
-        atualizacao = Init.loja.atualizar_dado_cliente(cpf, "cpf", novo_cpf)
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
+            cpf, "cpf", novo_cpf)
         cpf = novo_cpf
 
         if atualizacao is False:
@@ -288,8 +247,7 @@ def atualizar_dado_cliente(dados):
 
     elif rg and rg != Init.cliente_atual.get_rg():
 
-        validar(rg, "RG")
-        atualizacao = Init.loja.atualizar_dado_cliente(cpf, "rg", rg)
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(cpf, "rg", rg)
 
         if atualizacao is False:
             mensagem += f"ERRO ao atualizar RG"
@@ -299,8 +257,7 @@ def atualizar_dado_cliente(dados):
 
     elif telefone and telefone != Init.cliente_atual.get_telefone():
 
-        validar(telefone, "TELEFONE")
-        atualizacao = Init.loja.atualizar_dado_cliente(
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "telefone", telefone)
 
         if atualizacao is False:
@@ -311,7 +268,7 @@ def atualizar_dado_cliente(dados):
 
     elif endereco and endereco != Init.cliente_atual.get_endereco():
 
-        atualizacao = Init.loja.atualizar_dado_cliente(
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "endereco", endereco)
 
         if atualizacao is False:
@@ -322,7 +279,8 @@ def atualizar_dado_cliente(dados):
 
     elif email and email != Init.cliente_atual.get_email():
 
-        atualizacao = Init.loja.atualizar_dado_cliente(cpf, "email", email)
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
+            cpf, "email", email)
 
         if atualizacao is False:
             mensagem += f"ERRO ao atualizar email"
@@ -333,45 +291,55 @@ def atualizar_dado_cliente(dados):
     return mensagem
 
 
-def remover_produto(id):
-    if len(id) < 1:
+def remover_imovel(codigo):
+    if len(codigo) < 1:
         return "ERRO"
 
     try:
-        id = int(id)
+        codigo = int(codigo)
     except ValueError:
         return "ERRO"
 
-    produto = Init.loja.get_estoque().get_produto_por_id(id)
+    imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(id)
 
-    if not produto:
+    if not imovel:
         return "ERRO"
 
-    remocao = Init.loja.get_estoque().remover_produto(produto)
+    remocao = Init.imobiliaria.get_estoque().remover_imovel(imovel)
 
     if remocao:
-        return f"Produto removido com sucesso"
+        return f"imovel removido com sucesso"
     else:
-        return f"ERRO ao remover produto"
+        return f"ERRO ao remover imovel"
 
 
 def verificar_login(dados):
     nome = dados[0]
     senha = dados[1]
     tipo_usuario = dados[2]
+    email = ""
 
     if "@" in nome:
         email = nome
-        usuario = Usuario.Usuario(
-            "", email, senha, tipo_usuario, gerar_hash_senha=False)
-    else:
-        usuario = Usuario.Usuario(
-            nome, "", senha, tipo_usuario, gerar_hash_senha=False)
+        nome = ""
 
-    consulta = Init.loja.verificar_usuario(usuario)
+    match tipo_usuario:  # Todo: Isso é só para testes, remover depois
+        case "Cliente":
+            usuario = Cliente.Comprador(nome, email)
+        case "Corretor":
+            usuario = Corretor.Corretor(nome, email)
+        case "Captador":
+            usuario = Captador.Captador(nome, email)
+
+    usuario.set_senha(senha)
+
+    if tipo_usuario != "Cliente":
+        consulta = Init.imobiliaria.verificar_usuario(usuario, tipo_usuario)
+    else:
+        consulta = Init.imobiliaria.verificar_usuario(usuario, "Comprador")
 
     if consulta:
-        Init.usuario = consulta
+        Init.usuario_atual = consulta
         return "Login realizado com sucesso"
     else:
         return "ERRO ao realizar login"
@@ -379,15 +347,16 @@ def verificar_login(dados):
 
 def salvar_login(dados):
     nome = dados[0]
-    email = dados[1]
-    senha = dados[2]
-    tipo_usuario = dados[3]
+    email = dados[3]
+    senha = dados[1]
 
-    um_usuario = Usuario.Usuario(nome, email, senha, tipo_usuario)
-    consulta = Init.loja.cadastrar_usuario(um_usuario)
+    um_usuario = Cliente.Comprador(nome, email)
+    um_usuario.set_senha(senha)
+
+    consulta = Init.imobiliaria.cadastrar_comprador(um_usuario)
 
     if consulta:
-        Init.usuario = um_usuario
+        Init.usuario_atual = um_usuario
         return "Login salvo com sucesso"
     else:
         return "ERRO ao salvar login"

@@ -9,6 +9,7 @@ from textual_image.widget.sixel import _ImageSixelImpl
 from model import Init
 from controller import Controller
 
+
 class MyInput(Input):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,76 +46,53 @@ class TelaLogin(Screen):
             yield Button("Entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")
         yield Footer()
-            
+
     def voltar(self):
         self.query_one(Select).styles.display = "block"
         self.query_one(Input).placeholder = "Usuário"
         self.query_one(Button).label = "Entrar"
         self.query_one("#inpt_email").remove()
-        self.query_one(Label).update("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]")
+        self.query_one(Label).update(
+            "Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]")
         self.montou = False
 
     def montar_cadastro(self):
         self.query_one(Select).styles.display = "none"
         self.query_one(Input).placeholder = "Username"
-        self.mount(Input(placeholder="Email", id="inpt_email"), before=self.query_one(Input))
+        self.mount(Input(placeholder="Email", id="inpt_email"),
+                   before=self.query_one(Input))
         self.montou = True
         self.query_one(Button).label = "Criar conta"
         self.query_one(Label).update("[@click=app.voltar]Voltar[/]")
 
     def on_button_pressed(self):
 
-        # nome = self.query(Input)[0].value
-        # senha = self.query(Input)[1].value
-        # tipo_usuario = ""
+        nome = self.query(Input)[0].value
+        senha = self.query(Input)[1].value
+        tipo_usuario = ""
+        dados = [nome, senha, tipo_usuario]
+        if self.montou:
+            email = self.query(Input)[0].value
+            dados.append(email)
+            Controller.salvar_login(dados)
 
-        # match self.query_one(Select).value:
-        #     case "Cliente":
-        #         tipo_usuario = TipoUsuario.CLIENTE
-        #     case "Gerente":
-        #         tipo_usuario = TipoUsuario.GERENTE
-        #     case "Funcionario":
-        #         tipo_usuario = TipoUsuario.FUNCIONARIO
-        #     case "Administrador":
-        #         tipo_usuario = TipoUsuario.ADMINISTRADOR
-
-        # if self.montou:
-        #     email = self.query(Input)[0].value
-        #     dados = [nome, senha, email, TipoUsuario.CLIENTE]
-        # else:
-        #     dados = [nome, senha, tipo_usuario]
-
-        # login = Controller.verificar_login(dados)
-        # self.notify(login)
-        # if "ERRO" not in login:
-        #     if self.montou:
-        #         Init.cliente_atual = Cliente.Cliente(
-        #             nome, "", "", "", "", email)
-        #     elif tipo_usuario == TipoUsuario.CLIENTE:
-        #         # TODO: Arrumar. Podemos não ter o email
-        #         consulta = Init.loja.get_cliente_por_email(email)
-        #         if consulta:
-        #             Init.cliente_atual = consulta
-        #         else:
-        #             if email:
-        #                 Init.cliente_atual = Cliente.Cliente(
-        #                     "", "", "", "", "", email)
-        #             else:
-        #                 Init.cliente_atual = Cliente.Cliente(
-        #                     "", "", "", "", "", "")
-
-        match self.query_one(Select).value: # Todo: Isso é só para testes, remover depois
+        # Todo: Isso é só para testes, remover depois
+        match self.query_one(Select).value:
             case "Cliente":
-                Init.usuario = Init.cliente
+                Init.usuario_atual = Init.comprador
             case "Corretor":
-                Init.usuario = Init.corretor
+                Init.usuario_atual = Init.corretor
             case "Captador":
-                Init.usuario = Init.captador
+                Init.usuario_atual = Init.captador
             case "Administrador":
                 pass
-        
-        if self.query_one(Select).value != "Administrador":
-            Init.imobiliaria.cadastrar(Init.usuario_atual)
+
+        # if self.query_one(Select).value != "Administrador":
+            # login = Controller.verificar_login(dados)
+            # self.notify(login)
+            # if "ERRO" not in login:
+            #
+            # Init.imobiliaria.cadastrar(Init.usuario_atual)
 
         if self.query_one(Select).value == "Cliente":
             self.app.switch_screen("tela_estoque_cliente")
