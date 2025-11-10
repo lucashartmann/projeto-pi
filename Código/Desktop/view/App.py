@@ -3,8 +3,8 @@ from textual.binding import Binding
 
 from model import Init
 
-from view import TelaCadastro, TelaLogin, TelaEstoque, TelaDadosLoja
-from view.cliente import TelaEstoqueCliente, TelaCarrinhoCompras, TelaDadosUsuario, TelaMontarPC
+from view import TelaCadastroPessoa, TelaDadosImobiliaria, TelaLogin, TelaEstoque, TelaCadastroImovel
+from view.cliente import TelaDadosCliente, TelaEstoqueCliente
 from view.admin import TelaServidor
 
 
@@ -12,15 +12,14 @@ class App(App):
     CSS_PATH = "css/Base.tcss"
 
     SCREENS = {
-        "tela_cadastro": TelaCadastro.TelaCadastro,
+        "tela_cadastro_pessoa": TelaCadastroPessoa.TelaCadastroPessoa,
+        "tela_cadastro_imovel": TelaCadastroImovel.TelaCadastroImovel,
         "tela_login": TelaLogin.TelaLogin,
         "tela_estoque": TelaEstoque.TelaEstoque,
         "tela_estoque_cliente": TelaEstoqueCliente.TelaEstoqueCliente,
-        "tela_carrinho_compras": TelaCarrinhoCompras.TelaCarrinhoCompras,
-        "tela_dados_usuario": TelaDadosUsuario.TelaDadosUsuario,
-        "tela_dados_loja": TelaDadosLoja.TelaDadosLoja,
+        "tela_dados_cliente": TelaDadosCliente.TelaDadosCliente,
+        "tela_dados_imobiliaria": TelaDadosImobiliaria.TelaDadosImobiliaria,
         "tela_servidor": TelaServidor.TelaServidor,
-        "tela_montar_pc": TelaMontarPC.TelaMontarPC,
     }
 
     BINDINGS = {

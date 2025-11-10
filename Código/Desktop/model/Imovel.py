@@ -1,7 +1,7 @@
 import string
 import random
 from enum import Enum
-from model import Cliente, Corretor
+from model import Cliente, Corretor, Endereco
 
 bairros = [
                 "Aberta dos Morros", "Agronomia", "Anchieta", "Arquipélago", "Auxiliadora", "Azenha",
@@ -23,58 +23,59 @@ bairros = [
        
 
 class Categoria(Enum):
-    SALA_COMERCIAL = 1
-    APARTAMENTO = 4
-    LOJA = 2
-    CASA = 3
-    COBERTURA = 0
-    LOFT = 0,
-    STUDIO = 0,
-    DEPOSITO = 0,
-    GALPAO = 0,
-    PAVILHAO = 0,
-    PREDIO_COMERCIAL = 0,
-    PONTO_COMERCIAL = 0,
-    EMPREENDIMENTO = 0,
-    CASA_EM_CONDOMINIO = 0,
-    SOBRADO = 0,
-    SITIO = 0,
-    TERRENO = 0,
-    KITNET = 0,
-    CHACARA = 0,
-    FAZENDA = 0,
-    SOBRADO = 0
+    SALA_COMERCIAL = "Sala Comercial"
+    APARTAMENTO = "Apartamento"
+    LOJA = "Loja"
+    CASA = "Casa"
+    COBERTURA = "Cobertura"
+    LOFT = "Loft"
+    STUDIO = "Studio"
+    DEPOSITO = "Depósito"
+    GALPAO = "Galpão"
+    PAVILHAO = "Pavilhão"
+    PREDIO_COMERCIAL = "Prédio Comercial"
+    PONTO_COMERCIAL = "Ponto Comercial"
+    EMPREENDIMENTO = "Empreendimento"
+    CASA_EM_CONDOMINIO = "Casa em Condominio"
+    SOBRADO = "Sobrado"
+    SITIO = "Sitio"
+    TERRENO = "Terreno"
+    KITNET = "Kitnet"
+    CHACARA = "Chacara"
+    FAZENDA = "Fazenda"
+    SOBRADO = "Sobrado"
 
 
 class Situacao(Enum):
-    COSTRUCAO = 1
-    NOVO = 4
-    USADO = 2
+    COSTRUCAO = "Em Costrução"
+    NOVO = "Novo"
+    USADO = "Usado"
 
 
 class Ocupacao(Enum):
-    DESOCUPADO = 1
-    INQUILINO = 4
-    PROPRIETARIO = 2
+    DESOCUPADO = "Desocupado"
+    INQUILINO = "Inquilino"
+    PROPRIETARIO = "Proprietário"
 
 
 class Estado(Enum):
-    BOM = 1
-    OTIMO = 4
-    REGULAR = 2
+    BOM = "Bom"
+    OTIMO = "Ótimo"
+    REGULAR = "Regular"
 
 
 class Status(Enum):
-    VENDIDO = 0
-    VENDA = 0
-    ALUGUEL = 0
-    VENDA_ALUGUEL = 0
-    ALUGADO = 0
+    VENDIDO = "Vendido"
+    VENDA = "Venda"
+    ALUGUEL = "Aluguel"
+    VENDA_ALUGUEL = "Venda_Aluguel"
+    ALUGADO = "Alugado"
+    PENDENTE = "Pendente"
 
 
 class Imovel:
 
-    def __init__(self):
+    def __init__(self, endereco:Endereco.Endereco, status, categoria):
         self.id = 0
         self.codigo = self.gerar_codigo_com_prefixo(prefixo='SKU-')
         self.valor_venda = 0
@@ -86,26 +87,21 @@ class Imovel:
         self.quant_varandas = 0
         self.nome_condominio = ""
         self.cor = ""
-        self.categoria = Categoria()
+        self.categoria = categoria
         self.descricao = ""
         self.imagens = []
         self.videos = []
         self.anexos = []
-        self.endereco = ""
-        self.status = Status()
+        self.endereco = endereco
+        self.status = status
         self.iptu = 0
         self.valor_condominio = 0
         self.andar = 0
-        self.estado = ""
-        self.numero = 0
-        self.complemento = ""
+        self.estado = Estado()
         self.bloco = ""
         self.ano_construcao = ""
         self.area_total = 0
         self.area_privativa = 0
-        self.bairro = ""
-        self.rua = ""
-        self.cidade = ""
         self.situacao = ""
         self.ocupacao = ""
         self.proprietario = Cliente.Proprietario()

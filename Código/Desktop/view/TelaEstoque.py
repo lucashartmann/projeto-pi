@@ -6,7 +6,7 @@ from textual.screen import Screen
 from model import Init
 
 from controller import Controller
-from model import Init, Cliente, Corretor, Captador
+from model import Init, Cliente, Corretor, Captador, Administrador
 
 
 class TelaEstoque(Screen):
@@ -20,20 +20,14 @@ class TelaEstoque(Screen):
     select_evento = ""
     ROWS = []
 
-    def is_admin(self):
-        if not isinstance(Init.usuario_atual, Cliente.Comprador) and not isinstance(Init.usuario_atual, Cliente.Proprietario) and not isinstance(Init.usuario_atual, Captador.Captador) and not isinstance(Init.usuario_atual, Corretor.Corretor):
-            return True
-        return False
-
     def compose(self):
         yield Header()
-        if self.is_admin:
-
-            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"))
+        if isinstance(Init.usuario_atual, Administrador.Administrador):
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_usuario"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         elif isinstance(Init.usuario_atual, Corretor.Corretor):
-            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
-            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"))
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
         with HorizontalGroup(id="hg_pesquisa"):
             yield Input(placeholder="pesquise aqui")
@@ -129,16 +123,25 @@ class TelaEstoque(Screen):
         self.atualizar()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-            self.app.switch_screen("tela_estoque")
-        elif event.tabs.active == self.query_one("#tab_cadastro", Tab).id:
-            self.app.switch_screen("tela_cadastro")
-        if isinstance(Init.usuario_atual, Corretor.Corretor):
-            if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                self.app.switch_screen("tela_dados_imobiliaria")
-        if self.is_admin:
-            if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                self.app.switch_screen("tela_servidor")
+        try: 
+            if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                self.app.switch_screen("tela_estoque")
+            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                self.app.switch_screen("tela_cadastro_imovel")
+            elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                self.app.switch_screen("tela_cadastro_pessoa")
+            elif isinstance(Init.usuario_atual, Corretor.Corretor):
+                if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                    self.app.switch_screen("tela_dados_imobiliaria")
+            elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                    self.app.switch_screen("tela_servidor")
+            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                self.app.switch_screen("tela_estoque_cliente")
+            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                self.app.switch_screen("tela_dados_cliente")
+        except: 
+            pass
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id

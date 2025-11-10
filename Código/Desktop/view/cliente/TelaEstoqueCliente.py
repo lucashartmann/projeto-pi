@@ -5,16 +5,16 @@ from textual.containers import VerticalScroll, HorizontalGroup, Container
 
 from textual_image.widget import Image as TextualImage
 
-from model import Init
+from model import Init, Administrador, Corretor
 from controller import Controller
 
 from io import BytesIO
 
 
-class ContainerProduto(Container):
+class Containerimovel(Container):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.id_produto = ""
+        self.id_imovel = ""
 
     def compose(self):
         yield TextualImage("")
@@ -26,7 +26,7 @@ class ContainerProduto(Container):
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_comprar":
             mensagem = Controller.adicionar_no_carrinho(
-                self.id_produto, self.query_one(Select).value)
+                self.id_imovel, self.query_one(Select).value)
             self.screen.notify(mensagem)
             if "ERRO" not in mensagem:
                 if self.app.get_screen("tela_carrinho_compras"):
@@ -41,8 +41,8 @@ class TelaEstoqueCliente(Screen):
 
     CSS_PATH = "css/TelaEstoqueCliente.tcss"
 
-    produtos = Init.loja.get_estoque().get_lista_produtos_disponiveis()
-    produtos_filtrados = []
+    imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+    imoveis_filtrados = []
 
     filtrou_select = False
     filtrou_input = False
@@ -50,45 +50,48 @@ class TelaEstoqueCliente(Screen):
     montou = False
 
     def atualizar_imagens(self):
-        self.produtos = Init.loja.get_estoque().get_lista_produtos_disponiveis()
+        self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
-        lista = self.produtos
-        if len(self.produtos_filtrados) > 0:
-            lista = self.produtos_filtrados
+        lista = self.imoveis
+        if len(self.imoveis_filtrados) > 0:
+            lista = self.imoveis_filtrados
 
-        for produto in lista:
-            if produto.get_imagem():
-                container = ContainerProduto()
-                list_item = ListItem(name=produto.get_nome())
+        for imovel in lista:
+            if imovel.get_imagem():
+                container = Containerimovel()
+                list_item = ListItem(name=imovel.get_nome())
                 list_view.append(list_item)
                 list_item.mount(container)
                 container.query_one(TextualImage).image = BytesIO(
-                    produto.get_imagem())
+                    imovel.get_imagem())
 
                 container.query_one(TextualImage).styles.height = 13
                 container.query_one(TextualImage).styles.width = 30
 
-                container.query_one("#tx_nome").content = produto.get_nome(
+                container.query_one("#tx_nome").content = imovel.get_nome(
                 )
 
                 container.query_one(
-                    "#tx_preco").content = f"R$ {produto.get_preco():.2f}"
+                    "#tx_preco").content = f"R$ {imovel.get_preco():.2f}"
 
                 lista = []
-                for i in range(produto.get_quantidade()):
+                for i in range(imovel.get_quantidade()):
                     lista.append((str(i+1), i+1))
 
                 container.query_one(Select).set_options(lista)
 
-                container.id_produto = produto.get_id()
+                container.id_imovel = imovel.get_id()
 
                 list_item.styles.width = 30
                 list_item.styles.height = 30
 
     def compose(self):
         yield Header()
-        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
+        if isinstance(Init.usuario_atual, Administrador.Administrador):
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_usuario"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+        else:
+            yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
         with VerticalScroll():
             with HorizontalGroup(id="hg_pesquisa"):
                 yield Select([("genero", 'genero')], id="select_categoria")
@@ -99,25 +102,38 @@ class TelaEstoqueCliente(Screen):
 
     def on_mount(self):
         self.query_one(Tabs).active = self.query_one("#tab_comprar", Tab).id
-        # self.produtos = Init.loja.get_estoque().get_lista_produtos_disponiveis()
+        # self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
 
         self.atualizar_imagens()
 
         lista_categorias = []
-        for produto in self.produtos:
-            if produto.get_categoria() not in lista_categorias:
-                lista_categorias.append(produto.get_categoria())
+        for imovel in self.imoveis:
+            if imovel.get_categoria() not in lista_categorias:
+                lista_categorias.append(imovel.get_categoria())
         self.query_one(Select).set_options(
             [(categoria, categoria) for categoria in lista_categorias])
         self.atualizar_imagens()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        if event.tabs.active == self.query_one("#tab_carrinho_compras", Tab).id:
-            self.app.switch_screen("tela_carrinho_compras")
-        elif event.tabs.active == self.query_one("#tab_dados_usuario", Tab).id:
-            self.app.switch_screen("tela_dados_usuario")
-        elif event.tabs.active == self.query_one("#tab_montar_pc", Tab).id:
-            self.app.switch_screen("tela_montar_pc")
+        try: 
+            if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                self.app.switch_screen("tela_estoque")
+            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                self.app.switch_screen("tela_cadastro_imovel")
+            elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                self.app.switch_screen("tela_cadastro_pessoa")
+            elif isinstance(Init.usuario_atual, Corretor.Corretor):
+                if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                    self.app.switch_screen("tela_dados_imobiliaria")
+            elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                    self.app.switch_screen("tela_servidor")
+            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                self.app.switch_screen("tela_estoque_cliente")
+            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                self.app.switch_screen("tela_dados_cliente")
+        except: 
+            pass
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
@@ -132,26 +148,26 @@ class TelaEstoqueCliente(Screen):
         if evento.select.id == "#select_categoria":
             if evento.select.is_blank():
                 if self.filtrou_input == False and self.filtrou_select:
-                    self.produtos_filtrados = []
+                    self.imoveis_filtrados = []
                 self.filtrou_select = False
                 self.atualizar_imagens()
             else:
                 valor_select = str(evento.value)
                 valor_antigo = ""
                 if valor_select != valor_antigo and self.filtrou_input == False and self.filtrou_select:
-                    self.produtos_filtrados = []
+                    self.imoveis_filtrados = []
                     valor_antigo = valor_select
-                if len(self.produtos_filtrados) == 0:
-                    for produto in self.produtos:
-                        if produto.get_categoria() == valor_select:
-                            self.produtos_filtrados.append(produto)
+                if len(self.imoveis_filtrados) == 0:
+                    for imovel in self.imoveis:
+                        if imovel.get_categoria() == valor_select:
+                            self.imoveis_filtrados.append(imovel)
                 else:
-                    produtos_temp = []
-                    for produto in self.produtos_filtrados:
-                        if produto.get_categoria() == valor_select:
-                            produtos_temp.append(produto)
-                    if len(produtos_temp) > 0:
-                        self.produtos_filtrados = produtos_temp
+                    imoveis_temp = []
+                    for imovel in self.imoveis_filtrados:
+                        if imovel.get_categoria() == valor_select:
+                            imoveis_temp.append(imovel)
+                    if len(imoveis_temp) > 0:
+                        self.imoveis_filtrados = imoveis_temp
 
                 self.filtrou_select = True
                 self.select_evento = evento
@@ -180,58 +196,58 @@ class TelaEstoqueCliente(Screen):
                     self.notify("Valor Inválido")
                     return
 
-            if len(self.produtos_filtrados) > 0:
-                produtos_temp = []
+            if len(self.imoveis_filtrados) > 0:
+                imoveis_temp = []
                 if len(nova_lista) > 0:
                     for p in nova_lista:
-                        for produto in self.produtos_filtrados:
+                        for imovel in self.imoveis_filtrados:
                             if type(filtro) == int:
-                                if p == getattr(produto, campo)() and produto not in produtos_temp:
-                                    produtos_temp.append(
-                                        produto)
+                                if p == getattr(imovel, campo)() and imovel not in imoveis_temp:
+                                    imoveis_temp.append(
+                                        imovel)
                             else:
-                                if p in getattr(produto, campo)() and produto not in produtos_temp:
-                                    produtos_temp.append(
-                                        produto)
+                                if p in getattr(imovel, campo)() and imovel not in imoveis_temp:
+                                    imoveis_temp.append(
+                                        imovel)
                 else:
-                    for produto in self.produtos_filtrados:
+                    for imovel in self.imoveis_filtrados:
                         if type(filtro) == int:
-                            if filtro == getattr(produto, campo)() and produto not in produtos_temp:
-                                produtos_temp.append(produto)
+                            if filtro == getattr(imovel, campo)() and imovel not in imoveis_temp:
+                                imoveis_temp.append(imovel)
                         else:
-                            if filtro in getattr(produto, campo)() and produto not in produtos_temp:
-                                produtos_temp.append(produto)
-                if len(produtos_temp) > 0:
-                    self.produtos_filtrados = produtos_temp
+                            if filtro in getattr(imovel, campo)() and imovel not in imoveis_temp:
+                                imoveis_temp.append(imovel)
+                if len(imoveis_temp) > 0:
+                    self.imoveis_filtrados = imoveis_temp
             else:
                 if len(nova_lista) > 0:
                     for p in nova_lista:
-                        for produto in self.produtos:
+                        for imovel in self.imoveis:
                             if type(filtro) == int:
-                                if p == getattr(produto, campo)() and produto not in self.produtos_filtrados:
-                                    self.produtos_filtrados.append(
-                                        produto)
+                                if p == getattr(imovel, campo)() and imovel not in self.imoveis_filtrados:
+                                    self.imoveis_filtrados.append(
+                                        imovel)
                             else:
-                                if p in getattr(produto, campo)() and produto not in self.produtos_filtrados:
-                                    self.produtos_filtrados.append(
-                                        produto)
+                                if p in getattr(imovel, campo)() and imovel not in self.imoveis_filtrados:
+                                    self.imoveis_filtrados.append(
+                                        imovel)
                 else:
-                    for produto in self.produtos:
+                    for imovel in self.imoveis:
                         if type(filtro) == int:
-                            if filtro == getattr(produto, campo)() and produto not in self.produtos_filtrados:
-                                self.produtos_filtrados.append(produto)
+                            if filtro == getattr(imovel, campo)() and imovel not in self.imoveis_filtrados:
+                                self.imoveis_filtrados.append(imovel)
                         else:
-                            if filtro in getattr(produto, campo)() and produto not in self.produtos_filtrados:
-                                self.produtos_filtrados.append(produto)
+                            if filtro in getattr(imovel, campo)() and imovel not in self.imoveis_filtrados:
+                                self.imoveis_filtrados.append(imovel)
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value
         palavras = texto.split()
 
         if len(palavras) > 0:
-            self.produtos_filtrados = []
+            self.imoveis_filtrados = []
             for palavra in palavras:
-                if palavra[:-1].lower() in Init.um_produto.__dict__.keys():
+                if palavra[:-1].lower() in Init.um_imovel.__dict__.keys():
                     index = palavras.index(palavra)
                     self.filtro(palavras, index, palavra[:-1].lower())
                     self.atualizar_imagens()

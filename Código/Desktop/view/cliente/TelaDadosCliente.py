@@ -7,15 +7,15 @@ from textual.containers import HorizontalGroup, Grid
 
 from textual_image.widget import Image
 
-from model import Init
+from model import Init, Administrador, Corretor
 from controller import Controller
 
 
-class TelaDadosUsuario(Screen):
+class TelaDadosCliente(Screen):
 
     CSS_PATH = "css/TelaDadosUsuario.tcss"
 
-    compras = Init.loja.get_compras_usuario_por_cpf(
+    compras = Init.imobiliaria.get_compras_usuario_por_cpf(
         Init.cliente_atual.get_cpf())
 
     def dados_compra(self):
@@ -24,23 +24,36 @@ class TelaDadosUsuario(Screen):
                 dados = ''
 
                 dados += f"Data da Compra: {chave}\n"
-                for produto in valor:
-                    dados += f"{produto}\n"
+                for imovel in valor:
+                    dados += f"{imovel}\n"
 
                 if dados:
                     self.mount(Pretty(dados))
 
     def atualizar_compras(self):
-        self.compras = Init.loja.get_compras_usuario_por_cpf(
+        self.compras = Init.imobiliaria.get_compras_usuario_por_cpf(
             Init.cliente_atual.get_cpf())
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-            self.app.switch_screen("tela_estoque_cliente")
-        elif event.tabs.active == self.query_one("#tab_carrinho_compras", Tab).id:
-            self.app.switch_screen("tela_carrinho_compras")
-        elif event.tabs.active == self.query_one("#tab_montar_pc", Tab).id:
-            self.app.switch_screen("tela_montar_pc")
+        try: 
+            if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                self.app.switch_screen("tela_estoque")
+            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                self.app.switch_screen("tela_cadastro_imovel")
+            elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                self.app.switch_screen("tela_cadastro_pessoa")
+            elif isinstance(Init.usuario_atual, Corretor.Corretor):
+                if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                    self.app.switch_screen("tela_dados_imobiliaria")
+            elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                    self.app.switch_screen("tela_servidor")
+            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                self.app.switch_screen("tela_estoque_cliente")
+            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                self.app.switch_screen("tela_dados_cliente")
+        except: 
+            pass
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.label == "Salvar":
@@ -77,7 +90,10 @@ class TelaDadosUsuario(Screen):
 
     def compose(self):
         yield Header()
-        yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Carrinho", id="tab_carrinho_compras"), Tab("Dados", id="tab_dados_usuario"), Tab("Montar PC", id="tab_montar_pc"))
+        if isinstance(Init.usuario_atual, Administrador.Administrador):
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_usuario"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+        else:
+            yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_usuario"))
         with HorizontalGroup():
 
             yield Image("assets/usuario2.png")

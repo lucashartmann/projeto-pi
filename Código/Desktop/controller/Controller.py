@@ -1,4 +1,4 @@
-from model import Cliente, Corretor, Imovel, Init, Captador
+from model import Cliente, Corretor, Imovel, Init, Captador, Administrador
 
 
 def cadastrar_pessoa(lista):
@@ -152,12 +152,12 @@ def remover_comprador(cpf):
     if not comprador:
         return f"Comprador com CPF {cpf} não encontrado"
 
-    remocao = Init.imobiliaria.remover_comprador(comprador)
+    remocao, erro = Init.imobiliaria.remover_comprador(comprador)
 
     if remocao:
         return f"Comprador removido com sucesso"
     else:
-        return f"ERRO ao remover comprador"
+        return erro
 
 
 def remover_corretor(cpf):
@@ -167,12 +167,12 @@ def remover_corretor(cpf):
     if not corretor:
         return f"corretor com CPF {cpf} não encontrado"
 
-    remocao = Init.imobiliaria.remover_corretor(corretor)
+    remocao, erro = Init.imobiliaria.remover_corretor(corretor)
 
     if remocao:
         return f"corretor removido com sucesso"
     else:
-        return f"ERRO ao remover corretor"
+        return erro
 
 
 def remover_captador(cpf):
@@ -182,12 +182,12 @@ def remover_captador(cpf):
     if not captador:
         return f"captador com CPF {cpf} não encontrado"
 
-    remocao = Init.imobiliaria.remover_comprador(captador)
+    remocao, erro = Init.imobiliaria.remover_comprador(captador)
 
     if remocao:
         return f"captador removido com sucesso"
     else:
-        return f"ERRO ao remover captador"
+        return erro
 
 
 def remover_proprietario(cpf):
@@ -197,12 +197,12 @@ def remover_proprietario(cpf):
     if not proprietario:
         return f"proprietario com CPF {cpf} não encontrado"
 
-    remocao = Init.imobiliaria.remover_proprietario(proprietario)
+    remocao, erro = Init.imobiliaria.remover_proprietario(proprietario)
 
     if remocao:
         return f"proprietario removido com sucesso"
     else:
-        return f"ERRO ao remover proprietario"
+        return erro
 
 
 def atualizar_dado_cliente(dados):
@@ -224,7 +224,7 @@ def atualizar_dado_cliente(dados):
 
     if nome and nome != Init.cliente_atual.get_nome():
 
-        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
+        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "nome", nome)
 
         if atualizacao is False:
@@ -235,7 +235,7 @@ def atualizar_dado_cliente(dados):
 
     elif novo_cpf and novo_cpf != cpf:
 
-        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
+        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "cpf", novo_cpf)
         cpf = novo_cpf
 
@@ -247,7 +247,7 @@ def atualizar_dado_cliente(dados):
 
     elif rg and rg != Init.cliente_atual.get_rg():
 
-        atualizacao = Init.imobiliaria.atualizar_dado_cliente(cpf, "rg", rg)
+        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(cpf, "rg", rg)
 
         if atualizacao is False:
             mensagem += f"ERRO ao atualizar RG"
@@ -257,7 +257,7 @@ def atualizar_dado_cliente(dados):
 
     elif telefone and telefone != Init.cliente_atual.get_telefone():
 
-        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
+        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "telefone", telefone)
 
         if atualizacao is False:
@@ -268,7 +268,7 @@ def atualizar_dado_cliente(dados):
 
     elif endereco and endereco != Init.cliente_atual.get_endereco():
 
-        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
+        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "endereco", endereco)
 
         if atualizacao is False:
@@ -279,7 +279,7 @@ def atualizar_dado_cliente(dados):
 
     elif email and email != Init.cliente_atual.get_email():
 
-        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
+        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "email", email)
 
         if atualizacao is False:
@@ -305,58 +305,41 @@ def remover_imovel(codigo):
     if not imovel:
         return "ERRO"
 
-    remocao = Init.imobiliaria.get_estoque().remover_imovel(imovel)
+    remocao, erro = Init.imobiliaria.get_estoque().remover_imovel(imovel)
 
     if remocao:
         return f"imovel removido com sucesso"
     else:
-        return f"ERRO ao remover imovel"
+        return erro
 
 
 def verificar_login(dados):
-    nome = dados[0]
-    senha = dados[1]
-    tipo_usuario = dados[2]
-    email = ""
+    username = dados[0].split()
+    senha = dados[1].split()
+    tipo_usuario = dados[2].split()
 
-    if "@" in nome:
-        email = nome
-        nome = ""
-
-    match tipo_usuario:  # Todo: Isso é só para testes, remover depois
-        case "Cliente":
-            usuario = Cliente.Comprador(nome, email)
-        case "Corretor":
-            usuario = Corretor.Corretor(nome, email)
-        case "Captador":
-            usuario = Captador.Captador(nome, email)
-
-    usuario.set_senha(senha)
-
-    if tipo_usuario != "Cliente":
-        consulta = Init.imobiliaria.verificar_usuario(usuario, tipo_usuario)
-    else:
-        consulta = Init.imobiliaria.verificar_usuario(usuario, "Comprador")
+    consulta, erro = Init.imobiliaria.verificar_usuario(username, senha, tipo_usuario)
 
     if consulta:
         Init.usuario_atual = consulta
         return "Login realizado com sucesso"
     else:
-        return "ERRO ao realizar login"
+        return erro
 
 
 def salvar_login(dados):
-    nome = dados[0]
-    email = dados[3]
-    senha = dados[1]
+    username = dados[0].split()
+    email = dados[3].split()
+    senha = dados[1].split()
 
-    um_usuario = Cliente.Comprador(nome, email)
+    um_usuario = Cliente.Comprador(nome="", cpf="", rg="", telefone="", email=email)
+    um_usuario.set_username(username)
     um_usuario.set_senha(senha)
 
-    consulta = Init.imobiliaria.cadastrar_comprador(um_usuario)
+    consulta, erro = Init.imobiliaria.cadastrar_comprador(um_usuario)
 
     if consulta:
         Init.usuario_atual = um_usuario
         return "Login salvo com sucesso"
     else:
-        return "ERRO ao salvar login"
+        return erro

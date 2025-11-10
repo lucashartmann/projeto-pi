@@ -38,7 +38,7 @@ TelaEstoqueCliente ListItem Select Static{
         margin: 0;
 }
 
-TelaEstoqueCliente ContainerProduto Static {
+TelaEstoqueCliente Containerimovel Static {
         margin: 1;
         align: center middle;
         text-align: center;
@@ -71,7 +71,7 @@ TelaEstoqueCliente .item {
         max-width: 85%;
 }
 
-TelaEstoqueCliente ContainerProduto {
+TelaEstoqueCliente Containerimovel {
         background: rgba(69, 70, 69, 1);
         height: auto;
         color: black;
@@ -79,7 +79,7 @@ TelaEstoqueCliente ContainerProduto {
         
 }
 
-TelaEstoqueCliente ContainerProduto #tx_preco {
+TelaEstoqueCliente Containerimovel #tx_preco {
         color: rgba(88, 238, 18, 1);
         align: center middle;
 }

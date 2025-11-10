@@ -1,17 +1,24 @@
-from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Usuario, Corretor, Captador
+from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Administrador
+from model.Imovel import Categoria, Situacao, Ocupacao, Estado, Status
 
 
 class Init:
 
-    um_imovel = Imovel.Imovel()
+    endereco1 = Endereco.Endereco(
+        "Avenida Bento Gonçalves", 205, "Partenon", "90650002")
+
+    um_imovel = Imovel.Imovel(
+        endereco1, Status.VENDA, Categoria.APARTAMENTO)
     uma_venda_aluguel = Venda_Aluguel.Venda_Aluguel()
     usuario_atual = ""
+    
+    administrador = Administrador.Administrador("asdasdas", "asdasdas", "asdasdas")
 
     comprador = Cliente.Comprador("MARCOS", "11111111111", "11111111111",
-                                  "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
+                                  "11111111111", "MARCOS@GMAIL.COM")
 
     proprietario = Cliente.Proprietario("MARCOS", "11111111111", "11111111111",
-                                        "11111111111", "RUA 1", "MARCOS@GMAIL.COM")
+                                        "11111111111", "MARCOS@GMAIL.COM")
 
     captador = Captador.Captador(
         "lucas", "00000000000", "00000000", "00000000000", "bento", "lucas@email")
@@ -30,33 +37,33 @@ class Init:
         if not Init.imobiliaria.get_lista_compradores():
 
             cliente2 = Cliente.Comprador("PEDRO", "22222222222", "22222222222",
-                                         "22222222222", "RUA 2", "PEDRO@GMAIL.COM")
+                                         "22222222222", "PEDRO@GMAIL.COM")
 
             cliente4 = Cliente.Comprador("JOÃO", "44444444444", "44444444444",
-                                         "44444444444", "RUA 4", "JOAO@GMAIL.COM")
+                                         "44444444444",  "JOAO@GMAIL.COM")
 
             cliente6 = Cliente.Comprador("MARIA", "66666666666", "66666666666",
-                                         "66666666666", "RUA 6", "MARIA@GMAIL.COM")
+                                         "66666666666", "MARIA@GMAIL.COM")
 
             cliente8 = Cliente.Comprador("JOANA", "88888888888", "88888888888",
-                                         "88888888888", "RUA 8", "JOANA@GMAIL.COM")
+                                         "88888888888", "JOANA@GMAIL.COM")
 
             cliente10 = Cliente.Comprador("FERNANDA", "10101010101", "10101010101",
-                                          "10101010101", "RUA 10", "FERNANDA@GMAIL.COM")
+                                          "10101010101", "FERNANDA@GMAIL.COM")
 
         if not Init.imobiliaria.get_lista_proprietarios():
 
             cliente3 = Cliente.Proprietario("JULIA", "33333333333", "33333333333",
-                                            "33333333333", "RUA 3", "JULIA@GMAIL.COM")
+                                            "33333333333", "JULIA@GMAIL.COM")
 
             cliente5 = Cliente.Proprietario("ANDRESSA", "55555555555", "55555555555",
-                                            "55555555555", "RUA 5", "ANDRESSA@GMAIL.COM")
+                                            "55555555555", "ANDRESSA@GMAIL.COM")
 
             cliente7 = Cliente.Proprietario("ANA", "77777777777", "77777777777",
-                                            "77777777777", "RUA 7", "ANA@GMAIL.COM")
+                                            "77777777777", "ANA@GMAIL.COM")
 
             cliente9 = Cliente.Proprietario("GABRIELA", "99999999999", "99999999999",
-                                            "99999999999", "RUA 9", "GABRIELA@GMAIL.COM")
+                                            "99999999999", "GABRIELA@GMAIL.COM")
 
             Init.imobiliaria.cadastrar_proprietario(cliente3)
             Init.imobiliaria.cadastrar_proprietario(cliente2)
@@ -68,32 +75,36 @@ class Init:
             Init.imobiliaria.cadastrar_proprietario(cliente9)
             Init.imobiliaria.cadastrar_proprietario(cliente10)
 
-        if not Init.imobiliaria.get_estoque().get_lista_imovels():
+        if not Init.imobiliaria.get_estoque().get_lista_imoveis():
 
-            imovel2 = Imovel.Imovel()
-            imovel3 = Imovel.Imovel()
-            imovel4 = Imovel.Imovel()
-            imovel5 = Imovel.Imovel()
-            imovel6 = Imovel.Imovel()
-            imovel7 = Imovel.Imovel()
+            endereco1 = Endereco.Endereco(
+                "Avenida Bento Gonçalves", 205, "Partenon", "90650002")
 
-            # with open(r"assets/imovel.png", "rb") as img:
-            #     img_bytes = img.read()
+            imovel2 = Imovel.Imovel(
+                endereco1, Status.VENDA, Categoria.APARTAMENTO)
+            # imovel3 = Imovel.Imovel()
+            # imovel4 = Imovel.Imovel()
+            # imovel5 = Imovel.Imovel()
+            # imovel6 = Imovel.Imovel()
+            # imovel7 = Imovel.Imovel()
 
-            # imovel2.set_imagem(img_bytes)
-            # imovel3.set_imagem(img_bytes)
-            # imovel7.set_imagem(img_bytes)
+            # # with open(r"assets/imovel.png", "rb") as img:
+            # #     img_bytes = img.read()
 
-            imovel9 = Imovel.Imovel()
-            imovel10 = Imovel.Imovel()
-            imovel11 = Imovel.Imovel()
+            # # imovel2.set_imagem(img_bytes)
+            # # imovel3.set_imagem(img_bytes)
+            # # imovel7.set_imagem(img_bytes)
 
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel2)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel3)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel4)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel5)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel6)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel7)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel9)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel10)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel11)
+            # imovel9 = Imovel.Imovel()
+            # imovel10 = Imovel.Imovel()
+            # imovel11 = Imovel.Imovel()
+
+            # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel2)
+            # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel3)
+            # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel4)
+            # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel5)
+            # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel6)
+            # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel7)
+            # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel9)
+            # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel10)
+            Init.imobiliaria.get_estoque().cadastrar_imovel(2)

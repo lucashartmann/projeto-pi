@@ -10,9 +10,9 @@ comando = sys.argv[1:]
 # python Main.py cadastrar_cliente "pedro" "00000000000", "00000000", "00000000000", "Bento 205", "pedro@email.com"
 # python Main.py editar_cliente "00000000000" "pedro" "00000000000", "00000000", "00000000000", "Bento 205", "pedro@email.com"
 # python Main.py remover_cliente "lucas@email.com"
-# python Main.py cadastrar_produto "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE"
-# python Main.py editar_produto 1 "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE"
-# python Main.py remover_produto 1
+# python Main.py cadastrar_imovel "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE"
+# python Main.py editar_imovel 1 "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE"
+# python Main.py remover_imovel 1
 
 
 def menu_cmd(comando):
@@ -34,15 +34,15 @@ def menu_cmd(comando):
             pass
         case ["editar_funcionario"]:
             pass
-        case ["cadastrar_produto", nome, marca, modelo, cor, preco, quantidade, categoria]:
+        case ["cadastrar_imovel", nome, marca, modelo, cor, preco, quantidade, categoria]:
             dados = [nome, marca, modelo, cor, preco, quantidade, categoria]
-            Controller.cadastrar_produto(dados)
-        case ["editar_produto", id, novo_nome, nova_marca, novo_modelo, nova_cor, novo_preco, nova_quantidade, nova_categoria]:
+            Controller.cadastrar_imovel(dados)
+        case ["editar_imovel", id, novo_nome, nova_marca, novo_modelo, nova_cor, novo_preco, nova_quantidade, nova_categoria]:
             dados = [novo_nome, nova_marca, novo_modelo, nova_cor,
                      novo_preco, nova_quantidade, nova_categoria]
-            Controller.editar_produto(id, dados)
-        case ["remover_produto", id]:
-            Controller.remover_produto(id)
+            Controller.editar_imovel(id, dados)
+        case ["remover_imovel", id]:
+            Controller.remover_imovel(id)
 
 
 if __name__ == "__main__":

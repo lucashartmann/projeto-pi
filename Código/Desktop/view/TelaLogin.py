@@ -85,9 +85,9 @@ class TelaLogin(Screen):
             case "Captador":
                 Init.usuario_atual = Init.captador
             case "Administrador":
-                pass
+                Init.usuario_atual = Init.administrador
 
-        # if self.query_one(Select).value != "Administrador":
+        
             # login = Controller.verificar_login(dados)
             # self.notify(login)
             # if "ERRO" not in login:

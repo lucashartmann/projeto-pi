@@ -5,12 +5,12 @@ from textual.containers import Grid, HorizontalGroup, VerticalGroup
 from textual import on
 
 from controller import Controller
-from model import Init, Cliente, Corretor, Captador
+from model import Init, Cliente, Corretor, Captador, Administrador
 
 
-class TelaCadastro(Screen):
+class TelaCadastroPessoa(Screen):
 
-    CSS_PATH = "css/TelaCadastro.tcss"
+    CSS_PATH = "css/TelaCadastroPessoa.tcss"
 
     valor_select = ""
     tabela = "products"
@@ -20,26 +20,21 @@ class TelaCadastro(Screen):
     perfis = None
     perfil_atual = None
 
-    def is_admin(self):
-        if not isinstance(Init.usuario_atual, Cliente.Comprador) and not isinstance(Init.usuario_atual, Cliente.Proprietario) and not isinstance(Init.usuario_atual, Captador.Captador) and not isinstance(Init.usuario_atual, Corretor.Corretor):
-            return True
-        return False
-
     def compose(self):
         yield Header()
-        if self.is_admin:
-            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"))
+        if isinstance(Init.usuario_atual, Administrador.Administrador):
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_usuario"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         elif isinstance(Init.usuario_atual, Corretor.Corretor):
-            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"), Tab("Dados da Loja", id="tab_dados_loja"))
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
-            yield Tabs(Tab("Cadastro", id="tab_cadastro"), Tab("Estoque", id="tab_estoque"))
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
         with HorizontalGroup(id="hg_first"):
             with VerticalGroup(id="vg_left"):
-                if self.is_admin:
+                if isinstance(Init.usuario_atual, Administrador.Administrador):
                     yield Select([("Administrador", "Administrador"), ("Corretor", "Corretor"), ("Captador", "Captador")], allow_blank=False, id="select_tabelas")
                 else:
-                    yield Select([("Comprador", "Comprador"), ("Proprietário", "Proprietario"), ("Imóvel", "Imovel")], allow_blank=False, id="select_tabelas")
+                    yield Select([("Comprador", "Comprador"), ("Proprietário", "Proprietario")], allow_blank=False, id="select_tabelas")
 
                 yield SelectionList[str]()
             with VerticalGroup(id="vg_right"):
@@ -56,14 +51,25 @@ class TelaCadastro(Screen):
         yield Footer()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-            self.app.switch_screen("tela_estoque")
-        if isinstance(Init.usuario_atual, Corretor.Corretor):
-            if event.tabs.active == self.query_one("#tab_dados_loja", Tab).id:
-                self.app.switch_screen("tela_dados_loja")
-        if self.is_admin:
-            if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                self.app.switch_screen("tela_servidor")
+        try: 
+            if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                self.app.switch_screen("tela_estoque")
+            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                self.app.switch_screen("tela_cadastro_imovel")
+            elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                self.app.switch_screen("tela_cadastro_pessoa")
+            elif isinstance(Init.usuario_atual, Corretor.Corretor):
+                if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                    self.app.switch_screen("tela_dados_imobiliaria")
+            elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                    self.app.switch_screen("tela_servidor")
+            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                self.app.switch_screen("tela_estoque_cliente")
+            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                self.app.switch_screen("tela_dados_cliente")
+        except: 
+            pass
 
     @on(SelectionList.SelectedChanged)
     def update_selected_view(self):
@@ -103,7 +109,7 @@ class TelaCadastro(Screen):
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
-            "#tab_cadastro", Tab).id
+            "#tab_cadastro_pessoa", Tab).id
 
     def atualizar(self):
         self.query_one(SelectionList).clear_options()
@@ -119,15 +125,15 @@ class TelaCadastro(Screen):
         if evento.select.id == "select_tabelas":
             self.tabela = evento.select.value.lower()
 
-            if self.is_admin:
+            if isinstance(Init.usuario_atual, Administrador.Administrador):
                 self.query_one("#select_tabelas", Select).set_options(
                     [("usuario_atual", "usuario_atual")])
             elif isinstance(Init.usuario_atual, Corretor.Corretor):
                 self.query_one("#select_tabelas", Select).set_options([("Cliente", "Cliente"), (
-                    "Funcionario", "Funcionario"), ("Fornecedor", "Fornecedor"), ("Produto", "Produto")])
+                    "Funcionario", "Funcionario"), ("Fornecedor", "Fornecedor"), ("imovel", "imovel")])
             else:
                 self.query_one("#select_tabelas", Select).set_options(
-                    [("Cliente", "Cliente"), ("Produto", "Produto")])
+                    [("Cliente", "Cliente"), ("imovel", "imovel")])
 
             self.atualizar()
 
@@ -140,7 +146,7 @@ class TelaCadastro(Screen):
                     if self.montou_editar == False and self.montou_remover == False:
                         self.query_one(Grid).mount(Static("ID de pesquisa",
                                                           id="stt_id_pesquisa"), before=0)
-                        self.query_one(Grid).mount(TextArea(placeholder="id do produto de pesquisa",
+                        self.query_one(Grid).mount(TextArea(placeholder="id do imovel de pesquisa",
                                                             id="inpt_id_pesquisa"), before=1)
                         self.montou_editar = True
 
@@ -173,7 +179,7 @@ class TelaCadastro(Screen):
                         self.query_one(Grid).remove_children()
                         self.query_one(Grid).mount(Static("ID de pesquisa",
                                                           id="stt_id_pesquisa"), before=0)
-                        self.query_one(Grid).mount(TextArea(placeholder="id do produto de pesquisa",
+                        self.query_one(Grid).mount(TextArea(placeholder="id do imovel de pesquisa",
                                                             id="inpt_id_pesquisa"), before=1)
                         self.montou_remover = True
 
@@ -194,7 +200,7 @@ class TelaCadastro(Screen):
 
         match self.valor_select:
             case "Editar":
-                id_produto = self.query_one("#inpt_id_pesquisa", TextArea).text
+                id_imovel = self.query_one("#inpt_id_pesquisa", TextArea).text
                 dados = dict()
                 lista_chaves = lista_chaves[1:]
 
@@ -225,7 +231,7 @@ class TelaCadastro(Screen):
                         dados[list(dados.keys())[i]] = valor.value
 
                 atualizacao = Controller.atualizar_item(
-                    self.tabela, id_produto, dados)
+                    self.tabela, id_imovel, dados)
 
                 self.notify(atualizacao)
                 try:
@@ -271,8 +277,8 @@ class TelaCadastro(Screen):
                     pass
 
             case "Remover":
-                id_produto = self.query_one(TextArea).text
-                remocao = Controller.remover_item(self.tabela, id_produto)
+                id_imovel = self.query_one(TextArea).text
+                remocao = Controller.remover_item(self.tabela, id_imovel)
                 self.notify(remocao)
                 self.limpar_text_area()
                 try:
