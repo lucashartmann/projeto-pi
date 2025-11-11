@@ -5,7 +5,7 @@ from textual.containers import Grid, HorizontalGroup, VerticalGroup
 from textual import on
 
 from controller import Controller
-from model import Init, Cliente, Corretor, Captador, Administrador
+from model import Init, Corretor, Administrador
 
 
 class TelaCadastroPessoa(Screen):
@@ -23,7 +23,8 @@ class TelaCadastroPessoa(Screen):
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
-            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_usuario"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+
         elif isinstance(Init.usuario_atual, Corretor.Corretor):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
@@ -32,9 +33,11 @@ class TelaCadastroPessoa(Screen):
         with HorizontalGroup(id="hg_first"):
             with VerticalGroup(id="vg_left"):
                 if isinstance(Init.usuario_atual, Administrador.Administrador):
-                    yield Select([("Administrador", "Administrador"), ("Corretor", "Corretor"), ("Captador", "Captador")], allow_blank=False, id="select_tabelas")
+                    yield Select([("Comprador", "Comprador"), (
+                        "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")], allow_blank=False, id="select_tabelas")
                 else:
-                    yield Select([("Comprador", "Comprador"), ("Proprietário", "Proprietario")], allow_blank=False, id="select_tabelas")
+                    yield Select([("Comprador", "Comprador"), (
+                        "Proprietario", "Proprietario")], allow_blank=False, id="select_tabelas")
 
                 yield SelectionList[str]()
             with VerticalGroup(id="vg_right"):
@@ -51,7 +54,7 @@ class TelaCadastroPessoa(Screen):
         yield Footer()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        try: 
+        try:
             if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
                 self.app.switch_screen("tela_estoque")
             elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
@@ -68,7 +71,7 @@ class TelaCadastroPessoa(Screen):
                 self.app.switch_screen("tela_estoque_cliente")
             elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
                 self.app.switch_screen("tela_dados_cliente")
-        except: 
+        except:
             pass
 
     @on(SelectionList.SelectedChanged)
@@ -127,13 +130,11 @@ class TelaCadastroPessoa(Screen):
 
             if isinstance(Init.usuario_atual, Administrador.Administrador):
                 self.query_one("#select_tabelas", Select).set_options(
-                    [("usuario_atual", "usuario_atual")])
-            elif isinstance(Init.usuario_atual, Corretor.Corretor):
-                self.query_one("#select_tabelas", Select).set_options([("Cliente", "Cliente"), (
-                    "Funcionario", "Funcionario"), ("Fornecedor", "Fornecedor"), ("imovel", "imovel")])
+                    [("Comprador", "Comprador"), (
+                        "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")])
             else:
-                self.query_one("#select_tabelas", Select).set_options(
-                    [("Cliente", "Cliente"), ("imovel", "imovel")])
+                self.query_one("#select_tabelas", Select).set_options([("Comprador", "Comprador"), (
+                    "Proprietario", "Proprietario")])
 
             self.atualizar()
 

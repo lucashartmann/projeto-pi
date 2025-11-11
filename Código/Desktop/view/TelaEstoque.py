@@ -1,43 +1,57 @@
-from textual.widgets import Input, TextArea, Button, DataTable, Footer, Header, Tab, Tabs, Select, SelectionList
-from textual.containers import HorizontalGroup, VerticalScroll, Horizontal
-from textual import on
+from textual.widgets import Input, TextArea, Footer, Header, Tab, Tabs, Select, Static
+from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 
 from model import Init
 
-from controller import Controller
-from model import Init, Cliente, Corretor, Captador, Administrador
+from model import Init, Corretor, Administrador, Imovel
 
 
 class TelaEstoque(Screen):
 
     CSS_PATH = "css/TelaEstoque.tcss"
 
-    imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+    imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()
     imoveis_filtrados = []
     filtrou_select = False
     filtrou_input = False
     select_evento = ""
-    ROWS = []
+
+    objeto = Init.um_imovel
 
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
-            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_usuario"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+
         elif isinstance(Init.usuario_atual, Corretor.Corretor):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
-        with HorizontalGroup(id="hg_pesquisa"):
-            yield Input(placeholder="pesquise aqui")
-            yield Button("Remover")
-        yield TextArea(read_only=True)
+        yield Input(placeholder="pesquise aqui")
+        yield TextArea(read_only=True, id="tx_dados")
         with Horizontal():
-            with VerticalScroll(id="v_left"):
+            with Vertical(id="container_filtragem"):
                 yield Select([("Imoveis", "Imovel"), ("Compradores", "Comprador"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel")], allow_blank=False, id="select_tabelas")
-                yield SelectionList[str]()
-            yield DataTable()
+
+                yield Static("Categoria:")
+                yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
+                yield Static("Status:")
+                yield Select([(valor, valor) for valor in Imovel.Status._member_names_])
+                yield Static("Rua")
+                yield TextArea()
+                yield Static("Bairro")
+                yield TextArea()
+                yield Static("Cidade")
+                yield TextArea()
+                yield Static("Complemento")
+                yield TextArea()
+                yield Static("CEP")
+                yield TextArea()
+            with Vertical(id="container_resultado"):
+                pass
+
         yield Footer()
 
     def setup_dados(self):
@@ -45,31 +59,7 @@ class TelaEstoque(Screen):
             quant = len(self.imoveis_filtrados)
         else:
             quant = len(self.imoveis)
-        self.query_one(TextArea).text = f"Quantidade de imoveis: {quant}"
-
-    def on_button_pressed(self):
-        codigo = self.query_one(Input).value
-
-        match self.tabela:
-            case "Imovel":
-                remocao = Controller.remover_imovel(codigo)
-            case "Comprador":
-                remocao = Controller.remover_comprador(codigo)
-            case "Proprietario":
-                remocao = Controller.remover_proprietario(codigo)
-            case "Corretor":
-                remocao = Controller.remover_corretor(codigo)
-            case "Captador":
-                remocao = Controller.remover_captador(codigo)
-            case "Aluguel" | "venda":
-                remocao = Controller.remover_venda_aluguel(codigo)
-                
-        self.notify(remocao)
-        
-        if "ERRO" not in remocao:
-            self.atualizar()
-            for input in self.query(Input):
-                input.value = ""
+        self.query_one("#tx_dados").text = f"Quantidade de imoveis: {quant}"
 
     def on_select_changed(self, evento: Select.Changed):
         if evento.select.id == "select_tabelas":
@@ -77,53 +67,36 @@ class TelaEstoque(Screen):
 
             match evento.value:
                 case "Imovel":
-                    self.ROWS = [list(Init.um_imovel.__dict__.keys())]
-                    self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.objeto = Init.um_imovel
                 case  "Comprador":
-                    self.ROWS = [list(Init.comprador.__dict__.keys())]
-                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.imoveis, erro = Init.imobiliaria.get_lista_compradores()
+                    self.objeto = Init.comprador
                 case "Proprietario":
-                    self.ROWS = [list(Init.proprietario.__dict__.keys())]
-                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.imoveis, erro = Init.imobiliaria.get_lista_proprietarios()
+                    self.objeto = Init.proprietario
                 case "Corretor":
-                    self.ROWS = [list(Init.corretor.__dict__.keys())]
-                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.imoveis, erro = Init.imobiliaria.get_lista_corretores()
+                    self.objeto = Init.corretor
                 case "Captador":
-                    self.ROWS = [list(Init.captador.__dict__.keys())]
-                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.imoveis, erro = Init.imobiliaria.get_lista_captadores()
+                    self.objeto = Init.captador
                 case "Venda":
-                    self.ROWS = [list(Init.uma_venda_aluguel.__dict__.keys())]
-                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()  # TODO
+                    self.objeto = Init.um_imovel
                 case "Aluguel":
-                    self.ROWS = [list(Init.uma_venda_aluguel.__dict__.keys())]
-                    Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()  # TODO
+                    self.objeto = Init.um_imovel
 
             self.imoveis_filtrados = []
             self.atualizar()
 
     def on_mount(self):
-        self.ROWS = [list(Init.um_imovel.__dict__.keys())]
         self.atualizar()
         self.setup_dados()
 
-    @on(SelectionList.SelectedChanged)
-    def update_selected_view(self):
-        lista_selecionados = self.query_one(SelectionList).selected
-
-        for valor in self.montados:
-            if valor not in lista_selecionados:
-                self.montados.remove(valor)
-            if valor in lista_selecionados:
-                lista_selecionados.remove(valor)
-
-        if len(lista_selecionados) > 0:
-            for valor in lista_selecionados:
-                self.montados.append(valor)
-
-        self.atualizar()
-
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        try: 
+        try:
             if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
                 self.app.switch_screen("tela_estoque")
             elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
@@ -140,38 +113,13 @@ class TelaEstoque(Screen):
                 self.app.switch_screen("tela_estoque_cliente")
             elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
                 self.app.switch_screen("tela_dados_cliente")
-        except: 
+        except:
             pass
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
 
     def atualizar(self):
-        self.ROWS = [self.ROWS[0]]
-        self.query_one(SelectionList).clear_options()
-        self.query_one(SelectionList).add_options((name, name)
-                                                  for name in Init.dict_objetos[self.tabela.lower()].__dict__.keys() if not name.startswith("_"))
-
-        table = self.query_one(DataTable)
-        table.clear(columns=True)
-
-        if len(self.imoveis_filtrados) > 0:
-            lista_atual = self.imoveis_filtrados
-        else:
-            self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
-            lista_atual = self.imoveis
-
-        for imovel in lista_atual:
-            lista = []
-            for valor in imovel.__dict__.values():
-                lista.append(valor)
-            self.ROWS.append(lista)
-
-        table.add_columns(*self.ROWS[0])
-
-        for row in self.ROWS[1:]:
-            table.add_row(*row, height=3)
-
         self.setup_dados()
 
     def on_input_changed(self, evento: Input.Changed):
@@ -181,7 +129,7 @@ class TelaEstoque(Screen):
         if len(palavras) > 0:
             self.imoveis_filtrados = []
             for palavra in palavras:
-                if palavra[:-1].lower() in self.ROWS[0]:
+                if palavra[:-1].lower() in self.objeto.__dict__.keys():
                     index = palavras.index(palavra)
                     self.filtro(palavras, index, palavra[:-1].lower())
                     self.atualizar()

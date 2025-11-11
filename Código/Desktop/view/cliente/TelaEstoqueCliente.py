@@ -5,7 +5,7 @@ from textual.containers import VerticalScroll, HorizontalGroup, Container
 
 from textual_image.widget import Image as TextualImage
 
-from model import Init, Administrador, Corretor
+from model import Init, Administrador, Corretor, Cliente
 from controller import Controller
 
 from io import BytesIO
@@ -20,7 +20,6 @@ class Containerimovel(Container):
         yield TextualImage("")
         yield Static("Dualshock", id="tx_nome")
         yield Static("R$ 299,99", id="tx_preco")
-        yield Select([("1", 1)])
         yield Button("Adicionar ao carrinho", id="bt_comprar")
 
     def on_button_pressed(self, evento: Button.Pressed):
@@ -41,7 +40,7 @@ class TelaEstoqueCliente(Screen):
 
     CSS_PATH = "css/TelaEstoqueCliente.tcss"
 
-    imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+    imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
     imoveis_filtrados = []
 
     filtrou_select = False
@@ -50,36 +49,39 @@ class TelaEstoqueCliente(Screen):
     montou = False
 
     def atualizar_imagens(self):
-        self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+        self.imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
         lista = self.imoveis
         if len(self.imoveis_filtrados) > 0:
             lista = self.imoveis_filtrados
 
+        if not lista:
+            return
+
         for imovel in lista:
-            if imovel.get_imagem():
+            if imovel.get_imagens():
                 container = Containerimovel()
                 list_item = ListItem(name=imovel.get_nome())
                 list_view.append(list_item)
                 list_item.mount(container)
                 container.query_one(TextualImage).image = BytesIO(
-                    imovel.get_imagem())
+                    imovel.get_imagens()[0])
 
                 container.query_one(TextualImage).styles.height = 13
                 container.query_one(TextualImage).styles.width = 30
 
-                container.query_one("#tx_nome").content = imovel.get_nome(
-                )
+                if imovel.get_titulo(
+                ):
+                    container.query_one("#tx_nome").content = imovel.get_titulo(
+                    )
 
-                container.query_one(
-                    "#tx_preco").content = f"R$ {imovel.get_preco():.2f}"
-
-                lista = []
-                for i in range(imovel.get_quantidade()):
-                    lista.append((str(i+1), i+1))
-
-                container.query_one(Select).set_options(lista)
+                if imovel.get_valor_venda():
+                    container.query_one(
+                        "#tx_preco").content = f"R$ {imovel.get_valor_venda():.2f}"
+                elif imovel.get_valor_aluguel():
+                    container.query_one(
+                        "#tx_preco").content = f"R$ {imovel.get_valor_aluguel():.2f}"
 
                 container.id_imovel = imovel.get_id()
 
@@ -89,7 +91,7 @@ class TelaEstoqueCliente(Screen):
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
-            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_usuario"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
         with VerticalScroll():
@@ -100,8 +102,11 @@ class TelaEstoqueCliente(Screen):
             yield ListView(id="lst_item")
             yield Footer()
 
-    def on_mount(self):
+    def _on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_comprar", Tab).id
+
+    def on_mount(self):
+
         # self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
 
         self.atualizar_imagens()
@@ -115,24 +120,30 @@ class TelaEstoqueCliente(Screen):
         self.atualizar_imagens()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        try: 
-            if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                self.app.switch_screen("tela_estoque")
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                self.app.switch_screen("tela_cadastro_imovel")
-            elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-                self.app.switch_screen("tela_cadastro_pessoa")
-            elif isinstance(Init.usuario_atual, Corretor.Corretor):
-                if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                    self.app.switch_screen("tela_dados_imobiliaria")
-            elif isinstance(Init.usuario_atual, Administrador.Administrador):
-                if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                    self.app.switch_screen("tela_servidor")
-            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                self.app.switch_screen("tela_estoque_cliente")
-            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                self.app.switch_screen("tela_dados_cliente")
-        except: 
+        try:
+            if not isinstance(Init.usuario_atual, Cliente.Comprador):
+                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                    self.app.switch_screen("tela_estoque")
+                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_imovel")
+                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                    self.app.switch_screen("tela_cadastro_pessoa")
+                elif isinstance(Init.usuario_atual, Corretor.Corretor):
+                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                        self.app.switch_screen("tela_dados_imobiliaria")
+                elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                        self.app.switch_screen("tela_servidor")
+                elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
+                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                    self.app.switch_screen("tela_dados_cliente")
+            else:
+                if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
+                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                    self.app.switch_screen("tela_dados_cliente")
+        except:
             pass
 
     def on_button_pressed(self, evento: Button.Pressed):

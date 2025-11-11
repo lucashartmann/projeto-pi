@@ -43,5 +43,3 @@ class Endereco:
 
     def set_cidade(self, value):
         self.cidade = value
-
-    

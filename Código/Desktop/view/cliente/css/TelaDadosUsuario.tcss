@@ -1,4 +1,4 @@
-TelaDadosUsuario Grid {
+TelaDadosCliente Grid {
     grid-size: 2;
     margin-left: 1;
     background: rgba(17, 16, 16, 1);
@@ -7,18 +7,18 @@ TelaDadosUsuario Grid {
 
 }
 
-TelaDadosUsuario Grid TextArea {
+TelaDadosCliente Grid TextArea {
     max-height: 80%;
     width: 100%;
 }
 
-TelaDadosUsuario Image{
+TelaDadosCliente Image{
     height: 18;
     width: 40;
 }
 
 
-TelaDadosUsuario #stt_compras {
+TelaDadosCliente #stt_compras {
     height: 4%;
     text-align: center;
     background: rgba(36, 33, 33, 1);

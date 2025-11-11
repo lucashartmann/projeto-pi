@@ -85,7 +85,7 @@ class Comprador():
     def set_data_nascimento(self, value):
         self.data_nascimento = value
 
-        
+
 class Proprietario():
     def __init__(self, nome, cpf, rg, telefone, email=""):
         self.email = email

@@ -1,13 +1,13 @@
 import string
 import random
 from enum import Enum
-from model import Cliente, Corretor, Endereco
+from model import Endereco
 
 bairros = [
-                "Aberta dos Morros", "Agronomia", "Anchieta", "Arquipélago", "Auxiliadora", "Azenha",
-                "Bela Vista", "Belém Novo", "Belém Velho", "Boa Vista", "Bom Jesus", "Bom Fim",
-                "Camaquã", "Cascata", "Cavalhada", "Centro Histórico", "Chácara das Pedras", "Cidade Baixa",
-                "Coronado", "Cristal", "Cristo Redentor", "Espírito Santo", "Farrapos", "Floresta",
+    "Aberta dos Morros", "Agronomia", "Anchieta", "Arquipélago", "Auxiliadora", "Azenha",
+    "Bela Vista", "Belém Novo", "Belém Velho", "Boa Vista", "Bom Jesus", "Bom Fim",
+    "Camaquã", "Cascata", "Cavalhada", "Centro Histórico", "Chácara das Pedras", "Cidade Baixa",
+    "Coronado", "Cristal", "Cristo Redentor", "Espírito Santo", "Farrapos", "Floresta",
                 "Glória", "Guarujá", "Higienópolis", "Hípica", "Humaitá", "Independência", "Ipanema",
                 "Jardim Botânico", "Jardim Carvalho", "Jardim do Salso", "Jardim Europa", "Jardim Floresta",
                 "Jardim Isabel", "Lagoa da Conceição", "Lami", "Lomba do Pinheiro", "Menino Deus",
@@ -18,9 +18,8 @@ bairros = [
                 "São José", "São Sebastião", "Serraria", "Terra Nova", "Três Figueiras", "Tristeza",
                 "Vila Assunção", "Vila Conceição", "Vila Ipiranga", "Vila Jardim", "Vila João Pessoa",
                 "Vila Nova", "Vila São José"
-            ]
-            
-       
+]
+
 
 class Categoria(Enum):
     SALA_COMERCIAL = "Sala Comercial"
@@ -43,7 +42,6 @@ class Categoria(Enum):
     KITNET = "Kitnet"
     CHACARA = "Chacara"
     FAZENDA = "Fazenda"
-    SOBRADO = "Sobrado"
 
 
 class Situacao(Enum):
@@ -75,9 +73,10 @@ class Status(Enum):
 
 class Imovel:
 
-    def __init__(self, endereco:Endereco.Endereco, status, categoria):
+    def __init__(self, endereco: Endereco.Endereco, status, categoria):
         self.id = 0
         self.codigo = self.gerar_codigo_com_prefixo(prefixo='SKU-')
+        self.titulo = ""
         self.valor_venda = 0
         self.valor_aluguel = 0
         self.quant_quartos = 0
@@ -97,24 +96,28 @@ class Imovel:
         self.iptu = 0
         self.valor_condominio = 0
         self.andar = 0
-        self.estado = Estado()
+        self.estado = ""
         self.bloco = ""
         self.ano_construcao = ""
         self.area_total = 0
         self.area_privativa = 0
         self.situacao = ""
         self.ocupacao = ""
-        self.proprietario = Cliente.Proprietario()
-        self.corretor_vinculado = Corretor.Corretor()
-        
-    
+        self.proprietario = ""
+        self.corretor_vinculado = ""
+
+    def get_titulo(self):
+        return self.titulo
+
+    def set_titulo(self, novo_titulo):
+        self.titulo = novo_titulo
+
     def gerar_codigo_com_prefixo(self, prefixo='PROD-', tamanho_sufixo=6):
         sufixo_caracteres = string.ascii_uppercase + string.digits
         sufixo = ''.join(random.choice(sufixo_caracteres)
                          for _ in range(tamanho_sufixo))
         codigo = f'{prefixo}{sufixo}'
         return codigo
-
 
     def get_id(self):
         return self.id
@@ -248,18 +251,6 @@ class Imovel:
     def set_estado(self, value):
         self.estado = value
 
-    def get_numero(self):
-        return self.numero
-
-    def set_numero(self, value):
-        self.numero = value
-
-    def get_complemento(self):
-        return self.complemento
-
-    def set_complemento(self, value):
-        self.complemento = value
-
     def get_bloco(self):
         return self.bloco
 
@@ -284,24 +275,6 @@ class Imovel:
     def set_area_privativa(self, value):
         self.area_privativa = value
 
-    def get_bairro(self):
-        return self.bairro
-
-    def set_bairro(self, value):
-        self.bairro = value
-
-    def get_rua(self):
-        return self.rua
-
-    def set_rua(self, value):
-        self.rua = value
-
-    def get_cidade(self):
-        return self.cidade
-
-    def set_cidade(self, value):
-        self.cidade = value
-
     def get_situacao(self):
         return self.situacao
 
@@ -325,4 +298,3 @@ class Imovel:
 
     def set_corretor_vinculado(self, value):
         self.corretor_vinculado = value
-

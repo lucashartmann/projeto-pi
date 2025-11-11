@@ -10,8 +10,8 @@ comando = sys.argv[1:]
 # python Main.py cadastrar_cliente "pedro" "00000000000", "00000000", "00000000000", "Bento 205", "pedro@email.com"
 # python Main.py editar_cliente "00000000000" "pedro" "00000000000", "00000000", "00000000000", "Bento 205", "pedro@email.com"
 # python Main.py remover_cliente "lucas@email.com"
-# python Main.py cadastrar_imovel "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE"
-# python Main.py editar_imovel 1 "PLAYSTATION 5", "SONY", "SLIM", "PRETO", 3000.00, 10, "CONSOLE"
+# python Main.py cadastrar_imovel
+# python Main.py editar_imovel 1
 # python Main.py remover_imovel 1
 
 

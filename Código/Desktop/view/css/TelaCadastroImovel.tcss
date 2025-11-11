@@ -1,0 +1,54 @@
+TelaCadastroImovel #h_buttons Button{
+    margin-right: 2;
+}
+
+TelaCadastroImovel #h_buttons{
+    height: auto;
+}
+
+
+TelaCadastroImovel #container_cadastro {
+    width: 100%;
+    height: 100%;
+    grid-size: 6 10;
+    margin: 1 2 2 2;
+    grid-gutter: 2;
+    background: rgba(182, 178, 178, 1);
+}
+
+TelaCadastroImovel #container_cadastro Tabs {
+    column-span: 6;
+}
+
+TelaCadastroImovel #container_cadastro TextArea {
+    height: 100%;
+}
+
+TelaCadastroImovel #container_cadastro Static {
+    margin-top: 1;
+}
+
+TelaCadastroImovel #container_cadastro Select Static {
+    margin-top: 0;
+}
+
+TelaCadastroImovel #container_anuncio {
+    display: none;
+}
+
+TelaCadastroImovel #container_info_condominio {
+    display: none;
+}
+
+TelaCadastroImovel #container_imagens {
+    display: none;
+}
+
+TelaCadastroImovel #container_info_imovel {
+    display: none;
+}
+
+
+TelaCadastroImovel #container_info {
+    display: none;
+}

@@ -25,7 +25,7 @@ class Banco:
                     cep INTEGER NULL,
                     complemento TEXT NULL,
                     cidade TEXT NOT NULL,
-                    estado TEXT NOT NULL,
+                    estado TEXT NOT NULL
                 );
                                 ''')
             cursor.execute(f'''
@@ -33,7 +33,7 @@ class Banco:
                     id_administrador INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT NULL UNIQUE,
                     senha TEXT NOT NULL,
-                    email TEXT NULL UNIQUE,
+                    email TEXT NULL UNIQUE
                 );
                                 ''')
             cursor.execute(f'''
@@ -81,7 +81,7 @@ class Banco:
                     data_nascimento TEXT NOT NULL,
                     turno TEXT NULL,
                     salario REAL NULL,
-                    matricula TEXT NULL,
+                    matricula TEXT NULL
                 );
                                 ''')
             cursor.execute(f'''
@@ -99,7 +99,7 @@ class Banco:
                     data_nascimento TEXT NOT NULL,
                     turno TEXT NULL,
                     salario REAL NULL,
-                    matricula TEXT NULL,
+                    matricula TEXT NULL
                 );
                                 ''')
 
@@ -132,15 +132,15 @@ class Banco:
                     ocupacao TEXT NULL,
                     cpf_proprietario TEXT NOT NULL,
                     cpf_corretor TEXT NOT NULL,
-                    id_endereco (id_endereco) references Endereco (id_endereco),
-                    FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
-                    FOREIGN KEY (cpf_corretor) references Corretor (cpf)
+                    FOREIGN KEY (id_endereco) REFERENCES Endereco(id_endereco),
+                    FOREIGN KEY (cpf_proprietario) REFERENCES Proprietario(cpf),
+                    FOREIGN KEY (cpf_corretor) REFERENCES Corretor(cpf)
                 );
                                 ''')
 
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Midia_Imovel (
-                    id_imovel INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id_imovel INTEGER NOT NULL,
                     midia BLOB NOT NULL,
                     tipo TEXT NOT NULL,
                     FOREIGN KEY (id_imovel) references Imovel (id_imovel)
@@ -167,6 +167,40 @@ class Banco:
 
             conexao.commit()
 
+    def get_lista_compradores(self):
+        with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            try:
+                cursor = conexao.cursor()
+                cursor.execute(f'''
+                        SELECT * FROM Comprador 
+                    ''')
+                registros = cursor.fetchall()
+
+                if not registros:
+                    raise Exception("Não há compradores cadastrados")
+
+                return registros, ""
+            except Exception as e:
+                erro = "Banco.get_lista_compradores: ERRO!", e
+                return [], erro
+
+    def get_lista_proprietarios(self):
+        with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            try:
+                cursor = conexao.cursor()
+                cursor.execute(f'''
+                        SELECT * FROM Proprietario 
+                    ''')
+                registros = cursor.fetchall()
+
+                if not registros:
+                    raise Exception("Não há proprietarios cadastrados")
+
+                return registros, ""
+            except Exception as e:
+                erro = "Banco.get_lista_proprietarios: ERRO!", e
+                return [], erro
+
     def verificar_usuario(self, username, senha, tabela):
         if tabela == "Cliente":
             tabela == "Comprador"
@@ -174,7 +208,6 @@ class Banco:
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
             try:
                 cursor = conexao.cursor()
-                registro = None
                 if "@" in username:
                     cursor.execute(f'''
                         SELECT * FROM {tabela} WHERE email = ?

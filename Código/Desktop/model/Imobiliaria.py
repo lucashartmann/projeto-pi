@@ -8,9 +8,9 @@ class Imobiliaria:
         self.nome = nome
         self.cnpj = cnpj
         self.estoque = Estoque.Estoque()
-        self.quantidade_funcionarios = self.set_quantidade()
-        self.quantidade_clientes = self.set_quantidade()
-        self.quantidade_fornecedores = self.set_quantidade()
+        self.quantidade_funcionarios = 0
+        self.quantidade_clientes = 0
+        self.quantidade_fornecedores = 0
         self.faturamento = 0
 
     def get_nome(self):
@@ -55,30 +55,29 @@ class Imobiliaria:
     def set_faturamento(self, value):
         self.faturamento = value
 
-        
     def verificar_usuario(self, usuario):
         return self.banco_dados.verificar_usuario(usuario)
 
     def cadastrar_comprador(self, comprador):
         return self.banco_dados.cadastrar_comprador(comprador)
-    
+
     def cadastrar_proprietario(self, proprietario):
         return self.banco_dados.cadastrar_proprietario(proprietario)
-    
+
     def cadastrar_captador(self, captador):
         return self.banco_dados.cadastrar_captador(captador)
-    
+
     def cadastrar_corretor(self, corretor):
         return self.banco_dados.cadastrar_corretor(corretor)
 
     def get_lista_corretores(self):
         return self.banco_dados.get_lista_corretores()
-    
+
     def get_lista_captadores(self):
         return self.banco_dados.get_lista_captadores()
-    
+
     def get_lista_compradores(self):
         return self.banco_dados.get_lista_compradores()
-    
+
     def get_lista_proprietarios(self):
         return self.banco_dados.get_lista_proprietarios()

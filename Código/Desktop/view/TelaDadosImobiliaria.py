@@ -16,7 +16,8 @@ class TelaDadosImobiliaria(Screen):
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
-            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_usuario"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         yield Footer()
@@ -78,4 +79,5 @@ class TelaDadosImobiliaria(Screen):
             pass
 
     def on_screen_resume(self):
-        self.query_one(Tabs).active = self.query_one("#tab_dados_imobiliaria", Tab).id
+        self.query_one(Tabs).active = self.query_one(
+            "#tab_dados_imobiliaria", Tab).id

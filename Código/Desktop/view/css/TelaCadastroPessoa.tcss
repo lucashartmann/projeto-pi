@@ -1,24 +1,24 @@
-TelaCadastro TextArea {
+TelaCadastroPessoa TextArea {
     width: 70%;
     min-height: 3;
     height: auto;
     color: white;
 }
 
-TelaCadastro MaskedInput {
+TelaCadastroPessoa MaskedInput {
     width: 70%;
     color: white;
 }
 
-TelaCadastro Button {
+TelaCadastroPessoa Button {
     width: auto;
 }
 
-TelaCadastro Select {
+TelaCadastroPessoa Select {
     width: 70%;
 }
 
-TelaCadastro Grid {
+TelaCadastroPessoa Grid {
     grid-size: 2;
     grid-gutter: 2;
     margin-bottom: 4; 
@@ -26,55 +26,55 @@ TelaCadastro Grid {
     width: 100%;
 }
 
-TelaCadastro #hg_first {
+TelaCadastroPessoa #hg_first {
     height: auto;
     margin: 2;
 }
 
-TelaCadastro VerticalGroup {
+TelaCadastroPessoa VerticalGroup {
     height: auto;
 }
 
 
-TelaCadastro  {
+TelaCadastroPessoa  {
     background: rgb(200, 200, 200);
     color: black;
 }
 
 
-TelaCadastro #input_descricao {
+TelaCadastroPessoa #input_descricao {
     width: auto;
     height: auto;
 }
 
-TelaCadastro Tab {
+TelaCadastroPessoa Tab {
     color: black;    
 }
 
-TelaCadastro SelectionList {
+TelaCadastroPessoa SelectionList {
     width: 100%;
     height: auto;
 }
 
-TelaCadastro #hg_operacoes Select {
+TelaCadastroPessoa #hg_operacoes Select {
     width: 30%;
 }
 
-TelaCadastro #hg_operacoes Button {
+TelaCadastroPessoa #hg_operacoes Button {
     width: 38%;
 }
 
-TelaCadastro #vg_left Select {
+TelaCadastroPessoa #vg_left Select {
     min-width: 100%;
     margin-bottom: 1;
 }
 
-TelaCadastro #vg_left {
+TelaCadastroPessoa #vg_left {
     width: 18%;
     height: auto;
 }
 
-TelaCadastro #vg_right {
+TelaCadastroPessoa #vg_right {
     margin-left: 14;
     margin-right: 2;
     height: auto;

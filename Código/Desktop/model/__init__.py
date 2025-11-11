@@ -1,5 +1,5 @@
 from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Administrador
-from model.Imovel import Categoria, Situacao, Ocupacao, Estado, Status
+from model.Imovel import Categoria, Status
 
 
 class Init:
@@ -11,8 +11,9 @@ class Init:
         endereco1, Status.VENDA, Categoria.APARTAMENTO)
     uma_venda_aluguel = Venda_Aluguel.Venda_Aluguel()
     usuario_atual = ""
-    
-    administrador = Administrador.Administrador("asdasdas", "asdasdas", "asdasdas")
+
+    administrador = Administrador.Administrador(
+        "asdasdas", "asdasdas", "asdasdas")
 
     comprador = Cliente.Comprador("MARCOS", "11111111111", "11111111111",
                                   "11111111111", "MARCOS@GMAIL.COM")

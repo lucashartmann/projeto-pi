@@ -105,5 +105,3 @@ class Captador():
 
     def set_data_nascimento(self, value):
         self.data_nascimento = value
-
-

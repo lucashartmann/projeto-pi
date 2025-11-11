@@ -87,7 +87,6 @@ class TelaLogin(Screen):
             case "Administrador":
                 Init.usuario_atual = Init.administrador
 
-        
             # login = Controller.verificar_login(dados)
             # self.notify(login)
             # if "ERRO" not in login:
@@ -97,4 +96,4 @@ class TelaLogin(Screen):
         if self.query_one(Select).value == "Cliente":
             self.app.switch_screen("tela_estoque_cliente")
         else:
-            self.app.switch_screen("tela_cadastro")
+            self.app.switch_screen("tela_cadastro_imovel")
