@@ -1,5 +1,5 @@
 from textual.screen import Screen
-from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button
+from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button, Header, Footer
 from textual.containers import Horizontal, Vertical, Grid, Container, VerticalScroll
 
 from textual_image.widget import Image
@@ -22,7 +22,7 @@ class TelaCadastroImovel(Screen):
     CSS_PATH = "css/TelaCadastroImovel.tcss"
 
     def compose(self):
-
+        yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
 
@@ -153,7 +153,7 @@ class TelaCadastroImovel(Screen):
             yield Static("Proprietario: ")
             yield Static("Corretor: ")
             yield Static("Captador: ")
-
+        yield Footer(show_command_palette=False)
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_imovel", Tab).id

@@ -3,7 +3,7 @@
 
 from textual.screen import Screen
 from textual.widgets import Tab, Tabs, Static, Header, Footer
-from textual.containers import VerticalGroup
+from textual.containers import VerticalGroup, Grid
 
 
 from model import Init, Administrador, Corretor
@@ -20,42 +20,42 @@ class TelaDadosImobiliaria(Screen):
 
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
-        yield Footer()
+        yield Grid()
+        yield Footer(show_command_palette=False)
 
     def on_mount(self):
         self.atualizar()
 
     def atualizar(self):
         container = VerticalGroup()
-        self.mount(container)
+        self.query_one(Grid).mount(container)
         container.mount(Static("Faturamento Diário:"))
-        container.mount(Static("R$ XXXX,XX"))
+        container.mount(Static("R$ XXXX,XX", classes="valor"))
         container = VerticalGroup()
-        self.mount(container)
+        self.query_one(Grid).mount(container)
         container.mount(Static("Faturamento Mensal:"))
-        container.mount(Static("R$ XXXX,XX"))
+        container.mount(Static("R$ XXXX,XX", classes="valor"))
         container = VerticalGroup()
-        self.mount(container)
+        self.query_one(Grid).mount(container)
         container.mount(Static("Faturamento Anual:"))
-        container.mount(Static("R$ XXXX,XX"))
+        container.mount(Static("R$ XXXX,XX", classes="valor"))
         container = VerticalGroup()
-        self.mount(container)
+        self.query_one(Grid).mount(container)
         container.mount(Static("Faturamento Semestral:"))
-        container.mount(Static("R$ XXXX,XX"))
+        container.mount(Static("R$ XXXX,XX", classes="valor"))
         container = VerticalGroup()
-        self.mount(container)
+        self.query_one(Grid).mount(container)
         container.mount(Static("Quantidade de imoveis"))
-        container.mount(Static("0"))
+        container.mount(Static("0", classes="valor"))
         container = VerticalGroup()
-        self.mount(container)
+        self.query_one(Grid).mount(container)
         container.mount(Static("Quantidade de clientes"))
-        container.mount(Static("0"))
+        container.mount(Static("0", classes="valor"))
         container = VerticalGroup()
-        self.mount(container)
+        self.query_one(Grid).mount(container)
         container.mount(Static("Quantidade de funcionarios"))
-        container.mount(Static("0"))
-        container = VerticalGroup()
-        self.mount(container)
+        container.mount(Static("0", classes="valor"))
+        
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:

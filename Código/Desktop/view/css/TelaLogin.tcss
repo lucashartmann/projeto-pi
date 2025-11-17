@@ -1,5 +1,5 @@
 TelaLogin {
-    background: rgb(194, 205, 216);
+    background: rgba(144, 185, 226, 1);
     align: center middle;
     
 }
@@ -42,8 +42,8 @@ TelaLogin Select {
 }
 
 TelaLogin Button {
-    width: 99%;
-    margin: 1 0 1 1;
+    width: 100%;
+    margin: 1 1 1 1;
     background: rgba(175, 180, 177, 1);
     color: black;
 }

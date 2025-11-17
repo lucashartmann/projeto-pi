@@ -51,7 +51,7 @@ class TelaCadastroPessoa(Screen):
                 with HorizontalGroup(id="hg_operacoes"):
                     yield Select([("Adicionar", "Adicionar"), ("Editar", "Editar"), ("Remover", "Remover")], allow_blank=False, id="select_operacoes")
                     yield Button("Executar")
-        yield Footer()
+        yield Footer(show_command_palette=False)
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:

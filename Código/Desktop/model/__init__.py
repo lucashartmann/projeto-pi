@@ -1,8 +1,10 @@
 from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Administrador
 from model.Imovel import Categoria, Status
-
+from database import Banco
 
 class Init:
+    
+    banco = Banco.Banco()
 
     endereco1 = Endereco.Endereco(
         "Avenida Bento Gonçalves", 205, "Partenon", "90650002")
@@ -51,6 +53,12 @@ class Init:
 
             cliente10 = Cliente.Comprador("FERNANDA", "10101010101", "10101010101",
                                           "10101010101", "FERNANDA@GMAIL.COM")
+            
+            Init.imobiliaria.cadastrar_comprador(cliente2)
+            Init.imobiliaria.cadastrar_comprador(cliente4)
+            Init.imobiliaria.cadastrar_comprador(cliente10)
+            Init.imobiliaria.cadastrar_comprador(cliente8)
+            Init.imobiliaria.cadastrar_comprador(cliente6)
 
         if not Init.imobiliaria.get_lista_proprietarios():
 
@@ -67,14 +75,11 @@ class Init:
                                             "99999999999", "GABRIELA@GMAIL.COM")
 
             Init.imobiliaria.cadastrar_proprietario(cliente3)
-            Init.imobiliaria.cadastrar_proprietario(cliente2)
-            Init.imobiliaria.cadastrar_proprietario(cliente4)
+            
+         
             Init.imobiliaria.cadastrar_proprietario(cliente5)
-            Init.imobiliaria.cadastrar_proprietario(cliente6)
             Init.imobiliaria.cadastrar_proprietario(cliente7)
-            Init.imobiliaria.cadastrar_proprietario(cliente8)
             Init.imobiliaria.cadastrar_proprietario(cliente9)
-            Init.imobiliaria.cadastrar_proprietario(cliente10)
 
         if not Init.imobiliaria.get_estoque().get_lista_imoveis():
 
@@ -83,6 +88,17 @@ class Init:
 
             imovel2 = Imovel.Imovel(
                 endereco1, Status.VENDA, Categoria.APARTAMENTO)
+            
+            imovel3 = Imovel.Imovel(
+                endereco1, Status.VENDA, Categoria.APARTAMENTO)
+            
+            
+            Init.banco.cadastrar_endereco(endereco1)
+
+            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel2)
+            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel3)
+
+            
             # imovel3 = Imovel.Imovel()
             # imovel4 = Imovel.Imovel()
             # imovel5 = Imovel.Imovel()
@@ -108,4 +124,5 @@ class Init:
             # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel7)
             # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel9)
             # Init.imobiliaria.get_estoque().cadastrar_imovel(imovel10)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(2)
+            
+           

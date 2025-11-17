@@ -8,12 +8,7 @@ TelaEstoque Checkbox {
 }
 
 TelaEstoque Input {
-    max-width: 85%;
-}
-
-TelaEstoque #hg_pesquisa {
     margin: 1;
-    width: 100%;
 }
 
 TelaEstoque DataTable {
@@ -21,11 +16,74 @@ TelaEstoque DataTable {
     width: 100%;
 }
 
-#v_left {
+TelaEstoque #v_left {
     width: 24%;
     margin: 1 0 0 0;
 }
 
-Footer {
-    color: black;
+TelaEstoque #container_filtragem {
+    width: 100%;
+    height: 20%;
+}
+
+TelaEstoque #container_filtragem Select {
+    width: 20;
+}
+
+
+
+TelaEstoque #container_filtragem Static {
+    width: 12;
+}
+
+#segundo {
+    margin-left: 30;
+}
+
+#segundo TextArea {
+    height: 5;
+}
+
+#segundo Static {
+    margin-top: 2;
+}
+
+#primeiro {
+    margin-left: 60;
+}
+
+
+TelaEstoque Image {
+    width: 30;
+    height: 10;
+    margin-top: 1;
+}
+
+#imovel Checkbox {
+    margin-top:4;
+    margin-right: 4;
+    margin-left: 2;
+}
+
+TelaEstoque #imovel {
+    background: white;
+    margin: 2 2 2 2;
+    height: 12;
+}
+TelaEstoque #dados0 {
+    height: 20;
+    margin-left: 2;
+}
+
+#dados2 {
+    height: 10;
+}
+
+TelaEstoque #stt_bairro {
+    text-style: bold;
+}
+
+TelaEstoque #stt_ref {
+    border: black;
+    width: auto;
 }

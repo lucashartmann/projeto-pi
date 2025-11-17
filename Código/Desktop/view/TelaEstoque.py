@@ -1,4 +1,4 @@
-from textual.widgets import Input, TextArea, Footer, Header, Tab, Tabs, Select, Static
+from textual.widgets import Input, TextArea, Footer, Header, Tab, Checkbox, Tabs, Select, Static
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 
@@ -6,10 +6,13 @@ from model import Init
 
 from model import Init, Corretor, Administrador, Imovel
 
+from textual_image.widget import Image 
+
 
 class TelaEstoque(Screen):
 
     CSS_PATH = "css/TelaEstoque.tcss"
+    TITLE = "Estoque"
 
     imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()
     imoveis_filtrados = []
@@ -31,28 +34,46 @@ class TelaEstoque(Screen):
 
         yield Input(placeholder="pesquise aqui")
         yield TextArea(read_only=True, id="tx_dados")
-        with Horizontal():
-            with Vertical(id="container_filtragem"):
-                yield Select([("Imoveis", "Imovel"), ("Compradores", "Comprador"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel")], allow_blank=False, id="select_tabelas")
+        with Vertical(id="container_filtragem"):
+                with Horizontal(id="primeiro"):
+                    yield Select([("Imoveis", "Imovel"), ("Compradores", "Comprador"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel")], allow_blank=False, id="select_tabelas")
+                    yield Static("Categoria:")
+                    yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
+                    yield Static("Status:")
+                    yield Select([(valor, valor) for valor in Imovel.Status._member_names_])
+                with Horizontal(id="segundo"):
+                    yield Static("Rua")
+                    yield TextArea()
+                    yield Static("Bairro")
+                    yield TextArea()
+                    yield Static("Cidade")
+                    yield TextArea()
+                    yield Static("Complemento")
+                    yield TextArea()
+                    yield Static("CEP")
+                    yield TextArea()
+        with Vertical(id="container_resultado"):
+            with Horizontal(id="imovel"):
+                yield Checkbox()
+                yield Image(r"assets\apartamento1\5661162882.jpg")
+                with Vertical(id="dados0"):
+                    with Vertical(id="dados1"):
+                        yield Static("Centro", id="stt_bairro")
+                        yield Static("Referência 91", id="stt_ref")
+                        yield Static("Pendente - Sala Comercial Condominio ED. Lúcio Costa", id="stt_status")
+                        yield Static("Rua Quinze de Janeiro, 310/301")
+                        yield Static("Porto Alegre/RS")
+                        yield Static("Aluguel")
+                        yield Static("R$ 1.100,00", classes="valor")
+                    with Horizontal(id="dados2"):
+                        yield Static("55m2")
+                        yield Static("100m2")
+                        yield Static("2 banheiros")
+                    
+                    
+                
 
-                yield Static("Categoria:")
-                yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
-                yield Static("Status:")
-                yield Select([(valor, valor) for valor in Imovel.Status._member_names_])
-                yield Static("Rua")
-                yield TextArea()
-                yield Static("Bairro")
-                yield TextArea()
-                yield Static("Cidade")
-                yield TextArea()
-                yield Static("Complemento")
-                yield TextArea()
-                yield Static("CEP")
-                yield TextArea()
-            with Vertical(id="container_resultado"):
-                pass
-
-        yield Footer()
+        yield Footer(show_command_palette=False)
 
     def setup_dados(self):
         if len(self.imoveis_filtrados) > 0:

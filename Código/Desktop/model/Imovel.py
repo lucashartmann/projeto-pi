@@ -1,7 +1,6 @@
-import string
-import random
 from enum import Enum
 from model import Endereco
+
 
 bairros = [
     "Aberta dos Morros", "Agronomia", "Anchieta", "Arquipélago", "Auxiliadora", "Azenha",
@@ -72,10 +71,11 @@ class Status(Enum):
 
 
 class Imovel:
+    codigo = 0
 
     def __init__(self, endereco: Endereco.Endereco, status, categoria):
         self.id = 0
-        self.codigo = self.gerar_codigo_com_prefixo(prefixo='SKU-')
+        self.codigo = self.gerar_codigo()
         self.titulo = ""
         self.valor_venda = 0
         self.valor_aluguel = 0
@@ -105,19 +105,16 @@ class Imovel:
         self.ocupacao = ""
         self.proprietario = ""
         self.corretor_vinculado = ""
+        
+    def gerar_codigo(self):
+        Imovel.codigo += 1
+        return Imovel.codigo
 
     def get_titulo(self):
         return self.titulo
 
     def set_titulo(self, novo_titulo):
         self.titulo = novo_titulo
-
-    def gerar_codigo_com_prefixo(self, prefixo='PROD-', tamanho_sufixo=6):
-        sufixo_caracteres = string.ascii_uppercase + string.digits
-        sufixo = ''.join(random.choice(sufixo_caracteres)
-                         for _ in range(tamanho_sufixo))
-        codigo = f'{prefixo}{sufixo}'
-        return codigo
 
     def get_id(self):
         return self.id

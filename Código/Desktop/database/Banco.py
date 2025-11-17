@@ -2,7 +2,7 @@ import sqlite3
 import hashlib
 import os
 
-from model import Cliente, Imovel, Administrador, Captador, Corretor
+from model import Cliente, Imovel, Administrador, Captador, Corretor, Endereco
 
 
 class Banco:
@@ -164,6 +164,39 @@ class Banco:
                     FOREIGN KEY (cpf_corretor) references Corretor (cpf)
                     );
                                 ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Gerente (
+                    id_gerente INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf TEXT NOT NULL UNIQUE,
+                    rg TEXT NOT NULL,
+                    telefone TEXT NOT NULL,
+                    endereco TEXT NOT NULL,
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NOT NULL,
+                    turno TEXT NULL,
+                    salario REAL NULL,
+                    matricula TEXT NULL
+                );
+                                ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Anuncio (
+                    id_anuncio INTEGER PRIMARY KEY AUTOINCREMENT,
+                    descricao TEXT NOT NULL,
+                    titulo TEXT NOT NULL,
+                    id_imovel INTEGER NOT NULL,
+                    cpf_captador INTEGER NULL,
+                    cpf_corretor TEXT NULL,
+                    cpf_proprietario TEXT NULL,
+                    FOREIGN KEY (id_imovel) REFERENCES Imovel (id_imovel),
+                    FOREIGN KEY (cpf_captador) REFERENCES Cliente (cpf),
+                    FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
+                    FOREIGN KEY (cpf_corretor) references Corretor (cpf)
+                );
+                                ''')
 
             conexao.commit()
 
@@ -179,10 +212,10 @@ class Banco:
                 if not registros:
                     raise Exception("Não há compradores cadastrados")
 
-                return registros, ""
+                return registros
             except Exception as e:
                 erro = "Banco.get_lista_compradores: ERRO!", e
-                return [], erro
+                return ([], erro)
 
     def get_lista_proprietarios(self):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
@@ -196,10 +229,10 @@ class Banco:
                 if not registros:
                     raise Exception("Não há proprietarios cadastrados")
 
-                return registros, ""
+                return registros
             except Exception as e:
                 erro = "Banco.get_lista_proprietarios: ERRO!", e
-                return [], erro
+                return ([], erro)
 
     def verificar_usuario(self, username, senha, tabela):
         if tabela == "Cliente":
@@ -240,13 +273,13 @@ class Banco:
                                 *registro[1:]), ""
 
                     pessoa.set_id(registro[0])
-                    return pessoa, ""
+                    return pessoa
                 else:
                     raise Exception("Senha errada!")
 
             except Exception as e:
                 erro = "Banco.verificar_usuario: ERRO!", e
-                return None, erro
+                return (None, erro)
 
     def cadastrar_endereco(self, endereco):
         with sqlite3.connect(
@@ -268,10 +301,10 @@ class Banco:
                     endereco.get_estado(),
                 ))
                 conexao.commit()
-                return True, ""
+                return True
             except Exception as e:
                 erro = f"Banco.cadastrar_endereco: ERRO! {e}"
-                return False, erro
+                return (False, erro)
 
     def cadastrar_corretor(self, corretor):
         with sqlite3.connect(
@@ -297,10 +330,10 @@ class Banco:
                     corretor.get_data_nascimento()
                 ))
                 conexao.commit()
-                return True, ""
+                return True
             except Exception as e:
                 erro = f"Banco.cadastrar_corretor: ERRO! {e}"
-                return False, erro
+                return (False, erro)
 
     def cadastrar_captador(self, captador):
         with sqlite3.connect(
@@ -326,10 +359,10 @@ class Banco:
                     captador.get_data_nascimento()
                 ))
                 conexao.commit()
-                return True, ""
+                return True
             except Exception as e:
                 erro = f"Banco.cadastrar_captador: ERRO! {e}"
-                return False, erro
+                return (False, erro)
 
     def cadastrar_proprietario(self, proprietario):
         with sqlite3.connect(
@@ -353,10 +386,35 @@ class Banco:
                         proprietario.get_data_nascimento()
                     ))
                     conexao.commit()
-                    return True, ""
+                    return True
             except Exception as e:
                 erro = f"Banco.cadastrar_proprietario: ERRO! {e}"
-                return False, erro
+                return (False, erro)
+            
+    def cadastrar_endereco(self, endereco):
+        with sqlite3.connect(
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+
+                    sql_query = f''' 
+                    INSERT INTO Endereco (rua, numero, bairro, cep, complemento, cidade, estado) 
+                    VALUES(?, ?, ?, ?, ?, ?, ?)
+                    '''
+                    cursor.execute(sql_query, (
+                        endereco.get_rua(),
+                        endereco.get_numero(),
+                        endereco.get_bairro(),
+                        endereco.get_cep(),
+                        endereco.get_complemento(),
+                        endereco.get_cidade(),
+                        endereco.get_estado(),
+                    ))
+                    conexao.commit()
+                    return True
+            except Exception as e:
+                erro = f"Banco.cadastrar_endereco: ERRO! {e}"
+                return (False, erro)
 
     def cadastrar_comprador(self, comprador):
         with sqlite3.connect(
@@ -384,10 +442,10 @@ class Banco:
                     ))
 
                     conexao.commit()
-                    return True, ""
+                    return True
             except Exception as e:
                 erro = f"Banco.cadastrar_comprador: ERRO! {e}"
-                return False, erro
+                return (False, erro)
 
     def remover_imovel(self, codigo):
         with sqlite3.connect(
@@ -400,10 +458,10 @@ class Banco:
                     """
                 cursor.execute(sql_delete_query, (codigo,))
                 conexao.commit()
-                return True, ""
+                return True
             except Exception as e:
                 erro = f"Banco.remover_imovel: ERRO! {e}"
-                return False, erro
+                return (False, erro)
 
     def get_imovel_por_codigo(self, codigo):
         with sqlite3.connect(
@@ -425,7 +483,7 @@ class Banco:
                 return imovel
             except Exception as e:
                 erro = f"Banco.get_imovel_por_id: ERRO! {e}"
-                return None, erro
+                return (None, erro)
 
     def cadastrar_imovel(self, imovel):
         with sqlite3.connect(
@@ -465,10 +523,10 @@ class Banco:
                     imovel.get_cpf_corretor(),
                 ))
                 conexao.commit()
-                return True, ""
+                return True
             except Exception as e:
                 erro = f"Banco.cadastrar_imovel: ERRO! {e}"
-                return False, erro
+                return (False, erro)
 
     def get_lista_imoveis(self):
         with sqlite3.connect(
@@ -492,7 +550,7 @@ class Banco:
                 return lista
             except Exception as e:
                 erro = f"Banco.get_lista_imoveis: ERRO! {e}"
-                return [], erro
+                return ([], erro)
 
     def get_lista_imoveis_disponiveis(self):
         with sqlite3.connect(
@@ -530,13 +588,13 @@ class Banco:
                     imovel.set_area_privativa(float(dados[1]))
                     imovel.set_situacao(dados[1])
                     imovel.set_ocupacao(dados[1])
-                    imovel.set_cpf_proprietario(dados[1])
-                    imovel.set_cpf_corretor(dados[1])
+                    imovel.set_proprietario(dados[1])
+                    imovel.set_corretor_vinculado(dados[1])
                     lista.append(imovel)
                 return lista
             except Exception as e:
                 erro = f"Banco.get_lista_imoveis_disponiveis: ERRO! {e}"
-                return [], erro
+                return ([], erro)
 
     def get_imoveis_por_categoria(self, categoria):
         with sqlite3.connect(
@@ -581,4 +639,4 @@ class Banco:
                 return lista_imoveis
             except Exception as e:
                 erro = f"Banco.get_imoveis_por_categoria: ERRO! {e}"
-                return [], erro
+                return ([], erro)

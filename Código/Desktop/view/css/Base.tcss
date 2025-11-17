@@ -1,5 +1,5 @@
 Screen {
-    background: rgb(194, 205, 216);
+    background: rgba(144, 185, 226, 1);
     color: black;
 }
 

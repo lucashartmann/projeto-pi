@@ -59,7 +59,7 @@ class TelaDadosCliente(Screen):
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
         with HorizontalGroup():
 
-            yield Image("assets/usuario2.png")
+            yield Image(r"assets\istockphoto-1352495212-1024x1024.jpg")
             with Grid():
                 yield Static("Username")
                 yield TextArea(Init.usuario_atual.get_nome())
@@ -79,7 +79,7 @@ class TelaDadosCliente(Screen):
                 yield TextArea(Init.usuario_atual.get_senha())
         yield Button("Salvar")
         # yield Static("Imoveis do usuário", id="stt_compras")
-        yield Footer()
+        yield Footer(show_command_palette=False)
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(

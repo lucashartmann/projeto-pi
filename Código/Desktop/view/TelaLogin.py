@@ -36,6 +36,7 @@ class TelaLogin(Screen):
 
     CSS_PATH = "css/TelaLogin.tcss"
     montou = False
+    TITLE = "Login"
 
     def compose(self):
         yield Header()
@@ -45,7 +46,7 @@ class TelaLogin(Screen):
             yield Select([("Cliente", "Cliente"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")], value="Cliente", allow_blank=False)
             yield Button("Entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")
-        yield Footer()
+        yield Footer(show_command_palette=False)
 
     def voltar(self):
         self.query_one(Select).styles.display = "block"

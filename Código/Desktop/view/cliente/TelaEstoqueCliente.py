@@ -5,38 +5,32 @@ from textual.containers import VerticalScroll, HorizontalGroup, Container
 
 from textual_image.widget import Image as TextualImage
 
-from model import Init, Administrador, Corretor, Cliente
+from model import Init, Administrador, Corretor, Cliente, Imovel
 from controller import Controller
 
 from io import BytesIO
 
+from PIL import Image
 
-class Containerimovel(Container):
+
+class ContainerImovel(Container):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.id_imovel = ""
+    
 
     def compose(self):
-        yield TextualImage("")
-        yield Static("Dualshock", id="tx_nome")
-        yield Static("R$ 299,99", id="tx_preco")
-        yield Button("Adicionar ao carrinho", id="bt_comprar")
+        yield TextualImage(r"assets\apartamento1\5661162882.jpg", id="ti_imagem")
+        yield Static("Sala Comercial a venda no Centro de Porto Alegre", id="tx_nome")
+        yield Static("R$ 255.000,00", id="tx_preco")
+        yield Button("Ver mais", id="bt_comprar")
 
     def on_button_pressed(self, evento: Button.Pressed):
-        if evento.button.id == "bt_comprar":
-            mensagem = Controller.adicionar_no_carrinho(
-                self.id_imovel, self.query_one(Select).value)
-            self.screen.notify(mensagem)
-            if "ERRO" not in mensagem:
-                if self.app.get_screen("tela_carrinho_compras"):
-                    try:
-                        self.app.get_screen(
-                            "tela_carrinho_compras").atualizar()
-                    except Exception as e:
-                        pass
+        self.app.switch_screen("tela_dados_imovel")
 
 
 class TelaEstoqueCliente(Screen):
+    TITLE = "Imovéis"
 
     CSS_PATH = "css/TelaEstoqueCliente.tcss"
 
@@ -61,7 +55,7 @@ class TelaEstoqueCliente(Screen):
 
         for imovel in lista:
             if imovel.get_imagens():
-                container = Containerimovel()
+                container = ContainerImovel()
                 list_item = ListItem(name=imovel.get_nome())
                 list_view.append(list_item)
                 list_item.mount(container)
@@ -96,11 +90,13 @@ class TelaEstoqueCliente(Screen):
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
         with VerticalScroll():
             with HorizontalGroup(id="hg_pesquisa"):
-                yield Select([("genero", 'genero')], id="select_categoria")
+                yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
+                yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
+                yield Select([(valor, valor) for valor in Imovel.bairros])
                 yield Input()
                 yield Button("Remover", id="bt_remover")
             yield ListView(id="lst_item")
-            yield Footer()
+            yield Footer(show_command_palette=False)
 
     def _on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_comprar", Tab).id
@@ -109,15 +105,21 @@ class TelaEstoqueCliente(Screen):
 
         # self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
 
-        self.atualizar_imagens()
+        # self.atualizar_imagens()
+        
+        list_view = self.query_one(ListView)
+        container = ContainerImovel()
+        list_view.append(ListItem(container))
+        container.query_one("#ti_imagem").styles.width = 40
+        container.query_one("#ti_imagem").styles.height = 15
 
-        lista_categorias = []
-        for imovel in self.imoveis:
-            if imovel.get_categoria() not in lista_categorias:
-                lista_categorias.append(imovel.get_categoria())
-        self.query_one(Select).set_options(
-            [(categoria, categoria) for categoria in lista_categorias])
-        self.atualizar_imagens()
+        # lista_categorias = []
+        # for imovel in self.imoveis:
+        #     if imovel.get_categoria() not in lista_categorias:
+        #         lista_categorias.append(imovel.get_categoria())
+        # self.query_one(Select).set_options(
+        #     [(categoria, categoria) for categoria in lista_categorias])
+        # self.atualizar_imagens()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
