@@ -1,4 +1,4 @@
-from model import Cliente, Corretor, Imovel, Init, Captador, Administrador
+from model import Cliente, Corretor, Imovel, Init, Captador, Administrador, Gerente
 
 
 def cadastrar_pessoa(lista):

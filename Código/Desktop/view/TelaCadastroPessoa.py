@@ -5,7 +5,7 @@ from textual.containers import Grid, HorizontalGroup, VerticalGroup
 from textual import on
 
 from controller import Controller
-from model import Init, Corretor, Administrador
+from model import Init, Corretor, Administrador, Gerente
 
 
 class TelaCadastroPessoa(Screen):
@@ -21,34 +21,45 @@ class TelaCadastroPessoa(Screen):
     perfil_atual = None
 
     def compose(self):
+        
         yield Header()
+        
         if isinstance(Init.usuario_atual, Administrador.Administrador):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
-
         elif isinstance(Init.usuario_atual, Corretor.Corretor):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
+                
+        with Grid():
+                    yield Static("Username", id="stt_username")
+                    yield TextArea(placeholder="username aqui", id="inpt_username")
+                    yield Static("Senha", id="stt_senha")
+                    yield TextArea(placeholder="senha aqui", id="inpt_senha")
+                    yield Static("Nome", id="stt_nome")
+                    yield TextArea(placeholder="nome aqui", id="inpt_nome")
+                    yield Static("Email", id="stt_email")
+                    yield TextArea(placeholder="email aqui", id="inpt_email")
+                    yield Static("Telefone", id="stt_telefone")
+                    yield MaskedInput(template="(00) 00000-0000", id="inpt_telefone")
+                    yield Static("Endereco", id="stt_endereco")
+                    yield TextArea(placeholder="endereco aqui", id="inpt_endereco")
+                    yield Static("Idade", id="stt_idade")
+                    yield TextArea(placeholder="idade aqui", id="inpt_idade")
+                    yield Static("Data de nascimento", id="stt_data_nascimento")
+                    yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento")
+                    yield Static("CPF", id="stt_cpf")
+                    yield MaskedInput(template="000.000.000-00", id="inpt_cpf")
+                    yield Static("RG", id="stt_rg")
+                    yield TextArea(placeholder="rg aqui", id="inpt_rg")
+        with HorizontalGroup(id="hg_operacoes"):
+                    if isinstance(Init.usuario_atual, Administrador.Administrador):
+                        yield Select([("Comprador", "Comprador"), (
+                            "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")], allow_blank=False, id="select_tabelas")
+                    else:
+                        yield Select([("Comprador", "Comprador"), (
+                            "Proprietario", "Proprietario")], allow_blank=False, id="select_tabelas")
 
-        with HorizontalGroup(id="hg_first"):
-            with VerticalGroup(id="vg_left"):
-                if isinstance(Init.usuario_atual, Administrador.Administrador):
-                    yield Select([("Comprador", "Comprador"), (
-                        "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")], allow_blank=False, id="select_tabelas")
-                else:
-                    yield Select([("Comprador", "Comprador"), (
-                        "Proprietario", "Proprietario")], allow_blank=False, id="select_tabelas")
-
-                yield SelectionList[str]()
-            with VerticalGroup(id="vg_right"):
-                with Grid():
-                    yield Static("Name", classes="name")
-                    yield TextArea(placeholder="nome aqui", id="stt_nome", classes="name")
-                    yield Static("Regular_Price", classes="regular_price")
-                    yield TextArea(placeholder="preço aqui", classes="regular_price")
-                    yield Static("Description", classes="description")
-                    yield TextArea(placeholder="Descrição aqui", classes="description")
-                with HorizontalGroup(id="hg_operacoes"):
                     yield Select([("Adicionar", "Adicionar"), ("Editar", "Editar"), ("Remover", "Remover")], allow_blank=False, id="select_operacoes")
                     yield Button("Executar")
         yield Footer(show_command_palette=False)
@@ -74,54 +85,11 @@ class TelaCadastroPessoa(Screen):
         except:
             pass
 
-    @on(SelectionList.SelectedChanged)
-    def update_selected_view(self):
-        lista_selecionados = self.query_one(SelectionList).selected
-
-        for valor in self.montados:
-            if valor not in lista_selecionados:
-                self.montados.remove(valor)
-                self.query_one(Grid).query(f".{valor}").remove()
-            else:
-                lista_selecionados.remove(valor)
-
-        if len(lista_selecionados) > 0:
-            for valor in lista_selecionados:
-                if not self.query(f".{valor}"):
-
-                    for key, valor_construtor in Init.dict_objetos[self.tabela].__dict__.items():
-                        if key == valor:
-                            if isinstance(valor_construtor, str):
-                                self.query_one(Grid).mount(Static(content=valor.capitalize(),
-                                                                  classes=valor))
-                                self.query_one(Grid).mount(
-                                    TextArea(classes=valor))
-                            elif isinstance(valor_construtor, bool):
-                                self.query_one(Grid).mount(Static(content=valor.capitalize(),
-                                                                  classes=valor))
-                                self.query_one(Grid).mount(
-                                    Select([("True", True), ("False", False)], classes=valor, allow_blank=False))
-                            elif isinstance(valor_construtor, datetime.datetime):
-                                self.query_one(Grid).mount(Static(content=valor.capitalize(),
-                                                                  classes=valor))
-                                self.query_one(Grid).mount(MaskedInput(
-                                    template='00/00/0000 00:00', placeholder="dd/mm/yyyy hh:mm", classes=valor))
-                            else:
-                                pass
-                    self.montados.append(valor)
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_pessoa", Tab).id
 
-    def atualizar(self):
-        self.query_one(SelectionList).clear_options()
-
-        self.montados = []
-        self.query_one(Grid).remove_children()
-
-        self.query_one(SelectionList).add_options((name, name)
-                                                  for name in Init.dict_objetos[self.tabela.lower()].__dict__.keys() if not name.startswith("_"))
 
     def on_select_changed(self, evento: Select.Changed):
 
@@ -131,12 +99,24 @@ class TelaCadastroPessoa(Screen):
             if isinstance(Init.usuario_atual, Administrador.Administrador):
                 self.query_one("#select_tabelas", Select).set_options(
                     [("Comprador", "Comprador"), (
-                        "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")])
+                        "Proprietário", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador"), ("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
+            elif isinstance(Init.usuario_atual, Gerente.Gerente):
+                self.query_one("#select_tabelas", Select).set_options([("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
             else:
                 self.query_one("#select_tabelas", Select).set_options([("Comprador", "Comprador"), (
-                    "Proprietario", "Proprietario")])
+                    "Proprietário", "Proprietario")])
+                
+            if self.tabela == "proprietario":
+                self.query_one(Grid).query_one("stt_username").styles.display = "none"
+                self.query_one(Grid).query_one("inpt_username").styles.display = "none"
+                self.query_one(Grid).query_one("stt_senha").styles.display = "none"
+                self.query_one(Grid).query_one("inpt_senha").styles.display = "none"
+            else:
+                self.query_one(Grid).query_one("stt_username").styles.display = "block"
+                self.query_one(Grid).query_one("inpt_username").styles.display = "block"
+                self.query_one(Grid).query_one("stt_senha").styles.display = "block"
+                self.query_one(Grid).query_one("inpt_senha").styles.display = "block"
 
-            self.atualizar()
 
         else:
             match evento.select.value:
