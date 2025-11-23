@@ -1,6 +1,8 @@
 from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Administrador
 from model.Imovel import Categoria, Status
 from database import Banco
+import io
+from PIL import Image
 
 class Init:
     
@@ -37,7 +39,6 @@ class Init:
 
     def inicializar():
 
-        if not Init.imobiliaria.get_lista_compradores():
 
             cliente2 = Cliente.Comprador("PEDRO", "22222222222", "22222222222",
                                          "22222222222", "PEDRO@GMAIL.COM")
@@ -60,7 +61,6 @@ class Init:
             Init.imobiliaria.cadastrar_comprador(cliente8)
             Init.imobiliaria.cadastrar_comprador(cliente6)
 
-        if not Init.imobiliaria.get_lista_proprietarios():
 
             cliente3 = Cliente.Proprietario("JULIA", "33333333333", "33333333333",
                                             "33333333333", "JULIA@GMAIL.COM")
@@ -81,7 +81,7 @@ class Init:
             Init.imobiliaria.cadastrar_proprietario(cliente7)
             Init.imobiliaria.cadastrar_proprietario(cliente9)
 
-        if not Init.imobiliaria.get_estoque().get_lista_imoveis():
+       
 
             endereco1 = Endereco.Endereco(
                 "Avenida Bento Gonçalves", 205, "Partenon", "90650002")
@@ -92,13 +92,46 @@ class Init:
             imovel3 = Imovel.Imovel(
                 endereco1, Status.VENDA, Categoria.APARTAMENTO)
             
+            imagens = [r"assets\apartamento1\5661162882.jpg", r"assets\apartamento2\5661211031.jpg"]
             
-            Init.banco.cadastrar_endereco(endereco1)
-
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel2)
-            Init.imobiliaria.get_estoque().cadastrar_imovel(imovel3)
-
+            imovel2.set_imagens(imagens)
+            imovel3.set_imagens(imagens)
             
+            resultado = Init.banco.cadastrar_endereco(endereco1)
+            
+            print(resultado)
+            
+            resultado = Init.imobiliaria.get_estoque().cadastrar_imovel(imovel2)
+            print(resultado)
+            resultado = Init.imobiliaria.get_estoque().cadastrar_imovel(imovel3)
+            print(resultado)
+            
+            with open(r"assets\apartamento1\5661162882.jpg", 'rb') as file:
+                binary_data = file.read()
+                
+            
+            
+            resultado = Init.banco.cadastrar_anexo(1, binary_data, "Imagem")
+            print(resultado)
+            
+            resultado = Init.banco.cadastrar_anexo(2, binary_data, "Imagem")
+            print(resultado)
+            
+            
+            
+            with open(r"assets\apartamento2\5661211031.jpg", 'rb') as file:
+                binary_data2 = file.read()
+                
+            resultado = Init.banco.cadastrar_anexo(2, binary_data2, "Imagem")
+            print(resultado)
+                
+            resultado = Init.banco.cadastrar_anexo(1, binary_data2, "Imagem")
+            print(resultado)
+            
+            
+           
+            
+
             # imovel3 = Imovel.Imovel()
             # imovel4 = Imovel.Imovel()
             # imovel5 = Imovel.Imovel()

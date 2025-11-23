@@ -91,7 +91,7 @@ class TelaLogin(Screen):
             # login = Controller.verificar_login(dados)
             # self.notify(login)
             # if "ERRO" not in login:
-            #
+            
             # Init.imobiliaria.cadastrar(Init.usuario_atual)
 
         if self.query_one(Select).value == "Cliente":

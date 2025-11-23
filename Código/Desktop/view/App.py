@@ -3,9 +3,10 @@ from textual.binding import Binding
 
 from model import Init
 
-from view import TelaCadastroPessoa, TelaDadosImobiliaria, TelaLogin, TelaEstoque, TelaCadastroImovel
+from view import TelaCadastroPessoa, TelaLogin, TelaEstoque, TelaCadastroImovel
 from view.cliente import TelaDadosCliente, TelaEstoqueCliente, TelaDadosImovel
 from view.admin import TelaServidor
+from view.gerente import TelaDadosImobiliaria
 
 
 class App(App):

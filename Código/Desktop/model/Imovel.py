@@ -104,7 +104,9 @@ class Imovel:
         self.situacao = ""
         self.ocupacao = ""
         self.proprietario = ""
-        self.corretor_vinculado = ""
+        self.corretor = ""
+        self.captador = ""
+        
         
     def gerar_codigo(self):
         Imovel.codigo += 1
@@ -290,8 +292,20 @@ class Imovel:
     def set_proprietario(self, value):
         self.proprietario = value
 
-    def get_corretor_vinculado(self):
-        return self.corretor_vinculado
+    def get_corretor(self):
+        return self.corretor
 
-    def set_corretor_vinculado(self, value):
-        self.corretor_vinculado = value
+    def set_corretor(self, corretor):
+        self.corretor = corretor
+        
+    def get_captador(self):
+        return self.captador
+    
+    def set_captador(self, captador):
+        self.captador = captador
+    
+    def set_endereco(self, endereco):
+        self.endereco = endereco
+        
+    def get_endereco(self):
+        return self.endereco

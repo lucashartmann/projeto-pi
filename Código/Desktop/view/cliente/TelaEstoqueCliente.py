@@ -3,7 +3,7 @@ from textual import on
 from textual.screen import Screen
 from textual.containers import VerticalScroll, HorizontalGroup, Container
 
-from textual_image.widget import Image as TextualImage
+from textual_image.widget import Image
 
 from model import Init, Administrador, Corretor, Cliente, Imovel
 from controller import Controller
@@ -17,10 +17,9 @@ class ContainerImovel(Container):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.id_imovel = ""
-    
 
     def compose(self):
-        yield TextualImage(r"assets\apartamento1\5661162882.jpg", id="ti_imagem")
+        yield Image(r"", id="ti_imagem")
         yield Static("Sala Comercial a venda no Centro de Porto Alegre", id="tx_nome")
         yield Static("R$ 255.000,00", id="tx_preco")
         yield Button("Ver mais", id="bt_comprar")
@@ -43,10 +42,13 @@ class TelaEstoqueCliente(Screen):
     montou = False
 
     def atualizar_imagens(self):
-        self.imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+        self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
-        lista = self.imoveis
+        lista = []
+        if self.imoveis:
+            lista = self.imoveis
+            
         if len(self.imoveis_filtrados) > 0:
             lista = self.imoveis_filtrados
 
@@ -59,11 +61,12 @@ class TelaEstoqueCliente(Screen):
                 list_item = ListItem(name=imovel.get_nome())
                 list_view.append(list_item)
                 list_item.mount(container)
-                container.query_one(TextualImage).image = BytesIO(
+
+                container.query_one("#ti_imagem").image = BytesIO(
                     imovel.get_imagens()[0])
 
-                container.query_one(TextualImage).styles.height = 13
-                container.query_one(TextualImage).styles.width = 30
+                container.query_one("#ti_imagem").styles.width = 40
+                container.query_one("#ti_imagem").styles.height = 15
 
                 if imovel.get_titulo(
                 ):
@@ -102,24 +105,7 @@ class TelaEstoqueCliente(Screen):
         self.query_one(Tabs).active = self.query_one("#tab_comprar", Tab).id
 
     def on_mount(self):
-
-        # self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
-
-        # self.atualizar_imagens()
-        
-        list_view = self.query_one(ListView)
-        container = ContainerImovel()
-        list_view.append(ListItem(container))
-        container.query_one("#ti_imagem").styles.width = 40
-        container.query_one("#ti_imagem").styles.height = 15
-
-        # lista_categorias = []
-        # for imovel in self.imoveis:
-        #     if imovel.get_categoria() not in lista_categorias:
-        #         lista_categorias.append(imovel.get_categoria())
-        # self.query_one(Select).set_options(
-        #     [(categoria, categoria) for categoria in lista_categorias])
-        # self.atualizar_imagens()
+        self.atualizar_imagens()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:

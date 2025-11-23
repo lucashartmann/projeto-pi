@@ -1,5 +1,5 @@
 class Captador():
-    def __init__(self, nome, cpf, rg, telefone, endereco, email):
+    def __init__(self, nome, cpf_cnpj, rg, telefone, endereco, email):
         self.turno = ""
         self.salario = 0.0
         self.matricula = ""
@@ -9,7 +9,7 @@ class Captador():
         self.telefones = []
         self.id = 0
         self.nome = nome
-        self.cpf = cpf
+        self.cpf_cnpj = cpf_cnpj
         self.rg = rg
         self.telefone = telefone
         self.endereco = endereco
@@ -70,11 +70,11 @@ class Captador():
     def set_nome(self, value):
         self.nome = value
 
-    def get_cpf(self):
-        return self.cpf
+    def get_cpf_cnpj(self):
+        return self.cpf_cnpj
 
-    def set_cpf(self, value):
-        self.cpf = value
+    def set_cpf_cnpj(self, value):
+        self.cpf_cnpj = value
 
     def get_rg(self):
         return self.rg

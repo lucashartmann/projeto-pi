@@ -66,7 +66,7 @@ class TelaDadosCliente(Screen):
                 yield Static("Nome")
                 yield TextArea(Init.usuario_atual.get_nome())
                 yield Static("CPF")
-                yield TextArea(Init.usuario_atual.get_cpf())
+                yield TextArea(Init.usuario_atual.get_cpf_cnpj())
                 yield Static("RG")
                 yield TextArea(Init.usuario_atual.get_rg())
                 yield Static("Telefone")
