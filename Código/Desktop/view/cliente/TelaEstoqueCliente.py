@@ -98,8 +98,8 @@ class TelaEstoqueCliente(Screen):
         with VerticalScroll():
             with HorizontalGroup(id="hg_pesquisa"):
                 yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
-                yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
-                yield Select([(valor, valor) for valor in Imovel.bairros])
+                yield Select([(valor.value, valor) for valor in Imovel.Categoria])
+                # yield Select([(valor, valor) for valor in Imovel.bairros])
                 yield Input()
                 yield Button("Remover", id="bt_remover")
             yield ListView(id="lst_item")

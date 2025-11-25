@@ -6,26 +6,47 @@ TelaCadastroImovel #h_buttons{
     height: auto;
 }
 
-#ta_banheiros, #ta_vagas, #ta_varandas, #ta_quartos, #ta_estado, #ta_salas {
+#ta_banheiros, #ta_vagas, #ta_varandas, #ta_quartos, #ta_estado, #ta_salas, #ta_numero, #ta_bloco {
     width: 24%;
 }
 
-#ta_nome_condominio, #ta_rua {
-    column-span: 2;
+#ta_nome_condominio {
+    column-span: 5;
+}
+
+#ta_estado{
+    column-span: 5;
+}
+
+#ta_area_privativa {
+    column-span: 7;
+}
+
+#ta_ref{
+    column-span: 3;
+}
+
+#select_estado {
+    column-span: 3;
 }
 
 
+#ta_complemento {
+    width: 45%;
+}
 
 TelaCadastroImovel #container_cadastro {
     width: 100%;
     height: 100%;
-    grid-size: 6;
+    grid-size: 10;
     margin: 1 2 2 2;
     background: rgba(225, 216, 216, 0.87);
+    grid-columns: 20;
 }
 
 TelaCadastroImovel #container_cadastro TextArea {
     height: 60%;
+    
 }
 
 TelaCadastroImovel #container_cadastro Static {
@@ -45,7 +66,9 @@ TelaCadastroImovel #container_info_condominio {
 }
 
 TelaCadastroImovel #container_imagens {
-    display: none;
+    width: 100%;
+    height: auto;
+    background: white;
 }
 
 TelaCadastroImovel #container_info_imovel {
@@ -55,4 +78,19 @@ TelaCadastroImovel #container_info_imovel {
 
 TelaCadastroImovel #container_info {
     display: none;
+}
+
+.stt_container_titulo {
+    text-align: center;
+    background: rgb(200,200,200);
+    width: 100%;
+    height: 10%;
+    color: black;
+}
+
+#container_captador, #container_corretor, #container_proprietario {
+    background: rgb(200,200,200);
+    margin-top: 2;
+    width: 100%;
+    height: 30%;
 }

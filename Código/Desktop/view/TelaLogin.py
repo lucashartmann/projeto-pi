@@ -1,10 +1,7 @@
 from textual.screen import Screen
-from textual.widgets import Input, Button, Select, Label, Header, Footer
+from textual.widgets import Input, Button, Select, Label, Header, Footer, Switch
 from textual.containers import VerticalGroup
-from textual.events import Click
-
-from textual_image.widget import Image
-from textual_image.widget.sixel import _ImageSixelImpl
+from textual.app import SystemCommand
 
 from model import Init
 from controller import Controller
@@ -15,21 +12,16 @@ class MyInput(Input):
         super().__init__(*args, **kwargs)
 
     def compose(self):
-        yield Image("assets/olho_fechado.png")
+        yield Switch()
 
     def on_mount(self):
-        self.query_one(Image).styles.dock = "right"
+        self.query_one(Switch).styles.dock = "right"
 
-    def on_click(self, evento: Click):
-        if isinstance(evento.widget, _ImageSixelImpl):
-
-            if self.password:
-                self.password = False
-                self.query_one(Image).image = "assets/olho_aberto.png"
-
-            else:
-                self.password = True
-                self.query_one(Image).image = "assets/olho_fechado.png"
+    def on_switch_changed(self, evento: Switch.Changed):
+        if evento.switch.value == True:
+            self.password = False
+        else:
+            self.password = True
 
 
 class TelaLogin(Screen):
@@ -37,7 +29,7 @@ class TelaLogin(Screen):
     CSS_PATH = "css/TelaLogin.tcss"
     montou = False
     TITLE = "Login"
-
+   
     def compose(self):
         yield Header()
         with VerticalGroup():

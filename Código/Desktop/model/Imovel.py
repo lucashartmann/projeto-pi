@@ -1,25 +1,6 @@
 from enum import Enum
 from model import Endereco
 
-
-bairros = [
-    "Aberta dos Morros", "Agronomia", "Anchieta", "Arquipélago", "Auxiliadora", "Azenha",
-    "Bela Vista", "Belém Novo", "Belém Velho", "Boa Vista", "Bom Jesus", "Bom Fim",
-    "Camaquã", "Cascata", "Cavalhada", "Centro Histórico", "Chácara das Pedras", "Cidade Baixa",
-    "Coronado", "Cristal", "Cristo Redentor", "Espírito Santo", "Farrapos", "Floresta",
-                "Glória", "Guarujá", "Higienópolis", "Hípica", "Humaitá", "Independência", "Ipanema",
-                "Jardim Botânico", "Jardim Carvalho", "Jardim do Salso", "Jardim Europa", "Jardim Floresta",
-                "Jardim Isabel", "Lagoa da Conceição", "Lami", "Lomba do Pinheiro", "Menino Deus",
-                "Moinhos de Vento", "Mont'Serrat", "Navegantes", "Nonoai", "Passo da Areia",
-                "Passo D'Areia", "Partenon", "Petrópolis", "Ponta Grossa", "Praia de Belas",
-                "Restinga", "Rio Branco", "Rubem Berta", "Santa Cecília", "Santa Maria Goretti",
-                "Santa Teresa", "Santana", "Santo Antônio", "Sarandi", "São Geraldo", "São João",
-                "São José", "São Sebastião", "Serraria", "Terra Nova", "Três Figueiras", "Tristeza",
-                "Vila Assunção", "Vila Conceição", "Vila Ipiranga", "Vila Jardim", "Vila João Pessoa",
-                "Vila Nova", "Vila São José"
-]
-
-
 class Categoria(Enum):
     SALA_COMERCIAL = "Sala Comercial"
     APARTAMENTO = "Apartamento"
@@ -34,12 +15,12 @@ class Categoria(Enum):
     PREDIO_COMERCIAL = "Prédio Comercial"
     PONTO_COMERCIAL = "Ponto Comercial"
     EMPREENDIMENTO = "Empreendimento"
-    CASA_EM_CONDOMINIO = "Casa em Condominio"
+    CASA_EM_CONDOMINIO = "Casa em Condomínio"
     SOBRADO = "Sobrado"
-    SITIO = "Sitio"
+    SITIO = "Sítio"
     TERRENO = "Terreno"
     KITNET = "Kitnet"
-    CHACARA = "Chacara"
+    CHACARA = "Chácara"
     FAZENDA = "Fazenda"
 
 
@@ -62,11 +43,11 @@ class Estado(Enum):
 
 
 class Status(Enum):
-    VENDIDO = "Vendido"
     VENDA = "Venda"
     ALUGUEL = "Aluguel"
     VENDA_ALUGUEL = "Venda_Aluguel"
     ALUGADO = "Alugado"
+    VENDIDO = "Vendido"
     PENDENTE = "Pendente"
 
 

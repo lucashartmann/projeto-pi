@@ -1,7 +1,7 @@
 from textual.screen import Screen
 from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button, Header, Footer
 from textual.containers import Horizontal, Vertical, Grid, Container, VerticalScroll
-
+import requests
 
 from model import Init, Imovel, Administrador, Corretor, Gerente
 
@@ -19,7 +19,42 @@ class PopUp(Container):
 class TelaCadastroImovel(Screen):
 
     CSS_PATH = "css/TelaCadastroImovel.tcss"
+    
+    def on_text_area_changed(self, evento: TextArea.Changed):
+        if evento.text_area.id == "ta_cep":
+            cep = str(evento.text_area.text.strip())
+            print(cep)
+            print(len(cep))
+            
+            self.query_one("#ta_bairro", TextArea).clear()
+            self.query_one("#ta_estado", MaskedInput).clear()
+            self.query_one("#ta_rua", TextArea).clear()
+            self.query_one("#ta_cidade", TextArea).clear()
+            
+            if len(cep) > 7:
+                try:
+                    link = f"https://viacep.com.br/ws/{cep}/json/"
 
+                    requisicao = requests.get(link)
+                    dados = requisicao.json()
+                    
+                    
+                    
+                    logradouro = dados["logradouro"]
+                    bairro = dados["bairro"]
+                    cidade = dados["localidade"]
+                    uf = dados["uf"]
+                    
+                    print(logradouro)
+                    print(type(logradouro))
+                    
+                    self.query_one("#ta_bairro", TextArea).text = bairro
+                    self.query_one("#ta_estado", MaskedInput).value = uf
+                    self.query_one("#ta_rua", TextArea).text = logradouro
+                    self.query_one("#ta_cidade", TextArea).text = cidade
+                except Exception as e:
+                    pass
+                
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
@@ -35,24 +70,25 @@ class TelaCadastroImovel(Screen):
             with Horizontal(id="h_buttons"):
                 yield Button("Apagar")
                 yield Button("Salvar")
-            yield Tabs(Tab("Imovel"), Tab("Info+"))
             with Grid(id="container_cadastro"):
-                yield Static("ref:")
-                yield TextArea(read_only=True)
-                yield Static("Categoria:")
-                yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
-                yield Static("Situação:")
-                yield Select([(valor, valor) for valor in Imovel.Situacao._member_names_])
-                yield Static("Estado:")
-                yield Select([(valor, valor) for valor in Imovel.Estado._member_names_])
-                yield Static("Ocupação:")
-                yield Select([(valor, valor) for valor in Imovel.Ocupacao._member_names_])
-                yield Static("Status:")
-                yield Select([(valor, valor) for valor in Imovel.Status._member_names_])
+                yield Static("ref:", id="stt_ref")
+                yield TextArea(read_only=True, id="ta_ref")
+                yield Static("Categoria:", id="stt_categoria")
+                yield Select([(valor.value, valor) for valor in Imovel.Categoria], id="select_categoria")
+                yield Static("Situação:", id="stt_situacao")
+                yield Select([(valor.value, valor) for valor in Imovel.Situacao], id="select_situacao")
+                yield Static("Estado:", id="stt_estado_select")
+                yield Select([(valor.value, valor) for valor in Imovel.Estado], id="select_estado")
+                yield Static("Ocupação:", id="stt_ocupacao")
+                yield Select([(valor.value, valor) for valor in Imovel.Ocupacao], id="select_ocupacao")
+                yield Static("Status:", id="stt_status")
+                yield Select([(valor.value, valor) for valor in Imovel.Status], id="select_status")
                 yield Static("Nome do Condomínio", id="stt_nome_condominio")
                 yield TextArea(id="ta_nome_condominio")
                 yield Static("Rua", id="stt_rua")
                 yield TextArea(disabled=True, id="ta_rua")
+                yield Static("Número", id="stt_numero")
+                yield TextArea(id="ta_numero")
                 yield Static("Complemento", id="stt_complemento")
                 yield TextArea(id="ta_complemento")
                 yield Static("Bloco", id="stt_bloco")
@@ -147,9 +183,12 @@ class TelaCadastroImovel(Screen):
                 # for i in ....
                 #     yield Image()
 
-            yield Static("Proprietario: ")
-            yield Static("Corretor: ")
-            yield Static("Captador: ")
+            with Vertical(id="container_proprietario"):
+                yield Static("Proprietario: ", classes="stt_container_titulo")
+            with Vertical(id="container_corretor"):
+                yield Static("Corretor: ", classes="stt_container_titulo")
+            with Vertical(id="container_captador"):
+                yield Static("Captador: ", classes="stt_container_titulo")
         yield Footer(show_command_palette=False)
 
     def on_screen_resume(self):
