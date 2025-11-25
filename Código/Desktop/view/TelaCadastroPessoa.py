@@ -86,40 +86,40 @@ class TelaCadastroPessoa(Screen):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_pessoa", Tab).id
 
+    def on_mount(self):
+        if isinstance(Init.usuario_atual, Administrador.Administrador):
+            self.query_one("#select_tabelas", Select).set_options(
+                [("Comprador", "Comprador"), (
+                    "Proprietário", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador"), ("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
+        elif isinstance(Init.usuario_atual, Gerente.Gerente):
+            self.query_one("#select_tabelas", Select).set_options(
+                [("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
+        else:
+            self.query_one("#select_tabelas", Select).set_options([("Comprador", "Comprador"), (
+                "Proprietário", "Proprietario")])
+
     def on_select_changed(self, evento: Select.Changed):
 
         if evento.select.id == "select_tabelas":
-            self.tabela = evento.select.value.lower()
 
-            if isinstance(Init.usuario_atual, Administrador.Administrador):
-                self.query_one("#select_tabelas", Select).set_options(
-                    [("Comprador", "Comprador"), (
-                        "Proprietário", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador"), ("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
-            elif isinstance(Init.usuario_atual, Gerente.Gerente):
-                self.query_one("#select_tabelas", Select).set_options(
-                    [("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
-            else:
-                self.query_one("#select_tabelas", Select).set_options([("Comprador", "Comprador"), (
-                    "Proprietário", "Proprietario")])
-
-            if self.tabela == "proprietario":
+            if evento.select.value.lower() == "proprietario":
                 self.query_one(Grid).query_one(
-                    "stt_username").styles.display = "none"
+                    "#stt_username").styles.display = "none"
                 self.query_one(Grid).query_one(
-                    "inpt_username").styles.display = "none"
+                    "#inpt_username").styles.display = "none"
                 self.query_one(Grid).query_one(
-                    "stt_senha").styles.display = "none"
+                    "#stt_senha").styles.display = "none"
                 self.query_one(Grid).query_one(
-                    "inpt_senha").styles.display = "none"
+                    "#inpt_senha").styles.display = "none"
             else:
                 self.query_one(Grid).query_one(
-                    "stt_username").styles.display = "block"
+                    "#stt_username").styles.display = "block"
                 self.query_one(Grid).query_one(
-                    "inpt_username").styles.display = "block"
+                    "#inpt_username").styles.display = "block"
                 self.query_one(Grid).query_one(
-                    "stt_senha").styles.display = "block"
+                    "#stt_senha").styles.display = "block"
                 self.query_one(Grid).query_one(
-                    "inpt_senha").styles.display = "block"
+                    "#inpt_senha").styles.display = "block"
 
         else:
             match evento.select.value:

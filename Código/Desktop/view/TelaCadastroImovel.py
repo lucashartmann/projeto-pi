@@ -1,6 +1,6 @@
 from textual.screen import Screen
 from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button, Header, Footer
-from textual.containers import Horizontal, Vertical, Grid, Container, VerticalScroll
+from textual.containers import Horizontal, Vertical, Grid, Container, VerticalScroll, Center
 import requests
 
 from model import Init, Imovel, Administrador, Corretor, Gerente
@@ -19,57 +19,56 @@ class PopUp(Container):
 class TelaCadastroImovel(Screen):
 
     CSS_PATH = "css/TelaCadastroImovel.tcss"
-    
+
     def on_text_area_changed(self, evento: TextArea.Changed):
         if evento.text_area.id == "ta_cep":
             cep = str(evento.text_area.text.strip())
             print(cep)
             print(len(cep))
-            
+
             self.query_one("#ta_bairro", TextArea).clear()
             self.query_one("#ta_estado", MaskedInput).clear()
             self.query_one("#ta_rua", TextArea).clear()
             self.query_one("#ta_cidade", TextArea).clear()
-            
+
             if len(cep) > 7:
                 try:
                     link = f"https://viacep.com.br/ws/{cep}/json/"
 
                     requisicao = requests.get(link)
                     dados = requisicao.json()
-                    
-                    
-                    
+
                     logradouro = dados["logradouro"]
                     bairro = dados["bairro"]
                     cidade = dados["localidade"]
                     uf = dados["uf"]
-                    
+
                     print(logradouro)
                     print(type(logradouro))
-                    
+
                     self.query_one("#ta_bairro", TextArea).text = bairro
                     self.query_one("#ta_estado", MaskedInput).value = uf
                     self.query_one("#ta_rua", TextArea).text = logradouro
                     self.query_one("#ta_cidade", TextArea).text = cidade
                 except Exception as e:
                     pass
-                
+
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
-
         elif isinstance(Init.usuario_atual, Corretor.Corretor):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
+        with Horizontal(id="h_buttons"):
+            yield Button("Apagar")
+            yield Button("Salvar")
+
         with VerticalScroll():
-            yield Tabs(Tab("Cadastro"), Tab("Anuncio"), Tab("Imagens"))
-            with Horizontal(id="h_buttons"):
-                yield Button("Apagar")
-                yield Button("Salvar")
+            yield Tabs(Tab("Cadastro", id="tab_imovel"), Tab("Anuncio", id="tab_anuncio"), id="tabs_anuncio")
+
             with Grid(id="container_cadastro"):
                 yield Static("ref:", id="stt_ref")
                 yield TextArea(read_only=True, id="ta_ref")
@@ -124,7 +123,15 @@ class TelaCadastroImovel(Screen):
                 yield Static("Valor IPTU:", id="stt_iptu")
                 yield MaskedInput(template="R$000.000.000", id="ta_iptu")
 
-            with Vertical(id="container_info"):
+            with Vertical(id="container_anuncio"):
+                yield Static("Titulo")
+                with Center():
+                    yield TextArea(id="ta_titulo_anuncio")
+                yield Static("Descriçao")
+                with Center():
+                    yield TextArea(id="ta_descricao_anuncio")
+                yield Static("Apartamento")
+
                 with Grid(id="container_info_imovel"):
                     yield Checkbox("Aceita Pet")
                     yield Checkbox("Churrasqueira")
@@ -142,6 +149,7 @@ class TelaCadastroImovel(Screen):
                     yield Checkbox("Dispensa")
                     yield Checkbox("Deposito")
 
+                yield Static("Condomínio")
                 with Grid(id="container_info_condominio"):
                     yield Checkbox("Churrasqueira Coletiva")
                     yield Checkbox("Piscina")
@@ -172,12 +180,6 @@ class TelaCadastroImovel(Screen):
                     yield Checkbox("Heliponto")
                     yield Checkbox("Elevador de Serviço")
 
-            with Vertical(id="container_anuncio"):
-                yield Static("Titulo")
-                yield TextArea()
-                yield Static("Descriçao")
-                yield TextArea()
-
             with Grid(id="container_imagens"):
                 yield Button("Editar")
                 # for i in ....
@@ -196,20 +198,28 @@ class TelaCadastroImovel(Screen):
             "#tab_cadastro_imovel", Tab).id
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        try:
-            if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                self.app.switch_screen("tela_estoque")
-            elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-                self.app.switch_screen("tela_cadastro_pessoa")
-            elif isinstance(Init.usuario_atual, Gerente.Gerente):
-                if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                    self.app.switch_screen("tela_dados_imobiliaria")
-            elif isinstance(Init.usuario_atual, Administrador.Administrador):
-                if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                    self.app.switch_screen("tela_servidor")
-            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                self.app.switch_screen("tela_estoque_cliente")
-            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                self.app.switch_screen("tela_dados_cliente")
-        except:
-            pass
+        if event.tabs.id == "tabs_anuncio":
+            if event.tabs.active == self.query_one("#tab_anuncio", Tab).id:
+                self.query_one("#container_cadastro").display = "none"
+                self.query_one("#container_anuncio").display = "block"
+            else:
+                self.query_one("#container_anuncio").display = "none"
+                self.query_one("#container_cadastro").display = "block"
+        else:
+            try:
+                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                    self.app.switch_screen("tela_estoque")
+                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                    self.app.switch_screen("tela_cadastro_pessoa")
+                elif isinstance(Init.usuario_atual, Gerente.Gerente):
+                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                        self.app.switch_screen("tela_dados_imobiliaria")
+                elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                        self.app.switch_screen("tela_servidor")
+                elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
+                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                    self.app.switch_screen("tela_dados_cliente")
+            except:
+                pass

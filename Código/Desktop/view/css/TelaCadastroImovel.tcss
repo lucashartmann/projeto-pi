@@ -80,6 +80,61 @@ TelaCadastroImovel #container_info {
     display: none;
 }
 
+#container_anuncio {
+    background: white;
+    width: 100%;
+    height: auto;
+    content-align: center middle;
+    margin: 2;
+}
+
+#container_anuncio #ta_titulo_anuncio {
+   height: 3;
+}
+
+Checkbox {
+    background: white;
+    width: auto;
+    height: auto;
+}
+
+
+#container_anuncio #container_info_imovel {
+    height: auto;
+    display: block;
+    grid-size: 6;
+    grid-columns: 32;
+    align: center middle;
+}
+
+#container_anuncio #container_info_condominio{
+    height: auto;
+    display: block;
+    grid-size: 6;
+    grid-columns: 31.5;
+    align: center middle;
+}
+
+#container_anuncio TextArea {
+    background: white;
+    width: 50%;
+    height: 10;
+    color: black;
+}
+
+#container_anuncio #container_info_condominio Static{
+    margin:0;
+}
+
+#container_anuncio #container_info_imovel Static{
+    margin:0;
+}
+#container_anuncio Static {
+    text-align: center;
+    margin: 1 0 1 0;
+}
+
+
 .stt_container_titulo {
     text-align: center;
     background: rgb(200,200,200);

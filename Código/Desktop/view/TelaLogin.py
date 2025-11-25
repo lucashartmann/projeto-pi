@@ -1,7 +1,6 @@
 from textual.screen import Screen
 from textual.widgets import Input, Button, Select, Label, Header, Footer, Switch
 from textual.containers import VerticalGroup
-from textual.app import SystemCommand
 
 from model import Init
 from controller import Controller
@@ -29,7 +28,7 @@ class TelaLogin(Screen):
     CSS_PATH = "css/TelaLogin.tcss"
     montou = False
     TITLE = "Login"
-   
+
     def compose(self):
         yield Header()
         with VerticalGroup():

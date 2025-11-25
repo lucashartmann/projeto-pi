@@ -1,4 +1,4 @@
-from textual.app import App, SystemCommand
+from textual.app import App
 from textual.binding import Binding
 
 from model import Init
@@ -7,7 +7,6 @@ from view import TelaCadastroPessoa, TelaLogin, TelaEstoque, TelaCadastroImovel,
 from view.cliente import TelaDadosCliente, TelaEstoqueCliente, TelaDadosImovel
 from view.admin import TelaServidor
 from view.gerente import TelaDadosImobiliaria
-
 
 
 class App(App):
@@ -29,12 +28,10 @@ class App(App):
     BINDINGS = {
         Binding("ctrl+q", "app.quit", "Sair"),
     }
-    
 
     def on_mount(self):
         Init.inicializar()
         self.push_screen("tela_login")
-       
 
     def action_cadastro(self):
         tela_login = self.get_screen("tela_login")
