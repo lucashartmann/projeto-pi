@@ -6,22 +6,26 @@ TelaCadastroImovel #h_buttons{
     height: auto;
 }
 
+#ta_banheiros, #ta_vagas, #ta_varandas, #ta_quartos, #ta_estado, #ta_salas {
+    width: 24%;
+}
+
+#ta_nome_condominio, #ta_rua {
+    column-span: 2;
+}
+
+
 
 TelaCadastroImovel #container_cadastro {
     width: 100%;
     height: 100%;
-    grid-size: 6 10;
+    grid-size: 6;
     margin: 1 2 2 2;
-    grid-gutter: 2;
-    background: rgba(182, 178, 178, 1);
-}
-
-TelaCadastroImovel #container_cadastro Tabs {
-    column-span: 6;
+    background: rgba(225, 216, 216, 0.87);
 }
 
 TelaCadastroImovel #container_cadastro TextArea {
-    height: 100%;
+    height: 60%;
 }
 
 TelaCadastroImovel #container_cadastro Static {

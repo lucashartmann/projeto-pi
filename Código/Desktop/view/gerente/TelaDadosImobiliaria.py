@@ -6,7 +6,7 @@ from textual.widgets import Tab, Tabs, Static, Header, Footer
 from textual.containers import VerticalGroup, Grid
 
 
-from model import Init, Administrador, Corretor
+from model import Init, Administrador, Gerente
 
 
 class TelaDadosImobiliaria(Screen):
@@ -55,7 +55,6 @@ class TelaDadosImobiliaria(Screen):
         self.query_one(Grid).mount(container)
         container.mount(Static("Quantidade de funcionarios"))
         container.mount(Static("0", classes="valor"))
-        
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
@@ -65,7 +64,7 @@ class TelaDadosImobiliaria(Screen):
                 self.app.switch_screen("tela_cadastro_imovel")
             elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
                 self.app.switch_screen("tela_cadastro_pessoa")
-            elif isinstance(Init.usuario_atual, Corretor.Corretor):
+            elif isinstance(Init.usuario_atual, Gerente.Gerente):
                 if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
                     self.app.switch_screen("tela_dados_imobiliaria")
             elif isinstance(Init.usuario_atual, Administrador.Administrador):

@@ -1,33 +1,54 @@
-from textual.widgets import Static, Button, ListItem, ListView, Footer, Header, Select, Checkbox, Input, Tab, Tabs
-from textual import on
+from textual.widgets import Static, Button, Footer, Header, Checkbox, Tab, Tabs
 from textual.screen import Screen
-from textual.containers import VerticalScroll, HorizontalGroup, Container, VerticalGroup, Grid
+from textual.containers import VerticalScroll, HorizontalGroup, Grid
 
-from textual_image.widget import Image 
+from textual_image.widget import Image
 
-from model import Init, Administrador, Corretor, Cliente, Imovel
-from controller import Controller
-
-from io import BytesIO
+from model import Init, Administrador, Gerente, Cliente
 
 
 class TelaDadosImovel(Screen):
     TITLE = "Dados do Imóvel"
-    
+
     CSS_PATH = "css/TelaDadosImovel.tcss"
-    
+
+    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+        try:
+            if not isinstance(Init.usuario_atual, Cliente.Comprador):
+                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                    self.app.switch_screen("tela_estoque")
+                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_imovel")
+                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                    self.app.switch_screen("tela_cadastro_pessoa")
+                elif isinstance(Init.usuario_atual, Gerente.Gerente):
+                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                        self.app.switch_screen("tela_dados_imobiliaria")
+                elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                        self.app.switch_screen("tela_servidor")
+                elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
+            else:
+                if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
+                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                    self.app.switch_screen("tela_dados_cliente")
+        except:
+            pass
+
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
         else:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
-        
+
         with HorizontalGroup(id="titulo"):
             yield Static("Sala Comercial a venda no Centro de Porto Alegre", classes="titulo")
             yield Static("R$ 255.000,00", classes="valor")
         yield Static("Centro Histórico, Porto Alegre - RS")
-        
+
         with HorizontalGroup():
             with VerticalScroll(id="dados_imovel"):
                 yield Image(r"assets\apartamento1\5661162882.jpg")
@@ -58,7 +79,5 @@ class TelaDadosImovel(Screen):
                     yield Static("R$ 10,00", classes="valor")
                 yield Button("Entrar em contato", id="bt_contato")
                 yield Static("Um especialista irá entrar em contato por email ou whatsapp")
-            
-            
-        
+
         yield Footer(show_command_palette=False)

@@ -4,9 +4,9 @@ from textual.screen import Screen
 
 from model import Init
 
-from model import Init, Corretor, Administrador, Imovel
+from model import Init, Corretor, Administrador, Imovel, Gerente
 
-from textual_image.widget import Image 
+from textual_image.widget import Image
 
 
 class TelaEstoque(Screen):
@@ -14,7 +14,7 @@ class TelaEstoque(Screen):
     CSS_PATH = "css/TelaEstoque.tcss"
     TITLE = "Estoque"
 
-    imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()
+    imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
     imoveis_filtrados = []
     filtrou_select = False
     filtrou_input = False
@@ -35,23 +35,23 @@ class TelaEstoque(Screen):
         yield Input(placeholder="pesquise aqui")
         yield TextArea(read_only=True, id="tx_dados")
         with Vertical(id="container_filtragem"):
-                with Horizontal(id="primeiro"):
-                    yield Select([("Imoveis", "Imovel"), ("Compradores", "Comprador"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel")], allow_blank=False, id="select_tabelas")
-                    yield Static("Categoria:")
-                    yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
-                    yield Static("Status:")
-                    yield Select([(valor, valor) for valor in Imovel.Status._member_names_])
-                with Horizontal(id="segundo"):
-                    yield Static("Rua")
-                    yield TextArea()
-                    yield Static("Bairro")
-                    yield TextArea()
-                    yield Static("Cidade")
-                    yield TextArea()
-                    yield Static("Complemento")
-                    yield TextArea()
-                    yield Static("CEP")
-                    yield TextArea()
+            with Horizontal(id="primeiro"):
+                yield Select([("Imoveis", "Imovel"), ("Compradores", "Comprador"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel")], allow_blank=False, id="select_tabelas")
+                yield Static("Categoria:")
+                yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
+                yield Static("Status:")
+                yield Select([(valor, valor) for valor in Imovel.Status._member_names_])
+            with Horizontal(id="segundo"):
+                yield Static("Rua")
+                yield TextArea()
+                yield Static("Bairro")
+                yield TextArea()
+                yield Static("Cidade")
+                yield TextArea()
+                yield Static("Complemento")
+                yield TextArea()
+                yield Static("CEP")
+                yield TextArea()
         with Vertical(id="container_resultado"):
             with Horizontal(id="imovel"):
                 yield Checkbox()
@@ -69,9 +69,6 @@ class TelaEstoque(Screen):
                         yield Static("55m2")
                         yield Static("100m2")
                         yield Static("2 banheiros")
-                    
-                    
-                
 
         yield Footer(show_command_palette=False)
 
@@ -88,25 +85,25 @@ class TelaEstoque(Screen):
 
             match evento.value:
                 case "Imovel":
-                    self.imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()
+                    self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
                     self.objeto = Init.um_imovel
                 case  "Comprador":
-                    self.imoveis, erro = Init.imobiliaria.get_lista_compradores()
+                    self.imoveis = Init.imobiliaria.get_lista_compradores()
                     self.objeto = Init.comprador
                 case "Proprietario":
-                    self.imoveis, erro = Init.imobiliaria.get_lista_proprietarios()
+                    self.imoveis = Init.imobiliaria.get_lista_proprietarios()
                     self.objeto = Init.proprietario
                 case "Corretor":
-                    self.imoveis, erro = Init.imobiliaria.get_lista_corretores()
+                    self.imoveis = Init.imobiliaria.get_lista_corretores()
                     self.objeto = Init.corretor
                 case "Captador":
-                    self.imoveis, erro = Init.imobiliaria.get_lista_captadores()
+                    self.imoveis = Init.imobiliaria.get_lista_captadores()
                     self.objeto = Init.captador
                 case "Venda":
-                    self.imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()  # TODO
+                    self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()  # TODO
                     self.objeto = Init.um_imovel
                 case "Aluguel":
-                    self.imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis()  # TODO
+                    self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()  # TODO
                     self.objeto = Init.um_imovel
 
             self.imoveis_filtrados = []
@@ -118,13 +115,11 @@ class TelaEstoque(Screen):
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
-            if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                self.app.switch_screen("tela_estoque")
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+            if event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
                 self.app.switch_screen("tela_cadastro_imovel")
             elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
                 self.app.switch_screen("tela_cadastro_pessoa")
-            elif isinstance(Init.usuario_atual, Corretor.Corretor):
+            elif isinstance(Init.usuario_atual, Gerente.Gerente):
                 if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
                     self.app.switch_screen("tela_dados_imobiliaria")
             elif isinstance(Init.usuario_atual, Administrador.Administrador):

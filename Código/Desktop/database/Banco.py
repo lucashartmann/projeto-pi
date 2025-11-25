@@ -4,7 +4,6 @@ import os
 
 from model import Cliente, Imovel, Administrador, Captador, Corretor, Endereco
 from datetime import datetime
-from model.Imovel import Categoria, Estado, Situacao, Status
 
 
 class Banco:
@@ -108,7 +107,6 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Imovel (
                     id_imovel INTEGER PRIMARY KEY AUTOINCREMENT,
-                    codigo TEXT  NULL,
                     valor_venda REAL NULL,
                     valor_aluguel REAL NULL,
                     quant_quartos INTEGER NULL,
@@ -221,7 +219,8 @@ class Banco:
                 return True
             except Exception as e:
                 erro = f"Banco.cadastrar_anexo: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def get_lista_anexos(self, id_imovel):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
@@ -260,7 +259,8 @@ class Banco:
                 return mapa
             except Exception as e:
                 erro = "Banco.get_lista_anexos: ERRO!", e
-                return ([], erro)
+                print(erro)
+                return []
 
     def get_lista_compradores(self):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
@@ -277,7 +277,8 @@ class Banco:
                 return registros
             except Exception as e:
                 erro = "Banco.get_lista_compradores: ERRO!", e
-                return ([], erro)
+                print(erro)
+                return []
 
     def get_lista_proprietarios(self):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
@@ -294,7 +295,8 @@ class Banco:
                 return registros
             except Exception as e:
                 erro = "Banco.get_lista_proprietarios: ERRO!", e
-                return ([], erro)
+                print(erro)
+                return []
 
     def verificar_usuario(self, username, senha, tabela):
         if tabela == "Cliente":
@@ -341,7 +343,8 @@ class Banco:
 
             except Exception as e:
                 erro = "Banco.verificar_usuario: ERRO!", e
-                return (None, erro)
+                print(erro)
+                return None
 
     def cadastrar_endereco(self, endereco):
         with sqlite3.connect(
@@ -366,7 +369,8 @@ class Banco:
                 return True
             except Exception as e:
                 erro = f"Banco.cadastrar_endereco: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def cadastrar_corretor(self, corretor):
         with sqlite3.connect(
@@ -395,7 +399,8 @@ class Banco:
                 return True
             except Exception as e:
                 erro = f"Banco.cadastrar_corretor: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def cadastrar_captador(self, captador):
         with sqlite3.connect(
@@ -424,7 +429,8 @@ class Banco:
                 return True
             except Exception as e:
                 erro = f"Banco.cadastrar_captador: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def cadastrar_proprietario(self, proprietario):
         with sqlite3.connect(
@@ -451,7 +457,8 @@ class Banco:
                     return True
             except Exception as e:
                 erro = f"Banco.cadastrar_proprietario: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def cadastrar_endereco(self, endereco):
         with sqlite3.connect(
@@ -476,7 +483,8 @@ class Banco:
                 return True
             except Exception as e:
                 erro = f"Banco.cadastrar_endereco: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def cadastrar_comprador(self, comprador):
         with sqlite3.connect(
@@ -507,7 +515,8 @@ class Banco:
                     return True
             except Exception as e:
                 erro = f"Banco.cadastrar_comprador: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def remover_imovel(self, codigo):
         with sqlite3.connect(
@@ -523,7 +532,8 @@ class Banco:
                 return True
             except Exception as e:
                 erro = f"Banco.remover_imovel: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def get_endereco_por_id(self, id):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
@@ -541,7 +551,8 @@ class Banco:
                 return registros
             except Exception as e:
                 erro = "Banco.get_lista_proprietarios: ERRO!", e
-                return (None, erro)
+                print(erro)
+                return None
 
     def get_corretor_por_cpf(self, cpf):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
@@ -559,7 +570,8 @@ class Banco:
                 return registros
             except Exception as e:
                 erro = "Banco.get_lista_proprietarios: ERRO!", e
-                return (None, erro)
+                print(erro)
+                return None
 
     def get_captador_por_cpf(self, cpf):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
@@ -577,7 +589,8 @@ class Banco:
                 return registros
             except Exception as e:
                 erro = "Banco.get_lista_proprietarios: ERRO!", e
-                return (None, erro)
+                print(erro)
+                return None
 
     def get_proprietario_por_cpf(self, cpf):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
@@ -595,7 +608,8 @@ class Banco:
                 return registros
             except Exception as e:
                 erro = "Banco.get_lista_proprietarios: ERRO!", e
-                return (None, erro)
+                print(erro)
+                return None
 
     def get_imovel_por_codigo(self, codigo):
         with sqlite3.connect(
@@ -608,10 +622,10 @@ class Banco:
                 if not registro:
                     raise Exception(f"Nenhum imóvel com codigo {codigo}")
                 mapa_anexos = self.get_lista_anexos(registro[0])
-                status = Imovel.Status(registro[14])
-                categoria = Imovel.Categoria(registro[11])
-                if registro[13]:
-                    endereco = self.get_endereco_por_id(registro[13])
+                status = Imovel.Status(registro[13])
+                categoria = Imovel.Categoria(registro[10])
+                if registro[12]:
+                    endereco = self.get_endereco_por_id(registro[12])
                     if not endereco:
                         raise Exception("Erro com endereço")
                 imovel = Imovel.Imovel(endereco, status, categoria)
@@ -622,43 +636,43 @@ class Banco:
                 if mapa_anexos["Documentos"]:
                     imovel.set_anexos(mapa_anexos["Documentos"])
                 imovel.set_id(int(registro[0]))
-                imovel.set_codigo(registro[1])
-                imovel.set_valor_venda(float(registro[2])),
-                imovel.set_valor_aluguel(float(registro[3])),
-                imovel.set_quant_quartos(int(registro[4])),
-                imovel.set_quant_salas(int(registro[5])),
-                imovel.set_quant_vagas(int(registro[6])),
-                imovel.set_quant_banheiros(int(registro[7])),
-                imovel.set_quant_varandas(int(registro[8])),
-                imovel.set_nome_condominio(int(registro[9])),
-                imovel.set_cor(registro[10]),
-                imovel.set_descricao(registro[12]),
-                imovel.set_iptu(float(registro[15])),
-                imovel.set_valor_condominio(float(registro[16])),
-                imovel.set_andar(int(registro[17])),
-                imovel.set_estado(registro[18]),
-                imovel.set_bloco(registro[19]),
-                imovel.set_ano_construcao(datetime(year=registro[20])),
-                imovel.set_area_total(float(registro[21])),
-                imovel.set_area_privativa(float(registro[22])),
-                imovel.set_situacao(registro[23]),
-                imovel.set_ocupacao(registro[24]),
-                if registro[25]:
-                    proprietario = self.get_proprietario_por_cpf(registro[25])
+                imovel.set_valor_venda(float(registro[1])),
+                imovel.set_valor_aluguel(float(registro[2])),
+                imovel.set_quant_quartos(int(registro[3])),
+                imovel.set_quant_salas(int(registro[4])),
+                imovel.set_quant_vagas(int(registro[5])),
+                imovel.set_quant_banheiros(int(registro[6])),
+                imovel.set_quant_varandas(int(registro[7])),
+                imovel.set_nome_condominio(int(registro[8])),
+                imovel.set_cor(registro[9]),
+                imovel.set_descricao(registro[11]),
+                imovel.set_iptu(float(registro[14])),
+                imovel.set_valor_condominio(float(registro[15])),
+                imovel.set_andar(int(registro[16])),
+                imovel.set_estado(Imovel.Estado(registro[17])),
+                imovel.set_bloco(registro[18]),
+                imovel.set_ano_construcao(datetime(year=registro[19])),
+                imovel.set_area_total(float(registro[20])),
+                imovel.set_area_privativa(float(registro[21])),
+                imovel.set_situacao(Imovel.Situacao(registro[22])),
+                imovel.set_ocupacao(Imovel.Ocupacao(registro[23])),
+                if registro[24]:
+                    proprietario = self.get_proprietario_por_cpf(registro[24])
                     if proprietario:
                         imovel.set_proprietario(proprietario),
-                if registro[26]:
-                    corretor = self.get_corretor_por_cpf(registro[26])
+                if registro[25]:
+                    corretor = self.get_corretor_por_cpf(registro[25])
                     if corretor:
                         imovel.set_corretor(corretor)
-                if registro[27]:
-                    captador = self.get_captador_por_cpf(registro[27])
+                if registro[26]:
+                    captador = self.get_captador_por_cpf(registro[26])
                     if captador:
                         imovel.set_captador(captador)
                 return imovel
             except Exception as e:
                 erro = f"Banco.get_imovel_por_id: ERRO! {e}"
-                return (None, erro)
+                print(erro)
+                return None
 
     def cadastrar_imovel(self, imovel):
         with sqlite3.connect(
@@ -666,8 +680,8 @@ class Banco:
             cursor = conexao.cursor()
             try:
                 sql_query = ''' 
-                INSERT INTO Imovel(codigo, valor_venda, valor_aluguel, quant_quartos, quant_salas, quant_vagas, quant_banheiros, quant_varandas, nome_condominio, cor, categoria, descricao, id_endereco, status, iptu, valor_condominio, andar, estado, bloco, ano_construcao, area_total, area_privativa, situacao, ocupacao, cpf_proprietario, cpf_corretor, cpf_captador) 
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO Imovel(valor_venda, valor_aluguel, quant_quartos, quant_salas, quant_vagas, quant_banheiros, quant_varandas, nome_condominio, cor, categoria, descricao, id_endereco, status, iptu, valor_condominio, andar, estado, bloco, ano_construcao, area_total, area_privativa, situacao, ocupacao, cpf_proprietario, cpf_corretor, cpf_captador) 
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                     '''
 
                 if imovel.get_categoria():
@@ -710,7 +724,6 @@ class Banco:
                 else:
                     captador = None
                 cursor.execute(sql_query, (
-                    imovel.get_codigo(),
                     imovel.get_valor_venda(),
                     imovel.get_valor_aluguel(),
                     imovel.get_quant_quartos(),
@@ -742,7 +755,8 @@ class Banco:
                 return True
             except Exception as e:
                 erro = f"Banco.cadastrar_imovel: ERRO! {e}"
-                return (False, erro)
+                print(erro)
+                return False
 
     def get_lista_imoveis(self):
         with sqlite3.connect(
@@ -756,10 +770,10 @@ class Banco:
                     raise Exception(f"Tabela imovel esta vázia")
                 for dados in resultados:
                     mapa_anexos = self.get_lista_anexos(dados[0])
-                    status = Imovel.Status(dados[14])
-                    categoria = Imovel.Categoria(dados[11])
-                    if dados[13]:
-                        endereco = self.get_endereco_por_id(dados[13])
+                    status = Imovel.Status(dados[13])
+                    categoria = Imovel.Categoria(dados[10])
+                    if dados[12]:
+                        endereco = self.get_endereco_por_id(dados[12])
                         if not endereco:
                             raise Exception("Erro com endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
@@ -770,44 +784,44 @@ class Banco:
                     if mapa_anexos["Documentos"]:
                         imovel.set_anexos(mapa_anexos["Documentos"])
                     imovel.set_id(int(dados[0]))
-                    imovel.set_codigo(dados[1])
-                    imovel.set_valor_venda(float(dados[2])),
-                    imovel.set_valor_aluguel(float(dados[3])),
-                    imovel.set_quant_quartos(int(dados[4])),
-                    imovel.set_quant_salas(int(dados[5])),
-                    imovel.set_quant_vagas(int(dados[6])),
-                    imovel.set_quant_banheiros(int(dados[7])),
-                    imovel.set_quant_varandas(int(dados[8])),
-                    imovel.set_nome_condominio(int(dados[9])),
-                    imovel.set_cor(dados[10]),
-                    imovel.set_descricao(dados[12]),
-                    imovel.set_iptu(float(dados[15])),
-                    imovel.set_valor_condominio(float(dados[16])),
-                    imovel.set_andar(int(dados[17])),
-                    imovel.set_estado(dados[18]),
-                    imovel.set_bloco(dados[19]),
-                    imovel.set_ano_construcao(datetime(year=dados[20])),
-                    imovel.set_area_total(float(dados[21])),
-                    imovel.set_area_privativa(float(dados[22])),
-                    imovel.set_situacao(dados[23]),
-                    imovel.set_ocupacao(dados[24]),
-                    if dados[25]:
-                        proprietario = self.get_proprietario_por_cpf(dados[25])
+                    imovel.set_valor_venda(float(dados[1])),
+                    imovel.set_valor_aluguel(float(dados[2])),
+                    imovel.set_quant_quartos(int(dados[3])),
+                    imovel.set_quant_salas(int(dados[4])),
+                    imovel.set_quant_vagas(int(dados[5])),
+                    imovel.set_quant_banheiros(int(dados[6])),
+                    imovel.set_quant_varandas(int(dados[7])),
+                    imovel.set_nome_condominio(int(dados[8])),
+                    imovel.set_cor(dados[9]),
+                    imovel.set_descricao(dados[11]),
+                    imovel.set_iptu(float(dados[14])),
+                    imovel.set_valor_condominio(float(dados[15])),
+                    imovel.set_andar(int(dados[16])),
+                    imovel.set_estado(Imovel.Estado(dados[17])),
+                    imovel.set_bloco(dados[18]),
+                    imovel.set_ano_construcao(datetime(year=dados[19])),
+                    imovel.set_area_total(float(dados[20])),
+                    imovel.set_area_privativa(float(dados[21])),
+                    imovel.set_situacao(Imovel.Situacao(dados[22])),
+                    imovel.set_ocupacao(Imovel.Ocupacao(dados[23])),
+                    if dados[24]:
+                        proprietario = self.get_proprietario_por_cpf(dados[24])
                         if proprietario:
                             imovel.set_proprietario(proprietario),
-                    if dados[26]:
-                        corretor = self.get_corretor_por_cpf(dados[26])
+                    if dados[25]:
+                        corretor = self.get_corretor_por_cpf(dados[25])
                         if corretor:
                             imovel.set_corretor(corretor)
-                    if dados[27]:
-                        captador = self.get_captador_por_cpf(dados[27])
+                    if dados[26]:
+                        captador = self.get_captador_por_cpf(dados[26])
                         if captador:
                             imovel.set_captador(captador)
                     list.append(imovel)
                 return lista
             except Exception as e:
                 erro = f"Banco.get_lista_imoveis: ERRO! {e}"
-                return ([], erro)
+                print(erro)
+                return []
 
     def get_lista_imoveis_disponiveis(self):
         with sqlite3.connect(
@@ -815,16 +829,17 @@ class Banco:
             try:
                 cursor = conexao.cursor()
                 lista = []
-                cursor.execute("SELECT * FROM Imovel WHERE quantidade > 0")
+                cursor.execute("SELECT * FROM Imovel WHERE status IN ('Venda', 'Aluguel', 'Venda_Aluguel')")
                 resultados = cursor.fetchall()
                 if not resultados:
                     raise Exception(f"Tabela imovel esta vázia")
+                
                 for dados in resultados:
                     mapa_anexos = self.get_lista_anexos(dados[0])
-                    status = Imovel.Status(dados[14])
-                    categoria = Imovel.Categoria(dados[11])
-                    if dados[13]:
-                        endereco = self.get_endereco_por_id(dados[13])
+                    status = Imovel.Status(dados[13])
+                    categoria = Imovel.Categoria(dados[10])
+                    if dados[12]:
+                        endereco = self.get_endereco_por_id(dados[12])
                         if not endereco:
                             raise Exception("Erro com endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
@@ -835,44 +850,44 @@ class Banco:
                     if mapa_anexos["Documentos"]:
                         imovel.set_anexos(mapa_anexos["Documentos"])
                     imovel.set_id(int(dados[0]))
-                    imovel.set_codigo(dados[1])
-                    imovel.set_valor_venda(float(dados[2])),
-                    imovel.set_valor_aluguel(float(dados[3])),
-                    imovel.set_quant_quartos(int(dados[4])),
-                    imovel.set_quant_salas(int(dados[5])),
-                    imovel.set_quant_vagas(int(dados[6])),
-                    imovel.set_quant_banheiros(int(dados[7])),
-                    imovel.set_quant_varandas(int(dados[8])),
-                    imovel.set_nome_condominio(int(dados[9])),
-                    imovel.set_cor(dados[10]),
-                    imovel.set_descricao(dados[12]),
-                    imovel.set_iptu(float(dados[15])),
-                    imovel.set_valor_condominio(float(dados[16])),
-                    imovel.set_andar(int(dados[17])),
-                    imovel.set_estado(dados[18]),
-                    imovel.set_bloco(dados[19]),
-                    imovel.set_ano_construcao(datetime(year=dados[20])),
-                    imovel.set_area_total(float(dados[21])),
-                    imovel.set_area_privativa(float(dados[22])),
-                    imovel.set_situacao(dados[23]),
-                    imovel.set_ocupacao(dados[24]),
-                    if dados[25]:
-                        proprietario = self.get_proprietario_por_cpf(dados[25])
+                    imovel.set_valor_venda(float(dados[1])),
+                    imovel.set_valor_aluguel(float(dados[2])),
+                    imovel.set_quant_quartos(int(dados[3])),
+                    imovel.set_quant_salas(int(dados[4])),
+                    imovel.set_quant_vagas(int(dados[5])),
+                    imovel.set_quant_banheiros(int(dados[6])),
+                    imovel.set_quant_varandas(int(dados[7])),
+                    imovel.set_nome_condominio(int(dados[8])),
+                    imovel.set_cor(dados[9]),
+                    imovel.set_descricao(dados[11]),
+                    imovel.set_iptu(float(dados[14])),
+                    imovel.set_valor_condominio(float(dados[15])),
+                    imovel.set_andar(int(dados[16])),
+                    imovel.set_estado(Imovel.Estado(dados[17])),
+                    imovel.set_bloco(dados[18]),
+                    imovel.set_ano_construcao(datetime(year=dados[19])),
+                    imovel.set_area_total(float(dados[20])),
+                    imovel.set_area_privativa(float(dados[21])),
+                    imovel.set_situacao(Imovel.Situacao(dados[22])),
+                    imovel.set_ocupacao(Imovel.Ocupacao(dados[23])),
+                    if dados[24]:
+                        proprietario = self.get_proprietario_por_cpf(dados[24])
                         if proprietario:
                             imovel.set_proprietario(proprietario),
-                    if dados[26]:
-                        corretor = self.get_corretor_por_cpf(dados[26])
+                    if dados[25]:
+                        corretor = self.get_corretor_por_cpf(dados[25])
                         if corretor:
                             imovel.set_corretor(corretor)
-                    if dados[27]:
-                        captador = self.get_captador_por_cpf(dados[27])
+                    if dados[26]:
+                        captador = self.get_captador_por_cpf(dados[26])
                         if captador:
                             imovel.set_captador(captador)
                     list.append(imovel)
                 return lista
             except Exception as e:
                 erro = f"Banco.get_lista_imoveis_disponiveis: ERRO! {e}"
-                return ([], erro)
+                print(erro)
+                return []
 
     def get_imoveis_por_categoria(self, categoria):
         with sqlite3.connect(
@@ -888,9 +903,9 @@ class Banco:
                 for registro in lista_registros:
                     mapa_anexos = self.get_lista_anexos(registro[0])
                     status = Imovel.Status(registro[14])
-                    categoria = Imovel.Categoria(registro[11])
-                    if registro[13]:
-                        endereco = self.get_endereco_por_id(registro[13])
+                    categoria = Imovel.Categoria(registro[10])
+                    if registro[12]:
+                        endereco = self.get_endereco_por_id(registro[12])
                         if not endereco:
                             raise Exception("Erro com endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
@@ -901,42 +916,42 @@ class Banco:
                     if mapa_anexos["Documentos"]:
                         imovel.set_anexos(mapa_anexos["Documentos"])
                     imovel.set_id(int(registro[0]))
-                    imovel.set_codigo(registro[1])
-                    imovel.set_valor_venda(float(registro[2])),
-                    imovel.set_valor_aluguel(float(registro[3])),
-                    imovel.set_quant_quartos(int(registro[4])),
-                    imovel.set_quant_salas(int(registro[5])),
-                    imovel.set_quant_vagas(int(registro[6])),
-                    imovel.set_quant_banheiros(int(registro[7])),
-                    imovel.set_quant_varandas(int(registro[8])),
-                    imovel.set_nome_condominio(int(registro[9])),
-                    imovel.set_cor(registro[10]),
-                    imovel.set_descricao(registro[12]),
-                    imovel.set_iptu(float(registro[15])),
-                    imovel.set_valor_condominio(float(registro[16])),
-                    imovel.set_andar(int(registro[17])),
-                    imovel.set_estado(registro[18]),
-                    imovel.set_bloco(registro[19]),
-                    imovel.set_ano_construcao(datetime(year=registro[20])),
-                    imovel.set_area_total(float(registro[21])),
-                    imovel.set_area_privativa(float(registro[22])),
-                    imovel.set_situacao(registro[23]),
-                    imovel.set_ocupacao(registro[24]),
-                    if registro[25]:
+                    imovel.set_valor_venda(float(registro[1])),
+                    imovel.set_valor_aluguel(float(registro[2])),
+                    imovel.set_quant_quartos(int(registro[3])),
+                    imovel.set_quant_salas(int(registro[4])),
+                    imovel.set_quant_vagas(int(registro[5])),
+                    imovel.set_quant_banheiros(int(registro[6])),
+                    imovel.set_quant_varandas(int(registro[7])),
+                    imovel.set_nome_condominio(int(registro[8])),
+                    imovel.set_cor(registro[9]),
+                    imovel.set_descricao(registro[11]),
+                    imovel.set_iptu(float(registro[14])),
+                    imovel.set_valor_condominio(float(registro[15])),
+                    imovel.set_andar(int(registro[16])),
+                    imovel.set_estado(Imovel.Estado(registro[17])),
+                    imovel.set_bloco(registro[18]),
+                    imovel.set_ano_construcao(datetime(year=registro[19])),
+                    imovel.set_area_total(float(registro[20])),
+                    imovel.set_area_privativa(float(registro[21])),
+                    imovel.set_situacao(Imovel.Situacao(registro[22])),
+                    imovel.set_ocupacao(Imovel.Ocupacao(registro[23])),
+                    if registro[24]:
                         proprietario = self.get_proprietario_por_cpf(
-                            registro[25])
+                            registro[24])
                         if proprietario:
                             imovel.set_proprietario(proprietario),
-                    if registro[26]:
-                        corretor = self.get_corretor_por_cpf(registro[26])
+                    if registro[25]:
+                        corretor = self.get_corretor_por_cpf(registro[25])
                         if corretor:
                             imovel.set_corretor(corretor)
-                    if registro[27]:
-                        captador = self.get_captador_por_cpf(registro[27])
+                    if registro[26]:
+                        captador = self.get_captador_por_cpf(registro[26])
                         if captador:
                             imovel.set_captador(captador)
                     lista_imoveis.append(imovel)
                 return lista_imoveis
             except Exception as e:
                 erro = f"Banco.get_imoveis_por_categoria: ERRO! {e}"
-                return ([], erro)
+                print(erro)
+                return []

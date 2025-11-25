@@ -3,7 +3,7 @@ from textual.binding import Binding
 
 from model import Init
 
-from view import TelaCadastroPessoa, TelaLogin, TelaEstoque, TelaCadastroImovel
+from view import TelaCadastroPessoa, TelaLogin, TelaEstoque, TelaCadastroImovel, TelaCadastroVendaAluguel
 from view.cliente import TelaDadosCliente, TelaEstoqueCliente, TelaDadosImovel
 from view.admin import TelaServidor
 from view.gerente import TelaDadosImobiliaria
@@ -21,7 +21,8 @@ class App(App):
         "tela_dados_cliente": TelaDadosCliente.TelaDadosCliente,
         "tela_dados_imobiliaria": TelaDadosImobiliaria.TelaDadosImobiliaria,
         "tela_servidor": TelaServidor.TelaServidor,
-        "tela_dados_imovel": TelaDadosImovel.TelaDadosImovel
+        "tela_dados_imovel": TelaDadosImovel.TelaDadosImovel,
+        "tela_cadastro_venda_aluguel": TelaCadastroVendaAluguel.TelaCadastroVendaAluguel
     }
 
     BINDINGS = {

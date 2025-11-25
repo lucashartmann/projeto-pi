@@ -75,7 +75,6 @@ class Imovel:
 
     def __init__(self, endereco: Endereco.Endereco, status, categoria):
         self.id = 0
-        self.codigo = self.gerar_codigo()
         self.titulo = ""
         self.valor_venda = 0
         self.valor_aluguel = 0
@@ -108,10 +107,6 @@ class Imovel:
         self.captador = ""
         
         
-    def gerar_codigo(self):
-        Imovel.codigo += 1
-        return Imovel.codigo
-
     def get_titulo(self):
         return self.titulo
 
@@ -123,12 +118,6 @@ class Imovel:
 
     def set_id(self, value):
         self.id = value
-
-    def get_codigo(self):
-        return self.codigo
-
-    def set_codigo(self, value):
-        self.codigo = value
 
     def get_valor_venda(self):
         return self.valor_venda
@@ -309,3 +298,5 @@ class Imovel:
         
     def get_endereco(self):
         return self.endereco
+
+    

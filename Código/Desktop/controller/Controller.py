@@ -1,4 +1,5 @@
 from model import Cliente, Corretor, Imovel, Init, Captador, Administrador, Gerente
+import requests
 
 
 def cadastrar_pessoa(lista):
@@ -30,10 +31,21 @@ def cadastrar_pessoa(lista):
     if cadastrado:
         return f"Pessoa cadastrado!\n {pessoa}"
     else:
-        return cadastrado[1]
+        return "ERRO"
 
 
 def cadastrar_imovel(lista):
+    link = f"https://viacep.com.br/ws/{cep}/json/"
+
+    requisicao = requests.get(link)
+    dados = requisicao.json()
+    
+    logradouro = dados["logradouro"]
+    bairro = dados["bairro"]
+    cidade = dados["localidade"]
+    uf = dados["uf"]
+
+
     if lista[0] == "":
         return "Nome está vazio"
 
@@ -72,7 +84,7 @@ def cadastrar_imovel(lista):
     if cadastrado == True:
         return f"imovel cadastrado!\n {imovel}"
     else:
-        return cadastrado[1]
+        return "ERRO"
 
 
 def editar_imovel(codigo, lista):
@@ -82,7 +94,7 @@ def editar_imovel(codigo, lista):
     imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(codigo)
 
     if imovel != True:
-        return imovel[1]
+        return "ERRO"
 
     if lista[0] != "":
         imovel.set_nome(lista[0])
@@ -151,7 +163,7 @@ def remover_comprador(cpf):
     if remocao == True:
         return f"Comprador removido com sucesso"
     else:
-        return remocao[1]
+        return "ERRO"
 
 
 def remover_corretor(cpf):
@@ -166,7 +178,7 @@ def remover_corretor(cpf):
     if remocao == True:
         return f"corretor removido com sucesso"
     else:
-        return remocao[1]
+        return "ERRO"
 
 
 def remover_captador(cpf):
@@ -181,7 +193,7 @@ def remover_captador(cpf):
     if remocao == True:
         return f"captador removido com sucesso"
     else:
-        return remocao[1]
+        return "ERRO"
 
 
 def remover_proprietario(cpf):
@@ -196,7 +208,7 @@ def remover_proprietario(cpf):
     if remocao == True:
         return f"proprietario removido com sucesso"
     else:
-        return remocao[1]
+        return "ERRO"
 
 
 def atualizar_dado_cliente(dados):
@@ -229,7 +241,7 @@ def atualizar_dado_cliente(dados):
 
     elif novo_cpf and novo_cpf != cpf:
 
-        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "cpf", novo_cpf)
         cpf = novo_cpf
 
@@ -241,7 +253,7 @@ def atualizar_dado_cliente(dados):
 
     elif rg and rg != Init.cliente_atual.get_rg():
 
-        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "rg", rg)
 
         if atualizacao != True:
@@ -252,7 +264,7 @@ def atualizar_dado_cliente(dados):
 
     elif telefone and telefone != Init.cliente_atual.get_telefone():
 
-        atualizacao, erro = Init.imobiliaria.atualizar_dado_cliente(
+        atualizacao = Init.imobiliaria.atualizar_dado_cliente(
             cpf, "telefone", telefone)
 
         if atualizacao != True:
@@ -305,7 +317,7 @@ def remover_imovel(codigo):
     if remocao == True:
         return f"imovel removido com sucesso"
     else:
-        return remocao[1]
+        return "ERRO"
 
 
 def verificar_login(dados):
@@ -320,7 +332,7 @@ def verificar_login(dados):
         Init.usuario_atual = consulta
         return "Login realizado com sucesso"
     else:
-        return consulta[1]
+        return "ERRO"
 
 
 def salvar_login(dados):
@@ -339,4 +351,4 @@ def salvar_login(dados):
         Init.usuario_atual = um_usuario
         return "Login salvo com sucesso"
     else:
-        return consulta[1]
+        return "ERRO"

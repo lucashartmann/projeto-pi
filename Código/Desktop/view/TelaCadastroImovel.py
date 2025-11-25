@@ -2,9 +2,8 @@ from textual.screen import Screen
 from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button, Header, Footer
 from textual.containers import Horizontal, Vertical, Grid, Container, VerticalScroll
 
-from textual_image.widget import Image
 
-from model import Init, Imovel, Administrador, Corretor
+from model import Init, Imovel, Administrador, Corretor, Gerente
 
 
 class PopUp(Container):
@@ -36,8 +35,8 @@ class TelaCadastroImovel(Screen):
             with Horizontal(id="h_buttons"):
                 yield Button("Apagar")
                 yield Button("Salvar")
+            yield Tabs(Tab("Imovel"), Tab("Info+"))
             with Grid(id="container_cadastro"):
-                yield Tabs(Tab("Imovel"), Tab("Info+"))
                 yield Static("ref:")
                 yield TextArea(read_only=True)
                 yield Static("Categoria:")
@@ -46,50 +45,48 @@ class TelaCadastroImovel(Screen):
                 yield Select([(valor, valor) for valor in Imovel.Situacao._member_names_])
                 yield Static("Estado:")
                 yield Select([(valor, valor) for valor in Imovel.Estado._member_names_])
-                yield Static("Ocupacao:")
+                yield Static("Ocupação:")
                 yield Select([(valor, valor) for valor in Imovel.Ocupacao._member_names_])
                 yield Static("Status:")
                 yield Select([(valor, valor) for valor in Imovel.Status._member_names_])
-                yield Static("Nome do Condominio")
-                yield TextArea()
-                yield Static("Rua")
-                yield TextArea()
-                yield Static("Bairro")
-                yield TextArea()
-                yield Static("Cidade")
-                yield TextArea()
-                yield Static("Estado(sigla)")
-                yield MaskedInput(template="00")
-                yield Static("Complemento")
-                yield TextArea()
-                yield Static("CEP")
-                yield TextArea()
-                yield Static("Salas")
-                yield MaskedInput(template="00")
-                yield Static("Banheiros")
-                yield MaskedInput(template="00")
-                yield Static("Vagas")
-                yield MaskedInput(template="00")
-                yield Static("Varandas")
-                yield MaskedInput(template="00")
-                yield Static("Quartos")
-                yield MaskedInput(template="00")
-                yield Static("Area Total")
-                yield MaskedInput(template="000.000m²")
-                yield Static("Area Privativa")
-                yield MaskedInput(template="000.000m²")
-                yield Static("Bloco")
-                yield MaskedInput(template="000")
-                yield Static("Cor:")
-                yield TextArea()
-                yield Static("Valor Venda:")
-                yield MaskedInput(template="R$000.000.000")
-                yield Static("Valor Aluguel:")
-                yield MaskedInput(template="R$000.000.000")
-                yield Static("Valor Condominio:")
-                yield MaskedInput(template="R$000.000.000")
-                yield Static("Valor IPTU:")
-                yield MaskedInput(template="R$000.000.000")
+                yield Static("Nome do Condomínio", id="stt_nome_condominio")
+                yield TextArea(id="ta_nome_condominio")
+                yield Static("Rua", id="stt_rua")
+                yield TextArea(disabled=True, id="ta_rua")
+                yield Static("Complemento", id="stt_complemento")
+                yield TextArea(id="ta_complemento")
+                yield Static("Bloco", id="stt_bloco")
+                yield MaskedInput(template="000", id="ta_bloco")
+                yield Static("CEP", id="stt_cep")
+                yield TextArea(id="ta_cep")
+                yield Static("Bairro", id="stt_bairro")
+                yield TextArea(disabled=True, id="ta_bairro")
+                yield Static("Cidade", id="stt_cidade")
+                yield TextArea(disabled=True, id="ta_cidade")
+                yield Static("Estado", id="stt_estado")
+                yield MaskedInput(template="00", disabled=True, id="ta_estado")
+                yield Static("Salas", id="stt_salas")
+                yield MaskedInput(template="00", id="ta_salas")
+                yield Static("Banheiros", id="stt_banheiros")
+                yield MaskedInput(template="00", id="ta_banheiros")
+                yield Static("Vagas", id="stt_vagas")
+                yield MaskedInput(template="00", id="ta_vagas")
+                yield Static("Varandas", id="stt_varandas")
+                yield MaskedInput(template="00", id="ta_varandas")
+                yield Static("Quartos", id="stt_quartos")
+                yield MaskedInput(template="00", id="ta_quartos")
+                yield Static("Área Total", id="stt_area_total")
+                yield MaskedInput(template="000.000m²", id="ta_area_total")
+                yield Static("Área Privativa", id="stt_area_privativa")
+                yield MaskedInput(template="000.000m²", id="ta_area_privativa")
+                yield Static("Valor Venda:", id="stt_venda")
+                yield MaskedInput(template="R$000.000.000", id="ta_venda")
+                yield Static("Valor Aluguel:", id="stt_aluguel")
+                yield MaskedInput(template="R$000.000.000", id="ta_aluguel")
+                yield Static("Valor Condomínio:", id="stt_condominio")
+                yield MaskedInput(template="R$000.000.000", id="ta_condominio")
+                yield Static("Valor IPTU:", id="stt_iptu")
+                yield MaskedInput(template="R$000.000.000", id="ta_iptu")
 
             with Vertical(id="container_info"):
                 with Grid(id="container_info_imovel"):
@@ -154,6 +151,7 @@ class TelaCadastroImovel(Screen):
             yield Static("Corretor: ")
             yield Static("Captador: ")
         yield Footer(show_command_palette=False)
+
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_imovel", Tab).id
@@ -162,11 +160,9 @@ class TelaCadastroImovel(Screen):
         try:
             if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
                 self.app.switch_screen("tela_estoque")
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                self.app.switch_screen("tela_cadastro_imovel")
             elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
                 self.app.switch_screen("tela_cadastro_pessoa")
-            elif isinstance(Init.usuario_atual, Corretor.Corretor):
+            elif isinstance(Init.usuario_atual, Gerente.Gerente):
                 if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
                     self.app.switch_screen("tela_dados_imobiliaria")
             elif isinstance(Init.usuario_atual, Administrador.Administrador):

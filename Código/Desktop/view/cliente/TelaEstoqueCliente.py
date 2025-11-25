@@ -5,8 +5,7 @@ from textual.containers import VerticalScroll, HorizontalGroup, Container
 
 from textual_image.widget import Image
 
-from model import Init, Administrador, Corretor, Cliente, Imovel
-from controller import Controller
+from model import Init, Administrador, Cliente, Imovel, Gerente
 
 from io import BytesIO
 
@@ -33,7 +32,7 @@ class TelaEstoqueCliente(Screen):
 
     CSS_PATH = "css/TelaEstoqueCliente.tcss"
 
-    imoveis, erro = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+    imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
     imoveis_filtrados = []
 
     filtrou_select = False
@@ -45,15 +44,11 @@ class TelaEstoqueCliente(Screen):
         self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
-        lista = []
-        if self.imoveis:
-            lista = self.imoveis
-            
-        if len(self.imoveis_filtrados) > 0:
-            lista = self.imoveis_filtrados
 
-        if not lista:
-            return
+        if self.imoveis_filtrados:
+            lista = self.imoveis_filtrados
+        else:
+            lista = self.imoveis
 
         for imovel in lista:
             if imovel.get_imagens():
@@ -72,13 +67,22 @@ class TelaEstoqueCliente(Screen):
                 ):
                     container.query_one("#tx_nome").content = imovel.get_titulo(
                     )
+                else:
+                    container.query_one("#tx_nome").styles.display = "none"
 
                 if imovel.get_valor_venda():
                     container.query_one(
                         "#tx_preco").content = f"R$ {imovel.get_valor_venda():.2f}"
-                elif imovel.get_valor_aluguel():
+                else:
+                    container.query_one(
+                        "#tx_preco").styles.display = "none"
+
+                if imovel.get_valor_aluguel():
                     container.query_one(
                         "#tx_preco").content = f"R$ {imovel.get_valor_aluguel():.2f}"
+                else:
+                    container.query_one(
+                        "#tx_preco").styles.display = "none"
 
                 container.id_imovel = imovel.get_id()
 
@@ -116,20 +120,16 @@ class TelaEstoqueCliente(Screen):
                     self.app.switch_screen("tela_cadastro_imovel")
                 elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
                     self.app.switch_screen("tela_cadastro_pessoa")
-                elif isinstance(Init.usuario_atual, Corretor.Corretor):
+                elif isinstance(Init.usuario_atual, Gerente.Gerente):
                     if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
                         self.app.switch_screen("tela_dados_imobiliaria")
                 elif isinstance(Init.usuario_atual, Administrador.Administrador):
                     if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
                         self.app.switch_screen("tela_servidor")
-                elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                    self.app.switch_screen("tela_estoque_cliente")
                 elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
                     self.app.switch_screen("tela_dados_cliente")
             else:
-                if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                    self.app.switch_screen("tela_estoque_cliente")
-                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                if event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
                     self.app.switch_screen("tela_dados_cliente")
         except:
             pass

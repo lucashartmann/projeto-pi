@@ -1,13 +1,8 @@
-# Compras recentes de usuario
-# Dados de login
-
 from textual.screen import Screen
 from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, Header
-from textual.containers import HorizontalGroup, Grid
+from textual.containers import Grid
 
-from textual_image.widget import Image
-
-from model import Init, Administrador, Corretor
+from model import Init, Administrador, Gerente, Cliente
 from controller import Controller
 
 
@@ -17,23 +12,24 @@ class TelaDadosCliente(Screen):
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
-
-            if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                self.app.switch_screen("tela_estoque")
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                self.app.switch_screen("tela_cadastro_imovel")
-            elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-                self.app.switch_screen("tela_cadastro_pessoa")
-            elif isinstance(Init.usuario_atual, Corretor.Corretor):
-                if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                    self.app.switch_screen("tela_dados_imobiliaria")
-            elif isinstance(Init.usuario_atual, Administrador.Administrador):
-                if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                    self.app.switch_screen("tela_servidor")
-            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                self.app.switch_screen("tela_estoque_cliente")
-            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                self.app.switch_screen("tela_dados_cliente")
+            if not isinstance(Init.usuario_atual, Cliente.Comprador):
+                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                    self.app.switch_screen("tela_estoque")
+                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_imovel")
+                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                    self.app.switch_screen("tela_cadastro_pessoa")
+                elif isinstance(Init.usuario_atual, Gerente.Gerente):
+                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                        self.app.switch_screen("tela_dados_imobiliaria")
+                elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                        self.app.switch_screen("tela_servidor")
+                elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
+            else:
+                if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
         except:
             pass
 
@@ -57,26 +53,23 @@ class TelaDadosCliente(Screen):
 
         else:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
-        with HorizontalGroup():
-
-            yield Image(r"assets\istockphoto-1352495212-1024x1024.jpg")
-            with Grid():
-                yield Static("Username")
-                yield TextArea(Init.usuario_atual.get_nome())
-                yield Static("Nome")
-                yield TextArea(Init.usuario_atual.get_nome())
-                yield Static("CPF")
-                yield TextArea(Init.usuario_atual.get_cpf_cnpj())
-                yield Static("RG")
-                yield TextArea(Init.usuario_atual.get_rg())
-                yield Static("Telefone")
-                yield TextArea(Init.usuario_atual.get_telefone())
-                yield Static("Endereco")
-                yield TextArea(Init.usuario_atual.get_endereco())
-                yield Static("Email")
-                yield TextArea(Init.usuario_atual.get_email())
-                yield Static("Senha")
-                yield TextArea(Init.usuario_atual.get_senha())
+        with Grid():
+            yield Static("Username")
+            yield TextArea(Init.usuario_atual.get_nome())
+            yield Static("Nome")
+            yield TextArea(Init.usuario_atual.get_nome())
+            yield Static("CPF")
+            yield TextArea(Init.usuario_atual.get_cpf_cnpj())
+            yield Static("RG")
+            yield TextArea(Init.usuario_atual.get_rg())
+            yield Static("Telefone")
+            yield TextArea(Init.usuario_atual.get_telefone())
+            yield Static("Endereco")
+            yield TextArea(Init.usuario_atual.get_endereco())
+            yield Static("Email")
+            yield TextArea(Init.usuario_atual.get_email())
+            yield Static("Senha")
+            yield TextArea(Init.usuario_atual.get_senha())
         yield Button("Salvar")
         # yield Static("Imoveis do usuário", id="stt_compras")
         yield Footer(show_command_palette=False)
