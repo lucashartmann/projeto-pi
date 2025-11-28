@@ -1,15 +1,13 @@
-from textual.widgets import Static, Button, ListItem, ListView, Footer, Header, Select, Input, Tab, Tabs
+from textual.widgets import Static, Button, ListItem, ListView, Footer, Header, Select, Input, Tab, Tabs, SelectionList
 from textual import on
 from textual.screen import Screen
-from textual.containers import VerticalScroll, HorizontalGroup, Container
+from textual.containers import VerticalScroll, HorizontalGroup, Container, VerticalGroup
 
 from textual_image.widget import Image
 
 from model import Init, Administrador, Cliente, Imovel, Gerente
 
 from io import BytesIO
-
-from PIL import Image
 
 
 class ContainerImovel(Container):
@@ -51,14 +49,14 @@ class TelaEstoqueCliente(Screen):
             lista = self.imoveis
 
         for imovel in lista:
-            if imovel.get_imagens():
+            if imovel.get_anuncio().get_imagens():
                 container = ContainerImovel()
                 list_item = ListItem(name=imovel.get_nome())
                 list_view.append(list_item)
                 list_item.mount(container)
 
                 container.query_one("#ti_imagem").image = BytesIO(
-                    imovel.get_imagens()[0])
+                    imovel.get_anuncio().get_imagens()[0])
 
                 container.query_one("#ti_imagem").styles.width = 40
                 container.query_one("#ti_imagem").styles.height = 15
@@ -97,11 +95,58 @@ class TelaEstoqueCliente(Screen):
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
         with VerticalScroll():
             with HorizontalGroup(id="hg_pesquisa"):
-                yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
-                yield Select([(valor.value, valor) for valor in Imovel.Categoria])
-                # yield Select([(valor, valor) for valor in Imovel.bairros])
-                yield Input()
-                yield Button("Remover", id="bt_remover")
+                with VerticalGroup():
+                    yield Input()
+                    with HorizontalGroup():
+                        yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
+                        yield Select([(valor.value, valor) for valor in Imovel.Categoria])
+                        yield Select([(valor, valor) for valor in Imovel.bairros])
+                        yield Static("Apartamento:")
+                        yield SelectionList(("Aceita Pet")
+                                            ("Churrasqueira")
+                                            ("Armarios Embutidos")
+                                            ("Cozinha Americana")
+                                            ("Area de Servico")
+                                            ("Suite Master")
+                                            ("Banheiro com janela")
+                                            ("Piscina")
+                                            ("Lareira")
+                                            ("Ar-condicionado")
+                                            ("Semi-Mobiliado")
+                                            ("Mobiliado")
+                                            ("Dependencia de Empregada")
+                                            ("Dispensa")
+                                            ("Deposito"), id="filtro_apartamento")
+                        yield Static("Condominio:")
+                        yield SelectionList(("Churrasqueira Coletiva")
+                                            ("Piscina")
+                                            ("Piscina Infantil")
+                                            ("Piscina Aquecida")
+                                            ("Quiosque")
+                                            ("Sauna")
+                                            ("Quadra de Esportes")
+                                            ("Jardim")
+                                            ("Salão de Festas")
+                                            ("Academia")
+                                            ("Sala de Jogos")
+                                            ("Playground")
+                                            ("Brinquedoteca")
+                                            ("Vaga Coberta")
+                                            ("Estacionamento")
+                                            ("Vaga para Visitantes")
+                                            ("Mercado")
+                                            ("Mesa de Sinuca")
+                                            ("Mesa de Ping-Pong")
+                                            ("Mesa de Pebolim")
+                                            ("Quadra de Tenis")
+                                            ("Quadra de Futebol")
+                                            ("Quadra de Basquete")
+                                            ("Quadra de Volei")
+                                            ("Quadra de Areia")
+                                            ("Bicicletario")
+                                            ("Heliponto")
+                                            ("Elevador de Serviço"), id="filtro_condominio")
+
             yield ListView(id="lst_item")
             yield Footer(show_command_palette=False)
 

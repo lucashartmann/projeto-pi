@@ -54,9 +54,15 @@ class Imobiliaria:
 
     def set_faturamento(self, value):
         self.faturamento = value
+        
+    def verificar_endereco(self, endereco):
+        return self.banco_dados.verificar_endereco(endereco)
 
     def verificar_usuario(self, usuario):
         return self.banco_dados.verificar_usuario(usuario)
+    
+    def cadastrar_endereco(self, endereco):
+        return self.banco_dados.cadastrar_endereco(endereco)
 
     def cadastrar_comprador(self, comprador):
         return self.banco_dados.cadastrar_comprador(comprador)

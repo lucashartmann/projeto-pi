@@ -36,24 +36,41 @@ def cadastrar_pessoa(lista):
 
 def cadastrar_imovel(imovel):
 
-    if imovel.get_id() >= 0:
-        imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(imovel.get_id())
-        if imovel:
-            edicao = Init.imobiliaria.get_estoque().atualizar_imovel(imovel)
+    consultar_endereco = Init.imobiliaria.verificar_endereco(
+        imovel.get_endereco())
 
-            if edicao:
-                return f"Imóvel editado com sucesso!"
+    id_endereco = None
+
+    if consultar_endereco:
+        id_endereco = consultar_endereco.get_id()
+    else:
+        cadastro_endereco = Init.imobiliaria.cadastrar_endereco(
+            imovel.get_endereco())
+        if cadastro_endereco != False:
+            id_endereco = cadastro_endereco
+
+    if id_endereco == None:
+        return "ERRO! Problema com o endereço"
+    else:
+        imovel.get_endereco().set_id(id_endereco)
+        if imovel.get_id() >= 0:
+            imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(imovel.get_id())
+            if imovel:
+                edicao = Init.imobiliaria.get_estoque().atualizar_imovel(imovel)
+
+                if edicao:
+                    return f"Imóvel editado com sucesso!"
+                else:
+                    return "ERRO ao editar imóvel"
+
             else:
-                return "ERRO ao editar imóvel"
+                imovel.set_data_cadastro(datetime.datetime.now)
+                cadastrado = Init.imobiliaria.get_estoque().cadastrar_imovel(imovel)
 
-        else:
-            imovel.set_data_cadastro(datetime.datetime.now)
-            cadastrado = Init.imobiliaria.get_estoque().cadastrar_imovel(imovel)
-
-            if cadastrado == True:
-                return f"imovel cadastrado!\n"
-            else:
-                return "ERRO: ao cadastrar_imovel"
+                if cadastrado == True:
+                    return f"imovel cadastrado!\n"
+                else:
+                    return "ERRO: ao cadastrar_imovel"
 
 
 def editar_pessoa(cpf, dados):

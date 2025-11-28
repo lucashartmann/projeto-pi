@@ -1,6 +1,25 @@
 from enum import Enum
 from model import Endereco
 
+
+bairros = [
+    "Aberta dos Morros", "Agronomia", "Anchieta", "Arquipélago", "Auxiliadora", "Azenha",
+    "Bela Vista", "Belém Novo", "Belém Velho", "Boa Vista", "Bom Jesus", "Bom Fim",
+    "Camaquã", "Cascata", "Cavalhada", "Centro Histórico", "Chácara das Pedras", "Cidade Baixa",
+    "Coronado", "Cristal", "Cristo Redentor", "Espírito Santo", "Farrapos", "Floresta",
+                "Glória", "Guarujá", "Higienópolis", "Hípica", "Humaitá", "Independência", "Ipanema",
+                "Jardim Botânico", "Jardim Carvalho", "Jardim do Salso", "Jardim Europa", "Jardim Floresta",
+                "Jardim Isabel", "Lagoa da Conceição", "Lami", "Lomba do Pinheiro", "Menino Deus",
+                "Moinhos de Vento", "Mont'Serrat", "Navegantes", "Nonoai", "Passo da Areia",
+                "Passo D'Areia", "Partenon", "Petrópolis", "Ponta Grossa", "Praia de Belas",
+                "Restinga", "Rio Branco", "Rubem Berta", "Santa Cecília", "Santa Maria Goretti",
+                "Santa Teresa", "Santana", "Santo Antônio", "Sarandi", "São Geraldo", "São João",
+                "São José", "São Sebastião", "Serraria", "Terra Nova", "Três Figueiras", "Tristeza",
+                "Vila Assunção", "Vila Conceição", "Vila Ipiranga", "Vila Jardim", "Vila João Pessoa",
+                "Vila Nova", "Vila São José"
+]
+
+
 class Categoria(Enum):
     SALA_COMERCIAL = "Sala Comercial"
     APARTAMENTO = "Apartamento"
@@ -56,7 +75,6 @@ class Imovel:
 
     def __init__(self, endereco: Endereco.Endereco, status, categoria):
         self.id = 0
-        self.titulo = ""
         self.valor_venda = 0
         self.valor_aluguel = 0
         self.quant_quartos = 0
@@ -67,10 +85,6 @@ class Imovel:
         self.nome_condominio = ""
         self.cor = ""
         self.categoria = categoria
-        self.descricao = ""
-        self.imagens = []
-        self.videos = []
-        self.anexos = []
         self.endereco = endereco
         self.status = status
         self.iptu = 0
@@ -88,28 +102,40 @@ class Imovel:
         self.captador = None
         self.data_cadastro = None
         self.data_modificacao = None
-        
+        self.anuncio = None
+
+        self.aceita_pet = False
+        self.churrasqueira = False
+        self.armarios_embutidos = False
+        self.cozinha_americana = False
+        self.area_de_servico = False
+        self.suite_master = False
+        self.banheiro_com_janela = False
+        self.piscina = False
+        self.lareira = False
+        self.ar_condicionado = False
+        self.semi_mobiliado = False
+        self.mobiliado = False
+        self.dependencia_de_empregada = False
+        self.dispensa = False
+        self.deposito = False
+
     def set_data_cadastro(self, data):
         self.data_cadastro = data
-        
+
     def get_data_cadastro(self):
         return self.data_cadastro
-    
+
     def set_data_modificacao(self, data):
         self.data_modificacao = data
-        
+
     def get_data_modificacao(self):
         return self.data_modificacao
-        
+
     def gerar_id(self):
         Imovel.codigo += 1
         return Imovel.codigo
-        
-    def get_titulo(self):
-        return self.titulo
 
-    def set_titulo(self, novo_titulo):
-        self.titulo = novo_titulo
 
     def get_id(self):
         return self.id
@@ -177,29 +203,6 @@ class Imovel:
     def set_categoria(self, value):
         self.categoria = value
 
-    def get_descricao(self):
-        return self.descricao
-
-    def set_descricao(self, value):
-        self.descricao = value
-
-    def get_imagens(self):
-        return self.imagens
-
-    def set_imagens(self, value):
-        self.imagens = value
-
-    def get_videos(self):
-        return self.videos
-
-    def set_videos(self, value):
-        self.videos = value
-
-    def get_anexos(self):
-        return self.anexos
-
-    def set_anexos(self, value):
-        self.anexos = value
 
     def get_endereco(self):
         return self.endereco
@@ -284,17 +287,22 @@ class Imovel:
 
     def set_corretor(self, corretor):
         self.corretor = corretor
-        
+
     def get_captador(self):
         return self.captador
-    
+
     def set_captador(self, captador):
         self.captador = captador
-    
+
     def set_endereco(self, endereco):
         self.endereco = endereco
-        
+
     def get_endereco(self):
         return self.endereco
-
     
+    def set_anuncio(self, anuncio):
+        self.anuncio = anuncio
+
+    def get_anuncio(self):
+        return self.anuncio
+

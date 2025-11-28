@@ -13,6 +13,13 @@ class TelaEstoque(Screen):
     TITLE = "Estoque"
 
     imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+    compradores = Init.imobiliaria.get_lista_compradores()
+    proprietarios = Init.imobiliaria.get_lista_proprietarios()
+    clientes_filtrados = []
+    gerentes = []
+    captadores = []
+    corretorres = []
+    administradores = []
     imoveis_filtrados = []
     filtrou_select = False
     filtrou_input = False
@@ -133,8 +140,8 @@ class TelaEstoque(Screen):
             self.query_one("#container_resultado").mount(container)
 
             container.mount(Checkbox())
-            if imovel.get_imagens():
-                container.mount(Image(imovel.get_imagens()[0]))
+            if imovel.get_anuncio().get_imagens():
+                container.mount(Image(imovel.get_anuncio().get_imagens()[0]))
 
             container2 = Vertical(classes="dados0")
             container.mount(container2)
@@ -142,7 +149,8 @@ class TelaEstoque(Screen):
             container2.mount(container3)
             container3.mount(
                 Static(imovel.get_endereco().get_bairro(), classes="stt_bairro"))
-            container3.mount(Static(f"Referência {imovel.get_id()}", classes="stt_ref"))
+            container3.mount(
+                Static(f"Referência {imovel.get_id()}", classes="stt_ref"))
             container3.mount(
                 Static(f"{imovel.get_status().value} - {imovel.get_nome_condominio()}", classes="stt_status"))
             container3.mount(Static(

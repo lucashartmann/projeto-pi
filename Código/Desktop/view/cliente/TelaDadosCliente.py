@@ -1,8 +1,8 @@
 from textual.screen import Screen
-from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, Header
+from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, Header, MaskedInput, Select, SelectionList
 from textual.containers import Grid
 
-from model import Init, Administrador, Gerente, Cliente
+from model import Init, Administrador, Gerente, Cliente, Imovel
 from controller import Controller
 
 
@@ -50,9 +50,9 @@ class TelaDadosCliente(Screen):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
-
         else:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
+            
         with Grid():
             yield Static("Username")
             yield TextArea(Init.usuario_atual.get_nome())
@@ -70,6 +70,14 @@ class TelaDadosCliente(Screen):
             yield TextArea(Init.usuario_atual.get_email())
             yield Static("Senha")
             yield TextArea(Init.usuario_atual.get_senha())
+        yield Static("Procurando por:")
+        with Grid():
+            yield SelectionList([(valor.value, valor) for valor in Imovel.Categoria], id="select_categoria")
+            yield Static("Quartos")
+            yield MaskedInput(template=00)
+            yield Static("Banheiros")
+            yield MaskedInput(template=00)
+            
         yield Button("Salvar")
         # yield Static("Imoveis do usuário", id="stt_compras")
         yield Footer(show_command_palette=False)

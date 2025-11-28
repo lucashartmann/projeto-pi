@@ -9,6 +9,7 @@ import datetime
 from model import Init, Imovel, Administrador, Corretor, Gerente, Endereco
 from controller import Controller
 
+
 class PopUp(ModalScreen):
     def compose(self):
         yield ("Imovel nao salvo, deseja continuar?")
@@ -50,7 +51,7 @@ class TelaCadastroImovel(Screen):
         self.salvo = False
         if evento.text_area.id == "ta_cep":
             cep = str(evento.text_area.text.strip())
-            
+
             self.query_one("#ta_bairro", TextArea).clear()
             self.query_one("#ta_estado", MaskedInput).clear()
             self.query_one("#ta_rua", TextArea).clear()
@@ -222,35 +223,58 @@ class TelaCadastroImovel(Screen):
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:
             case "bt_salvar_alteracoes":
-                ref = int(self.query_one("#ta_ref", TextArea).text)
-                categoria_imovel = self.query_one("#select_categoria", Select).value
-                situacao_imovel = self.query_one("#select_situacao", Select).value
+                ref = int(self.query_one("#ta_ref", TextArea).text.strip())
+                categoria_imovel = self.query_one(
+                    "#select_categoria", Select).value
+                situacao_imovel = self.query_one(
+                    "#select_situacao", Select).value
                 estado_imovel = self.query_one("#select_estado", Select).value
-                ocupacao_imovel = self.query_one("#select_ocupacao", Select).value
+                ocupacao_imovel = self.query_one(
+                    "#select_ocupacao", Select).value
                 status_imovel = self.query_one("#select_status", Select).value
-                nome_condominio = self.query_one("#ta_nome_condominio", TextArea).text
+                nome_condominio = self.query_one(
+                    "#ta_nome_condominio", TextArea).text
                 rua = self.query_one("#ta_rua", TextArea).text
-                numero = int(self.query_one("#ta_numero", TextArea).text)
-                complemento = self.query_one("#ta_complemento", TextArea).text
-                bloco = self.query_one("#ta_bloco", MaskedInput).value 
-                cep = self.query_one("#ta_cep", TextArea).text
+                numero = int(self.query_one(
+                    "#ta_numero", TextArea).text.strip())
+                complemento = self.query_one(
+                    "#ta_complemento", TextArea).text.strip()
+                bloco = self.query_one("#ta_bloco", MaskedInput).value.strip()
+                cep = self.query_one("#ta_cep", TextArea).text.strip()
+                if not cep:
+                    self.notify("ERRO! CEP inválido")
+                    return
                 bairro = self.query_one("#ta_bairro", TextArea).text
                 cidade = self.query_one("#ta_cidade", TextArea).text
-                estado = self.query_one("#ta_estado", MaskedInput).value 
-                salas = int(self.query_one("#ta_salas", MaskedInput).value)
-                banheiros = int(self.query_one("#ta_banheiros", MaskedInput).value) 
-                vagas = int(self.query_one("#ta_vagas", MaskedInput).value) 
-                varandas = int(self.query_one("#ta_varandas", MaskedInput).value) 
-                quartos = int(self.query_one("#ta_quartos", MaskedInput).value) 
-                area_total = float(self.query_one("#ta_area_total", MaskedInput).value) 
-                area_privativa = float(self.query_one("#ta_area_privativa", MaskedInput).value) 
-                venda = float(self.query_one("#ta_venda", MaskedInput).value) 
-                aluguel = float(self.query_one("#ta_aluguel", MaskedInput).value) 
-                valor_condominio = float(self.query_one("#ta_condominio", MaskedInput).value) 
-                iptu = float(self.query_one("#ta_iptu", MaskedInput).value)
-                endereco = Endereco(rua, numero, bairro, cep, complemento, cidade)
+                estado = self.query_one(
+                    "#ta_estado", MaskedInput).value.strip()
+                salas = int(self.query_one(
+                    "#ta_salas", MaskedInput).value.strip())
+                banheiros = int(self.query_one(
+                    "#ta_banheiros", MaskedInput).value.strip())
+                vagas = int(self.query_one(
+                    "#ta_vagas", MaskedInput).value.strip())
+                varandas = int(self.query_one(
+                    "#ta_varandas", MaskedInput).value.strip())
+                quartos = int(self.query_one(
+                    "#ta_quartos", MaskedInput).value.strip())
+                area_total = float(self.query_one(
+                    "#ta_area_total", MaskedInput).value.strip())
+                area_privativa = float(self.query_one(
+                    "#ta_area_privativa", MaskedInput).value.strip())
+                venda = float(self.query_one(
+                    "#ta_venda", MaskedInput).value.strip())
+                aluguel = float(self.query_one(
+                    "#ta_aluguel", MaskedInput).value.strip())
+                valor_condominio = float(self.query_one(
+                    "#ta_condominio", MaskedInput).value.strip())
+                iptu = float(self.query_one(
+                    "#ta_iptu", MaskedInput).value.strip())
+                endereco = Endereco(rua, numero, bairro,
+                                    cep, complemento, cidade)
                 endereco.set_estado(estado)
-                imovel = Imovel.Imovel(endereco, status_imovel, categoria_imovel)
+                imovel = Imovel.Imovel(
+                    endereco, status_imovel, categoria_imovel)
                 # imovel.set_andar()
                 # imovel.set_anexos
                 # imovel.set_ano_construcao()
@@ -273,17 +297,16 @@ class TelaCadastroImovel(Screen):
                 imovel.set_quant_varandas(varandas)
                 imovel.set_situacao(situacao_imovel)
                 imovel.set_estado(estado_imovel)
-                imovel.set_ocupacao(ocupacao_imovel) 
+                imovel.set_ocupacao(ocupacao_imovel)
                 imovel.set_id(ref)
                 imovel.set_data_modificacao(datetime.datetime.now)
-                
+
                 cadastro = Controller.cadastrar_imovel(imovel)
                 self.notify(cadastro)
                 self.salvo = True
-                
+
             case "bt_apagar_cadastro":
                 self.mount(PopUpApagar())
-                
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         # if self.salvo == False:

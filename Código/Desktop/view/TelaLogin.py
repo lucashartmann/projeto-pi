@@ -88,4 +88,4 @@ class TelaLogin(Screen):
         if self.query_one(Select).value == "Cliente":
             self.app.switch_screen("tela_estoque_cliente")
         else:
-            self.app.switch_screen("tela_cadastro_imovel")
+            self.app.switch_screen("tela_atendimento")

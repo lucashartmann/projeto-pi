@@ -12,6 +12,7 @@ class Comprador():
         self.endereco = ""
         self.idade = 0
         self.data_nascimento = ""
+        
 
     def get_username(self):
         return self.username
