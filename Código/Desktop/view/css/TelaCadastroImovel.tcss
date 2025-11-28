@@ -6,32 +6,32 @@ TelaCadastroImovel #h_buttons{
     height: auto;
 }
 
-#ta_banheiros, #ta_vagas, #ta_varandas, #ta_quartos, #ta_estado, #ta_salas, #ta_numero, #ta_bloco {
+TelaCadastroImovel #ta_banheiros, TelaCadastroImovel #ta_vagas, TelaCadastroImovel #ta_varandas, TelaCadastroImovel #ta_quartos, TelaCadastroImovel #ta_estado, TelaCadastroImovel #ta_salas, TelaCadastroImovel #ta_numero, TelaCadastroImovel #ta_bloco {
     width: 24%;
 }
 
-#ta_nome_condominio {
+TelaCadastroImovel #ta_nome_condominio {
     column-span: 5;
 }
 
-#ta_estado{
+TelaCadastroImovel #ta_estado{
     column-span: 5;
 }
 
-#ta_area_privativa {
+TelaCadastroImovel #ta_area_privativa {
     column-span: 7;
 }
 
-#ta_ref{
+TelaCadastroImovel #ta_ref{
     column-span: 3;
 }
 
-#select_estado {
+TelaCadastroImovel #select_estado {
     column-span: 3;
 }
 
 
-#ta_complemento {
+TelaCadastroImovel #ta_complemento {
     width: 45%;
 }
 
@@ -80,7 +80,7 @@ TelaCadastroImovel #container_info {
     display: none;
 }
 
-#container_anuncio {
+TelaCadastroImovel #container_anuncio {
     background: white;
     width: 100%;
     height: auto;
@@ -88,18 +88,18 @@ TelaCadastroImovel #container_info {
     margin: 2;
 }
 
-#container_anuncio #ta_titulo_anuncio {
+TelaCadastroImovel #container_anuncio #ta_titulo_anuncio {
    height: 3;
 }
 
-Checkbox {
+TelaCadastroImovel Checkbox {
     background: white;
     width: auto;
     height: auto;
 }
 
 
-#container_anuncio #container_info_imovel {
+TelaCadastroImovel #container_anuncio #container_info_imovel {
     height: auto;
     display: block;
     grid-size: 6;
@@ -107,7 +107,7 @@ Checkbox {
     align: center middle;
 }
 
-#container_anuncio #container_info_condominio{
+TelaCadastroImovel #container_anuncio #container_info_condominio{
     height: auto;
     display: block;
     grid-size: 6;
@@ -115,27 +115,28 @@ Checkbox {
     align: center middle;
 }
 
-#container_anuncio TextArea {
+TelaCadastroImovel #container_anuncio TextArea {
     background: white;
     width: 50%;
     height: 10;
     color: black;
 }
 
-#container_anuncio #container_info_condominio Static{
+TelaCadastroImovel #container_anuncio #container_info_condominio Static{
     margin:0;
 }
 
-#container_anuncio #container_info_imovel Static{
+TelaCadastroImovel #container_anuncio #container_info_imovel Static{
     margin:0;
 }
-#container_anuncio Static {
+
+TelaCadastroImovel #container_anuncio Static {
     text-align: center;
     margin: 1 0 1 0;
 }
 
 
-.stt_container_titulo {
+TelaCadastroImovel .stt_container_titulo {
     text-align: center;
     background: rgb(200,200,200);
     width: 100%;
@@ -143,7 +144,7 @@ Checkbox {
     color: black;
 }
 
-#container_captador, #container_corretor, #container_proprietario {
+TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
     background: rgb(200,200,200);
     margin-top: 2;
     width: 100%;

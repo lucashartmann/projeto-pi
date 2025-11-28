@@ -1,31 +1,56 @@
-from textual.screen import Screen
+from textual.app import App
+from textual.screen import Screen, ModalScreen
 from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button, Header, Footer
-from textual.containers import Horizontal, Vertical, Grid, Container, VerticalScroll, Center
+from textual.containers import Horizontal, Vertical, Grid, VerticalScroll, Center
+
 import requests
+import datetime
 
-from model import Init, Imovel, Administrador, Corretor, Gerente
+from model import Init, Imovel, Administrador, Corretor, Gerente, Endereco
+from controller import Controller
 
-
-class PopUp(Container):
+class PopUp(ModalScreen):
     def compose(self):
         yield ("Imovel nao salvo, deseja continuar?")
+        with Horizontal():
+            yield Button("Confirmar", id="bt_confirmar")
+            yield Button("Cancelar")
+
+    def on_button_pressed(self, evento: Button.Pressed):
+        if evento.button.id == "bt_confirmar":
+            self.screen.confirmar_salvamento = True
+        else:
+            self.screen.confirmar_salvamento = False
+
+        self.remove()
 
 
-class PopUp(Container):
+class PopUpApagar(ModalScreen):
     def compose(self):
         yield ("Certeza que deseja apagar?")
+        with Horizontal():
+            yield Button("Confirmar", id="bt_confirmar")
+            yield Button("Cancelar")
+
+    def on_button_pressed(self, evento: Button.Pressed):
+        if evento.button.id == "bt_confirmar":
+            ref = int(self.query_one("#ta_ref", TextArea).text)
+            remocao = Controller.remover_imovel(ref)
+            self.screen.notify(remocao)
+
+        self.remove()
 
 
 class TelaCadastroImovel(Screen):
 
     CSS_PATH = "css/TelaCadastroImovel.tcss"
+    salvo = False
 
     def on_text_area_changed(self, evento: TextArea.Changed):
+        self.salvo = False
         if evento.text_area.id == "ta_cep":
             cep = str(evento.text_area.text.strip())
-            print(cep)
-            print(len(cep))
-
+            
             self.query_one("#ta_bairro", TextArea).clear()
             self.query_one("#ta_estado", MaskedInput).clear()
             self.query_one("#ta_rua", TextArea).clear()
@@ -43,15 +68,12 @@ class TelaCadastroImovel(Screen):
                     cidade = dados["localidade"]
                     uf = dados["uf"]
 
-                    print(logradouro)
-                    print(type(logradouro))
-
                     self.query_one("#ta_bairro", TextArea).text = bairro
                     self.query_one("#ta_estado", MaskedInput).value = uf
                     self.query_one("#ta_rua", TextArea).text = logradouro
                     self.query_one("#ta_cidade", TextArea).text = cidade
                 except Exception as e:
-                    pass
+                    self.notify("ERRO! CEP inválido")
 
     def compose(self):
         yield Header()
@@ -63,8 +85,8 @@ class TelaCadastroImovel(Screen):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
         with Horizontal(id="h_buttons"):
-            yield Button("Apagar")
-            yield Button("Salvar")
+            yield Button("Apagar", id="bt_apagar_cadastro")
+            yield Button("Salvar", id="bt_salvar_alteracoes")
 
         with VerticalScroll():
             yield Tabs(Tab("Cadastro", id="tab_imovel"), Tab("Anuncio", id="tab_anuncio"), id="tabs_anuncio")
@@ -181,7 +203,7 @@ class TelaCadastroImovel(Screen):
                     yield Checkbox("Elevador de Serviço")
 
             with Grid(id="container_imagens"):
-                yield Button("Editar")
+                yield Button("Editar", id="bt_editar_imagens")
                 # for i in ....
                 #     yield Image()
 
@@ -197,7 +219,75 @@ class TelaCadastroImovel(Screen):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_imovel", Tab).id
 
+    def on_button_pressed(self, evento: Button.Pressed):
+        match evento.button.id:
+            case "bt_salvar_alteracoes":
+                ref = int(self.query_one("#ta_ref", TextArea).text)
+                categoria_imovel = self.query_one("#select_categoria", Select).value
+                situacao_imovel = self.query_one("#select_situacao", Select).value
+                estado_imovel = self.query_one("#select_estado", Select).value
+                ocupacao_imovel = self.query_one("#select_ocupacao", Select).value
+                status_imovel = self.query_one("#select_status", Select).value
+                nome_condominio = self.query_one("#ta_nome_condominio", TextArea).text
+                rua = self.query_one("#ta_rua", TextArea).text
+                numero = int(self.query_one("#ta_numero", TextArea).text)
+                complemento = self.query_one("#ta_complemento", TextArea).text
+                bloco = self.query_one("#ta_bloco", MaskedInput).value 
+                cep = self.query_one("#ta_cep", TextArea).text
+                bairro = self.query_one("#ta_bairro", TextArea).text
+                cidade = self.query_one("#ta_cidade", TextArea).text
+                estado = self.query_one("#ta_estado", MaskedInput).value 
+                salas = int(self.query_one("#ta_salas", MaskedInput).value)
+                banheiros = int(self.query_one("#ta_banheiros", MaskedInput).value) 
+                vagas = int(self.query_one("#ta_vagas", MaskedInput).value) 
+                varandas = int(self.query_one("#ta_varandas", MaskedInput).value) 
+                quartos = int(self.query_one("#ta_quartos", MaskedInput).value) 
+                area_total = float(self.query_one("#ta_area_total", MaskedInput).value) 
+                area_privativa = float(self.query_one("#ta_area_privativa", MaskedInput).value) 
+                venda = float(self.query_one("#ta_venda", MaskedInput).value) 
+                aluguel = float(self.query_one("#ta_aluguel", MaskedInput).value) 
+                valor_condominio = float(self.query_one("#ta_condominio", MaskedInput).value) 
+                iptu = float(self.query_one("#ta_iptu", MaskedInput).value)
+                endereco = Endereco(rua, numero, bairro, cep, complemento, cidade)
+                endereco.set_estado(estado)
+                imovel = Imovel.Imovel(endereco, status_imovel, categoria_imovel)
+                # imovel.set_andar()
+                # imovel.set_anexos
+                # imovel.set_ano_construcao()
+                imovel.set_area_privativa(area_privativa)
+                # imovel.set_captador()
+                imovel.set_area_total(area_total)
+                imovel.set_bloco(bloco)
+                # imovel.set_corretor()
+                # imovel.set_cor()
+                # imovel.set_descricao()
+                imovel.set_iptu(iptu)
+                imovel.set_valor_condominio(valor_condominio)
+                imovel.set_nome_condominio(nome_condominio)
+                imovel.set_valor_venda(venda)
+                imovel.set_valor_aluguel(aluguel)
+                imovel.set_quant_banheiros(banheiros)
+                imovel.set_quant_quartos(quartos)
+                imovel.set_quant_salas(salas)
+                imovel.set_quant_vagas(vagas)
+                imovel.set_quant_varandas(varandas)
+                imovel.set_situacao(situacao_imovel)
+                imovel.set_estado(estado_imovel)
+                imovel.set_ocupacao(ocupacao_imovel) 
+                imovel.set_id(ref)
+                imovel.set_data_modificacao(datetime.datetime.now)
+                
+                cadastro = Controller.cadastrar_imovel(imovel)
+                self.notify(cadastro)
+                self.salvo = True
+                
+            case "bt_apagar_cadastro":
+                self.mount(PopUpApagar())
+                
+
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+        # if self.salvo == False:
+        #     self.mount(PopUp)
         if event.tabs.id == "tabs_anuncio":
             if event.tabs.active == self.query_one("#tab_anuncio", Tab).id:
                 self.query_one("#container_cadastro").display = "none"

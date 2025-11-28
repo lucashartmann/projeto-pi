@@ -2,8 +2,6 @@ from textual.widgets import Input, TextArea, Footer, Header, Tab, Checkbox, Tabs
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 
-from model import Init
-
 from model import Init, Corretor, Administrador, Imovel, Gerente
 
 from textual_image.widget import Image
@@ -38,9 +36,9 @@ class TelaEstoque(Screen):
             with Horizontal(id="primeiro"):
                 yield Select([("Imoveis", "Imovel"), ("Compradores", "Comprador"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel")], allow_blank=False, id="select_tabelas")
                 yield Static("Categoria:")
-                yield Select([(valor, valor) for valor in Imovel.Categoria._member_names_])
+                yield Select([(valor.value, valor) for valor in Imovel.Categoria])
                 yield Static("Status:")
-                yield Select([(valor, valor) for valor in Imovel.Status._member_names_])
+                yield Select([(valor.value, valor) for valor in Imovel.Status])
             with Horizontal(id="segundo"):
                 yield Static("Rua")
                 yield TextArea()
@@ -53,22 +51,7 @@ class TelaEstoque(Screen):
                 yield Static("CEP")
                 yield TextArea()
         with Vertical(id="container_resultado"):
-            with Horizontal(id="imovel"):
-                yield Checkbox()
-                yield Image(r"assets\apartamento1\5661162882.jpg")
-                with Vertical(id="dados0"):
-                    with Vertical(id="dados1"):
-                        yield Static("Centro", id="stt_bairro")
-                        yield Static("Referência 91", id="stt_ref")
-                        yield Static("Pendente - Sala Comercial Condominio ED. Lúcio Costa", id="stt_status")
-                        yield Static("Rua Quinze de Janeiro, 310/301")
-                        yield Static("Porto Alegre/RS")
-                        yield Static("Aluguel")
-                        yield Static("R$ 1.100,00", classes="valor")
-                    with Horizontal(id="dados2"):
-                        yield Static("55m2")
-                        yield Static("100m2")
-                        yield Static("2 banheiros")
+            pass
 
         yield Footer(show_command_palette=False)
 
@@ -136,6 +119,55 @@ class TelaEstoque(Screen):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
 
     def atualizar(self):
+        self.query_one("#container_resultado", Vertical).remove_children()
+
+        lista = []
+
+        if self.imoveis_filtrados:
+            lista = self.imoveis_filtrados
+        else:
+            lista = self.imoveis
+
+        for imovel in lista:
+            container = Horizontal(classes="imovel")
+            self.query_one("#container_resultado").mount(container)
+
+            container.mount(Checkbox())
+            if imovel.get_imagens():
+                container.mount(Image(imovel.get_imagens()[0]))
+
+            container2 = Vertical(classes="dados0")
+            container.mount(container2)
+            container3 = Vertical(classes="dados1")
+            container2.mount(container3)
+            container3.mount(
+                Static(imovel.get_endereco().get_bairro(), classes="stt_bairro"))
+            container3.mount(Static(f"Referência {imovel.get_id()}", classes="stt_ref"))
+            container3.mount(
+                Static(f"{imovel.get_status().value} - {imovel.get_nome_condominio()}", classes="stt_status"))
+            container3.mount(Static(
+                f"{imovel.get_endereco().get_rua()}, {imovel.get_endereco().get_numero()}/{imovel.get_endereco().get_complemento()}"))
+            container3.mount(Static(f"{imovel.get_endereco().get_cidade()}"))
+            container3.mount(Static(f"{imovel.get_status().value}"))
+            if imovel.get_valor_venda():
+                container3.mount(
+                    Static(f"{imovel.get_valor_venda()}", classes="valor"))
+            if imovel.get_valor_aluguel():
+                container3.mount(
+                    Static(f"{imovel.get_valor_aluguel()}", classes="valor"))
+            caomtainer4 = Horizontal(classes="dados2")
+            container3.mount(caomtainer4)
+            caomtainer4.mount(Static(f"{imovel.get_area_privativa()}"))
+            caomtainer4.mount(Static(f"{imovel.get_area_total()}"))
+            if imovel.get_quant_banheiros():
+                caomtainer4.mount(
+                    Static(f"{imovel.get_quant_banheiros()} banheiros"))
+            if imovel.get_quant_quartos():
+                caomtainer4.mount(
+                    Static(f"{imovel.get_quant_quartos()} quartos"))
+            if imovel.get_quant_vagas():
+                caomtainer4.mount(Static(f"{imovel.get_quant_vagas()} vagas"))
+
         self.setup_dados()
 
     def on_input_changed(self, evento: Input.Changed):

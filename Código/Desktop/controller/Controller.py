@@ -1,5 +1,5 @@
-from model import Cliente, Corretor, Imovel, Init, Captador, Administrador, Gerente
-import requests
+from model import Cliente, Corretor, Init
+import datetime
 
 
 def cadastrar_pessoa(lista):
@@ -7,7 +7,7 @@ def cadastrar_pessoa(lista):
         return "Nome está vazio"
 
     if lista[1] == "":
-        return "CPF está vazii"
+        return "CPF está vazio"
     if lista[2] == "":
         return "RG está vazio"
     if lista[3] == "":
@@ -34,95 +34,26 @@ def cadastrar_pessoa(lista):
         return "ERRO"
 
 
-def cadastrar_imovel(lista):
-    link = f"https://viacep.com.br/ws/{cep}/json/"
+def cadastrar_imovel(imovel):
 
-    requisicao = requests.get(link)
-    dados = requisicao.json()
-    
-    logradouro = dados["logradouro"]
-    bairro = dados["bairro"]
-    cidade = dados["localidade"]
-    uf = dados["uf"]
+    if imovel.get_id() >= 0:
+        imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(imovel.get_id())
+        if imovel:
+            edicao = Init.imobiliaria.get_estoque().atualizar_imovel(imovel)
 
+            if edicao:
+                return f"Imóvel editado com sucesso!"
+            else:
+                return "ERRO ao editar imóvel"
 
-    if lista[0] == "":
-        return "Nome está vazio"
+        else:
+            imovel.set_data_cadastro(datetime.datetime.now)
+            cadastrado = Init.imobiliaria.get_estoque().cadastrar_imovel(imovel)
 
-    if lista[1] == "":
-        return "Marca está vazio"
-
-    if lista[2] == "":
-        return "Modelo está vazio"
-
-    if lista[3] == "":
-        return "Cor está vazio"
-
-    if lista[4] == "":
-        return "Preço está vazio"
-
-    if lista[5] == "":
-        return "Quantidade está vazio"
-
-    if lista[6] == "":
-        return "Categoria  está vazio"
-
-    try:
-        lista[4] = float(lista[4])
-    except ValueError:
-        return "ERRO Preço incorreto"
-
-    try:
-        lista[5] = int(lista[5])
-    except ValueError:
-        return "ERRO Quantidade incorreta"
-
-    imovel = Imovel.imovel(lista[0], lista[1], lista[2],
-                           lista[3], lista[4], lista[5], lista[6])
-    cadastrado = Init.imobiliaria.get_estoque().adicionar_imovel(imovel)
-
-    if cadastrado == True:
-        return f"imovel cadastrado!\n {imovel}"
-    else:
-        return "ERRO"
-
-
-def editar_imovel(codigo, lista):
-    if len(codigo) < 1:
-        return "ERRO"
-
-    imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(codigo)
-
-    if imovel != True:
-        return "ERRO"
-
-    if lista[0] != "":
-        imovel.set_nome(lista[0])
-    if lista[1] != "":
-        imovel.set_marca(lista[1])
-    if lista[2] != "":
-        imovel.set_modelo(lista[2])
-    if lista[3] != "":
-        imovel.set_cor(lista[3])
-
-    if lista[4] != "":
-        try:
-            lista[4] = float(lista[4])
-        except ValueError:
-            return (f"O valor {lista[4]} está incorreto")
-        imovel.set_preco(lista[4])
-
-    if lista[5] != "":
-        try:
-            lista[5] = int(lista[5])
-        except ValueError:
-            return (f"O valor {lista[5]} está incorreto")
-        imovel.set_quantidade(lista[5])
-
-    if lista[6] != "":
-        imovel.set_categoria(lista[6])
-
-    return f"imovel editado com sucesso\n {imovel}"
+            if cadastrado == True:
+                return f"imovel cadastrado!\n"
+            else:
+                return "ERRO: ao cadastrar_imovel"
 
 
 def editar_pessoa(cpf, dados):
@@ -298,16 +229,8 @@ def atualizar_dado_cliente(dados):
     return mensagem
 
 
-def remover_imovel(codigo):
-    if len(codigo) < 1:
-        return "ERRO"
-
-    try:
-        codigo = int(codigo)
-    except ValueError:
-        return "ERRO"
-
-    imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(id)
+def remover_imovel(id_imovel):
+    imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(id_imovel)
 
     if not imovel:
         return "ERRO"

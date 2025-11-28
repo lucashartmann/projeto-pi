@@ -36,19 +36,19 @@ TelaEstoque #container_filtragem Static {
     width: 12;
 }
 
-#segundo {
+TelaEstoque #segundo {
     margin-left: 30;
 }
 
-#segundo TextArea {
+TelaEstoque #segundo TextArea {
     height: 5;
 }
 
-#segundo Static {
+TelaEstoque #segundo Static {
     margin-top: 2;
 }
 
-#primeiro {
+TelaEstoque #primeiro {
     margin-left: 60;
 }
 
@@ -59,31 +59,31 @@ TelaEstoque Image {
     margin-top: 1;
 }
 
-#imovel Checkbox {
+TelaEstoque .imovel Checkbox {
     margin-top:4;
     margin-right: 4;
     margin-left: 2;
 }
 
-TelaEstoque #imovel {
+TelaEstoque .imovel {
     background: white;
     margin: 2 2 2 2;
     height: 12;
 }
-TelaEstoque #dados0 {
+TelaEstoque .dados0 {
     height: 20;
     margin-left: 2;
 }
 
-#dados2 {
+TelaEstoque .dados2 {
     height: 10;
 }
 
-TelaEstoque #stt_bairro {
+TelaEstoque .stt_bairro {
     text-style: bold;
 }
 
-TelaEstoque #stt_ref {
+TelaEstoque .stt_ref {
     border: black;
     width: auto;
 }

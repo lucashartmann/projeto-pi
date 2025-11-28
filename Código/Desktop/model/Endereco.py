@@ -1,4 +1,5 @@
 class Endereco:
+    id = 0
     def __init__(self, rua, numero, bairro, cep, complemento="", cidade="Porto Alegre"):
         self.id = 0
         self.rua = rua

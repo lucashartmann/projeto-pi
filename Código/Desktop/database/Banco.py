@@ -1,6 +1,7 @@
 import sqlite3
 import hashlib
 import os
+import io
 
 from model import Cliente, Imovel, Administrador, Captador, Corretor, Endereco
 from datetime import datetime
@@ -44,7 +45,7 @@ class Banco:
                     senha TEXT  NULL,
                     email TEXT NULL ,
                     nome TEXT  NULL,
-                    cpf TEXT  NULL ,
+                    cpf_cnpj TEXT  NULL ,
                     rg TEXT  NULL,
                     telefone TEXT NULL,
                     endereco TEXT NULL,
@@ -58,7 +59,7 @@ class Banco:
                     id_proprietario INTEGER PRIMARY KEY AUTOINCREMENT,
                     email TEXT NULL ,
                     nome TEXT  NULL,
-                    cpf TEXT  NULL ,
+                    cpf_cnpj TEXT  NULL ,
                     rg TEXT  NULL,
                     telefone TEXT NULL,
                     endereco TEXT NULL,
@@ -74,7 +75,7 @@ class Banco:
                     senha TEXT  NULL,
                     email TEXT  NULL ,
                     nome TEXT  NULL,
-                    cpf TEXT  NULL ,
+                    cpf_cnpj TEXT  NULL ,
                     rg TEXT  NULL,
                     telefone TEXT  NULL,
                     endereco TEXT  NULL,
@@ -92,7 +93,7 @@ class Banco:
                     senha TEXT  NULL,
                     email TEXT  NULL ,
                     nome TEXT  NULL,
-                    cpf TEXT  NULL ,
+                    cpf_cnpj TEXT  NULL ,
                     rg TEXT  NULL,
                     telefone TEXT  NULL,
                     endereco TEXT  NULL,
@@ -130,13 +131,15 @@ class Banco:
                     area_privativa REAL NULL,
                     situacao TEXT NULL,
                     ocupacao TEXT NULL,
-                    cpf_proprietario TEXT  NULL,
-                    cpf_corretor TEXT NULL,
-                    cpf_captador TEXT NULL,
+                    cpf_cnpj_proprietario TEXT  NULL,
+                    cpf_cnpj_corretor TEXT NULL,
+                    cpf_cnpj_captador TEXT NULL,
+                    data_cadastro TEXT NUll,
+                    data_modificacao TEXT NUll,
                     FOREIGN KEY (id_endereco) REFERENCES Endereco(id_endereco),
-                    FOREIGN KEY (cpf_proprietario) REFERENCES Proprietario(cpf),
-                    FOREIGN KEY (cpf_corretor) REFERENCES Corretor(cpf),
-                    FOREIGN KEY (cpf_captador) REFERENCES Captador(cpf)
+                    FOREIGN KEY (cpf_cnpj_proprietario) REFERENCES Proprietario(cpf_cnpj),
+                    FOREIGN KEY (cpf_cnpj_corretor) REFERENCES Corretor(cpf_cnpj),
+                    FOREIGN KEY (cpf_cnpj_captador) REFERENCES Captador(cpf_cnpj)
                 );
                                 ''')
 
@@ -152,18 +155,18 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS Venda_Aluguel (
                     id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
-                    cpf_cliente TEXT  NULL,
-                    cpf_proprietario TEXT  NULL, 
-                    cpf_captador TEXT NULL,
-                    cpf_corretor TEXT  NULL,
+                    cpf_cnpj_cliente TEXT  NULL,
+                    cpf_cnpj_proprietario TEXT  NULL, 
+                    cpf_cnpj_captador TEXT NULL,
+                    cpf_cnpj_corretor TEXT  NULL,
                     data_venda TEXT  NULL,
                     id_imovel INTEGER  NULL,
                     comissao_captador REAL NULL,
                     comissao_corretor REAL NULL,
                     FOREIGN KEY (id_imovel) REFERENCES Imovel (id_imovel),
-                    FOREIGN KEY (cpf_cliente) REFERENCES Cliente (cpf),
-                    FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
-                    FOREIGN KEY (cpf_corretor) references Corretor (cpf)
+                    FOREIGN KEY (cpf_cnpj_cliente) REFERENCES Comprador (cpf_cnpj),
+                    FOREIGN KEY (cpf_cnpj_proprietario) references Proprietario (cpf_cnpj),
+                    FOREIGN KEY (cpf_cnpj_corretor) references Corretor (cpf_cnpj)
                     );
                                 ''')
             cursor.execute(f'''
@@ -173,7 +176,7 @@ class Banco:
                     senha TEXT  NULL,
                     email TEXT  NULL ,
                     nome TEXT  NULL,
-                    cpf TEXT  NULL ,
+                    cpf_cnpj TEXT  NULL ,
                     rg TEXT  NULL,
                     telefone TEXT  NULL,
                     endereco TEXT  NULL,
@@ -184,23 +187,136 @@ class Banco:
                     matricula TEXT NULL
                 );
                                 ''')
-            cursor.execute(f'''
-                CREATE TABLE IF NOT EXISTS Anuncio (
-                    id_anuncio INTEGER PRIMARY KEY AUTOINCREMENT,
-                    descricao TEXT  NULL,
-                    titulo TEXT  NULL,
-                    id_imovel INTEGER  NULL,
-                    cpf_captador INTEGER NULL,
-                    cpf_corretor TEXT NULL,
-                    cpf_proprietario TEXT NULL,
-                    FOREIGN KEY (id_imovel) REFERENCES Imovel (id_imovel),
-                    FOREIGN KEY (cpf_captador) REFERENCES Cliente (cpf),
-                    FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
-                    FOREIGN KEY (cpf_corretor) references Corretor (cpf)
-                );
-                                ''')
 
             conexao.commit()
+
+    def atualizar_imovel(self, imovel: Imovel.Imovel):
+        with sqlite3.connect(
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            try:
+                cursor = conexao.cursor()
+
+                if imovel.get_categoria():
+                    categoria = imovel.get_categoria().value
+                else:
+                    categoria = None
+                if imovel.get_endereco():
+                    if imovel.get_endereco().get_id() != None:
+                        endereco = imovel.get_endereco().get_id()
+                    else:
+                        endereco = None
+                else:
+                    endereco = None
+                if imovel.get_status():
+                    status = imovel.get_status().value
+                else:
+                    status = None
+                if imovel.get_estado():
+                    estado = imovel.get_estado().value
+                else:
+                    estado = None
+                if imovel.get_situacao():
+                    situacao = imovel.get_situacao().value
+                else:
+                    situacao = None
+                if imovel.get_ocupacao():
+                    ocupacao = imovel.get_ocupacao().value
+                else:
+                    ocupacao = None
+                if imovel.get_proprietario():
+                    proprietario = imovel.get_proprietario().get_cpf_cnpj()
+                else:
+                    proprietario = None
+                if imovel.get_corretor():
+                    corretor = imovel.get_corretor().get_cpf_cnpj()
+                else:
+                    corretor = None
+                if imovel.get_captador():
+                    captador = imovel.get_captador().get_cpf_cnpj()
+                else:
+                    captador = None
+
+                if imovel.get_data_cadastro():
+                    data_cadastro = data_cadastro.strftime()
+                else:
+                    data_cadastro = None
+
+                if imovel.get_data_modificacao():
+                    data_modificacao = data_modificacao.strftime()
+                else:
+                    data_modificacao = None
+
+                query = '''
+                    UPDATE Imovel SET
+                        valor_venda = ?,
+                        valor_aluguel = ?,
+                        quant_quartos = ?,
+                        quant_salas = ?,
+                        quant_vagas = ?,
+                        quant_banheiros = ?,
+                        quant_varandas = ?,
+                        nome_condominio = ?,
+                        cor = ?,
+                        categoria = ?,
+                        descricao = ?,
+                        id_endereco = ?,
+                        status = ?,
+                        iptu = ?,
+                        valor_condominio = ?,
+                        andar = ?,
+                        estado = ?,
+                        bloco = ?,
+                        ano_construcao = ?,
+                        area_total = ?,
+                        area_privativa = ?,
+                        situacao = ?,
+                        ocupacao = ?,
+                        cpf_cnpj_proprietario = ?,
+                        cpf_cnpj_corretor = ?,
+                        cpf_cnpj_captador = ?,
+                        data_cadastro = ?,
+                        data_modificacao = ?
+                    WHERE id_imovel = ?
+                '''
+
+                valores = (
+                    imovel.get_valor_venda(),
+                    imovel.get_valor_aluguel(),
+                    imovel.get_quant_quartos(),
+                    imovel.get_quant_salas(),
+                    imovel.get_quant_vagas(),
+                    imovel.get_quant_banheiros(),
+                    imovel.get_quant_varandas(),
+                    imovel.get_nome_condominio(),
+                    imovel.get_cor(),
+                    categoria,
+                    imovel.get_descricao(),
+                    endereco,
+                    status,
+                    imovel.get_iptu(),
+                    imovel.get_valor_condominio(),
+                    imovel.get_andar(),
+                    estado,
+                    imovel.get_bloco(),
+                    imovel.get_ano_construcao(),
+                    imovel.get_area_total(),
+                    imovel.get_area_privativa(),
+                    situacao,
+                    ocupacao,
+                    proprietario,
+                    corretor,
+                    captador,
+                    data_cadastro,
+                    data_modificacao,
+                    imovel.get_id()
+                )
+
+                cursor.execute(query, valores)
+                self.conn.commit()
+                return True
+            except Exception as e:
+                print(e)
+                return False
 
     def cadastrar_anexo(self, id_imovel, blob, tipo):
         with sqlite3.connect(
@@ -241,7 +357,7 @@ class Banco:
 
                 for registro in registros:
                     id = registro[0]
-                    blob = registro[1]
+                    blob = io.BytesIO(registro[1])
                     tipo = registro[2]
 
                     if tipo == "Imagem":
@@ -366,7 +482,8 @@ class Banco:
                     endereco.get_estado(),
                 ))
                 conexao.commit()
-                return True
+                endereco_id = cursor.lastrowid
+                return endereco_id
             except Exception as e:
                 erro = f"Banco.cadastrar_endereco: ERRO! {e}"
                 print(erro)
@@ -380,7 +497,7 @@ class Banco:
                 senha_hash = hashlib.sha256(
                     corretor.get_senha().encode('utf-8')).hexdigest()
                 sql_query = f''' 
-                    INSERT INTO Corretor (username, senha, email, nome, cpf, rg, telefone, endereco, idade, data_nascimento) 
+                    INSERT INTO Corretor (username, senha, email, nome, cpf_cnpj, rg, telefone, endereco, idade, data_nascimento) 
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     '''
                 cursor.execute(sql_query, (
@@ -410,7 +527,7 @@ class Banco:
                 senha_hash = hashlib.sha256(
                     captador.get_senha().encode('utf-8')).hexdigest()
                 sql_query = f''' 
-                    INSERT INTO Captador (username, senha, email, nome, cpf, rg, telefone, endereco, idade, data_nascimento) 
+                    INSERT INTO Captador (username, senha, email, nome, cpf_cnpj, rg, telefone, endereco, idade, data_nascimento) 
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     '''
                 cursor.execute(sql_query, (
@@ -440,7 +557,7 @@ class Banco:
                 if isinstance(proprietario, Cliente.Proprietario):
 
                     sql_query = f''' 
-                    INSERT INTO Proprietario (email, nome, cpf, rg, telefone, endereco, idade, data_nascimento) 
+                    INSERT INTO Proprietario (email, nome, cpf_cnpj, rg, telefone, endereco, idade, data_nascimento) 
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                     '''
                     cursor.execute(sql_query, (
@@ -495,7 +612,7 @@ class Banco:
                     senha_hash = hashlib.sha256(
                         comprador.get_senha().encode('utf-8')).hexdigest()
                     sql_query = f''' 
-                    INSERT INTO Comprador (username, senha, email, nome, cpf, rg, telefone, endereco, idade, data_nascimento) 
+                    INSERT INTO Comprador (username, senha, email, nome, cpf_cnpj, rg, telefone, endereco, idade, data_nascimento) 
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     '''
                     cursor.execute(sql_query, (
@@ -546,26 +663,42 @@ class Banco:
                 registros = cursor.fetchone()
 
                 if not registros:
-                    raise Exception("Não há proprietarios cadastrados")
+                    raise Exception(
+                        f"Não há endereços cadastrados com id {id}")
 
-                return registros
+                id_endereco = int(registros[0])
+                rua = registros[1]
+                numero = int(registros[2])
+                bairro = registros[3]
+                cep = registros[4]
+                complemento = registros[5]
+                cidade = registros[6]
+                estado = registros[7]
+
+                endereco = Endereco.Endereco(
+                    rua, numero, bairro, cep, complemento, cidade)
+                endereco.set_estado(estado)
+                endereco.set_id(id_endereco)
+
+                return endereco
             except Exception as e:
                 erro = "Banco.get_lista_proprietarios: ERRO!", e
                 print(erro)
                 return None
 
-    def get_corretor_por_cpf(self, cpf):
+    def get_corretor_por_cpf_cnpj(self, cpf_cnpj):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
             try:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM Corretor 
-                        WHERE cpf = ?
-                    ''', (cpf,))
+                        WHERE cpf_cnpj = ?
+                    ''', (cpf_cnpj,))
                 registros = cursor.fetchone()
 
                 if not registros:
-                    raise Exception("Não há proprietarios cadastrados")
+                    raise Exception(
+                        f"Não há proprietarios cadastrados com cpf_cnpj {cpf_cnpj}")
 
                 return registros
             except Exception as e:
@@ -573,14 +706,14 @@ class Banco:
                 print(erro)
                 return None
 
-    def get_captador_por_cpf(self, cpf):
+    def get_captador_por_cpf_cnpj(self, cpf_cnpj):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
             try:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM Captador 
-                        WHERE cpf = ?
-                    ''', (cpf,))
+                        WHERE cpf_cnpj = ?
+                    ''', (cpf_cnpj,))
                 registros = cursor.fetchone()
 
                 if not registros:
@@ -592,14 +725,14 @@ class Banco:
                 print(erro)
                 return None
 
-    def get_proprietario_por_cpf(self, cpf):
+    def get_proprietario_por_cpf_cnpj(self, cpf_cnpj):
         with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
             try:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM Proprietario 
-                        WHERE cpf = ?
-                    ''', (cpf,))
+                        WHERE cpf_cnpj = ?
+                    ''', (cpf_cnpj,))
                 registros = cursor.fetchone()
 
                 if not registros:
@@ -621,11 +754,15 @@ class Banco:
                 registro = cursor.fetchone()
                 if not registro:
                     raise Exception(f"Nenhum imóvel com codigo {codigo}")
-                mapa_anexos = self.get_lista_anexos(registro[0])
-                status = Imovel.Status(registro[13])
-                categoria = Imovel.Categoria(registro[10])
+
+                if registro[0]:
+                    mapa_anexos = self.get_lista_anexos(registro[0])
+                if registro[13]:
+                    status = Imovel.Status(registro[13])
+                if registro[10]:
+                    categoria = Imovel.Categoria(registro[10])
                 if registro[12]:
-                    endereco = self.get_endereco_por_id(registro[12])
+                    endereco = self.get_endereco_por_id(int(registro[12]))
                     if not endereco:
                         raise Exception("Erro com endereço")
                 imovel = Imovel.Imovel(endereco, status, categoria)
@@ -643,29 +780,32 @@ class Banco:
                 imovel.set_quant_vagas(int(registro[5])),
                 imovel.set_quant_banheiros(int(registro[6])),
                 imovel.set_quant_varandas(int(registro[7])),
-                imovel.set_nome_condominio(int(registro[8])),
+                imovel.set_nome_condominio(registro[8]),
                 imovel.set_cor(registro[9]),
                 imovel.set_descricao(registro[11]),
                 imovel.set_iptu(float(registro[14])),
                 imovel.set_valor_condominio(float(registro[15])),
                 imovel.set_andar(int(registro[16])),
-                imovel.set_estado(Imovel.Estado(registro[17])),
+                if registro[17]:
+                    imovel.set_estado(Imovel.Estado(registro[17])),
                 imovel.set_bloco(registro[18]),
                 imovel.set_ano_construcao(datetime(year=registro[19])),
                 imovel.set_area_total(float(registro[20])),
                 imovel.set_area_privativa(float(registro[21])),
-                imovel.set_situacao(Imovel.Situacao(registro[22])),
-                imovel.set_ocupacao(Imovel.Ocupacao(registro[23])),
+                if registro[22]:
+                    imovel.set_situacao(Imovel.Situacao(registro[22])),
+                if registro[23]:
+                    imovel.set_ocupacao(Imovel.Ocupacao(registro[23])),
                 if registro[24]:
-                    proprietario = self.get_proprietario_por_cpf(registro[24])
+                    proprietario = self.get_proprietario_por_cpf_cnpj(registro[24])
                     if proprietario:
                         imovel.set_proprietario(proprietario),
                 if registro[25]:
-                    corretor = self.get_corretor_por_cpf(registro[25])
+                    corretor = self.get_corretor_por_cpf_cnpj(registro[25])
                     if corretor:
                         imovel.set_corretor(corretor)
                 if registro[26]:
-                    captador = self.get_captador_por_cpf(registro[26])
+                    captador = self.get_captador_por_cpf_cnpj(registro[26])
                     if captador:
                         imovel.set_captador(captador)
                 return imovel
@@ -680,8 +820,8 @@ class Banco:
             cursor = conexao.cursor()
             try:
                 sql_query = ''' 
-                INSERT INTO Imovel(valor_venda, valor_aluguel, quant_quartos, quant_salas, quant_vagas, quant_banheiros, quant_varandas, nome_condominio, cor, categoria, descricao, id_endereco, status, iptu, valor_condominio, andar, estado, bloco, ano_construcao, area_total, area_privativa, situacao, ocupacao, cpf_proprietario, cpf_corretor, cpf_captador) 
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO Imovel(valor_venda, valor_aluguel, quant_quartos, quant_salas, quant_vagas, quant_banheiros, quant_varandas, nome_condominio, cor, categoria, descricao, id_endereco, status, iptu, valor_condominio, andar, estado, bloco, ano_construcao, area_total, area_privativa, situacao, ocupacao, cpf_cnpj_proprietario, cpf_cnpj_corretor, cpf_cnpj_captador, data_cadastro, data_modificacao) 
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                     '''
 
                 if imovel.get_categoria():
@@ -712,17 +852,28 @@ class Banco:
                 else:
                     ocupacao = None
                 if imovel.get_proprietario():
-                    proprietario = imovel.get_proprietario().get_cpf()
+                    proprietario = imovel.get_proprietario().get_cpf_cnpj()
                 else:
                     proprietario = None
                 if imovel.get_corretor():
-                    corretor = imovel.get_corretor().get_cpf()
+                    corretor = imovel.get_corretor().get_cpf_cnpj()
                 else:
                     corretor = None
                 if imovel.get_captador():
-                    captador = imovel.get_captador().get_cpf()
+                    captador = imovel.get_captador().get_cpf_cnpj()
                 else:
                     captador = None
+
+                if imovel.get_data_cadastro():
+                    data_cadastro = data_cadastro.strftime()
+                else:
+                    data_cadastro = None
+
+                if imovel.get_data_modificacao():
+                    data_modificacao = data_modificacao.strftime()
+                else:
+                    data_modificacao = None
+
                 cursor.execute(sql_query, (
                     imovel.get_valor_venda(),
                     imovel.get_valor_aluguel(),
@@ -749,7 +900,9 @@ class Banco:
                     ocupacao,
                     proprietario,
                     corretor,
-                    captador
+                    captador,
+                    data_cadastro,
+                    data_modificacao,
                 ))
                 conexao.commit()
                 return True
@@ -762,6 +915,7 @@ class Banco:
         with sqlite3.connect(
                 "data\\Imobiliaria.db", check_same_thread=False) as conexao:
             try:
+
                 cursor = conexao.cursor()
                 lista = []
                 cursor.execute("SELECT * FROM Imovel")
@@ -769,54 +923,114 @@ class Banco:
                 if not resultados:
                     raise Exception(f"Tabela imovel esta vázia")
                 for dados in resultados:
-                    mapa_anexos = self.get_lista_anexos(dados[0])
-                    status = Imovel.Status(dados[13])
-                    categoria = Imovel.Categoria(dados[10])
+                    if dados[0]:
+                        mapa_anexos = self.get_lista_anexos(dados[0])
+                    else:
+                        mapa_anexos = None
+                    if dados[13]:
+                        status = Imovel.Status(dados[13])
+                    else:
+                        status = None
+                    if dados[10]:
+                        categoria = Imovel.Categoria(dados[10])
+                    else:
+                        categoria = None
                     if dados[12]:
-                        endereco = self.get_endereco_por_id(dados[12])
+                        print(dados[12])
+                        endereco = self.get_endereco_por_id(int(dados[12]))
                         if not endereco:
                             raise Exception("Erro com endereço")
+                    else:
+                        raise Exception("ERRO: Imóvel não possui endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
-                    if mapa_anexos["Imagens"]:
+                    if mapa_anexos["Imagens"] and isinstance(mapa_anexos["Imagens"], list):
                         imovel.set_imagens(mapa_anexos["Imagens"])
-                    if mapa_anexos["Videos"]:
-                        imovel.set_videos(mapa_anexos["Videos"])
-                    if mapa_anexos["Documentos"]:
+                    if mapa_anexos["Videos"] and isinstance(mapa_anexos["Videos"], list):
+                        imovel.set_videos(mapa_anexos["Videos"] and isinstance(
+                            mapa_anexos["Imagens"], list))
+                    if mapa_anexos["Documentos"] and isinstance(mapa_anexos["Documentos"], list):
                         imovel.set_anexos(mapa_anexos["Documentos"])
-                    imovel.set_id(int(dados[0]))
-                    imovel.set_valor_venda(float(dados[1])),
-                    imovel.set_valor_aluguel(float(dados[2])),
-                    imovel.set_quant_quartos(int(dados[3])),
-                    imovel.set_quant_salas(int(dados[4])),
-                    imovel.set_quant_vagas(int(dados[5])),
-                    imovel.set_quant_banheiros(int(dados[6])),
-                    imovel.set_quant_varandas(int(dados[7])),
-                    imovel.set_nome_condominio(int(dados[8])),
-                    imovel.set_cor(dados[9]),
-                    imovel.set_descricao(dados[11]),
-                    imovel.set_iptu(float(dados[14])),
-                    imovel.set_valor_condominio(float(dados[15])),
-                    imovel.set_andar(int(dados[16])),
-                    imovel.set_estado(Imovel.Estado(dados[17])),
-                    imovel.set_bloco(dados[18]),
-                    imovel.set_ano_construcao(datetime(year=dados[19])),
-                    imovel.set_area_total(float(dados[20])),
-                    imovel.set_area_privativa(float(dados[21])),
-                    imovel.set_situacao(Imovel.Situacao(dados[22])),
-                    imovel.set_ocupacao(Imovel.Ocupacao(dados[23])),
+                    if not isinstance(dados[0], str):
+                        imovel.set_id(int(dados[0]))
+                    if not isinstance(dados[1], str):
+                        imovel.set_valor_venda(float(dados[1]))
+                    if not isinstance(dados[2], str):
+                        imovel.set_valor_aluguel(float(dados[2]))
+                    if not isinstance(dados[3], str):
+                        imovel.set_quant_quartos(int(dados[3]))
+                    if not isinstance(dados[4], str):
+                        imovel.set_quant_salas(int(dados[4]))
+                    if not isinstance(dados[5], str):
+                        imovel.set_quant_vagas(int(dados[5]))
+                    if not isinstance(dados[6], str):
+                        imovel.set_quant_banheiros(int(dados[6]))
+                    if not isinstance(dados[7], str):
+                        imovel.set_quant_varandas(int(dados[7]))
+                    imovel.set_nome_condominio(dados[8])
+                    imovel.set_cor(dados[9])
+                    imovel.set_descricao(dados[11])
+                    if not isinstance(dados[14], str):
+                        imovel.set_iptu(float(dados[14]))
+                    if not isinstance(dados[15], str):
+                        imovel.set_valor_condominio(float(dados[15]))
+                    if not isinstance(dados[16], str):
+                        imovel.set_andar(int(dados[16]))
+                    if dados[17]:
+                        imovel.set_estado(Imovel.Estado(dados[17]))
+                    else:
+                        imovel.set_estado(None)
+                    imovel.set_bloco(dados[18])
+                    if not isinstance(dados[19], str):
+                        imovel.set_ano_construcao(int(dados[19]))
+
+                    if not isinstance(dados[20], str):
+                        imovel.set_area_total(float(dados[20]))
+
+                    if not isinstance(dados[21], str):
+                        imovel.set_area_privativa(float(dados[21]))
+
+                    if dados[22]:
+                        imovel.set_situacao(Imovel.Situacao(dados[22]))
+                    else:
+                        imovel.set_situacao(None)
+                    if dados[23]:
+                        imovel.set_ocupacao(Imovel.Ocupacao(dados[23]))
+                    else:
+                        imovel.set_ocupacao(None)
                     if dados[24]:
-                        proprietario = self.get_proprietario_por_cpf(dados[24])
+                        proprietario = self.get_proprietario_por_cpf_cnpj(dados[24])
                         if proprietario:
-                            imovel.set_proprietario(proprietario),
+                            imovel.set_proprietario(proprietario)
+                        else:
+                            imovel.set_proprietario(None)
+                    else:
+                        imovel.set_proprietario(None)
                     if dados[25]:
-                        corretor = self.get_corretor_por_cpf(dados[25])
+                        corretor = self.get_corretor_por_cpf_cnpj(dados[25])
                         if corretor:
                             imovel.set_corretor(corretor)
+                        else:
+                            imovel.set_corretor(None)
+                    else:
+                        imovel.set_corretor(None)
                     if dados[26]:
-                        captador = self.get_captador_por_cpf(dados[26])
+                        captador = self.get_captador_por_cpf_cnpj(dados[26])
                         if captador:
                             imovel.set_captador(captador)
-                    list.append(imovel)
+                        else:
+                            imovel.set_captador(None)
+                    else:
+                        imovel.set_captador(None)
+                    if dados[27]:
+                        imovel.set_data_cadastro(datetime.strptime(dados[27]))
+                    else:
+                        imovel.set_data_cadastro(None)
+                    if dados[28]:
+                        imovel.set_data_modificacao(
+                            datetime.strptime(dados[28]))
+                    else:
+                        imovel.set_data_modificacao(None)
+                    lista.append(imovel)
                 return lista
             except Exception as e:
                 erro = f"Banco.get_lista_imoveis: ERRO! {e}"
@@ -829,17 +1043,22 @@ class Banco:
             try:
                 cursor = conexao.cursor()
                 lista = []
-                cursor.execute("SELECT * FROM Imovel WHERE status IN ('Venda', 'Aluguel', 'Venda_Aluguel')")
+                cursor.execute(
+                    "SELECT * FROM Imovel WHERE status IN ('Venda', 'Aluguel', 'Venda_Aluguel')")
                 resultados = cursor.fetchall()
                 if not resultados:
                     raise Exception(f"Tabela imovel esta vázia")
-                
+
                 for dados in resultados:
-                    mapa_anexos = self.get_lista_anexos(dados[0])
-                    status = Imovel.Status(dados[13])
-                    categoria = Imovel.Categoria(dados[10])
+                    if dados[0]:
+                        mapa_anexos = self.get_lista_anexos(dados[0])
+                    if dados[13]:
+                        status = Imovel.Status(dados[13])
+                    if dados[10]:
+                        categoria = Imovel.Categoria(dados[10])
+
                     if dados[12]:
-                        endereco = self.get_endereco_por_id(dados[12])
+                        endereco = self.get_endereco_por_id(int(dados[12]))
                         if not endereco:
                             raise Exception("Erro com endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
@@ -857,31 +1076,39 @@ class Banco:
                     imovel.set_quant_vagas(int(dados[5])),
                     imovel.set_quant_banheiros(int(dados[6])),
                     imovel.set_quant_varandas(int(dados[7])),
-                    imovel.set_nome_condominio(int(dados[8])),
+                    imovel.set_nome_condominio(dados[8]),
                     imovel.set_cor(dados[9]),
                     imovel.set_descricao(dados[11]),
                     imovel.set_iptu(float(dados[14])),
                     imovel.set_valor_condominio(float(dados[15])),
                     imovel.set_andar(int(dados[16])),
-                    imovel.set_estado(Imovel.Estado(dados[17])),
+                    if dados[17]:
+                        imovel.set_estado(Imovel.Estado(dados[17])),
                     imovel.set_bloco(dados[18]),
                     imovel.set_ano_construcao(datetime(year=dados[19])),
                     imovel.set_area_total(float(dados[20])),
                     imovel.set_area_privativa(float(dados[21])),
-                    imovel.set_situacao(Imovel.Situacao(dados[22])),
-                    imovel.set_ocupacao(Imovel.Ocupacao(dados[23])),
+                    if dados[22]:
+                        imovel.set_situacao(Imovel.Situacao(dados[22])),
+                    if dados[23]:
+                        imovel.set_ocupacao(Imovel.Ocupacao(dados[23])),
                     if dados[24]:
-                        proprietario = self.get_proprietario_por_cpf(dados[24])
+                        proprietario = self.get_proprietario_por_cpf_cnpj(dados[24])
                         if proprietario:
                             imovel.set_proprietario(proprietario),
                     if dados[25]:
-                        corretor = self.get_corretor_por_cpf(dados[25])
+                        corretor = self.get_corretor_por_cpf_cnpj(dados[25])
                         if corretor:
                             imovel.set_corretor(corretor)
                     if dados[26]:
-                        captador = self.get_captador_por_cpf(dados[26])
+                        captador = self.get_captador_por_cpf_cnpj(dados[26])
                         if captador:
                             imovel.set_captador(captador)
+                    if dados[27]:
+                        imovel.set_data_cadastro(datetime(dados[27]))
+                    if dados[28]:
+                        imovel.set_data_modificacao(datetime(dados[28]))
+
                     list.append(imovel)
                 return lista
             except Exception as e:
@@ -901,11 +1128,14 @@ class Banco:
                 if not lista_imoveis:
                     raise Exception(f"Tabela imovel esta vázia")
                 for registro in lista_registros:
-                    mapa_anexos = self.get_lista_anexos(registro[0])
-                    status = Imovel.Status(registro[14])
-                    categoria = Imovel.Categoria(registro[10])
+                    if registro[0]:
+                        mapa_anexos = self.get_lista_anexos(registro[0])
+                    if registro[13]:
+                        status = Imovel.Status(registro[13])
+                    if registro[10]:
+                        categoria = Imovel.Categoria(registro[10])
                     if registro[12]:
-                        endereco = self.get_endereco_por_id(registro[12])
+                        endereco = self.get_endereco_por_id(int(registro[12]))
                         if not endereco:
                             raise Exception("Erro com endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
@@ -923,30 +1153,33 @@ class Banco:
                     imovel.set_quant_vagas(int(registro[5])),
                     imovel.set_quant_banheiros(int(registro[6])),
                     imovel.set_quant_varandas(int(registro[7])),
-                    imovel.set_nome_condominio(int(registro[8])),
+                    imovel.set_nome_condominio(registro[8]),
                     imovel.set_cor(registro[9]),
                     imovel.set_descricao(registro[11]),
                     imovel.set_iptu(float(registro[14])),
                     imovel.set_valor_condominio(float(registro[15])),
                     imovel.set_andar(int(registro[16])),
-                    imovel.set_estado(Imovel.Estado(registro[17])),
+                    if registro[17]:
+                        imovel.set_estado(Imovel.Estado(registro[17])),
                     imovel.set_bloco(registro[18]),
                     imovel.set_ano_construcao(datetime(year=registro[19])),
                     imovel.set_area_total(float(registro[20])),
                     imovel.set_area_privativa(float(registro[21])),
-                    imovel.set_situacao(Imovel.Situacao(registro[22])),
-                    imovel.set_ocupacao(Imovel.Ocupacao(registro[23])),
+                    if registro[22]:
+                        imovel.set_situacao(Imovel.Situacao(registro[22])),
+                    if registro[23]:
+                        imovel.set_ocupacao(Imovel.Ocupacao(registro[23])),
                     if registro[24]:
-                        proprietario = self.get_proprietario_por_cpf(
+                        proprietario = self.get_proprietario_por_cpf_cnpj(
                             registro[24])
                         if proprietario:
                             imovel.set_proprietario(proprietario),
                     if registro[25]:
-                        corretor = self.get_corretor_por_cpf(registro[25])
+                        corretor = self.get_corretor_por_cpf_cnpj(registro[25])
                         if corretor:
                             imovel.set_corretor(corretor)
                     if registro[26]:
-                        captador = self.get_captador_por_cpf(registro[26])
+                        captador = self.get_captador_por_cpf_cnpj(registro[26])
                         if captador:
                             imovel.set_captador(captador)
                     lista_imoveis.append(imovel)

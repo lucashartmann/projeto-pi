@@ -1,8 +1,6 @@
 from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Administrador
 from model.Imovel import Categoria, Status
 from database import Banco
-import io
-from PIL import Image
 
 class Init:
     
@@ -85,6 +83,11 @@ class Init:
 
             endereco1 = Endereco.Endereco(
                 "Avenida Bento Gonçalves", 205, "Partenon", "90650002")
+            
+            resultado = Init.banco.cadastrar_endereco(endereco1)
+            
+            print(resultado)
+            endereco1.set_id(resultado)
 
             imovel2 = Imovel.Imovel(
                 endereco1, Status.VENDA, Categoria.APARTAMENTO)
@@ -96,10 +99,7 @@ class Init:
             
             imovel2.set_imagens(imagens)
             imovel3.set_imagens(imagens)
-            
-            resultado = Init.banco.cadastrar_endereco(endereco1)
-            
-            print(resultado)
+        
             
             resultado = Init.imobiliaria.get_estoque().cadastrar_imovel(imovel2)
             print(resultado)

@@ -76,17 +76,34 @@ class Imovel:
         self.iptu = 0
         self.valor_condominio = 0
         self.andar = 0
-        self.estado = ""
+        self.estado = None
         self.bloco = ""
         self.ano_construcao = ""
         self.area_total = 0
         self.area_privativa = 0
-        self.situacao = ""
-        self.ocupacao = ""
-        self.proprietario = ""
-        self.corretor = ""
-        self.captador = ""
+        self.situacao = None
+        self.ocupacao = None
+        self.proprietario = None
+        self.corretor = None
+        self.captador = None
+        self.data_cadastro = None
+        self.data_modificacao = None
         
+    def set_data_cadastro(self, data):
+        self.data_cadastro = data
+        
+    def get_data_cadastro(self):
+        return self.data_cadastro
+    
+    def set_data_modificacao(self, data):
+        self.data_modificacao = data
+        
+    def get_data_modificacao(self):
+        return self.data_modificacao
+        
+    def gerar_id(self):
+        Imovel.codigo += 1
+        return Imovel.codigo
         
     def get_titulo(self):
         return self.titulo
