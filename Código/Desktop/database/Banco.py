@@ -262,6 +262,23 @@ class Banco:
                                 ''')
 
             conexao.commit()
+            
+    def atualizar_comprador(self, tipo_dado, novo_valor, condicao):
+        with sqlite3.connect(f"data/Biblioteca.db") as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_update_query = f"""
+                UPDATE comprador
+                SET {tipo_dado} = ?
+                WHERE cpf_cnpj = ?;
+                """
+                dados = (novo_valor, condicao)
+                cursor.execute(sql_update_query, dados)
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("ERRO Banco.atualizar_comprador", e)
+                return False
 
     def cadastrar_atendimento(self, atendimento):
         with sqlite3.connect(

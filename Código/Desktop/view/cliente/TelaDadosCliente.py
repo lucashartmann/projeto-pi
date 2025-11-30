@@ -1,10 +1,11 @@
+import hashlib
 from textual.screen import Screen
 from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, Header, MaskedInput, Select, SelectionList, Input, Switch
 from textual.containers import Grid
 from model import Init, Administrador, Gerente, Cliente, Imovel
 from controller import Controller
 import datetime
-import hashlib
+from database.Banco import Banco
 
 
 class MyInput(Input):
@@ -69,13 +70,15 @@ class TelaDadosCliente(Screen):
         yield Button("Salvar")
         # yield Static("Imoveis do usuário", id="stt_compras")
         yield Footer(show_command_palette=False)
-
+        
+    def on_screen_resume(self):
+        pass
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.label == "Salvar":
 
             username = self.query_one("#inpt_username", TextArea).text.strip()
             nome = self.query_one("#inpt_nome", TextArea).text
-            cpf = self.query_one(
+            cpf_cnpj = self.query_one(
                 "#inpt_cpf", MaskedInput).text.strip().strip(".").strip("-")
             rg = self.query_one("#inpt_rg", TextArea).text.strip()
             telefone = self.query_one(
@@ -93,6 +96,76 @@ class TelaDadosCliente(Screen):
                 "", MaskedInput).text.strip())
             cep_desejado = int(self.query_one(
                 "", MaskedInput).text.strip.strip("-"))
+
+            if username != Init.usuario_atual.get_username() and username:
+                alteracao = Banco.atualizar_comprador(
+                    "username", username, Init.usuario_atual.get_cpf_cnpj())
+                if alteracao:
+                    Init.usuario_atual.set_username(username)
+                else:
+                    self.query_one("#stt_username", Static).content += "[red]X"
+
+            if senha:
+                senha_hash = hashlib.sha256(
+                    senha.get_senha().encode('utf-8')).hexdigest()
+                if senha_hash != Init.usuario_atual.get_senha():
+                    alteracao = Banco.atualizar_comprador(
+                        "senha", senha_hash, Init.usuario_atual.get_cpf_cnpj())
+                    if alteracao:
+                        Init.usuario_atual.set_senha(senha_hash)
+                    else:
+                        self.query_one("#stt_senha", Static).content += "[red]X"
+
+            if email != Init.usuario_atual.get_email() and email:
+                alteracao = Banco.atualizar_comprador(
+                    "email", email, Init.usuario_atual.get_cpf_cnpj())
+                if alteracao:
+                    Init.usuario_atual.set_email(email)
+                else:
+                    self.query_one("#stt_email", Static).content += "[red]X"
+
+            if nome != Init.usuario_atual.get_nome() and nome:
+                alteracao = Banco.atualizar_comprador(
+                    "nome", nome, Init.usuario_atual.get_cpf_cnpj())
+                if alteracao:
+                    Init.usuario_atual.set_nome(nome)
+                else:
+                    self.query_one("#stt_nome", Static).content += "[red]X"
+
+            if cpf_cnpj != Init.usuario_atual.get_cpf_cnpj() and cpf_cnpj:
+                alteracao = Banco.atualizar_comprador(
+                    "cpf_cnpj", cpf_cnpj, Init.usuario_atual.get_cpf_cnpj())
+                if alteracao:
+                    Init.usuario_atual.set_cpf_cnpj(cpf_cnpj)
+                else:
+                    self.query_one("#stt_cpf_cnpj", Static).content += "[red]X"
+
+            if rg != Init.usuario_atual.get_rg() and rg:
+                alteracao = Banco.atualizar_comprador(
+                    "rg", rg, Init.usuario_atual.get_cpf_cnpj())
+                if alteracao:
+                    Init.usuario_atual.set_rg(rg)
+                else:
+                    self.query_one("#stt_rg", Static).content += "[red]X"
+
+            if telefone != Init.usuario_atual.get_telefone() and telefone:
+                alteracao = Banco.atualizar_comprador(
+                    "telefone", telefone, Init.usuario_atual.get_cpf_cnpj())
+                if alteracao:
+                    Init.usuario_atual.set_telefone(telefone)
+                else:
+                    self.query_one("#stt_telefone", Static).content += "[red]X"
+
+            # if username != Init.usuario_atual.get_username() and username:
+            # alteracao = Banco.atualizar_comprador("endereco")
+            if data_nascimento != Init.usuario_atual.get_data_nascimento() and data_nascimento:
+                alteracao = Banco.atualizar_comprador(
+                    "data_nascimento", data_nascimento, Init.usuario_atual.get_cpf_cnpj())
+                if alteracao:
+                    Init.usuario_atual.set_data_nascimento(data_nascimento)
+                else:
+                    self.query_one("#stt_data_nascimento",
+                                   Static).content += "[red]X"
 
             # mensagem = Controller.atualizar_dado_cliente(dados)
 
