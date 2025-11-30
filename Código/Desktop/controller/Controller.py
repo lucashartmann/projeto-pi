@@ -260,10 +260,10 @@ def remover_imovel(id_imovel):
         return "ERRO"
 
 
-def verificar_login(dados):
-    username = dados[0].split()
-    senha = dados[1].split()
-    tipo_usuario = dados[2].split()
+def verificar_login(username, senha, tipo_usuario):
+    username = username
+    senha = senha
+    tipo_usuario = tipo_usuario
 
     consulta = Init.imobiliaria.verificar_usuario(
         username, senha, tipo_usuario)
@@ -275,20 +275,18 @@ def verificar_login(dados):
         return "ERRO"
 
 
-def salvar_login(dados):
-    username = dados[0].split()
-    email = dados[3].split()
-    senha = dados[1].split()
-
+def salvar_login(username, senha, email):
     um_usuario = Cliente.Comprador(
-        nome="", cpf="", rg="", telefone="", email=email)
+        nome="", cpf="", rg="", telefone="", email="")
+
     um_usuario.set_username(username)
     um_usuario.set_senha(senha)
+    um_usuario.set_email(email)
 
     consulta = Init.imobiliaria.cadastrar_comprador(um_usuario)
 
     if consulta == True:
         Init.usuario_atual = um_usuario
-        return "Login salvo com sucesso"
+        return "Cadastro realizado com sucesso"
     else:
         return "ERRO"

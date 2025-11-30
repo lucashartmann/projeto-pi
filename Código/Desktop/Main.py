@@ -1,6 +1,7 @@
 from view.App import App
 from controller import Controller
 import sys
+import os
 
 comando = sys.argv[1:]
 
@@ -50,5 +51,6 @@ if __name__ == "__main__":
         menu_cmd(comando)
     else:
         # app = App(ansi_color=True)
+
         app = App()
         app.run()

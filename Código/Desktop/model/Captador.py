@@ -13,7 +13,6 @@ class Captador():
         self.rg = rg
         self.telefone = telefone
         self.endereco = endereco
-        self.idade = 0
         self.data_nascimento = ""
 
     def get_turno(self):
@@ -93,12 +92,6 @@ class Captador():
 
     def set_endereco(self, value):
         self.endereco = value
-
-    def get_idade(self):
-        return self.idade
-
-    def set_idade(self, value):
-        self.idade = value
 
     def get_data_nascimento(self):
         return self.data_nascimento

@@ -33,7 +33,15 @@ class App(App):
 
     def on_mount(self):
         Init.inicializar()
-        self.push_screen("tela_login")
+
+        Init.usuario_atual = Init.administrador
+        self.switch_screen("tela_atendimento")
+
+        # self.push_screen("tela_login")
+
+    def action_enviar_email(self):
+        tela_login = self.get_screen("tela_login")
+        tela_login.enviar_email()
 
     def action_cadastro(self):
         tela_login = self.get_screen("tela_login")

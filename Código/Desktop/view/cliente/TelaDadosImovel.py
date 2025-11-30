@@ -1,10 +1,16 @@
 from textual.widgets import Static, Button, Footer, Header, Checkbox, Tab, Tabs
 from textual.screen import Screen
 from textual.containers import VerticalScroll, HorizontalGroup, Grid
+from textual.message import Message
 
 from textual_image.widget import Image
 
 from model import Init, Administrador, Gerente, Cliente
+
+
+class PedirParaEntrarEmContato(Message):
+    def __init__(self):
+        super().__init__()
 
 
 class TelaDadosImovel(Screen):
@@ -12,36 +18,11 @@ class TelaDadosImovel(Screen):
 
     CSS_PATH = "css/TelaDadosImovel.tcss"
 
-    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        try:
-            if not isinstance(Init.usuario_atual, Cliente.Comprador):
-                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                    self.app.switch_screen("tela_estoque")
-                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                    self.app.switch_screen("tela_cadastro_imovel")
-                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-                    self.app.switch_screen("tela_cadastro_pessoa")
-                elif isinstance(Init.usuario_atual, Gerente.Gerente):
-                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                        self.app.switch_screen("tela_dados_imobiliaria")
-                elif isinstance(Init.usuario_atual, Administrador.Administrador):
-                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                        self.app.switch_screen("tela_servidor")
-                elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                    self.app.switch_screen("tela_estoque_cliente")
-            else:
-                if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                    self.app.switch_screen("tela_estoque_cliente")
-                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                    self.app.switch_screen("tela_dados_cliente")
-        except:
-            pass
-
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
-            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
-        else:
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
+        elif isinstance(Init.usuario_atual, Cliente.Comprador):
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
 
         with HorizontalGroup(id="titulo"):
@@ -81,3 +62,32 @@ class TelaDadosImovel(Screen):
                 yield Static("Um especialista irá entrar em contato por email ou whatsapp")
 
         yield Footer(show_command_palette=False)
+
+    def on_button_pressed(self, evento: Button.Pressed):
+        if evento.button.id == "bt_contato":
+            self.post_message(PedirParaEntrarEmContato())
+
+    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+        try:
+            if not isinstance(Init.usuario_atual, Cliente.Comprador):
+                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                    self.app.switch_screen("tela_estoque")
+                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_imovel")
+                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                    self.app.switch_screen("tela_cadastro_pessoa")
+                elif isinstance(Init.usuario_atual, Gerente.Gerente):
+                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                        self.app.switch_screen("tela_dados_imobiliaria")
+                elif isinstance(Init.usuario_atual, Administrador.Administrador):
+                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                        self.app.switch_screen("tela_servidor")
+                elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
+            else:
+                if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                    self.app.switch_screen("tela_estoque_cliente")
+                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                    self.app.switch_screen("tela_dados_cliente")
+        except:
+            pass

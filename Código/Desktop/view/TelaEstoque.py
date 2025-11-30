@@ -30,13 +30,14 @@ class TelaEstoque(Screen):
     def compose(self):
         yield Header()
         if isinstance(Init.usuario_atual, Administrador.Administrador):
-            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
-
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
         elif isinstance(Init.usuario_atual, Corretor.Corretor):
-            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
+        elif isinstance(Init.usuario_atual, Gerente.Gerente):
+            yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
+                       Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-
         yield Input(placeholder="pesquise aqui")
         yield TextArea(read_only=True, id="tx_dados")
         with Vertical(id="container_filtragem"):
@@ -101,7 +102,6 @@ class TelaEstoque(Screen):
 
     def on_mount(self):
         self.atualizar()
-        self.setup_dados()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
@@ -124,6 +124,27 @@ class TelaEstoque(Screen):
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
+
+        imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+        compradores = Init.imobiliaria.get_lista_compradores()
+        proprietarios = Init.imobiliaria.get_lista_proprietarios()
+
+        condicao = False
+
+        if imoveis != self.imoveis:
+            self.imoveis = imoveis
+            condicao = True
+
+        if compradores != self.compradores:
+            self.compradores = compradores
+            condicao = True
+
+        if proprietarios != self.proprietarios:
+            self.proprietarios = proprietarios
+            condicao = True
+
+        if condicao:
+            self.atualizar()
 
     def atualizar(self):
         self.query_one("#container_resultado", Vertical).remove_children()

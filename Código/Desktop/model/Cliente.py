@@ -10,9 +10,24 @@ class Comprador():
         self.rg = rg
         self.telefone = telefone
         self.endereco = ""
-        self.idade = 0
         self.data_nascimento = ""
-        
+
+        self.tipo_imoveis_desejado = []
+        self.quant_quartos_desejado = 0
+        self.quant_banheiros_desejado = 0
+        self.endereco_desejado = None
+
+    def set_tipos_imoveis_desejados(self, tipo_imoveis):
+        self.tipo_imoveis_desejado = tipo_imoveis
+
+    def set_quat_quartos_desejado(self, quant_quartos_desejado):
+        self.quant_quartos_desejado = quant_quartos_desejado
+
+    def set_quant_banheiros_desejado(self, quant_banheiros_desejado):
+        self.quant_banheiros_desejado = quant_banheiros_desejado
+
+    def set_endereco_desejado(self, endereco):
+        self.endereco_desejado = endereco
 
     def get_username(self):
         return self.username
@@ -74,12 +89,6 @@ class Comprador():
     def set_endereco(self, value):
         self.endereco = value
 
-    def get_idade(self):
-        return self.idade
-
-    def set_idade(self, value):
-        self.idade = value
-
     def get_data_nascimento(self):
         return self.data_nascimento
 
@@ -97,7 +106,6 @@ class Proprietario():
         self.rg = rg
         self.telefone = telefone
         self.endereco = ""
-        self.idade = 0
         self.data_nascimento = ""
 
     def get_email(self):
@@ -147,12 +155,6 @@ class Proprietario():
 
     def set_endereco(self, value):
         self.endereco = value
-
-    def get_idade(self):
-        return self.idade
-
-    def set_idade(self, value):
-        self.idade = value
 
     def get_data_nascimento(self):
         return self.data_nascimento

@@ -8,7 +8,7 @@ class Estoque:
 
     def cadastrar_imovel(self, imovel):
         return self.banco_dados.cadastrar_imovel(imovel)
-    
+
     def atualizar_imovel(self, imovel):
         return self.banco_dados.atualizar_imovel(imovel)
 
@@ -26,7 +26,6 @@ class Estoque:
 
     def get_imovel_por_codigo(self, codigo):
         return self.banco_dados.get_imovel_por_codigo(codigo)
-    
+
     def adicionar_anexo(self, anexo, tipo, codigo):
         return self.banco_dados.adicionar_anexo(anexo, tipo, codigo)
-   

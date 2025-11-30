@@ -82,8 +82,6 @@ class Imovel:
         self.quant_vagas = 0
         self.quant_banheiros = 0
         self.quant_varandas = 0
-        self.nome_condominio = ""
-        self.cor = ""
         self.categoria = categoria
         self.endereco = endereco
         self.status = status
@@ -136,7 +134,6 @@ class Imovel:
         Imovel.codigo += 1
         return Imovel.codigo
 
-
     def get_id(self):
         return self.id
 
@@ -185,24 +182,11 @@ class Imovel:
     def set_quant_varandas(self, value):
         self.quant_varandas = value
 
-    def get_nome_condominio(self):
-        return self.nome_condominio
-
-    def set_nome_condominio(self, value):
-        self.nome_condominio = value
-
-    def get_cor(self):
-        return self.cor
-
-    def set_cor(self, value):
-        self.cor = value
-
     def get_categoria(self):
         return self.categoria
 
     def set_categoria(self, value):
         self.categoria = value
-
 
     def get_endereco(self):
         return self.endereco
@@ -299,10 +283,9 @@ class Imovel:
 
     def get_endereco(self):
         return self.endereco
-    
+
     def set_anuncio(self, anuncio):
         self.anuncio = anuncio
 
     def get_anuncio(self):
         return self.anuncio
-

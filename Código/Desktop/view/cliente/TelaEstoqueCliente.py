@@ -38,8 +38,70 @@ class TelaEstoqueCliente(Screen):
     select_evento = ""
     montou = False
 
+    def compose(self):
+        yield Header()
+        if isinstance(Init.usuario_atual, Administrador.Administrador):
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
+        elif isinstance(Init.usuario_atual, Cliente.Comprador):
+            yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
+        with VerticalScroll():
+            with HorizontalGroup(id="hg_pesquisa"):
+                with HorizontalGroup():
+                    yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
+                    yield Select([(valor.value, valor) for valor in Imovel.Categoria])
+                    yield Static("CEP desejado")
+                    yield MaskedInput(placeholder="00000-000")
+                    yield Static("Apartamento:")
+                    yield SelectionList(("Aceita Pet")
+                                        ("Churrasqueira")
+                                        ("Armarios Embutidos")
+                                        ("Cozinha Americana")
+                                        ("Area de Servico")
+                                        ("Suite Master")
+                                        ("Banheiro com janela")
+                                        ("Piscina")
+                                        ("Lareira")
+                                        ("Ar-condicionado")
+                                        ("Semi-Mobiliado")
+                                        ("Mobiliado")
+                                        ("Dependencia de Empregada")
+                                        ("Dispensa")
+                                        ("Deposito"), id="filtro_apartamento")
+                    yield Static("Condominio:")
+                    yield SelectionList(("Churrasqueira Coletiva")
+                                        ("Piscina")
+                                        ("Piscina Infantil")
+                                        ("Piscina Aquecida")
+                                        ("Quiosque")
+                                        ("Sauna")
+                                        ("Quadra de Esportes")
+                                        ("Jardim")
+                                        ("Salão de Festas")
+                                        ("Academia")
+                                        ("Sala de Jogos")
+                                        ("Playground")
+                                        ("Brinquedoteca")
+                                        ("Vaga Coberta")
+                                        ("Estacionamento")
+                                        ("Vaga para Visitantes")
+                                        ("Mercado")
+                                        ("Mesa de Sinuca")
+                                        ("Mesa de Ping-Pong")
+                                        ("Mesa de Pebolim")
+                                        ("Quadra de Tenis")
+                                        ("Quadra de Futebol")
+                                        ("Quadra de Basquete")
+                                        ("Quadra de Volei")
+                                        ("Quadra de Areia")
+                                        ("Bicicletario")
+                                        ("Heliponto")
+                                        ("Elevador de Serviço"), id="filtro_condominio")
+
+            yield ListView(id="lst_item")
+            yield Footer(show_command_palette=False)
+
     def atualizar_imagens(self):
-        self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+
         list_view = self.query_one("#lst_item", ListView)
         list_view.clear()
 
@@ -87,71 +149,15 @@ class TelaEstoqueCliente(Screen):
                 list_item.styles.width = 30
                 list_item.styles.height = 30
 
-    def compose(self):
-        yield Header()
-        if isinstance(Init.usuario_atual, Administrador.Administrador):
-            yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Servidor", id="tab_servidor"), Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"))
-        else:
-            yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
-        with VerticalScroll():
-            with HorizontalGroup(id="hg_pesquisa"):
-                with VerticalGroup():
-                    yield Input()
-                    with HorizontalGroup():
-                        yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
-                        yield Select([(valor.value, valor) for valor in Imovel.Categoria])
-                        yield Select([(valor, valor) for valor in Imovel.bairros])
-                        yield Static("Apartamento:")
-                        yield SelectionList(("Aceita Pet")
-                                            ("Churrasqueira")
-                                            ("Armarios Embutidos")
-                                            ("Cozinha Americana")
-                                            ("Area de Servico")
-                                            ("Suite Master")
-                                            ("Banheiro com janela")
-                                            ("Piscina")
-                                            ("Lareira")
-                                            ("Ar-condicionado")
-                                            ("Semi-Mobiliado")
-                                            ("Mobiliado")
-                                            ("Dependencia de Empregada")
-                                            ("Dispensa")
-                                            ("Deposito"), id="filtro_apartamento")
-                        yield Static("Condominio:")
-                        yield SelectionList(("Churrasqueira Coletiva")
-                                            ("Piscina")
-                                            ("Piscina Infantil")
-                                            ("Piscina Aquecida")
-                                            ("Quiosque")
-                                            ("Sauna")
-                                            ("Quadra de Esportes")
-                                            ("Jardim")
-                                            ("Salão de Festas")
-                                            ("Academia")
-                                            ("Sala de Jogos")
-                                            ("Playground")
-                                            ("Brinquedoteca")
-                                            ("Vaga Coberta")
-                                            ("Estacionamento")
-                                            ("Vaga para Visitantes")
-                                            ("Mercado")
-                                            ("Mesa de Sinuca")
-                                            ("Mesa de Ping-Pong")
-                                            ("Mesa de Pebolim")
-                                            ("Quadra de Tenis")
-                                            ("Quadra de Futebol")
-                                            ("Quadra de Basquete")
-                                            ("Quadra de Volei")
-                                            ("Quadra de Areia")
-                                            ("Bicicletario")
-                                            ("Heliponto")
-                                            ("Elevador de Serviço"), id="filtro_condominio")
-
-            yield ListView(id="lst_item")
-            yield Footer(show_command_palette=False)
-
     def _on_screen_resume(self):
+
         self.query_one(Tabs).active = self.query_one("#tab_comprar", Tab).id
+
+        imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+
+        if imoveis != self.imoveis:
+            self.imoveis = imoveis
+            self.atualizar_imagens()
 
     def on_mount(self):
         self.atualizar_imagens()

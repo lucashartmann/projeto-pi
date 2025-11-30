@@ -12,5 +12,4 @@ class Gerente():
         self.rg = rg
         self.telefone = telefone
         self.endereco = endereco
-        self.idade = 0
         self.data_nascimento = ""
