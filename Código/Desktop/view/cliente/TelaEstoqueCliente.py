@@ -1,13 +1,14 @@
-from textual.widgets import Static, Button, ListItem, ListView, Footer, Header, Select, Input, Tab, Tabs, SelectionList
+from textual.widgets import Static, Button, ListItem, ListView, Footer, Header, Select, Input, Tab, Tabs, SelectionList, MaskedInput
 from textual import on
 from textual.screen import Screen
-from textual.containers import VerticalScroll, HorizontalGroup, Container, VerticalGroup
+from textual.containers import VerticalScroll, HorizontalGroup, Container, Grid
 
 from textual_image.widget import Image
 
 from model import Init, Administrador, Cliente, Imovel, Gerente
-
+from database.Banco import Banco
 from io import BytesIO
+from view.cliente import TelaDadosImovel
 
 
 class ContainerImovel(Container):
@@ -22,7 +23,12 @@ class ContainerImovel(Container):
         yield Button("Ver mais", id="bt_comprar")
 
     def on_button_pressed(self, evento: Button.Pressed):
-        self.app.switch_screen("tela_dados_imovel")
+        imovel = Banco.get_imovel_por_codigo(self.id_imovel)
+        if imovel:
+            self.app.switch_screen(
+                TelaDadosImovel.TelaDadosImovel(imovel=imovel))
+        else:
+            self.screen.notify("ERTRO. Imóvel não encontrado.")
 
 
 class TelaEstoqueCliente(Screen):
@@ -45,58 +51,15 @@ class TelaEstoqueCliente(Screen):
         elif isinstance(Init.usuario_atual, Cliente.Comprador):
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
         with VerticalScroll():
-            with HorizontalGroup(id="hg_pesquisa"):
-                with HorizontalGroup():
+            with Grid(id="hg_pesquisa"):
                     yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
                     yield Select([(valor.value, valor) for valor in Imovel.Categoria])
                     yield Static("CEP desejado")
-                    yield MaskedInput(placeholder="00000-000")
+                    yield MaskedInput(template="00000-000")
                     yield Static("Apartamento:")
-                    yield SelectionList(("Aceita Pet")
-                                        ("Churrasqueira")
-                                        ("Armarios Embutidos")
-                                        ("Cozinha Americana")
-                                        ("Area de Servico")
-                                        ("Suite Master")
-                                        ("Banheiro com janela")
-                                        ("Piscina")
-                                        ("Lareira")
-                                        ("Ar-condicionado")
-                                        ("Semi-Mobiliado")
-                                        ("Mobiliado")
-                                        ("Dependencia de Empregada")
-                                        ("Dispensa")
-                                        ("Deposito"), id="filtro_apartamento")
+                    yield SelectionList(("Aceita Pet", "aceita_pet"), ("Churrasqueira", "churrasqueira"), ("Armarios Embutidos", "armarios_embutidos"), ("Cozinha Americana", "cozinha_americana"), ("Area de Servico", "area_de_servico"), ("Suite Master", "suite_master"), ("Banheiro com janela", "banheiro_com_janela"), ("Piscina", "piscina"), ("Lareira", "lareira"), ("Ar-condicionado", "ar_condicionado"), ("Semi-Mobiliado", "semi_mobiliado"), ("Mobiliado", "mobiliado"), ("Dependencia de Empregada", "dependencia_de_empregada"), ("Dispensa", "dispensa"), ("Deposito", "deposito"), id="filtro_apartamento", compact=True)
                     yield Static("Condominio:")
-                    yield SelectionList(("Churrasqueira Coletiva")
-                                        ("Piscina")
-                                        ("Piscina Infantil")
-                                        ("Piscina Aquecida")
-                                        ("Quiosque")
-                                        ("Sauna")
-                                        ("Quadra de Esportes")
-                                        ("Jardim")
-                                        ("Salão de Festas")
-                                        ("Academia")
-                                        ("Sala de Jogos")
-                                        ("Playground")
-                                        ("Brinquedoteca")
-                                        ("Vaga Coberta")
-                                        ("Estacionamento")
-                                        ("Vaga para Visitantes")
-                                        ("Mercado")
-                                        ("Mesa de Sinuca")
-                                        ("Mesa de Ping-Pong")
-                                        ("Mesa de Pebolim")
-                                        ("Quadra de Tenis")
-                                        ("Quadra de Futebol")
-                                        ("Quadra de Basquete")
-                                        ("Quadra de Volei")
-                                        ("Quadra de Areia")
-                                        ("Bicicletario")
-                                        ("Heliponto")
-                                        ("Elevador de Serviço"), id="filtro_condominio")
-
+                    yield SelectionList(("Churrasqueira Coletiva", "churrasqueira_coletiva"), ("Piscina", "piscina"), ("Piscina Infantil", "piscina_infantil"), ("Piscina Aquecida", "piscina_aquecida"), ("Quiosque", "quiosque"), ("Sauna", "sauna"), ("Quadra de Esportes", "quadra_de_esportes"), ("Jardim", "jardim"), ("Salão de Festas", "salao_de_festas"), ("Academia", "academia"), ("Sala de Jogos", "sala_de_jogos"), ("Playground", "playground"), ("Brinquedoteca", "brinquedoteca"), ("Vaga Coberta", "vaga_coberta"), ("Estacionamento", "estacionamento"), ("Vaga para Visitantes", "vaga_para_visitantes"), ("Mercado", "mercado"), ("Mesa de Sinuca", "mesa_de_sinuca"), ("Mesa de Ping-Pong", "mesa_de_ping_pong"), ("Mesa de Pebolim", "mesa_de_pebolim"), ("Quadra de Tenis", "quadra_de_tenis"), ("Quadra de Futebol", "quadra_de_futebol"), ("Quadra de Basquete", "quadra_de_basquete"), ("Quadra de Volei", "quadra_de_volei"), ("Quadra de Areia", "quadra_de_areia"), ("Bicicletario", "bicicletario"), ("Heliponto", "heliponto"), ("Elevador de Serviço", "elevador_de_servico"), id="filtro_condominio", compact=True)
             yield ListView(id="lst_item")
             yield Footer(show_command_palette=False)
 
@@ -109,9 +72,17 @@ class TelaEstoqueCliente(Screen):
             lista = self.imoveis_filtrados
         else:
             lista = self.imoveis
+            
+        if not lista:
+            stt = Static("Nenhum imóvel encontrado", id="tx_status")
+            self.query_one("#lst_item").mount(stt)
+            stt.styles.align = ("center", "middle")
+            self.query_one("#lst_item").styles.content_align = ("center", "middle")
+        else:
+            self.query_one("#lst_item").styles.content_align = None
 
         for imovel in lista:
-            if imovel.get_anuncio().get_imagens():
+            if imovel.get_anuncio() and imovel.get_anuncio().get_imagens():
                 container = ContainerImovel()
                 list_item = ListItem(name=imovel.get_nome())
                 list_view.append(list_item)
@@ -149,7 +120,7 @@ class TelaEstoqueCliente(Screen):
                 list_item.styles.width = 30
                 list_item.styles.height = 30
 
-    def _on_screen_resume(self):
+    def on_screen_resume(self):
 
         self.query_one(Tabs).active = self.query_one("#tab_comprar", Tab).id
 
@@ -164,24 +135,36 @@ class TelaEstoqueCliente(Screen):
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
-            if not isinstance(Init.usuario_atual, Cliente.Comprador):
-                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                    self.app.switch_screen("tela_estoque")
-                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                    self.app.switch_screen("tela_cadastro_imovel")
-                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-                    self.app.switch_screen("tela_cadastro_pessoa")
-                elif isinstance(Init.usuario_atual, Gerente.Gerente):
-                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                        self.app.switch_screen("tela_dados_imobiliaria")
-                elif isinstance(Init.usuario_atual, Administrador.Administrador):
-                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                        self.app.switch_screen("tela_servidor")
-                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                    self.app.switch_screen("tela_dados_cliente")
-            else:
-                if event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                    self.app.switch_screen("tela_dados_cliente")
+            if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                self.app.switch_screen("tela_cadastro_pessoa")
+
+            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                self.app.switch_screen("tela_cadastro_imovel")
+
+            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                self.app.switch_screen("tela_cadastro_imovel")
+
+            elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                self.app.switch_screen("tela_estoque")
+
+            elif event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                self.app.switch_screen("tela_dados_imobiliaria")
+
+            elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                self.app.switch_screen("tela_servidor")
+
+            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                self.app.switch_screen("tela_estoque_cliente")
+
+            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                self.app.switch_screen("tela_dados_cliente")
+
+            elif event.tabs.active == self.query_one("#tab_atendimento", Tab).id:
+                self.app.switch_screen("tela_atendimento")
+
+            elif event.tabs.active == self.query_one("#tab_cadastro_venda_aluguel", Tab).id:
+                self.app.switch_screen("tela_cadastro_venda_aluguel")
+
         except:
             pass
 

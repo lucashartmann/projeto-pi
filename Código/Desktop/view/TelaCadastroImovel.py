@@ -5,8 +5,10 @@ from textual.containers import Horizontal, Vertical, Grid, VerticalScroll, Cente
 import requests
 import datetime
 
-from model import Init, Imovel, Administrador, Corretor, Gerente, Endereco, Anuncio, Condominio
+from model import Init, Imovel, Administrador, Corretor, Gerente, Endereco, Anuncio, Condominio, Captador
 from controller import Controller
+
+from textual_image.widget import Image
 
 
 class PopUp(ModalScreen):
@@ -42,12 +44,23 @@ class PopUpApagar(ModalScreen):
         self.remove()
 
 
+class ContainerFuncionario(Horizontal):
+    def compose(self):
+        Static("Nome do cliente", id="st_nome")
+        Static("Telefone do cliente", id="st_telefone")
+        Static("Email do cliente", id="st_email")
+
+
 class TelaCadastroImovel(Screen):
 
     CSS_PATH = "css/TelaCadastroImovel.tcss"
 
     salvo = False
     acao = False
+
+    def __init__(self, name=None, id=None, classes=None, imovel=None):
+        super().__init__(name, id, classes)
+        self.imovel = imovel
 
     def compose(self):
         yield Header()
@@ -95,7 +108,7 @@ class TelaCadastroImovel(Screen):
                 yield Static("Bloco", id="stt_bloco")
                 yield MaskedInput(template="000", id="ta_bloco")
                 yield Static("CEP", id="stt_cep")
-                yield MaskedInput(placeholder="00000-000", id="ta_cep")
+                yield MaskedInput(template="00000-000", id="ta_cep")
                 yield Static("Bairro", id="stt_bairro")
                 yield TextArea(disabled=True, id="ta_bairro")
                 yield Static("Cidade", id="stt_cidade")
@@ -184,15 +197,71 @@ class TelaCadastroImovel(Screen):
 
             with Grid(id="container_imagens"):
                 yield Button("Editar", id="bt_editar_imagens")
-                # for i in ....
-                #     yield Image()
+                if self.imovel and self.imovel.get_anuncio().get_imagens():
+                    for imagem in self.imovel.get_anuncio().get_imagens():
+                        yield Image(imagem, id="st_imagem_anuncio")
+
+                    # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
+
+            with Grid(id="container_anexos"):
+                yield Button("Adicionar", id="bt_adicionar_anexos")
+
+                # TODO: Pegar o widget de documento, possibilitar adicionar, remover
 
             with Vertical(id="container_proprietario"):
                 yield Static("Proprietario: ", classes="stt_container_titulo")
+                if self.imovel:
+                    container = ContainerFuncionario()
+                    container.query_one("#st_nome", Static).update(
+                        self.imovel.get_proprietario().get_nome())
+                    container.query_one("#st_telefone", Static).update(
+                        self.imovel.get_proprietario().get_telefone())
+                    container.query_one("#st_email", Static).update(
+                        self.imovel.get_proprietario().get_email())
             with Vertical(id="container_corretor"):
                 yield Static("Corretor: ", classes="stt_container_titulo")
+
+                if self.imovel and self.imovel.get_corretor():
+                    container = ContainerFuncionario()
+                    container.query_one("#st_nome", Static).update(
+                        self.imovel.get_corretor().get_nome())
+                    container.query_one("#st_telefone", Static).update(
+                        self.imovel.get_corretor().get_telefone())
+                    container.query_one("#st_email", Static).update(
+                        self.imovel.get_corretor().get_email())
+                    yield container
+                elif self.imovel is None and isinstance(Init.usuario_atual, Corretor.Corretor):
+                    container = ContainerFuncionario()
+                    container.query_one("#st_nome", Static).update(
+                        Init.usuario_atual.get_nome())
+                    container.query_one("#st_telefone", Static).update(
+                        Init.usuario_atual.get_telefone())
+                    container.query_one("#st_email", Static).update(
+                        Init.usuario_atual.get_email())
+                    yield container
+
             with Vertical(id="container_captador"):
                 yield Static("Captador: ", classes="stt_container_titulo")
+
+                if self.imovel and self.imovel.get_captador():
+                    container = ContainerFuncionario()
+                    container.query_one("#st_nome", Static).update(
+                        self.imovel.get_captador().get_nome())
+                    container.query_one("#st_telefone", Static).update(
+                        self.imovel.get_captador().get_telefone())
+                    container.query_one("#st_email", Static).update(
+                        self.imovel.get_captador().get_email())
+                    yield container
+                elif self.imovel is None and isinstance(Init.usuario_atual, Captador.Captador):
+                    container = ContainerFuncionario()
+                    container.query_one("#st_nome", Static).update(
+                        Init.usuario_atual.get_nome())
+                    container.query_one("#st_telefone", Static).update(
+                        Init.usuario_atual.get_telefone())
+                    container.query_one("#st_email", Static).update(
+                        Init.usuario_atual.get_email())
+                    yield container
+
         yield Footer(show_command_palette=False)
 
     def on_screen_resume(self):
@@ -453,19 +522,35 @@ class TelaCadastroImovel(Screen):
                 self.query_one("#container_cadastro").display = "block"
         else:
             try:
-                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                    self.app.switch_screen("tela_estoque")
-                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
                     self.app.switch_screen("tela_cadastro_pessoa")
-                elif isinstance(Init.usuario_atual, Gerente.Gerente):
-                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                        self.app.switch_screen("tela_dados_imobiliaria")
-                elif isinstance(Init.usuario_atual, Administrador.Administrador):
-                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                        self.app.switch_screen("tela_servidor")
+
+                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_imovel")
+
+                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_imovel")
+
+                elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                    self.app.switch_screen("tela_estoque")
+
+                elif event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                    self.app.switch_screen("tela_dados_imobiliaria")
+
+                elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                    self.app.switch_screen("tela_servidor")
+
                 elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
                     self.app.switch_screen("tela_estoque_cliente")
+
                 elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
                     self.app.switch_screen("tela_dados_cliente")
+
+                elif event.tabs.active == self.query_one("#tab_atendimento", Tab).id:
+                    self.app.switch_screen("tela_atendimento")
+
+                elif event.tabs.active == self.query_one("#tab_cadastro_venda_aluguel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_venda_aluguel")
+
             except:
                 pass

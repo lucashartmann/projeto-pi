@@ -35,7 +35,7 @@ class App(App):
         Init.inicializar()
 
         Init.usuario_atual = Init.administrador
-        self.switch_screen("tela_atendimento")
+        self.push_screen("tela_atendimento")
 
         # self.push_screen("tela_login")
 

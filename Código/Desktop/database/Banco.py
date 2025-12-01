@@ -262,7 +262,99 @@ class Banco:
                                 ''')
 
             conexao.commit()
-            
+
+    def get_condominio_por_id_imovel(self, id_imovel):
+        with sqlite3.connect(
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+                cursor.execute(f'''
+                        SELECT c.* FROM condominio c
+                        JOIN condominio_imovel ci ON c.id_condominio = ci.id_condominio
+                        WHERE ci.id_imovel = ?
+                    ''', (id_imovel,))
+                registro = cursor.fetchone()
+
+                if not registro:
+                    raise Exception(
+                        f"Não existe condomínio para o imóvel com id {id_imovel}")
+
+                id_condominio = int(registro[0])
+                nome = registro[1]
+                id_endereco = registro[2]
+                churrasqueira_coletiva = registro[3]
+                piscina = registro[4]
+                piscina_infantil = registro[5]
+                piscina_aquecida = registro[6]
+                quiosque = registro[7]
+                sauna = registro[8]
+                quadra_de_esportes = registro[9]
+                jardim = registro[10]
+                salao_de_festas = registro[11]
+                academia = registro[12]
+                sala_de_jogos = registro[13]
+                playground = registro[14]
+                brinquedoteca = registro[15]
+                vaga_coberta = registro[16]
+                estacionamento = registro[17]
+                vaga_para_visitantes = registro[18]
+                mercado = registro[19]
+                mesa_de_sinuca = registro[20]
+                mesa_de_ping_pong = registro[21]
+                mesa_de_pebolim = registro[22]
+                quadra_de_tenis = registro[23]
+                quadra_de_futebol = registro[24]
+                quadra_de_basquete = registro[25]
+                quadra_de_volei = registro[26]
+                quadra_de_areia = registro[27]
+                bicicletario = registro[28]
+                heliponto = registro[29]
+                elevador_de_serviço = registro[30]
+
+                endereco = self.get_endereco_por_id(id_endereco)
+
+                condominio = Condominio.Condominio()
+
+                condominio.set_id(id_condominio)
+                condominio.set_nome(nome)
+                condominio.set_endereco(endereco)
+
+                condominio.churrasqueira_coletiva = churrasqueira_coletiva
+                condominio.piscina = piscina
+                condominio.piscina_infantil = piscina_infantil
+                condominio.piscina_aquecida = piscina_aquecida
+                condominio.quiosque = quiosque
+                condominio.sauna = sauna
+                condominio.quadra_de_esportes = quadra_de_esportes
+                condominio.jardim = jardim
+                condominio.salao_de_festas = salao_de_festas
+                condominio.academia = academia
+                condominio.sala_de_jogos = sala_de_jogos
+                condominio.playground = playground
+                condominio.brinquedoteca = brinquedoteca
+                condominio.vaga_coberta = vaga_coberta
+                condominio.estacionamento = estacionamento
+                condominio.vaga_para_visitantes = vaga_para_visitantes
+                condominio.mercado = mercado
+                condominio.mesa_de_sinuca = mesa_de_sinuca
+                condominio.mesa_de_ping_pong = mesa_de_ping_pong
+                condominio.mesa_de_pebolim = mesa_de_pebolim
+                condominio.quadra_de_tenis = quadra_de_tenis
+                condominio.quadra_de_futebol = quadra_de_futebol
+                condominio.quadra_de_basquete = quadra_de_basquete
+                condominio.quadra_de_volei = quadra_de_volei
+                condominio.quadra_de_areia = quadra_de_areia
+                condominio.bicicletario = bicicletario
+                condominio.heliponto = heliponto
+                condominio.elevador_de_serviço = elevador_de_serviço
+
+                return condominio
+
+            except Exception as e:
+                print(e)
+                erro = f"ERRO! Banco.get_condominio_por_id_imovel(): {e}"
+                return None
+
     def atualizar_comprador(self, tipo_dado, novo_valor, condicao):
         with sqlite3.connect(f"data/Biblioteca.db") as conexao:
             cursor = conexao.cursor()
@@ -645,15 +737,11 @@ class Banco:
                 if registro[9]:
                     data_nascimento = datetime.strptime(registro[9])
 
-                comprador = Cliente.Comprador()
-                comprador.set_nome(nome)
+                comprador = Cliente.Comprador(
+                    nome, cpf_cnpj, rg, telefone, email)
                 comprador.set_id(id_comprador)
                 comprador.set_username(username)
                 comprador.set_senha(senha)
-                comprador.set_email(email)
-                comprador.set_cpf_cnpj(cpf_cnpj)
-                comprador.set_rg(rg)
-                comprador.set_telefone(telefone)
                 comprador.set_endereco(endereco)
                 comprador.set_data_nascimento(data_nascimento)
 
@@ -690,15 +778,11 @@ class Banco:
                     if registro[9]:
                         data_nascimento = datetime.strptime(registro[9])
 
-                    comprador = Cliente.Comprador()
-                    comprador.set_nome(nome)
+                    comprador = Cliente.Comprador(
+                        nome, cpf_cnpj, rg, telefone, email)
                     comprador.set_id(id_comprador)
                     comprador.set_username(username)
                     comprador.set_senha(senha)
-                    comprador.set_email(email)
-                    comprador.set_cpf_cnpj(cpf_cnpj)
-                    comprador.set_rg(rg)
-                    comprador.set_telefone(telefone)
                     comprador.set_endereco(endereco)
                     comprador.set_data_nascimento(data_nascimento)
 
@@ -736,13 +820,9 @@ class Banco:
                     if registro[6]:
                         data_nascimento = datetime.strptime(registro[6])
 
-                    proprietario = Cliente.Proprietario()
-                    proprietario.set_nome(nome)
+                    proprietario = Cliente.Proprietario(
+                        nome, cpf_cnpj, rg, telefone, email)
                     proprietario.set_id(id_proprietario)
-                    proprietario.set_email(email)
-                    proprietario.set_cpf_cnpj(cpf_cnpj)
-                    proprietario.set_rg(rg)
-                    proprietario.set_telefone(telefone)
                     proprietario.set_data_nascimento(data_nascimento)
 
                     lista.append(proprietario)
@@ -1132,16 +1212,11 @@ class Banco:
                     data_nascimento = datetime.strptime(registro[9])
                 creci = registro[10]
 
-                corretor = Corretor.Corretor()
-                corretor.set_nome(nome)
+                corretor = Corretor.Corretor(
+                    nome, cpf_cnpj, rg, telefone, endereco, email)
                 corretor.set_id(id_corretor)
                 corretor.set_username(username)
                 corretor.set_senha(senha)
-                corretor.set_email(email)
-                corretor.set_cpf_cnpj(cpf_cnpj)
-                corretor.set_rg(rg)
-                corretor.set_telefone(telefone)
-                corretor.set_endereco(endereco)
                 corretor.set_data_nascimento(data_nascimento)
                 corretor.set_creci(creci)
 
@@ -1182,16 +1257,11 @@ class Banco:
                     salario = float(registro[11])
                 matricula = registro[12]
 
-                captador = Captador.Captador()
-                captador.set_nome(nome)
+                captador = Captador.Captador(
+                    nome, cpf_cnpj, rg, telefone, endereco, email)
                 captador.set_id(id_captador)
                 captador.set_username(username)
                 captador.set_senha(senha)
-                captador.set_email(email)
-                captador.set_cpf_cnpj(cpf_cnpj)
-                captador.set_rg(rg)
-                captador.set_telefone(telefone)
-                captador.set_endereco(endereco)
                 captador.set_data_nascimento(data_nascimento)
                 captador.set_turno(turno)
                 captador.set_matricula(matricula)
@@ -1226,13 +1296,9 @@ class Banco:
                 if registro[6]:
                     data_nascimento = datetime.strptime(registro[6])
 
-                proprietario = Cliente.Proprietario()
-                proprietario.set_nome(nome)
+                proprietario = Cliente.Proprietario(
+                    nome, cpf_cnpj, rg, telefone, email)
                 proprietario.set_id(id_proprietario)
-                proprietario.set_email(email)
-                proprietario.set_cpf_cnpj(cpf_cnpj)
-                proprietario.set_rg(rg)
-                proprietario.set_telefone(telefone)
                 proprietario.set_data_nascimento(data_nascimento)
 
                 return proprietario

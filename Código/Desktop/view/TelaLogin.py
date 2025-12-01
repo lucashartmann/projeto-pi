@@ -2,7 +2,6 @@ from textual.screen import Screen
 from textual.widgets import Input, Button, Select, Label, Header, Footer, Switch
 from textual.containers import VerticalGroup
 
-from model import Init
 from controller import Controller
 
 

@@ -1,11 +1,12 @@
 import hashlib
 from textual.screen import Screen
-from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, Header, MaskedInput, Select, SelectionList, Input, Switch
+from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, Header, MaskedInput, SelectionList, Input, Switch
 from textual.containers import Grid
+
 from model import Init, Administrador, Gerente, Cliente, Imovel
-from controller import Controller
-import datetime
 from database.Banco import Banco
+
+import datetime
 
 
 class MyInput(Input):
@@ -70,9 +71,10 @@ class TelaDadosCliente(Screen):
         yield Button("Salvar")
         # yield Static("Imoveis do usuário", id="stt_compras")
         yield Footer(show_command_palette=False)
-        
+
     def on_screen_resume(self):
         pass
+
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.label == "Salvar":
 
@@ -114,7 +116,8 @@ class TelaDadosCliente(Screen):
                     if alteracao:
                         Init.usuario_atual.set_senha(senha_hash)
                     else:
-                        self.query_one("#stt_senha", Static).content += "[red]X"
+                        self.query_one(
+                            "#stt_senha", Static).content += "[red]X"
 
             if email != Init.usuario_atual.get_email() and email:
                 alteracao = Banco.atualizar_comprador(
@@ -180,23 +183,35 @@ class TelaDadosCliente(Screen):
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
-            if not isinstance(Init.usuario_atual, Cliente.Comprador):
-                if event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                    self.app.switch_screen("tela_estoque")
-                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                    self.app.switch_screen("tela_cadastro_imovel")
-                elif event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-                    self.app.switch_screen("tela_cadastro_pessoa")
-                elif isinstance(Init.usuario_atual, Gerente.Gerente):
-                    if event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                        self.app.switch_screen("tela_dados_imobiliaria")
-                elif isinstance(Init.usuario_atual, Administrador.Administrador):
-                    if event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                        self.app.switch_screen("tela_servidor")
-                elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                    self.app.switch_screen("tela_estoque_cliente")
-            else:
-                if event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                    self.app.switch_screen("tela_estoque_cliente")
+            if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                self.app.switch_screen("tela_cadastro_pessoa")
+
+            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                self.app.switch_screen("tela_cadastro_imovel")
+
+            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                self.app.switch_screen("tela_cadastro_imovel")
+
+            elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                self.app.switch_screen("tela_estoque")
+
+            elif event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                self.app.switch_screen("tela_dados_imobiliaria")
+
+            elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                self.app.switch_screen("tela_servidor")
+
+            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
+                self.app.switch_screen("tela_estoque_cliente")
+
+            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                self.app.switch_screen("tela_dados_cliente")
+
+            elif event.tabs.active == self.query_one("#tab_atendimento", Tab).id:
+                self.app.switch_screen("tela_atendimento")
+
+            elif event.tabs.active == self.query_one("#tab_cadastro_venda_aluguel", Tab).id:
+                self.app.switch_screen("tela_cadastro_venda_aluguel")
+
         except:
             pass

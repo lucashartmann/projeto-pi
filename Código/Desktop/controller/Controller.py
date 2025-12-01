@@ -2,6 +2,15 @@ from model import Cliente, Corretor, Init
 import datetime
 
 
+def cadastrar_atendimento(atendimento):
+    cadastro = Init.imobiliaria.cadastrar_atendimento(atendimento)
+
+    if cadastro:
+        return "Atendimento pedido com sucesso"
+    else:
+        return "ERRO ao cadastrar atendimento"
+
+
 def cadastrar_pessoa(lista):
     if lista[0] == "":
         return "Nome está vazio"
