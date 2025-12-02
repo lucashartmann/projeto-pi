@@ -1,10 +1,12 @@
-from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Administrador, Anuncio
+from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Administrador, Anuncio, Gerente
 from database import Banco
 
 
 class Init:
 
     banco = Banco.Banco()
+    imobiliaria = Imobiliaria.Imobiliaria("GameStart", "00000000000")
+
 
     endereco1 = Endereco.Endereco(
         "Avenida Bento Gonçalves", 205, "Partenon", "90650002")
@@ -16,9 +18,13 @@ class Init:
 
     administrador = Administrador.Administrador(
         "asdasdas", "asdasdas", "asdasdas")
+    
+    gerente = Gerente.Gerente(nome="GERENTE", cpf_cnpj="12345678900", rg="123456789",
+                             telefone="123456789", email="", endereco=None)
 
     comprador = Cliente.Comprador("MARCOS", "11111111111", "11111111111",
                                   "11111111111", "MARCOS@GMAIL.COM")
+
 
     proprietario = Cliente.Proprietario("MARCOS", "11111111111", "11111111111",
                                         "11111111111", "MARCOS@GMAIL.COM")
@@ -28,12 +34,31 @@ class Init:
 
     corretor = Corretor.Corretor(
         "lucas", "00000000000", "00000000", "00000000000", "bento", "lucas@email")
-
+    
+    comprador.set_senha("123")
+    comprador.set_username("cliente")
+    imobiliaria.cadastrar_comprador(comprador)
+    
+    captador.set_senha("123")
+    captador.set_username("captador")
+    imobiliaria.cadastrar_captador(captador)
+    
+    gerente.set_senha("123")
+    gerente.set_username("gerente")
+    imobiliaria.cadastrar_gerente(gerente)
+    
+    administrador.set_senha("123")
+    administrador.set_username("administrador")
+    imobiliaria.cadastrar_administrador(administrador)
+    
+    corretor.set_senha("123")
+    corretor.set_username("corretor")
+    imobiliaria.cadastrar_corretor(corretor)
+    
     dict_objetos = {
         "imovel": um_imovel,  "comprador": comprador, "proprietario": proprietario, "captador": captador, "corretor": corretor, "venda_aluguel": uma_venda_aluguel
     }
 
-    imobiliaria = Imobiliaria.Imobiliaria("GameStart", "00000000000")
 
     def inicializar():
 

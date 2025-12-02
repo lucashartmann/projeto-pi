@@ -277,7 +277,7 @@ def verificar_login(username, senha, tipo_usuario):
     consulta = Init.imobiliaria.verificar_usuario(
         username, senha, tipo_usuario)
 
-    if consulta == True:
+    if consulta:
         Init.usuario_atual = consulta
         return "Login realizado com sucesso"
     else:
@@ -294,8 +294,8 @@ def salvar_login(username, senha, email):
 
     consulta = Init.imobiliaria.cadastrar_comprador(um_usuario)
 
-    if consulta == True:
+    if consulta:
         Init.usuario_atual = um_usuario
         return "Cadastro realizado com sucesso"
     else:
-        return "ERRO"
+        return "ERRO. Tente Novamente"

@@ -34,10 +34,10 @@ class App(App):
     def on_mount(self):
         Init.inicializar()
 
-        Init.usuario_atual = Init.administrador
-        self.push_screen("tela_atendimento")
+        # Init.usuario_atual = Init.administrador
+        # self.push_screen("tela_atendimento")
 
-        # self.push_screen("tela_login")
+        self.push_screen("tela_login")
 
     def action_enviar_email(self):
         tela_login = self.get_screen("tela_login")

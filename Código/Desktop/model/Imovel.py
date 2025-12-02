@@ -101,6 +101,7 @@ class Imovel:
         self.data_cadastro = None
         self.data_modificacao = None
         self.anuncio = None
+        self.nome_condominio = ""
 
         self.aceita_pet = False
         self.churrasqueira = False
@@ -117,6 +118,12 @@ class Imovel:
         self.dependencia_de_empregada = False
         self.dispensa = False
         self.deposito = False
+        
+    def get_nome_condominio(self):
+        return self.nome_condominio
+    
+    def set_nome_condominio(self, nome):
+        self.nome_condominio = nome
 
     def set_data_cadastro(self, data):
         self.data_cadastro = data

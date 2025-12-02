@@ -58,8 +58,10 @@ class Imobiliaria:
     def verificar_endereco(self, endereco):
         return self.banco_dados.verificar_endereco(endereco)
 
-    def verificar_usuario(self, usuario):
-        return self.banco_dados.verificar_usuario(usuario)
+    def verificar_usuario(self, 
+        username, senha, tipo_usuario):
+        return self.banco_dados.verificar_usuario(
+        username, senha, tipo_usuario)
 
     def cadastrar_endereco(self, endereco):
         return self.banco_dados.cadastrar_endereco(endereco)
@@ -72,6 +74,9 @@ class Imobiliaria:
 
     def cadastrar_comprador(self, comprador):
         return self.banco_dados.cadastrar_comprador(comprador)
+    
+    def cadastrar_gerente(self, gerente):
+        return self.banco_dados.cadastrar_gerente(gerente)
 
     def cadastrar_proprietario(self, proprietario):
         return self.banco_dados.cadastrar_proprietario(proprietario)
@@ -81,6 +86,9 @@ class Imobiliaria:
 
     def cadastrar_corretor(self, corretor):
         return self.banco_dados.cadastrar_corretor(corretor)
+    
+    def cadastrar_administrador(self, administrador):
+        return self.banco_dados.cadastrar_administrador(administrador)
 
     def get_lista_corretores(self):
         return self.banco_dados.get_lista_corretores()

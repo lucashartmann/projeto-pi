@@ -65,13 +65,13 @@ class TelaLogin(Screen):
 
     def on_button_pressed(self):
 
-        username = self.query("#input_username").value.split()
-        senha = self.query("#input_senha").value.split()
+        username = self.query_one("#input_username").value.strip()
+        senha = self.query_one("#input_senha").value.strip()
         tipo_usuario = self.query_one(Select).value
         login = ""
 
         if self.montou:
-            email = self.query("inpt_email").value.split()
+            email = self.query_one("#inpt_email").value.strip()
             login = Controller.salvar_login(username, senha, email)
         else:
             login = Controller.verificar_login(username, senha, tipo_usuario)
@@ -81,9 +81,9 @@ class TelaLogin(Screen):
         if "ERRO" not in login:
             if self.query_one(Select).value == "Cliente":
                 self.app.switch_screen("tela_estoque_cliente")
-            elif self.query_one(Select).value == "Corretor":
+            elif self.query_one(Select).value == "Corretor" or self.query_one(Select).value == "Administrador":
                 self.app.switch_screen("tela_atendimento")
-            elif self.query_one(Select).value == "Corretor":
-                self.app.switch_screen("tela_dados_imovel")
-            else:
+            elif self.query_one(Select).value == "Captador":
                 self.app.switch_screen("tela_cadastro_imovel")
+            else:
+                self.app.switch_screen("tela_dados_imobiliaria")
