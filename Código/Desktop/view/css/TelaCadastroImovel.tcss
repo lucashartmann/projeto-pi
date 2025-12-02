@@ -11,7 +11,7 @@ TelaCadastroImovel #ta_banheiros, TelaCadastroImovel #ta_vagas, TelaCadastroImov
 }
 
 TelaCadastroImovel #ta_nome_condominio {
-    column-span: 5;
+    column-span: 1;
 }
 
 TelaCadastroImovel #ta_estado{
@@ -47,6 +47,21 @@ TelaCadastroImovel #container_cadastro {
 TelaCadastroImovel #container_cadastro TextArea {
     height: 60%;
     
+}
+
+
+TelaCadastroImovel #container_cadastro MaskedInput {
+    width: 90%;
+    
+}
+
+
+TelaCadastroImovel #container_cadastro #ta_bloco {
+    width: 40%;
+}
+
+TelaCadastroImovel #container_cadastro #ta_numero {
+    width: 50%;
 }
 
 TelaCadastroImovel #container_cadastro Static {

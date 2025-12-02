@@ -58,11 +58,11 @@ def cadastrar_imovel(imovel):
         if cadastro_endereco != False:
             id_endereco = cadastro_endereco
 
-    if id_endereco == None:
+    if id_endereco == None or id_endereco == False:
         return "ERRO! Problema com o endereço"
     else:
         imovel.get_endereco().set_id(id_endereco)
-        if imovel.get_id() >= 0:
+        if imovel.get_id() != "" and imovel.get_id() is not None and imovel.get_id() >= 0:
             imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(imovel.get_id())
             if imovel:
                 edicao = Init.imobiliaria.get_estoque().atualizar_imovel(imovel)
@@ -73,7 +73,26 @@ def cadastrar_imovel(imovel):
                     return "ERRO ao editar imóvel"
 
             else:
-                imovel.set_data_cadastro(datetime.datetime.now)
+                cadastro_anuncio = Init.imobiliaria.get_estoque().cadastrar_anuncio(
+            imovel.get_anuncio())
+                
+                if cadastro_anuncio != False:
+                    imovel.get_anuncio().set_id(cadastro_anuncio)
+                
+                imovel.set_data_cadastro(datetime.datetime.now())
+                cadastrado = Init.imobiliaria.get_estoque().cadastrar_imovel(imovel)
+
+                if cadastrado == True:
+                    return f"imovel cadastrado!\n"
+                else:
+                    return "ERRO: ao cadastrar_imovel"
+        else:
+                cadastro_anuncio = Init.imobiliaria.get_estoque().cadastrar_anuncio(
+            imovel.get_anuncio())
+                
+                if cadastro_anuncio != False:
+                    imovel.get_anuncio().set_id(cadastro_anuncio)
+                imovel.set_data_cadastro(datetime.datetime.now())
                 cadastrado = Init.imobiliaria.get_estoque().cadastrar_imovel(imovel)
 
                 if cadastrado == True:

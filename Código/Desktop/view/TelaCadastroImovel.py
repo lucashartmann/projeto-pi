@@ -13,7 +13,7 @@ from textual_image.widget import Image
 
 class PopUp(ModalScreen):
     def compose(self):
-        yield ("Imovel nao salvo, deseja continuar?")
+        yield Static("Imovel nao salvo, deseja continuar?")
         with Horizontal():
             yield Button("Confirmar", id="bt_confirmar")
             yield Button("Cancelar")
@@ -29,7 +29,7 @@ class PopUp(ModalScreen):
 
 class PopUpApagar(ModalScreen):
     def compose(self):
-        yield ("Certeza que deseja apagar?")
+        yield Static("Certeza que deseja apagar?")
         with Horizontal():
             yield Button("Confirmar", id="bt_confirmar")
             yield Button("Cancelar")
@@ -46,9 +46,9 @@ class PopUpApagar(ModalScreen):
 
 class ContainerFuncionario(Horizontal):
     def compose(self):
-        Static("Nome do cliente", id="st_nome")
-        Static("Telefone do cliente", id="st_telefone")
-        Static("Email do cliente", id="st_email")
+        yield Static("Nome do cliente", id="st_nome")
+        yield Static("Telefone do cliente", id="st_telefone")
+        yield Static("Email do cliente", id="st_email")
 
 
 class TelaCadastroImovel(Screen):
@@ -73,6 +73,7 @@ class TelaCadastroImovel(Screen):
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
+
         with Horizontal(id="h_buttons"):
             yield Button("Apagar", id="bt_apagar_cadastro")
             yield Button("Salvar", id="bt_salvar_alteracoes")
@@ -82,7 +83,7 @@ class TelaCadastroImovel(Screen):
 
             with Grid(id="container_cadastro"):
                 yield Static("ref:", id="stt_ref")
-                yield TextArea(read_only=True, id="ta_ref")
+                yield TextArea(disabled=True, id="ta_ref")
                 yield Static("Categoria:", id="stt_categoria")
                 yield Select([(valor.value, valor) for valor in Imovel.Categoria], id="select_categoria")
                 yield Static("Situação:", id="stt_situacao")
@@ -94,11 +95,11 @@ class TelaCadastroImovel(Screen):
                 yield Static("Status:", id="stt_status")
                 yield Select([(valor.value, valor) for valor in Imovel.Status], id="select_status")
                 yield Static("Nome do Condomínio", id="stt_nome_condominio")
+                yield TextArea(id="ta_nome_condominio")
                 yield Static("Ano de Construção", id="stt_ano_construcao")
                 yield MaskedInput(template="00/00/0000", id="ta_ano_construcao")
                 yield Static("Andar", id="stt_andar")
                 yield MaskedInput(template="00", id="ta_andar")
-                yield TextArea(id="ta_nome_condominio")
                 yield Static("Rua", id="stt_rua")
                 yield TextArea(disabled=True, id="ta_rua")
                 yield Static("Número", id="stt_numero")
@@ -106,7 +107,7 @@ class TelaCadastroImovel(Screen):
                 yield Static("Complemento", id="stt_complemento")
                 yield TextArea(id="ta_complemento")
                 yield Static("Bloco", id="stt_bloco")
-                yield MaskedInput(template="000", id="ta_bloco")
+                yield TextArea(id="ta_bloco")
                 yield Static("CEP", id="stt_cep")
                 yield MaskedInput(template="00000-000", id="ta_cep")
                 yield Static("Bairro", id="stt_bairro")
@@ -130,7 +131,7 @@ class TelaCadastroImovel(Screen):
                 yield Static("Área Privativa", id="stt_area_privativa")
                 yield MaskedInput(template="000.000m²", id="ta_area_privativa")
                 yield Static("Valor Venda:", id="stt_venda")
-                yield MaskedInput(template="R$000.000.000", id="ta_venda")
+                yield MaskedInput(template="000.000.000", id="ta_venda")
                 yield Static("Valor Aluguel:", id="stt_aluguel")
                 yield MaskedInput(template="000.000.000", id="ta_aluguel")
                 yield Static("Valor Condomínio:", id="stt_condominio")
@@ -197,11 +198,8 @@ class TelaCadastroImovel(Screen):
 
             with Grid(id="container_imagens"):
                 yield Button("Editar", id="bt_editar_imagens")
-                if self.imovel and self.imovel.get_anuncio().get_imagens():
-                    for imagem in self.imovel.get_anuncio().get_imagens():
-                        yield Image(imagem, id="st_imagem_anuncio")
 
-                    # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
+                # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
 
             with Grid(id="container_anexos"):
                 yield Button("Adicionar", id="bt_adicionar_anexos")
@@ -210,59 +208,77 @@ class TelaCadastroImovel(Screen):
 
             with Vertical(id="container_proprietario"):
                 yield Static("Proprietario: ", classes="stt_container_titulo")
-                if self.imovel:
-                    container = ContainerFuncionario()
-                    container.query_one("#st_nome", Static).update(
-                        self.imovel.get_proprietario().get_nome())
-                    container.query_one("#st_telefone", Static).update(
-                        self.imovel.get_proprietario().get_telefone())
-                    container.query_one("#st_email", Static).update(
-                        self.imovel.get_proprietario().get_email())
+
             with Vertical(id="container_corretor"):
                 yield Static("Corretor: ", classes="stt_container_titulo")
-
-                if self.imovel and self.imovel.get_corretor():
-                    container = ContainerFuncionario()
-                    container.query_one("#st_nome", Static).update(
-                        self.imovel.get_corretor().get_nome())
-                    container.query_one("#st_telefone", Static).update(
-                        self.imovel.get_corretor().get_telefone())
-                    container.query_one("#st_email", Static).update(
-                        self.imovel.get_corretor().get_email())
-                    yield container
-                elif self.imovel is None and isinstance(Init.usuario_atual, Corretor.Corretor):
-                    container = ContainerFuncionario()
-                    container.query_one("#st_nome", Static).update(
-                        Init.usuario_atual.get_nome())
-                    container.query_one("#st_telefone", Static).update(
-                        Init.usuario_atual.get_telefone())
-                    container.query_one("#st_email", Static).update(
-                        Init.usuario_atual.get_email())
-                    yield container
 
             with Vertical(id="container_captador"):
                 yield Static("Captador: ", classes="stt_container_titulo")
 
-                if self.imovel and self.imovel.get_captador():
-                    container = ContainerFuncionario()
-                    container.query_one("#st_nome", Static).update(
-                        self.imovel.get_captador().get_nome())
-                    container.query_one("#st_telefone", Static).update(
-                        self.imovel.get_captador().get_telefone())
-                    container.query_one("#st_email", Static).update(
-                        self.imovel.get_captador().get_email())
-                    yield container
-                elif self.imovel is None and isinstance(Init.usuario_atual, Captador.Captador):
-                    container = ContainerFuncionario()
-                    container.query_one("#st_nome", Static).update(
-                        Init.usuario_atual.get_nome())
-                    container.query_one("#st_telefone", Static).update(
-                        Init.usuario_atual.get_telefone())
-                    container.query_one("#st_email", Static).update(
-                        Init.usuario_atual.get_email())
-                    yield container
-
         yield Footer(show_command_palette=False)
+
+    def on_mount(self):
+        container_captador = self.query_one("#container_captador", Vertical)
+
+        if self.imovel and self.imovel.get_captador():
+            container = ContainerFuncionario()
+            container_captador.mount(container, after=container_captador.query_one(Static))
+            container.query_one("#st_nome", Static).update(
+                self.imovel.get_captador().get_nome())
+            container.query_one("#st_telefone", Static).update(
+                self.imovel.get_captador().get_telefone())
+            container.query_one("#st_email", Static).update(
+                self.imovel.get_captador().get_email())
+        elif self.imovel is None and isinstance(Init.usuario_atual, Captador.Captador):
+            container = ContainerFuncionario()
+            container_captador.mount(container, after=container_captador.query_one(Static))
+            container.query_one("#st_nome", Static).update(
+                Init.usuario_atual.get_nome())
+            container.query_one("#st_telefone", Static).update(
+                Init.usuario_atual.get_telefone())
+            container.query_one("#st_email", Static).update(
+                Init.usuario_atual.get_email())
+
+        container_corretor = self.query_one("#container_corretor", Vertical)
+
+        if self.imovel and self.imovel.get_corretor():
+            container = ContainerFuncionario()
+            container_corretor.mount(container, after=container_corretor.query_one(Static))
+            container.query_one("#st_nome", Static).update(
+                self.imovel.get_corretor().get_nome())
+            container.query_one("#st_telefone", Static).update(
+                self.imovel.get_corretor().get_telefone())
+            container.query_one("#st_email", Static).update(
+                self.imovel.get_corretor().get_email())
+
+        elif self.imovel is None and isinstance(Init.usuario_atual, Corretor.Corretor):
+            container = ContainerFuncionario()
+            container_corretor.mount(container, after=container_corretor.query_one(Static))
+            container.query_one("#st_nome", Static).update(
+                Init.usuario_atual.get_nome())
+            container.query_one("#st_telefone", Static).update(
+                Init.usuario_atual.get_telefone())
+            container.query_one("#st_email", Static).update(
+                Init.usuario_atual.get_email())
+
+        container_proprietario = self.query_one(
+            "#container_proprietario", Vertical)
+
+        if self.imovel:
+            container = ContainerFuncionario()
+            container_proprietario.mount(container, after=container_proprietario.query_one(Static))
+            container.query_one("#st_nome", Static).update(
+                self.imovel.get_proprietario().get_nome())
+            container.query_one("#st_telefone", Static).update(
+                self.imovel.get_proprietario().get_telefone())
+            container.query_one("#st_email", Static).update(
+                self.imovel.get_proprietario().get_email())
+
+        container_imagens = self.query_one("#container_imagens", Grid)
+
+        if self.imovel and self.imovel.get_anuncio().get_imagens():
+            for imagem in self.imovel.get_anuncio().get_imagens():
+                container_imagens.mount(Image(imagem, id="st_imagem_anuncio"), after=container_imagens.query_one(Button))
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
@@ -281,11 +297,10 @@ class TelaCadastroImovel(Screen):
             evento.stop
             return
 
-    def on_text_area_changed(self, evento: TextArea.Changed):
+    def on_input_changed(self, evento: MaskedInput.Changed):
         self.salvo = False
-        if evento.text_area.id == "ta_cep":
-            cep = str(evento.text_area.text.strip())
-
+        if evento.input.id == "ta_cep":
+            cep = str(evento.input.value.strip().strip("-"))
             self.query_one("#ta_bairro", TextArea).clear()
             self.query_one("#ta_estado", MaskedInput).clear()
             self.query_one("#ta_rua", TextArea).clear()
@@ -314,7 +329,13 @@ class TelaCadastroImovel(Screen):
 
         match evento.button.id:
             case "bt_salvar_alteracoes":
-                ref = int(self.query_one("#ta_ref", TextArea).text.strip())
+                
+                ref = self.query_one("#ta_ref", TextArea).text.strip()
+                if ref:
+                    int(self.query_one("#ta_ref", TextArea).text.strip())
+                else:
+                    ref = None
+                    
                 categoria_imovel = self.query_one(
                     "#select_categoria", Select).value
                 situacao_imovel = self.query_one(
@@ -323,6 +344,22 @@ class TelaCadastroImovel(Screen):
                 ocupacao_imovel = self.query_one(
                     "#select_ocupacao", Select).value
                 status_imovel = self.query_one("#select_status", Select).value
+                
+                if status_imovel == "NoSelection" or status_imovel == Select.BLANK:
+                    status_imovel = None
+                
+                if categoria_imovel == "NoSelection" or categoria_imovel == Select.BLANK:
+                    categoria_imovel = None
+                
+                if situacao_imovel == "NoSelection" or situacao_imovel == Select.BLANK:
+                    situacao_imovel = None
+                
+                if estado_imovel == "NoSelection" or estado_imovel == Select.BLANK: 
+                    estado_imovel = None
+                
+                if ocupacao_imovel == "NoSelection" or ocupacao_imovel == Select.BLANK:
+                    ocupacao_imovel = None
+                
                 nome_condominio = self.query_one(
                     "#ta_nome_condominio", TextArea).text
                 rua = self.query_one("#ta_rua", TextArea).text
@@ -330,15 +367,14 @@ class TelaCadastroImovel(Screen):
                     "#ta_numero", TextArea).text, int, evento)
                 complemento = self.query_one(
                     "#ta_complemento", TextArea).text.strip()
-                bloco = self.query_one("#ta_bloco", MaskedInput).value.strip()
+                bloco = self.query_one("#ta_bloco", TextArea).text.strip()
 
                 cep = self.query_one(
-                    "#ta_cep", MaskedInput).value.strip.strip("-")
+                    "#ta_cep", MaskedInput).value.strip().strip("-")
                 if not cep:
                     self.notify("ERRO! CEP inválido")
                     return
-                cep = self.converter("CEP", self.query_one(
-                    "#ta_cep", MaskedInput).value.strip("-"), int, evento)
+                cep = self.converter("CEP", cep, int, evento)
                 bairro = self.query_one("#ta_bairro", TextArea).text
                 cidade = self.query_one("#ta_cidade", TextArea).text
                 estado = self.query_one(
@@ -365,16 +401,17 @@ class TelaCadastroImovel(Screen):
                     "#ta_condominio", MaskedInput).value.strip("m²"), float, evento)
                 iptu = self.converter("iptu", self.query_one(
                     "#ta_iptu", MaskedInput).value.strip("m²"), float, evento)
-                andar = self.query_one("#ta_andar", TextArea).text
-                ano_construcao = (self.query_one(
-                    "#stt_ano_construcao", TextArea).text).split["/"]
+                andar = self.query_one("#ta_andar", MaskedInput).value
+                ano_construcao = self.query_one(
+                    "#ta_ano_construcao", MaskedInput).value.split("/")
                 if ano_construcao:
-                    ano_construcao = datetime.datetime(year=int(
+                    if ano_construcao[-1] and ano_construcao[1] and ano_construcao[0]:
+                        ano_construcao = datetime.datetime(year=int(
                         ano_construcao[-1]), month=int(ano_construcao[1]), day=int(ano_construcao[0]))
                 else:
                     ano_construcao = None
 
-                endereco = Endereco(rua, numero, bairro,
+                endereco = Endereco.Endereco(rua, numero, bairro,
                                     cep, complemento, cidade)
                 endereco.set_estado(estado)
                 # anuncio.set_anexos()

@@ -523,12 +523,12 @@ class Banco:
                     captador = None
 
                 if imovel.get_data_cadastro():
-                    data_cadastro = data_cadastro.strftime()
+                    data_cadastro = data_cadastro.strftime("%d-%m-%Y")
                 else:
                     data_cadastro = None
 
                 if imovel.get_data_modificacao():
-                    data_modificacao = data_modificacao.strftime()
+                    data_modificacao = data_modificacao.strftime("%d-%m-%Y")
                 else:
                     data_modificacao = None
 
@@ -759,7 +759,10 @@ class Banco:
                 telefone = registro[7]
                 endereco = self.get_endereco_por_id(registro[8])
                 if registro[9]:
-                    data_nascimento = datetime.strptime(registro[9])
+                    data_nascimento = datetime.strptime(
+                        registro[9], "%d-%m-%Y")
+                else:
+                    data_nascimento = None
 
                 comprador = Cliente.Comprador(
                     nome, cpf_cnpj, rg, telefone, email)
@@ -800,7 +803,10 @@ class Banco:
                     telefone = registro[7]
                     endereco = self.get_endereco_por_id(registro[8])
                     if registro[9]:
-                        data_nascimento = datetime.strptime(registro[9])
+                        data_nascimento = datetime.strptime(
+                            registro[9], "%d-%m-%Y")
+                    else:
+                        data_nascimento = None
 
                     comprador = Cliente.Comprador(
                         nome, cpf_cnpj, rg, telefone, email)
@@ -842,7 +848,10 @@ class Banco:
                     rg = registro[4]
                     telefone = registro[5]
                     if registro[6]:
-                        data_nascimento = datetime.strptime(registro[6])
+                        data_nascimento = datetime.strptime(
+                            registro[6], "%d-%m-%Y")
+                    else:
+                        data_nascimento = None
 
                     proprietario = Cliente.Proprietario(
                         nome, cpf_cnpj, rg, telefone, email)
@@ -862,10 +871,12 @@ class Banco:
             try:
                 cursor = conexao.cursor()
                 sql = '''
-                    SELECT * FROM endereco WHERE rua = ? numero = ? bairro = ? cep = ? complemento = ? cidade = ? estado = ?
+                    SELECT * FROM endereco WHERE rua = ? AND numero = ? AND bairro = ? AND cep = ? AND complemento = ? AND cidade = ? AND estado = ?
                 '''
-                registro = cursor.fetchone(sql, (endereco.get_rua(), endereco.get_numero(), endereco.get_bairro(
+                cursor.execute(sql, (endereco.get_rua(), endereco.get_numero(), endereco.get_bairro(
                 ), endereco.get_cep(), endereco.get_complemento(), endereco.get_cidade(), endereco.get_estado()))
+
+                registro = cursor.fetchone()
 
                 if registro:
                     id_endereco = registro[0]
@@ -893,7 +904,7 @@ class Banco:
             tabela = "comprador"
         else:
             tabela = tabela.lower()
-            
+
         print(username, senha, tabela)
 
         try:
@@ -927,7 +938,7 @@ class Banco:
                             endereco = self.get_endereco_por_id(registro[8])
                             if registro[9]:
                                 data_nascimento = datetime.strptime(
-                                    registro[9])
+                                    registro[9], "%d-%m-%Y")
                             else:
                                 data_nascimento = None
 
@@ -952,7 +963,7 @@ class Banco:
                             endereco = self.get_endereco_por_id(registro[8])
                             if registro[9]:
                                 data_nascimento = datetime.strptime(
-                                    registro[9])
+                                    registro[9], "%d-%m-%Y")
                             else:
                                 data_nascimento = None
                             creci = registro[10]
@@ -977,7 +988,7 @@ class Banco:
                             endereco = self.get_endereco_por_id(registro[8])
                             if registro[9]:
                                 data_nascimento = datetime.strptime(
-                                    registro[9])
+                                    registro[9], "%d-%m-%Y")
                             else:
                                 data_nascimento = None
                             turno = registro[10]
@@ -1019,7 +1030,7 @@ class Banco:
                             endereco = self.get_endereco_por_id(registro[8])
                             if registro[9]:
                                 data_nascimento = datetime.strptime(
-                                    registro[9])
+                                    registro[9], "%d-%m-%Y")
                             else:
                                 data_nascimento = None
                             turno = registro[10]
@@ -1042,7 +1053,7 @@ class Banco:
                     pessoa.set_id(registro[0])
                     print(pessoa)
                     return pessoa
-                    
+
                 else:
                     raise Exception("Senha errada!")
         except Exception as e:
@@ -1090,7 +1101,7 @@ class Banco:
                     endereco = None
 
                 if gerente.get_data_nascimento():
-                    data = gerente.get_data_nascimento().strftime()
+                    data = gerente.get_data_nascimento().strftime("%d-%m-%Y")
                 else:
                     data = None
 
@@ -1132,7 +1143,7 @@ class Banco:
                     endereco = None
 
                 if corretor.get_data_nascimento():
-                    data = corretor.get_data_nascimento().strftime()
+                    data = corretor.get_data_nascimento().strftime("%d-%m-%Y")
                 else:
                     data = None
 
@@ -1175,7 +1186,7 @@ class Banco:
                     endereco = None
 
                 if captador.get_data_nascimento():
-                    data = captador.get_data_nascimento().strftime()
+                    data = captador.get_data_nascimento().strftime("%d-%m-%Y")
                 else:
                     data = None
 
@@ -1217,7 +1228,7 @@ class Banco:
                     endereco = None
 
                 if proprietario.get_data_nascimento():
-                    data = proprietario.get_data_nascimento().strftime()
+                    data = proprietario.get_data_nascimento().strftime("%d-%m-%Y")
                 else:
                     data = None
 
@@ -1263,9 +1274,30 @@ class Banco:
                     endereco.get_estado(),
                 ))
                 conexao.commit()
-                return True
+                return cursor.lastrowid
             except Exception as e:
                 erro = f"Banco.cadastrar_endereco: ERRO! {e}"
+                print(erro)
+                return False
+            
+    def cadastrar_anuncio(self, anuncio):
+        with sqlite3.connect(
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+
+                sql_query = f''' 
+                    INSERT INTO anuncio (descricao, titulo) 
+                    VALUES(?, ?)
+                    '''
+                cursor.execute(sql_query, (
+                    anuncio.get_descricao(),
+                    anuncio.get_titulo(),
+                ))
+                conexao.commit()
+                return cursor.lastrowid
+            except Exception as e:
+                erro = f"Banco.cadastrar_anuncio: ERRO! {e}"
                 print(erro)
                 return False
 
@@ -1283,7 +1315,7 @@ class Banco:
                     endereco = None
 
                 if comprador.get_data_nascimento():
-                    data = comprador.get_data_nascimento().strftime()
+                    data = comprador.get_data_nascimento().strftime("%d-%m-%Y")
                 else:
                     data = None
 
@@ -1388,7 +1420,8 @@ class Banco:
                 telefone = registro[7]
                 endereco = self.get_endereco_por_id(registro[8])
                 if registro[9]:
-                    data_nascimento = datetime.strptime(registro[9])
+                    data_nascimento = datetime.strptime(
+                        registro[9], "%d-%m-%Y")
                 creci = registro[10]
 
                 corretor = Corretor.Corretor(
@@ -1430,7 +1463,8 @@ class Banco:
                 telefone = registro[7]
                 endereco = self.get_endereco_por_id(registro[8])
                 if registro[9]:
-                    data_nascimento = datetime.strptime(registro[9])
+                    data_nascimento = datetime.strptime(
+                        registro[9], "%d-%m-%Y")
                 turno = registro[10]
                 if registro[11]:
                     salario = float(registro[11])
@@ -1473,7 +1507,8 @@ class Banco:
                 rg = registro[4]
                 telefone = registro[5]
                 if registro[6]:
-                    data_nascimento = datetime.strptime(registro[6])
+                    data_nascimento = datetime.strptime(
+                        registro[6], "%d-%m-%Y")
 
                 proprietario = Cliente.Proprietario(
                     nome, cpf_cnpj, rg, telefone, email)
@@ -1585,12 +1620,13 @@ class Banco:
                 else:
                     imovel.set_captador(None)
                 if dados[25]:
-                    imovel.set_data_cadastro(datetime.strptime(dados[25]))
+                    imovel.set_data_cadastro(
+                        datetime.strptime(dados[25], "%d-%m-%Y"))
                 else:
                     imovel.set_data_cadastro(None)
                 if dados[26]:
                     imovel.set_data_modificacao(
-                        datetime.strptime(dados[26]))
+                        datetime.strptime(dados[26], "%d-%m-%Y"))
                 else:
                     imovel.set_data_modificacao(None)
                 imovel.aceita_pet = dados[27]
@@ -1673,15 +1709,26 @@ class Banco:
                 else:
                     captador = None
 
-                if imovel.get_data_cadastro():
-                    data_cadastro = data_cadastro.strftime()
+                if imovel.get_data_cadastro() and isinstance(imovel.get_data_cadastro(), datetime):
+                    data_cadastro = imovel.get_data_cadastro().strftime("%d-%m-%Y")
+
                 else:
                     data_cadastro = None
 
-                if imovel.get_data_modificacao():
-                    data_modificacao = data_modificacao.strftime()
+                if imovel.get_data_modificacao() and isinstance(imovel.get_data_modificacao(), datetime):
+                    data_modificacao = imovel.get_data_modificacao().strftime("%d-%m-%Y")
                 else:
                     data_modificacao = None
+
+                if imovel.get_ano_construcao() and isinstance(imovel.get_ano_construcao(), datetime):
+                    data_modificacao = imovel.get_data_modificacao().strftime("%d-%m-%Y")
+                else:
+                    data_modificacao = None
+
+                if imovel.get_ano_construcao() and isinstance(imovel.get_ano_construcao(), datetime):
+                    ano_construcao = imovel.get_ano_construcao().strftime("%d-%m-%Y")
+                else:
+                    ano_construcao = None
 
                 cursor.execute(sql_query, (
                     imovel.get_valor_venda(),
@@ -1700,7 +1747,7 @@ class Banco:
                     imovel.get_andar(),
                     estado,
                     imovel.get_bloco(),
-                    imovel.get_ano_construcao(),
+                    ano_construcao,
                     imovel.get_area_total(),
                     imovel.get_area_privativa(),
                     situacao,
@@ -1746,21 +1793,16 @@ class Banco:
                 if not resultados:
                     raise Exception(f"Não há imóveis cadastrados")
                 for dados in resultados:
-                    if dados[42]:
-                        anuncio = self.get_anuncio(dados[42])
-                        if anuncio:
-                            imovel.set_anuncio(anuncio)
-                        else:
-                            imovel.set_anuncio(None)
+
                     if dados[13]:
-                        status = imovel.Status(dados[12])
+                        status = Imovel.Status(dados[12])
                     else:
                         status = None
                     if dados[9]:
-                        categoria = imovel.Categoria(dados[9])
+                        categoria = Imovel.Categoria(dados[9])
                     else:
                         categoria = None
-                    if dados[10]:
+                    if dados[10] != "" and dados[10] is not None:
                         endereco = self.get_endereco_por_id(int(dados[10]))
                         if not endereco:
                             raise Exception("Erro com endereço")
@@ -1768,50 +1810,57 @@ class Banco:
                         raise Exception("ERRO: Imóvel não possui endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
 
-                    if not isinstance(dados[0], str):
+                    if dados[42] != "" and dados[42] is not None:
+                        anuncio = self.get_anuncio(dados[42])
+                        if anuncio:
+                            imovel.set_anuncio(anuncio)
+                        else:
+                            imovel.set_anuncio(None)
+
+                    if not isinstance(dados[0], str) and dados[0] is not None:
                         imovel.set_id(int(dados[0]))
-                    if not isinstance(dados[1], str):
+                    if not isinstance(dados[1], str) and dados[1] is not None:
                         imovel.set_valor_venda(float(dados[1]))
-                    if not isinstance(dados[2], str):
+                    if not isinstance(dados[2], str) and dados[2] is not None:
                         imovel.set_valor_aluguel(float(dados[2]))
-                    if not isinstance(dados[3], str):
+                    if not isinstance(dados[3], str) and dados[3] is not None:
                         imovel.set_quant_quartos(int(dados[3]))
-                    if not isinstance(dados[4], str):
+                    if not isinstance(dados[4], str) and dados[4] is not None:
                         imovel.set_quant_salas(int(dados[4]))
-                    if not isinstance(dados[5], str):
+                    if not isinstance(dados[5], str) and dados[5] is not None:
                         imovel.set_quant_vagas(int(dados[5]))
-                    if not isinstance(dados[6], str):
+                    if not isinstance(dados[6], str) and dados[6] is not None:
                         imovel.set_quant_banheiros(int(dados[6]))
-                    if not isinstance(dados[7], str):
+                    if not isinstance(dados[7], str) and dados[7] is not None:
                         imovel.set_quant_varandas(int(dados[7]))
                     imovel.set_nome_condominio(dados[8])
 
-                    if not isinstance(dados[12], str):
+                    if not isinstance(dados[12], str) and dados[12] is not None:
                         imovel.set_iptu(float(dados[12]))
-                    if not isinstance(dados[13], str):
+                    if not isinstance(dados[13], str) and dados[13] is not None:
                         imovel.set_valor_condominio(float(dados[13]))
-                    if not isinstance(dados[14], str):
+                    if not isinstance(dados[14], str) and dados[14] is not None:
                         imovel.set_andar(int(dados[14]))
                     if dados[15]:
-                        imovel.set_estado(imovel.Estado(dados[15]))
+                        imovel.set_estado(Imovel.Estado(dados[15]))
                     else:
                         imovel.set_estado(None)
                     imovel.set_bloco(dados[16])
-                    if not isinstance(dados[17], str):
+                    if not isinstance(dados[17], str) and dados[17] is not None:
                         imovel.set_ano_construcao(int(dados[17]))
 
-                    if not isinstance(dados[18], str):
+                    if not isinstance(dados[18], str) and dados[18] is not None:
                         imovel.set_area_total(float(dados[18]))
 
-                    if not isinstance(dados[19], str):
+                    if not isinstance(dados[19], str) and dados[19] is not None:
                         imovel.set_area_privativa(float(dados[19]))
 
                     if dados[20]:
-                        imovel.set_situacao(imovel.Situacao(dados[20]))
+                        imovel.set_situacao(Imovel.Situacao(dados[20]))
                     else:
                         imovel.set_situacao(None)
                     if dados[21]:
-                        imovel.set_ocupacao(imovel.Ocupacao(dados[21]))
+                        imovel.set_ocupacao(Imovel.Ocupacao(dados[21]))
                     else:
                         imovel.set_ocupacao(None)
                     if dados[22]:
@@ -1840,12 +1889,13 @@ class Banco:
                     else:
                         imovel.set_captador(None)
                     if dados[25]:
-                        imovel.set_data_cadastro(datetime.strptime(dados[25]))
+                        imovel.set_data_cadastro(
+                            datetime.strptime(dados[25], "%d-%m-%Y"))
                     else:
                         imovel.set_data_cadastro(None)
                     if dados[26]:
                         imovel.set_data_modificacao(
-                            datetime.strptime(dados[26]))
+                            datetime.strptime(dados[26], "%d-%m-%Y"))
                     else:
                         imovel.set_data_modificacao(None)
                     imovel.aceita_pet = dados[27]
@@ -1880,76 +1930,74 @@ class Banco:
                 resultados = cursor.fetchall()
                 if not resultados:
                     raise Exception(f"Não há imóveis disponiveis")
-                
-               
 
                 for dados in resultados:
-                    if dados[42]:
-                        anuncio = self.get_anuncio(dados[42])
-                        if anuncio:
-                            imovel.set_anuncio(anuncio)
-                        else:
-                            imovel.set_anuncio(None)
+
                     if dados[13]:
-                        status = imovel.Status(dados[12])
+                        status = Imovel.Status(dados[12])
                     else:
                         status = None
                     if dados[9]:
-                        categoria = imovel.Categoria(dados[9])
+                        categoria = Imovel.Categoria(dados[9])
                     else:
                         categoria = None
-                    if dados[10]:
+                    if dados[10] != "" and dados[10] is not None:
                         endereco = self.get_endereco_por_id(int(dados[10]))
                         if not endereco:
                             raise Exception("Erro com endereço")
                     else:
                         raise Exception("Imóvel não possui endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
-
-                    if not isinstance(dados[0], str):
+                    if dados[42] != "" and dados[42] is not None:
+                        anuncio = self.get_anuncio(dados[42])
+                        if anuncio:
+                            imovel.set_anuncio(anuncio)
+                        else:
+                            imovel.set_anuncio(None)
+                    if not isinstance(dados[0], str) and dados[0] is not None:
                         imovel.set_id(int(dados[0]))
-                    if not isinstance(dados[1], str):
+                    if not isinstance(dados[1], str) and dados[1] is not None:
                         imovel.set_valor_venda(float(dados[1]))
-                    if not isinstance(dados[2], str):
+                    if not isinstance(dados[2], str) and dados[2] is not None:
                         imovel.set_valor_aluguel(float(dados[2]))
-                    if not isinstance(dados[3], str):
+                    if not isinstance(dados[3], str) and dados[3] is not None:
                         imovel.set_quant_quartos(int(dados[3]))
-                    if not isinstance(dados[4], str):
+                    if not isinstance(dados[4], str) and dados[4] is not None:
                         imovel.set_quant_salas(int(dados[4]))
-                    if not isinstance(dados[5], str):
+                    if not isinstance(dados[5], str) and dados[5] is not None:
                         imovel.set_quant_vagas(int(dados[5]))
-                    if not isinstance(dados[6], str):
+                    if not isinstance(dados[6], str) and dados[6] is not None:
                         imovel.set_quant_banheiros(int(dados[6]))
-                    if not isinstance(dados[7], str):
+                    if not isinstance(dados[7], str) and dados[7] is not None:
                         imovel.set_quant_varandas(int(dados[7]))
                     imovel.set_nome_condominio(dados[8])
 
-                    if not isinstance(dados[12], str):
+                    if not isinstance(dados[12], str) and dados[12] is not None:
                         imovel.set_iptu(float(dados[12]))
-                    if not isinstance(dados[13], str):
+                    if not isinstance(dados[13], str) and dados[13] is not None:
                         imovel.set_valor_condominio(float(dados[13]))
-                    if not isinstance(dados[14], str):
+                    if not isinstance(dados[14], str) and dados[14] is not None:
                         imovel.set_andar(int(dados[14]))
                     if dados[15]:
-                        imovel.set_estado(imovel.Estado(dados[15]))
+                        imovel.set_estado(Imovel.Estado(dados[15]))
                     else:
                         imovel.set_estado(None)
                     imovel.set_bloco(dados[16])
-                    if not isinstance(dados[17], str):
+                    if not isinstance(dados[17], str) and dados[17] is not None:
                         imovel.set_ano_construcao(int(dados[17]))
 
-                    if not isinstance(dados[18], str):
+                    if not isinstance(dados[18], str) and dados[18] is not None:
                         imovel.set_area_total(float(dados[18]))
 
-                    if not isinstance(dados[19], str):
+                    if not isinstance(dados[19], str) and dados[19] is not None:
                         imovel.set_area_privativa(float(dados[19]))
 
                     if dados[20]:
-                        imovel.set_situacao(imovel.Situacao(dados[20]))
+                        imovel.set_situacao(Imovel.Situacao(dados[20]))
                     else:
                         imovel.set_situacao(None)
                     if dados[21]:
-                        imovel.set_ocupacao(imovel.Ocupacao(dados[21]))
+                        imovel.set_ocupacao(Imovel.Ocupacao(dados[21]))
                     else:
                         imovel.set_ocupacao(None)
                     if dados[22]:
@@ -1978,12 +2026,13 @@ class Banco:
                     else:
                         imovel.set_captador(None)
                     if dados[25]:
-                        imovel.set_data_cadastro(datetime.strptime(dados[25]))
+                        imovel.set_data_cadastro(
+                            datetime.strptime(dados[25], "%d-%m-%Y"))
                     else:
                         imovel.set_data_cadastro(None)
                     if dados[26]:
                         imovel.set_data_modificacao(
-                            datetime.strptime(dados[26]))
+                            datetime.strptime(dados[26], "%d-%m-%Y"))
                     else:
                         imovel.set_data_modificacao(None)
                     imovel.aceita_pet = dados[27]
@@ -2020,18 +2069,13 @@ class Banco:
                 if not lista_imoveis:
                     raise Exception(f"Não há imóveis cadastrados")
                 for dados in lista_registros:
-                    if dados[42]:
-                        anuncio = self.get_anuncio(dados[42])
-                        if anuncio:
-                            imovel.set_anuncio(anuncio)
-                        else:
-                            imovel.set_anuncio(None)
+
                     if dados[13]:
-                        status = imovel.Status(dados[12])
+                        status = Imovel.Status(dados[12])
                     else:
                         status = None
                     if dados[9]:
-                        categoria = imovel.Categoria(dados[9])
+                        categoria = Imovel.Categoria(dados[9])
                     else:
                         categoria = None
                     if dados[10]:
@@ -2041,7 +2085,12 @@ class Banco:
                     else:
                         raise Exception("ERRO: Imóvel não possui endereço")
                     imovel = Imovel.Imovel(endereco, status, categoria)
-
+                    if dados[42]:
+                        anuncio = self.get_anuncio(dados[42])
+                        if anuncio:
+                            imovel.set_anuncio(anuncio)
+                        else:
+                            imovel.set_anuncio(None)
                     if not isinstance(dados[0], str):
                         imovel.set_id(int(dados[0]))
                     if not isinstance(dados[1], str):
@@ -2067,7 +2116,7 @@ class Banco:
                     if not isinstance(dados[14], str):
                         imovel.set_andar(int(dados[14]))
                     if dados[15]:
-                        imovel.set_estado(imovel.Estado(dados[15]))
+                        imovel.set_estado(Imovel.Estado(dados[15]))
                     else:
                         imovel.set_estado(None)
                     imovel.set_bloco(dados[16])
@@ -2081,11 +2130,11 @@ class Banco:
                         imovel.set_area_privativa(float(dados[19]))
 
                     if dados[20]:
-                        imovel.set_situacao(imovel.Situacao(dados[20]))
+                        imovel.set_situacao(Imovel.Situacao(dados[20]))
                     else:
                         imovel.set_situacao(None)
                     if dados[21]:
-                        imovel.set_ocupacao(imovel.Ocupacao(dados[21]))
+                        imovel.set_ocupacao(Imovel.Ocupacao(dados[21]))
                     else:
                         imovel.set_ocupacao(None)
                     if dados[22]:
@@ -2114,12 +2163,13 @@ class Banco:
                     else:
                         imovel.set_captador(None)
                     if dados[25]:
-                        imovel.set_data_cadastro(datetime.strptime(dados[25]))
+                        imovel.set_data_cadastro(
+                            datetime.strptime(dados[25], "%d-%m-%Y"))
                     else:
                         imovel.set_data_cadastro(None)
                     if dados[26]:
                         imovel.set_data_modificacao(
-                            datetime.strptime(dados[26]))
+                            datetime.strptime(dados[26], "%d-%m-%Y"))
                     else:
                         imovel.set_data_modificacao(None)
                     imovel.aceita_pet = dados[27]

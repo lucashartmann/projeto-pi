@@ -30,6 +30,7 @@ class Imobiliaria:
 
     def set_estoque(self, value):
         self.estoque = value
+        
 
     def get_quantidade_funcionarios(self):
         return self.quantidade_funcionarios
