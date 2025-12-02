@@ -31,6 +31,20 @@ class Imobiliaria:
     def set_estoque(self, value):
         self.estoque = value
         
+    def atualizar_comprador(self, comprador):
+        return self.banco_dados.atualizar_comprador(comprador)
+    
+    def atualizar_proprietario(self, proprietario):
+        return self.banco_dados.atualizar_proprietario(proprietario)
+    
+    def atualizar_corretor(self, corretor):
+        return self.banco_dados.atualizar_corretor(corretor)
+    
+    def atualizar_captador(self, captador):
+        return self.banco_dados.atualizar_captador(captador)
+    
+    def atualizar_administrador(self, administrador):
+        return self.banco_dados.atualizar_administrador(administrador)
 
     def get_quantidade_funcionarios(self):
         return self.quantidade_funcionarios
@@ -102,3 +116,21 @@ class Imobiliaria:
 
     def get_lista_proprietarios(self):
         return self.banco_dados.get_lista_proprietarios()
+    
+    def get_comprador_por_cpf(self, cpf):
+        return self.banco_dados.get_comprador_por_cpf_cnpj(cpf)
+    
+    def get_proprietario_por_cpf(self, cpf):
+        return self.banco_dados.get_proprietario_por_cpf_cnpj(cpf)
+    
+    def get_corretor_por_cpf(self, cpf):
+        return self.banco_dados.get_corretor_por_cpf_cnpj(cpf)
+    
+    def get_captador_por_cpf(self, cpf):
+        return self.banco_dados.get_captador_por_cpf(cpf)
+    
+    def remover_comprador(self, cpf):
+        return self.banco_dados.remover_comprador(cpf)
+    
+    def remover_proprietario(self, cpf):
+        return self.banco_dados.remover_proprietario(cpf)

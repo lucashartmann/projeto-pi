@@ -41,11 +41,11 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS comprador (
                     id_comprador INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT NULL UNIQUE,
+                    username TEXT NULL,
                     senha TEXT  NULL,
                     email TEXT NULL UNIQUE,
                     nome TEXT  NULL,
-                    cpf_cnpj TEXT  NULL UNIQUE,
+                    cpf_cnpj TEXT  NULL,
                     rg TEXT  NULL,
                     telefone TEXT NULL,
                     endereco TEXT NULL,
@@ -262,6 +262,36 @@ class Banco:
                                 ''')
 
             conexao.commit()
+            
+    def remover_comprador(self, cpf):
+        with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_delete_query = f"""
+                DELETE FROM comprador
+                WHERE cpf_cnpj = ?;
+                """
+                cursor.execute(sql_delete_query, (cpf,))
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("ERRO Banco.remover_comprador", e)
+                return False
+            
+    def remover_proprietario(self, cpf):
+        with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_delete_query = f"""
+                DELETE FROM proprietario
+                WHERE cpf_cnpj = ?;
+                """
+                cursor.execute(sql_delete_query, (cpf,))
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("ERRO Banco.remover_proprietario", e)
+                return False
 
     def cadastrar_administrador(self, administrador):
         with sqlite3.connect(
@@ -378,22 +408,122 @@ class Banco:
                 print(e)
                 erro = f"ERRO! Banco.get_condominio_por_id_imovel(): {e}"
                 return None
-
-    def atualizar_comprador(self, tipo_dado, novo_valor, condicao):
-        with sqlite3.connect(f"data/Biblioteca.db") as conexao:
+            
+    def atualizar_proprietario(self, proprietario):
+        with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
             cursor = conexao.cursor()
             try:
                 sql_update_query = f"""
-                UPDATE comprador
-                SET {tipo_dado} = ?
+                UPDATE proprietario
+                SET nome = ?,
+                    email = ?,
+                    telefone = ?,
+                    endereco = ?
                 WHERE cpf_cnpj = ?;
                 """
-                dados = (novo_valor, condicao)
+                dados = (proprietario.get_nome(),
+                         proprietario.get_email(),
+                         proprietario.get_telefone(),
+                         proprietario.get_endereco(),
+                         proprietario.get_cpf_cnpj())
                 cursor.execute(sql_update_query, dados)
                 conexao.commit()
                 return True
             except Exception as e:
-                print("ERRO Banco.atualizar_comprador", e)
+                print("ERRO Banco.atualizar_proprietario", e)
+                return False
+
+    def atualizar_comprador(self, comprador):
+        try:
+            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+                    cursor = conexao.cursor()
+                    sql_update_query = f"""
+                    UPDATE comprador
+                    SET nome = ?,
+                        email = ?,
+                        telefone = ?,
+                        endereco = ?
+                    WHERE cpf_cnpj = ?;
+                    """
+                    dados = (comprador.get_nome(),
+                            comprador.get_email(),
+                            comprador.get_telefone(),
+                            None,
+                            comprador.get_cpf_cnpj())
+                    cursor.execute(sql_update_query, dados)
+                    conexao.commit()
+                    return True
+        except Exception as e:
+            print("ERRO Banco.atualizar_comprador", e)
+            return False
+            
+            
+    def atualizar_corretor(self, corretor):
+        with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_update_query = f"""
+                UPDATE corretor
+                SET nome = ?,
+                    email = ?,
+                    telefone = ?,
+                    endereco = ?
+                WHERE cpf_cnpj = ?;
+                """
+                dados = (corretor.get_nome(),
+                         corretor.get_email(),
+                         corretor.get_telefone(),
+                         corretor.get_endereco(),
+                         corretor.get_cpf_cnpj())
+                cursor.execute(sql_update_query, dados)
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("ERRO Banco.atualizar_corretor", e)
+                return False
+            
+    def atualizar_captador(self, captador):
+        with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_update_query = f"""
+                UPDATE captador
+                SET nome = ?,
+                    email = ?,
+                    telefone = ?,
+                    endereco = ?
+                WHERE cpf_cnpj = ?;
+                """
+                dados = (captador.get_nome(),
+                         captador.get_email(),
+                         captador.get_telefone(),
+                         captador.get_endereco(),
+                         captador.get_cpf_cnpj())
+                cursor.execute(sql_update_query, dados)
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("ERRO Banco.atualizar_captador", e)
+                return False
+            
+    def atualizar_administrador(self, administrador):
+        with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            cursor = conexao.cursor()
+            try:
+                sql_update_query = f"""
+                UPDATE administrador
+                SET username = ?,
+                    email = ?
+                WHERE id_administrador = ?;
+                """
+                dados = (administrador.get_username(),
+                         administrador.get_email(),
+                         administrador.get_id())
+                cursor.execute(sql_update_query, dados)
+                conexao.commit()
+                return True
+            except Exception as e:
+                print("ERRO Banco.atualizar_administrador", e)
                 return False
 
     def cadastrar_atendimento(self, atendimento):
