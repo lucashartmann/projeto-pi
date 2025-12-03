@@ -33,7 +33,7 @@ class TelaLogin(Screen):
         with VerticalGroup():
             yield Input(placeholder="Usuário", id="input_username")
             yield MyInput(placeholder="Senha", password=True, id="input_senha")
-            yield Select([("Cliente", "Cliente"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")], value="Cliente", allow_blank=False)
+            yield Select([("Cliente", "Cliente"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador"), ("Gerente", "Gerente")], value="Cliente", allow_blank=False)
             yield Button("Entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")
             # yield Label("[@click=app.enviar_email]Esqueceu a senha?[/]", id="bt_esqueceu_senha")

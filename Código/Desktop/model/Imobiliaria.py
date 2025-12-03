@@ -129,8 +129,5 @@ class Imobiliaria:
     def get_captador_por_cpf(self, cpf):
         return self.banco_dados.get_captador_por_cpf(cpf)
     
-    def remover_comprador(self, cpf):
-        return self.banco_dados.remover_comprador(cpf)
-    
-    def remover_proprietario(self, cpf):
-        return self.banco_dados.remover_proprietario(cpf)
+    def remover(self, dado, tabela):
+        return self.banco_dados.remover(dado, tabela)

@@ -11,88 +11,16 @@ def cadastrar_atendimento(atendimento):
         return "ERRO ao cadastrar atendimento"
 
 
-def cadastrar_pessoa(lista):
-    if lista[0] == "":
-        return "Nome está vazio"
-
-    if lista[1] == "":
-        return "CPF está vazio"
-    if lista[2] == "":
-        return "RG está vazio"
-    if lista[3] == "":
-        "TELEFONE está vazio"
-
-    if lista[4] == "":
-        return "Endereco está vazio"
-
-    if lista[5] == "":
-        return "Email está vazio"
-
-    if lista[-1] == "Cliente":
-        pessoa = Cliente.Cliente(lista[0], lista[1], lista[2],
-                                 lista[3], lista[4], lista[5])
-    else:
-        pessoa = Corretor.Funcionario(lista[0], lista[1], lista[2],
-                                      lista[3], lista[4], lista[5])
-
-    cadastrado = Init.imobiliaria.cadastrar(pessoa)
-
-    if cadastrado:
-        return f"Pessoa cadastrado!\n {pessoa}"
-    else:
-        return "ERRO"
     
-def remover_comprador(cpf):
-    comprador = Init.imobiliaria.get_comprador_por_cpf(cpf)
-
-    if not comprador:
-        return f"Comprador com CPF {cpf} não encontrado"
-
-    remocao = Init.imobiliaria.remover_comprador(cpf)
-
-    if remocao == True:
-        return f"Comprador removido com sucesso"
-    else:
-        return "ERRO"
+def remover(dado, tabela):
     
-def remover_proprietario(cpf):
-    proprietario = Init.imobiliaria.get_proprietario_por_cpf(cpf)
-
-    if not proprietario:
-        return f"proprietario com CPF {cpf} não encontrado"
-
-    remocao = Init.imobiliaria.remover_proprietario(cpf)
-
-    if remocao == True:
-        return f"proprietario removido com sucesso"
-    else:
-        return "ERRO"
+    remocao = Init.imobiliaria.remover(dado, tabela)
     
-def remover_corretor(cpf):
-    corretor = Init.imobiliaria.get_corretor_por_cpf(cpf)
-
-    if not corretor:
-        return f"corretor com CPF {cpf} não encontrado"
-
-    remocao = Init.imobiliaria.remover_corretor(cpf)
-
     if remocao == True:
-        return f"corretor removido com sucesso"
+        return f"'{tabela.upper()} - {dado}' removida com sucesso"
     else:
-        return "ERRO"
-    
-def remover_captador(cpf):
-    captador = Init.imobiliaria.get_captador_por_cpf(cpf)
-
-    if not captador:
-        return f"captador com CPF {cpf} não encontrado"
-
-    remocao = Init.imobiliaria.remover_comprador(cpf)
-
-    if remocao == True:
-        return f"captador removido com sucesso"
-    else:
-        return "ERRO"
+        return f"ERRO ao remover '{tabela} - {dado}'"
+ 
     
 def editar_comprador(cpf_pesquisa,
                             nome, email, telefone, data_nascimento, cpf, rg):
@@ -100,20 +28,14 @@ def editar_comprador(cpf_pesquisa,
     if not comprador:
         return f"Comprador com CPF {cpf_pesquisa} não encontrado"
     
-    if nome != "" or nome is not None:
-        comprador.set_nome(nome)
-    if email != "" or email is not None:
-        comprador.set_email(email)
-    if telefone != "" or telefone is not None:
-        comprador.set_telefone(telefone)
-    if data_nascimento != "" or data_nascimento is not None:
-        comprador.set_data_nascimento(data_nascimento)
-    if cpf != "" or cpf is not None:
-        comprador.set_cpf_cnpj(cpf)
-    if rg != "" or rg is not None:
-        comprador.set_rg(rg)
+    comprador.set_nome(nome)
+    comprador.set_email(email)
+    comprador.set_telefone(telefone)
+    comprador.set_data_nascimento(data_nascimento)
+    comprador.set_cpf_cnpj(cpf)
+    comprador.set_rg(rg)
         
-    comprador.set_endereco(None)
+    # comprador.set_endereco(None)
     
     atualizado = Init.imobiliaria.atualizar_comprador(comprador)
     if atualizado != True:
@@ -126,21 +48,17 @@ def editar_captador(cpf_pesquisa,
     if not captador:
         return f"Captador com CPF {cpf_pesquisa} não encontrado"
     
-    if nome != "" or nome is not None:
         captador.set_nome(nome)
-    if email != "" or email is not None:
         captador.set_email(email)
-    if telefone != "" or telefone is not None:
         captador.set_telefone(telefone)
-    if data_nascimento != "" or data_nascimento is not None:
         captador.set_data_nascimento(data_nascimento)
-    if cpf != "" or cpf is not None:
         captador.set_cpf_cnpj(cpf)
-    if rg != "" or rg is not None:
         captador.set_rg(rg)
     
     atualizado = Init.imobiliaria.atualizar_captador(captador)
-        
+    
+    if atualizado != True:
+        return f"ERRO ao atualizar captador {atualizado[1]}"    
     return f"Captador editado com sucesso\n {captador}"
 
 def editar_corretor(cpf_pesquisa,
@@ -165,6 +83,8 @@ def editar_corretor(cpf_pesquisa,
     atualizado = Init.imobiliaria.atualizar_corretor(corretor)
     
     
+    if atualizado != True:
+        return f"ERRO ao atualizar corretor {atualizado[1]}"
     return f"Corretor editado com sucesso\n {corretor}"
 
 def editar_gerente(cpf_pesquisa,
@@ -188,7 +108,9 @@ def editar_gerente(cpf_pesquisa,
     
     
     atualizado = Init.imobiliaria.atualizar_gerente(gerente)
-        
+    
+    if atualizado != True:
+        return f"ERRO ao atualizar gerente {atualizado[1]}"
     return f"Gerente editado com sucesso\n {gerente}"
 
 def editar_proprietario(cpf_pesquisa,
@@ -325,75 +247,6 @@ def cadastrar_imovel(imovel):
                     return "ERRO: ao cadastrar_imovel"
 
 
-def editar_pessoa(cpf, dados):
-
-    if dados[-1] == "Cliente":
-        pessoa = Init.imobiliaria.get_cliente_por_cpf(cpf)
-    else:
-        pessoa = Init.imobiliaria.get_funcionario_por_cpf(cpf)
-
-    if not pessoa:
-        return f"Pessoa com CPF {cpf} não encontrado"
-
-    if dados[0] != "":
-        pessoa.set_nome(dados[0])
-    if dados[1] != "":
-        pessoa.set_cpf(dados[1])
-    if dados[2] != "":
-        pessoa.set_rg(dados[2])
-    if dados[3] != "":
-        pessoa.set_telefone(dados[3])
-    if dados[4] != "":
-        pessoa.set_endereco(dados[4])
-    if dados[5] != "":
-        pessoa.set_email(dados[5])
-
-    return f"Pessoa editado com sucesso\n {pessoa}"
-
-
-def remover_corretor(cpf):
-
-    corretor = Init.imobiliaria.get_corretor_por_cpf(cpf)
-
-    if not corretor:
-        return f"corretor com CPF {cpf} não encontrado"
-
-    remocao = Init.imobiliaria.remover_corretor(corretor)
-
-    if remocao == True:
-        return f"corretor removido com sucesso"
-    else:
-        return "ERRO"
-
-
-def remover_captador(cpf):
-
-    captador = Init.imobiliaria.get_captador_por_cpf(cpf)
-
-    if not captador:
-        return f"captador com CPF {cpf} não encontrado"
-
-    remocao = Init.imobiliaria.remover_comprador(captador)
-
-    if remocao == True:
-        return f"captador removido com sucesso"
-    else:
-        return "ERRO"
-
-
-def remover_proprietario(cpf):
-
-    proprietario = Init.imobiliaria.get_proprietario_por_cpf(cpf)
-
-    if not proprietario:
-        return f"proprietario com CPF {cpf} não encontrado"
-
-    remocao = Init.imobiliaria.remover_proprietario(proprietario)
-
-    if remocao == True:
-        return f"proprietario removido com sucesso"
-    else:
-        return "ERRO"
 
 
 def atualizar_dado_cliente(dados):
@@ -481,20 +334,6 @@ def atualizar_dado_cliente(dados):
             Init.cliente_atual.set_email(email)
 
     return mensagem
-
-
-def remover_imovel(id_imovel):
-    imovel = Init.imobiliaria.get_estoque().get_imovel_por_codigo(id_imovel)
-
-    if not imovel:
-        return "ERRO"
-
-    remocao = Init.imobiliaria.get_estoque().remover_imovel(imovel)
-
-    if remocao == True:
-        return f"imovel removido com sucesso"
-    else:
-        return "ERRO"
 
 
 def verificar_login(username, senha, tipo_usuario):

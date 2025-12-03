@@ -15,9 +15,6 @@ class Estoque:
     def atualizar_imovel(self, imovel):
         return self.banco_dados.atualizar_imovel(imovel)
 
-    def remover_imovel(self, imovel):
-        return self.banco_dados.remover_imovel(imovel.get_id())
-
     def get_lista_imoveis(self):
         return self.banco_dados.get_lista_imoveis()
 

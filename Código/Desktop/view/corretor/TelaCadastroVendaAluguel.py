@@ -13,6 +13,7 @@ class TelaCadastroVendaAluguel(Screen):
         elif isinstance(Init.usuario_atual, Corretor.Corretor):
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
+
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_venda_aluguel", Tab).id

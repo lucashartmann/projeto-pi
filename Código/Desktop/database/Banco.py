@@ -34,18 +34,18 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS administrador (
                     id_administrador INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT NULL UNIQUE,
-                    senha TEXT  NULL,
-                    email TEXT NULL 
+                    senha TEXT NULL,
+                    email TEXT NULL UNIQUE
                 );
                                 ''')
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS comprador (
                     id_comprador INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT NULL,
+                    username TEXT NULL UNIQUE,
                     senha TEXT  NULL,
-                    email TEXT NULL UNIQUE,
-                    nome TEXT  NULL,
-                    cpf_cnpj TEXT  NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NOT NULL,
+                    cpf_cnpj TEXT  NOT NULL UNIQUE,
                     rg TEXT  NULL,
                     telefone TEXT NULL,
                     endereco TEXT NULL,
@@ -57,9 +57,9 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS proprietario (
                     id_proprietario INTEGER PRIMARY KEY AUTOINCREMENT,
                     email TEXT NULL UNIQUE,
-                    nome TEXT  NULL,
-                    cpf_cnpj TEXT  NULL UNIQUE,
-                    rg TEXT  NULL,
+                    nome TEXT NOT NULL,
+                    cpf_cnpj TEXT NULL UNIQUE,
+                    rg TEXT NULL,
                     telefone TEXT NULL,
                     endereco TEXT NULL,
                     data_nascimento TEXT NULL
@@ -69,11 +69,11 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS captador (
                     id_captador INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT  NULL UNIQUE,
-                    senha TEXT  NULL,
-                    email TEXT  NULL UNIQUE,
-                    nome TEXT  NULL,
-                    cpf_cnpj TEXT  NULL UNIQUE,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf_cnpj TEXT NOT NULL UNIQUE,
                     rg TEXT  NULL,
                     telefone TEXT  NULL,
                     endereco TEXT  NULL,
@@ -86,11 +86,11 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS corretor (
                     id_corretor INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT  NULL UNIQUE,
-                    senha TEXT  NULL,
-                    email TEXT  NULL UNIQUE,
-                    nome TEXT  NULL,
-                    cpf_cnpj TEXT  NULL UNIQUE,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf_cnpj TEXT NOT NULL UNIQUE,
                     rg TEXT  NULL,
                     telefone TEXT  NULL,
                     endereco TEXT  NULL,
@@ -182,10 +182,10 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS gerente (
                     id_gerente INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT  NULL UNIQUE,
-                    senha TEXT  NULL,
-                    email TEXT  NULL UNIQUE,
-                    nome TEXT  NULL,
-                    cpf_cnpj TEXT  NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf_cnpj TEXT NOT NULL UNIQUE,
                     rg TEXT  NULL,
                     telefone TEXT  NULL,
                     endereco TEXT  NULL,
@@ -263,35 +263,22 @@ class Banco:
 
             conexao.commit()
             
-    def remover_comprador(self, cpf):
+    def remover(self, dado, tabela):
         with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
             cursor = conexao.cursor()
             try:
                 sql_delete_query = f"""
-                DELETE FROM comprador
-                WHERE cpf_cnpj = ?;
+                DELETE FROM {tabela}
+                WHERE {dado[0]} = ?;
                 """
-                cursor.execute(sql_delete_query, (cpf,))
+                cursor.execute(sql_delete_query, (dado[1],))
                 conexao.commit()
                 return True
             except Exception as e:
-                print("ERRO Banco.remover_comprador", e)
+                print(f"ERRO Banco.remover {tabela}", e)
                 return False
             
-    def remover_proprietario(self, cpf):
-        with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
-            cursor = conexao.cursor()
-            try:
-                sql_delete_query = f"""
-                DELETE FROM proprietario
-                WHERE cpf_cnpj = ?;
-                """
-                cursor.execute(sql_delete_query, (cpf,))
-                conexao.commit()
-                return True
-            except Exception as e:
-                print("ERRO Banco.remover_proprietario", e)
-                return False
+   
 
     def cadastrar_administrador(self, administrador):
         with sqlite3.connect(
@@ -1472,23 +1459,6 @@ class Banco:
                     return True
             except Exception as e:
                 erro = f"Banco.cadastrar_comprador: ERRO! {e}"
-                print(erro)
-                return False
-
-    def remover_imovel(self, codigo):
-        with sqlite3.connect(
-                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
-            cursor = conexao.cursor()
-            try:
-                sql_delete_query = """
-                    DELETE FROM imovel
-                    WHERE codigo = ?
-                    """
-                cursor.execute(sql_delete_query, (codigo,))
-                conexao.commit()
-                return True
-            except Exception as e:
-                erro = f"Banco.remover_imovel: ERRO! {e}"
                 print(erro)
                 return False
 

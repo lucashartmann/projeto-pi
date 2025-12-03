@@ -37,7 +37,7 @@ class PopUpApagar(ModalScreen):
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_confirmar":
             ref = int(self.query_one("#ta_ref", TextArea).text)
-            remocao = Controller.remover_imovel(ref)
+            remocao = Controller.remover(ref, "imovel")
             self.screen.notify(remocao)
             self.screen.acao == True
 
@@ -109,7 +109,7 @@ class TelaCadastroImovel(Screen):
                 yield Static("Bloco", id="stt_bloco")
                 yield TextArea(id="ta_bloco")
                 yield Static("CEP", id="stt_cep")
-                yield MaskedInput(template="00000-000", id="ta_cep")
+                yield MaskedInput(template="00000-000", id="ta_cep").validate()
                 yield Static("Bairro", id="stt_bairro")
                 yield TextArea(disabled=True, id="ta_bairro")
                 yield Static("Cidade", id="stt_cidade")
