@@ -1,0 +1,40 @@
+TelaDadosCliente Grid {
+    grid-size: 2;
+    margin-left: 5;
+    margin-right: 80;
+    background: rgba(17, 16, 16, 1);
+    width: 100%;
+    height: 32;
+    color: white;
+    margin-top: 5;
+}
+
+TelaDadosCliente Grid TextArea{
+   column-span:5;
+   height: 99%;
+}
+
+TelaDadosCliente Grid Static {
+    margin-left: 0;
+}
+
+
+TelaDadosCliente Image{
+    height: 59%;
+    width: 20%;
+    margin: 10 0 0 24;
+    align: center middle;
+}
+
+TelaDadosCliente Button {
+    background: black;
+    margin-left: 100;
+    margin-top: 2;
+}
+
+
+TelaDadosCliente #stt_compras {
+    height: 4%;
+    text-align: center;
+    background: rgba(36, 33, 33, 1);
+}

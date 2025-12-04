@@ -1,0 +1,60 @@
+TelaCadastroPessoa TextArea {
+    width: 70%;
+    min-height: 3;
+    height: auto;
+    color: white;
+}
+
+TelaCadastroPessoa MaskedInput {
+    width: 70%;
+    color: white;
+}
+
+TelaCadastroPessoa Button {
+    width: auto;
+}
+
+TelaCadastroPessoa Select {
+    width: 70%;
+}
+
+TelaCadastroPessoa Grid {
+    grid-size: 4;
+    grid-gutter: 2;
+    margin-bottom: 4; 
+    height: auto;
+    width: 100%;
+}
+
+TelaCadastroPessoa VerticalGroup {
+    height: auto;
+}
+
+
+TelaCadastroPessoa  {
+    background: rgb(200, 200, 200);
+    color: black;
+}
+
+
+TelaCadastroPessoa #input_descricao {
+    width: auto;
+    height: auto;
+}
+
+TelaCadastroPessoa Tab {
+    color: black;    
+}
+
+TelaCadastroPessoa SelectionList {
+    width: 100%;
+    height: auto;
+}
+
+TelaCadastroPessoa #hg_operacoes Select {
+    width: 30%;
+}
+
+TelaCadastroPessoa #hg_operacoes Button {
+    width: 38%;
+}

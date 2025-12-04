@@ -1,0 +1,62 @@
+TelaLogin {
+    background: rgba(144, 185, 226, 1);
+    align: center middle;
+    
+}
+
+TelaLogin VerticalGroup {
+    align: center middle;
+    background: rgba(0, 0, 0, 1);
+    max-width: 50%;
+    min-height: 50%;
+    max-height: 70%;
+}
+
+TelaLogin Input, TelaLogin MyInput {
+    margin-top: 1;
+    max-width: 100%;
+    background: rgba(175, 180, 177, 1);
+    color: black;
+    height: 20%;
+    text-align: center;
+}
+
+TelaLogin Input{
+    color: black;
+}
+
+TelaLogin Select Horizontal{
+    background: rgba(175, 180, 177, 1);
+}
+
+TelaLogin Select Static {
+    color: black;
+}
+
+TelaLogin Select SelectOverlay{
+    background: rgba(175, 180, 177, 1);
+    color: black;
+}
+
+TelaLogin Select {
+    max-width: 100%;
+    margin: 1 0 1 0;
+}
+
+TelaLogin Button {
+    width: 100%;
+    margin: 1 1 1 1;
+    background: rgba(175, 180, 177, 1);
+    color: black;
+}
+
+TelaLogin #bt_criar_conta {
+    width: 100%;
+    margin: 1;
+    color: white;
+}
+
+TelaLogin MyInput Switch {
+    width: 10;
+    height: 3;
+}

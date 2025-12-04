@@ -1,0 +1,167 @@
+TelaCadastroImovel #h_buttons Button{
+    margin-right: 2;
+}
+
+TelaCadastroImovel #h_buttons{
+    height: auto;
+}
+
+TelaCadastroImovel #ta_banheiros, TelaCadastroImovel #ta_vagas, TelaCadastroImovel #ta_varandas, TelaCadastroImovel #ta_quartos, TelaCadastroImovel #ta_estado, TelaCadastroImovel #ta_salas, TelaCadastroImovel #ta_numero, TelaCadastroImovel #ta_bloco {
+    width: 24%;
+}
+
+TelaCadastroImovel #ta_nome_condominio {
+    column-span: 1;
+}
+
+TelaCadastroImovel #ta_estado{
+    column-span: 5;
+}
+
+TelaCadastroImovel #ta_area_privativa {
+    column-span: 7;
+}
+
+TelaCadastroImovel #ta_ref{
+    column-span: 3;
+}
+
+TelaCadastroImovel #select_estado {
+    column-span: 3;
+}
+
+
+TelaCadastroImovel #ta_complemento {
+    width: 45%;
+}
+
+TelaCadastroImovel #container_cadastro {
+    width: 100%;
+    height: 100%;
+    grid-size: 10;
+    margin: 1 2 2 2;
+    background: rgba(225, 216, 216, 0.87);
+    grid-columns: 20;
+}
+
+TelaCadastroImovel #container_cadastro TextArea {
+    height: 60%;
+    
+}
+
+
+TelaCadastroImovel #container_cadastro MaskedInput {
+    width: 90%;
+    
+}
+
+
+TelaCadastroImovel #container_cadastro #ta_bloco {
+    width: 40%;
+}
+
+TelaCadastroImovel #container_cadastro #ta_numero {
+    width: 50%;
+}
+
+TelaCadastroImovel #container_cadastro Static {
+    margin-top: 1;
+}
+
+TelaCadastroImovel #container_cadastro Select Static {
+    margin-top: 0;
+}
+
+TelaCadastroImovel #container_anuncio {
+    display: none;
+}
+
+TelaCadastroImovel #container_info_condominio {
+    display: none;
+}
+
+TelaCadastroImovel #container_imagens {
+    width: 100%;
+    height: auto;
+    background: white;
+}
+
+TelaCadastroImovel #container_info_imovel {
+    display: none;
+}
+
+
+TelaCadastroImovel #container_info {
+    display: none;
+}
+
+TelaCadastroImovel #container_anuncio {
+    background: white;
+    width: 100%;
+    height: auto;
+    content-align: center middle;
+    margin: 2;
+}
+
+TelaCadastroImovel #container_anuncio #ta_titulo_anuncio {
+   height: 3;
+}
+
+TelaCadastroImovel Checkbox {
+    background: white;
+    width: auto;
+    height: auto;
+}
+
+
+TelaCadastroImovel #container_anuncio #container_info_imovel {
+    height: auto;
+    display: block;
+    grid-size: 6;
+    grid-columns: 32;
+    align: center middle;
+}
+
+TelaCadastroImovel #container_anuncio #container_info_condominio{
+    height: auto;
+    display: block;
+    grid-size: 6;
+    grid-columns: 31.5;
+    align: center middle;
+}
+
+TelaCadastroImovel #container_anuncio TextArea {
+    background: white;
+    width: 50%;
+    height: 10;
+    color: black;
+}
+
+TelaCadastroImovel #container_anuncio #container_info_condominio Static{
+    margin:0;
+}
+
+TelaCadastroImovel #container_anuncio #container_info_imovel Static{
+    margin:0;
+}
+
+TelaCadastroImovel #container_anuncio Static {
+    text-align: center;
+    margin: 1 0 1 0;
+}
+
+
+TelaCadastroImovel .stt_container_titulo {
+    text-align: center;
+    background: rgb(200,200,200);
+    width: 100%;
+    height: 10%;
+    color: black;
+}
+
+TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
+    background: rgb(200,200,200);
+    margin-top: 2;
+    width: 100%;
+    height: 30%;
+}

@@ -1,0 +1,64 @@
+TelaDadosImovel Image {
+    width: 104;
+    height: 30;
+    margin-bottom: 1;
+}
+
+TelaDadosImovel #titulo Static {
+    text-style: bold;
+    margin: 2;
+}
+
+TelaDadosImovel .titulo {
+    text-style: bold;
+    margin: 2;
+}
+
+TelaDadosImovel #container_checkbox {
+    height: auto;
+    grid-size: 2;
+    margin: 2;
+    width: 35%;
+}
+
+TelaDadosImovel Checkbox {
+    background: transparent;
+}
+
+TelaDadosImovel #galeria_fotos Image {
+    width: 20;
+    height: 10;
+    margin: 0 1 0 0;
+}
+
+TelaDadosImovel #entrar_contato {
+    width: 30%;
+}
+
+TelaDadosImovel #dados_imovel{
+    margin-left: 20; 
+    height: 100%;
+}
+
+TelaDadosImovel #whatsapp {
+    background: green;
+    border: green;
+    margin-left: 2;
+}
+
+TelaDadosImovel #entrar_contato Static {
+    width: 50%;
+    margin: 2;
+}
+
+TelaDadosImovel #entrar_contato  Button {
+    margin: 2 2 2 5;
+}
+
+TelaDadosImovel #entrar_contato #bt_contato {
+    margin: 2 2 2 15;
+}
+
+TelaDadosImovel .valor {
+    color: rgba(73, 123, 52, 1);
+}

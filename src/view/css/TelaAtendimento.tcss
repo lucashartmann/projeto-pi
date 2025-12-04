@@ -1,0 +1,23 @@
+#container_esperando {
+    background: gray;
+    margin: 2;
+}
+
+#container_andamento {
+    background: gray;
+    margin: 2;
+}
+
+#container_cadastrados {
+    background: gray;
+    margin: 2;
+}
+
+Horizontal Vertical Static {
+    background: gray;
+    margin: 2;
+    height: 15%;
+    color: black;
+    text-align: center;
+    content-align: center middle;
+}

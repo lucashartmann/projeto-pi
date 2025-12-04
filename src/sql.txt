@@ -1,0 +1,182 @@
+ cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Endereco (
+                    id_endereco INTEGER PRIMARY KEY AUTOINCREMENT,
+                    rua TEXT NOT NULL,
+                    numero INTEGER NULL,
+                    bairro TEXT NOT NULL,
+                    cep INTEGER NULL,
+                    complemento TEXT NULL,
+                    cidade TEXT NOT NULL,
+                    estado TEXT NOT NULL
+                );
+                                ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Administrador (
+                    id_administrador INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NULL UNIQUE
+                );
+                                ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Comprador (
+                    id_comprador INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf TEXT NOT NULL UNIQUE,
+                    rg TEXT NOT NULL,
+                    telefone TEXT NULL,
+                    endereco TEXT NULL,
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NULL
+                );
+                                ''')
+
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Proprietario (
+                    id_proprietario INTEGER PRIMARY KEY AUTOINCREMENT,
+                    email TEXT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf TEXT NOT NULL UNIQUE,
+                    rg TEXT NOT NULL,
+                    telefone TEXT NULL,
+                    endereco TEXT NULL,
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NULL
+                );
+                                ''')
+
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Captador (
+                    id_captador INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf TEXT NOT NULL UNIQUE,
+                    rg TEXT NOT NULL,
+                    telefone TEXT NOT NULL,
+                    endereco TEXT NOT NULL,
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NOT NULL,
+                    turno TEXT NULL,
+                    salario REAL NULL,
+                    matricula TEXT NULL
+                );
+                                ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Corretor (
+                    id_corretor INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf TEXT NOT NULL UNIQUE,
+                    rg TEXT NOT NULL,
+                    telefone TEXT NOT NULL,
+                    endereco TEXT NOT NULL,
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NOT NULL,
+                    turno TEXT NULL,
+                    salario REAL NULL,
+                    matricula TEXT NULL
+                );
+                                ''')
+
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Imovel (
+                    id_imovel INTEGER PRIMARY KEY AUTOINCREMENT,
+                    codigo TEXT NOT NULL UNIQUE,
+                    valor_venda REAL NULL,
+                    valor_aluguel REAL NULL,
+                    quant_quartos INTEGER NULL,
+                    quant_salas INTEGER NULL,
+                    quant_vagas INTEGER NULL,
+                    quant_banheiros INTEGER NULL,
+                    quant_varandas INTEGER NULL,
+                    nome_condominio TEXT NULL,
+                    cor TEXT NULL,
+                    categoria TEXT NULL,
+                    descricao TEXT NULL,
+                    id_endereco INT NOT NULL,
+                    status TEXT NULL,
+                    iptu REAL NULL,
+                    valor_condominio REAL NULL,
+                    andar INTEGER NULL,
+                    estado TEXT NULL,
+                    bloco TEXT NULL,
+                    ano_construcao INTEGER NULL,
+                    area_total REAL NULL,
+                    area_privativa REAL NULL,
+                    situacao TEXT NULL,
+                    ocupacao TEXT NULL,
+                    cpf_proprietario TEXT NOT NULL,
+                    cpf_corretor TEXT NULL,
+                    cpf_captador TEXT NULL,
+                    FOREIGN KEY (id_endereco) REFERENCES Endereco(id_endereco),
+                    FOREIGN KEY (cpf_proprietario) REFERENCES Proprietario(cpf),
+                    FOREIGN KEY (cpf_corretor) REFERENCES Corretor(cpf)
+                );
+                                ''')
+
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Midia_Imovel (
+                    id_imovel INTEGER NOT NULL,
+                    midia BLOB NOT NULL,
+                    tipo TEXT NOT NULL,
+                    FOREIGN KEY (id_imovel) references Imovel (id_imovel)
+                );
+                                ''')
+
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Venda_Aluguel (
+                    id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
+                    cpf_cliente TEXT NOT NULL,
+                    cpf_proprietario TEXT NOT NULL, 
+                    cpf_captador TEXT NULL,
+                    cpf_corretor TEXT NOT NULL,
+                    data_venda TEXT NOT NULL,
+                    id_imovel INTEGER NOT NULL,
+                    comissao_captador REAL NULL,
+                    comissao_corretor REAL NULL,
+                    FOREIGN KEY (id_imovel) REFERENCES Imovel (id_imovel),
+                    FOREIGN KEY (cpf_cliente) REFERENCES Cliente (cpf),
+                    FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
+                    FOREIGN KEY (cpf_corretor) references Corretor (cpf)
+                    );
+                                ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Gerente (
+                    id_gerente INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT NOT NULL UNIQUE,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    nome TEXT NOT NULL,
+                    cpf TEXT NOT NULL UNIQUE,
+                    rg TEXT NOT NULL,
+                    telefone TEXT NOT NULL,
+                    endereco TEXT NOT NULL,
+                    idade INTEGER NULL,
+                    data_nascimento TEXT NOT NULL,
+                    turno TEXT NULL,
+                    salario REAL NULL,
+                    matricula TEXT NULL
+                );
+                                ''')
+            cursor.execute(f'''
+                CREATE TABLE IF NOT EXISTS Anuncio (
+                    id_anuncio INTEGER PRIMARY KEY AUTOINCREMENT,
+                    descricao TEXT NOT NULL,
+                    titulo TEXT NOT NULL,
+                    id_imovel INTEGER NOT NULL,
+                    cpf_captador INTEGER NULL,
+                    cpf_corretor TEXT NULL,
+                    cpf_proprietario TEXT NULL,
+                    FOREIGN KEY (id_imovel) REFERENCES Imovel (id_imovel),
+                    FOREIGN KEY (cpf_captador) REFERENCES Cliente (cpf),
+                    FOREIGN KEY (cpf_proprietario) references Proprietario (cpf),
+                    FOREIGN KEY (cpf_corretor) references Corretor (cpf)
+                );
+                                ''')
