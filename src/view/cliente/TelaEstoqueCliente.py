@@ -5,7 +5,7 @@ from textual.containers import VerticalScroll, HorizontalGroup, Container, Grid
 
 from textual_image.widget import Image
 
-from model import Init, Administrador, Cliente, Imovel, Gerente
+from model import Init, Cliente, Imovel, Gerente
 from database.Banco import Banco
 from io import BytesIO
 from view.cliente import TelaDadosImovel

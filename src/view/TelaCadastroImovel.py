@@ -5,7 +5,7 @@ from textual.containers import Horizontal, Vertical, Grid, VerticalScroll, Cente
 import requests
 import datetime
 
-from model import Init, Imovel, Administrador, Corretor, Gerente, Endereco, Anuncio, Condominio, Captador
+from model import Init, Imovel, Corretor, Gerente, Endereco, Anuncio, Condominio, Captador
 from controller import Controller
 
 from textual_image.widget import Image

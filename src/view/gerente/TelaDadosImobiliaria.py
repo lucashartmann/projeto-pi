@@ -6,7 +6,7 @@ from textual.widgets import Tab, Tabs, Static, Header, Footer
 from textual.containers import VerticalGroup, Grid
 
 
-from model import Init, Administrador, Gerente
+from model import Init, Gerente
 
 
 class TelaDadosImobiliaria(Screen):

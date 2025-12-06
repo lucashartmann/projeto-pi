@@ -4,7 +4,7 @@ from textual.containers import VerticalScroll, HorizontalGroup, Grid
 
 from textual_image.widget import Image
 
-from model import Init, Administrador, Gerente, Cliente, Atendimento
+from model import Init, Gerente, Cliente, Atendimento
 from controller import Controller
 from database.Banco import Banco
 

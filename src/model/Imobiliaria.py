@@ -50,6 +50,9 @@ class Imobiliaria:
 
     def cadastrar_usuario(self, usuario):
         return self.banco_dados.cadastrar_usuario(usuario)
+    
+    def cadastrar_proprietario(self, proprietario):
+        return self.banco_dados.cadastrar_proprietario(proprietario)
 
     def get_lista_usuarios(self):
         return self.banco_dados.get_lista_usuarios()

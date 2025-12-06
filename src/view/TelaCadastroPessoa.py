@@ -4,7 +4,7 @@ from textual.screen import Screen
 from textual.containers import Grid, HorizontalGroup
 
 from controller import Controller
-from model import Init, Corretor, Administrador, Gerente
+from model import Init, Corretor, Gerente
 
 
 class TelaCadastroPessoa(Screen):

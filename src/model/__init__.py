@@ -1,4 +1,4 @@
-from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Anuncio, Gerente, Usuario
+from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Anuncio, Gerente, Usuario, Proprietario
 
 
 class Init:
@@ -18,51 +18,51 @@ class Init:
         filtros_condominio, "filtros_condominio")
 
     administrador = Usuario.Usuario(username="administrador", senha="123", email="admin@example.com",
-                                    nome="Lucas", cpf_cnpj="00000000000", tipo_usuario=Usuario.Tipo.ADMINISTRADOR)
+                                    nome="Lucas", cpf_cnpj="00000000000", tipo=Usuario.Tipo.ADMINISTRADOR)
 
     administrador_dois = Usuario.Usuario(username="admin2", senha="123", email="admin2@example.com",
-                                         nome="Felipe", cpf_cnpj="11111111111", tipo_usuario=Usuario.Tipo.ADMINISTRADOR)
+                                         nome="Felipe", cpf_cnpj="11111111111", tipo=Usuario.Tipo.ADMINISTRADOR)
 
     gerente = Gerente.Gerente(username="gerente", senha="123", email="gerente@example.com",
-                              nome="Pedro", cpf_cnpj="22222222222", tipo_usuario=Usuario.Tipo.GERENTE)
+                              nome="Pedro", cpf_cnpj="22222222222")
 
     gerente_dois = Gerente.Gerente(username="gerente", senha="123", email="gerente2@example.com",
-                                   nome="Rosangela", cpf_cnpj="33333333333", tipo_usuario=Usuario.Tipo.GERENTE)
+                                   nome="Rosangela", cpf_cnpj="33333333333")
 
     comprador = Cliente.Cliente(username="cliente", senha="123", email="cliente@example.com",
-                                nome="Marcela", cpf_cnpj="44444444444", tipo_usuario=Usuario.Tipo.CLIENTE)
+                                nome="Marcela", cpf_cnpj="44444444444")
 
     comprador_dois = Cliente.Cliente(username="cliente2", senha="123", email="cliente2@example.com",
-                                     nome="Rute Dois", cpf_cnpj="77777777777", tipo_usuario=Usuario.Tipo.CLIENTE)
+                                     nome="Rute Dois", cpf_cnpj="77777777777")
 
-    proprietario = Usuario.Usuario(username="proprietario", senha="123", email="proprietario@example.com",
-                                   nome="Maria", cpf_cnpj="00000000000", tipo_usuario=Usuario.Tipo.PROPRIETARIO)
+    proprietario = Proprietario.Proprietario(email="proprietario@example.com",
+                                             nome="Maria", cpf_cnpj="00000000000")
 
-    proprietario_dois = Usuario.Usuario(username="proprietario2", senha="123", email="proprietario2@example.com",
-                                        nome="Joaquim", cpf_cnpj="11111111111", tipo_usuario=Usuario.Tipo.PROPRIETARIO)
+    proprietario_dois = Proprietario.Proprietario(email="proprietario2@example.com",
+                                                  nome="Joaquim", cpf_cnpj="11111111111")
 
     captador = Captador.Captador(username="captador", senha="123", email="captador@example.com",
-                                 nome="Ana", cpf_cnpj="55555555555", tipo_usuario=Usuario.Tipo.CAPTADOR)
+                                 nome="Ana", cpf_cnpj="55555555555")
 
     captador_dois = Captador.Captador(username="captador2", senha="123", email="captador2@example.com",
-                                      nome="Ana Dois", cpf_cnpj="88888888888", tipo_usuario=Usuario.Tipo.CAPTADOR)
+                                      nome="Ana Dois", cpf_cnpj="88888888888")
 
     corretor = Corretor.Corretor(username="corretor", senha="123", email="corretor@example.com",
-                                 nome="João", cpf_cnpj="66666666666", tipo_usuario=Usuario.Tipo.CORRETOR, creci="123456")
+                                 nome="João", cpf_cnpj="66666666666", creci="123456")
 
     corretor_dois = Corretor.Corretor(username="corretor2", senha="123", email="corretor2@example.com",
-                                      nome="Elisabeth", cpf_cnpj="99999999999", tipo_usuario=Usuario.Tipo.CORRETOR, creci="654321")
+                                      nome="Elisabeth", cpf_cnpj="99999999999", creci="654321")
 
     imobiliaria.cadastrar_usuario(administrador)
     imobiliaria.cadastrar_usuario(gerente)
     imobiliaria.cadastrar_usuario(comprador)
-    imobiliaria.cadastrar_usuario(proprietario)
+    imobiliaria.cadastrar_proprietario(proprietario)
     imobiliaria.cadastrar_usuario(captador)
     imobiliaria.cadastrar_usuario(corretor)
     imobiliaria.cadastrar_usuario(administrador_dois)
     imobiliaria.cadastrar_usuario(gerente_dois)
     imobiliaria.cadastrar_usuario(comprador_dois)
-    imobiliaria.cadastrar_usuario(proprietario_dois)
+    imobiliaria.cadastrar_proprietario(proprietario_dois)
     imobiliaria.cadastrar_usuario(captador_dois)
     imobiliaria.cadastrar_usuario(corretor_dois)
 

@@ -1,18 +1,6 @@
-from enum import Enum
-
-class Tipo(Enum):
-    ADMINISTRADOR = "ADMIN"
-    CORRETOR = "CORRETOR"
-    GERENTE = "GERENTE"
-    CAPTADOR = "CAPTADOR"
-    CLIENTE = "CLIENTE"
-    PROPRIETARIO = "PROPRIETARIO"
-
-class Usuario:
-    def __init__(self, username, senha, email, nome, cpf_cnpj, tipo):
+class Proprietario:
+    def __init__(self, email, nome, cpf_cnpj):
         self.id = None
-        self.username = username
-        self.senha = senha
         self.email = email
         self.nome = nome
         self.cpf_cnpj = cpf_cnpj
@@ -20,25 +8,12 @@ class Usuario:
         self.telefones = []
         self.endereco = None
         self.data_nascimento = None
-        self.tipo = tipo
 
     def get_id(self):
         return self.id
 
     def set_id(self, value):
         self.id = value
-
-    def get_username(self):
-        return self.username
-
-    def set_username(self, value):
-        self.username = value
-
-    def get_senha(self):
-        return self.senha
-
-    def set_senha(self, value):
-        self.senha = value
 
     def get_email(self):
         return self.email
@@ -65,10 +40,10 @@ class Usuario:
         self.rg = value
 
     def get_telefones(self):
-        return self.telefones
+        return self.telefone
 
     def set_telefones(self, value):
-        self.telefones = value
+        self.telefone = value
 
     def get_endereco(self):
         return self.endereco
@@ -81,9 +56,3 @@ class Usuario:
 
     def set_data_nascimento(self, value):
         self.data_nascimento = value
-
-    def get_tipo(self):
-        return self.tipo
-
-    def set_tipo(self, value):
-        self.tipo = value

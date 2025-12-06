@@ -1,7 +1,7 @@
 from textual.screen import Screen
 from textual.widgets import Tab, Tabs
 
-from model import Administrador, Init, Corretor
+from model import Init, Corretor
 
 
 class TelaCadastroVendaAluguel(Screen):

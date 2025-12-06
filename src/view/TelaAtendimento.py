@@ -3,7 +3,7 @@ from textual.containers import Horizontal, Vertical
 from textual.widgets import Static, Footer, Header, Tab, Tabs
 from textual.containers import Horizontal
 
-from model import Corretor, Administrador, Init, Gerente, Atendimento
+from model import Corretor, Init, Gerente, Atendimento
 
 
 class ContainerCliente(Horizontal):

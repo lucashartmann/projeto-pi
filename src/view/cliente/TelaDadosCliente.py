@@ -3,7 +3,7 @@ from textual.screen import Screen
 from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, Header, MaskedInput, SelectionList, Input, Switch
 from textual.containers import Grid
 
-from model import Init, Administrador, Gerente, Cliente, Imovel
+from model import Init, Gerente, Cliente, Imovel
 from database.Banco import Banco
 
 import datetime

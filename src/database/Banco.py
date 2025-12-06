@@ -27,10 +27,34 @@ class Banco:
                 nome TEXT NOT NULL,
                 cpf_cnpj TEXT UNIQUE NOT NULL,
                 rg TEXT,
-                telefone TEXT,
                 endereco TEXT,
                 data_nascimento TEXT,
                 tipo_usuario TEXT NOT NULL
+                         );
+            ''')
+
+            cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS telefone (
+                id_telefone INTEGER PRIMARY KEY AUTOINCREMENT,
+                numero INTEGER NOT NULL
+                         );
+            ''')
+
+            cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS telefone_usuario (
+                id_usuario INTEGER,
+                id_telefone INTEGER,
+                FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+                FOREIGN KEY (id_telefone) REFERENCES telefone(telefone)
+                         );
+            ''')
+
+            cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS telefone_proprietario (
+                id_telefone INTEGER,
+                id_proprietario INTEGER,
+                FOREIGN KEY (id_telefone) REFERENCES telefone(telefone)
+                FOREIGN KEY (id_proprietario) REFERENCES roprietario (id_proprietario)
                          );
             ''')
 
@@ -176,33 +200,33 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS filtros_imovel (
                     id_filtros_imovel INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nome TEXT NOT NULL UNIQUE,                    
+                    nome TEXT NOT NULL UNIQUE                    
                 );
                                 ''')
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS filtros_condominio
                 (
                     id_filtros_condominio INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nome TEXT NOT NULL UNIQUE,                    
+                    nome TEXT NOT NULL UNIQUE                    
                 );
                                 ''')
 
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS imovel_filtros (
-                    id_imovel_filtros INTEGER,
+                    id_filtros_imovel INTEGER,
                     id_imovel INTEGER, 
                     valor BOOLEAN,
-                    FOREIGN KEY (id_imovel_filtros) references filtros_imovel (id_imovel_filtros),
+                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel (id_filtros_imovel),
                     FOREIGN KEY (id_imovel) references imovel (id_imovel)                
                 );
                                 ''')
 
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS condominio_filtros (
-                    id_condominio_filtros INTEGER,
-                    id_condominio INTEGER, '
+                    id_filtros_condominio INTEGER,
+                    id_condominio INTEGER, 
                     valor BOOLEAN,
-                    FOREIGN KEY (id_condominio_filtros) references filtros_condominio (id_condominio_filtros),
+                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio (id_filtros_condominio),
                     FOREIGN KEY (id_condominio) references condominio (id_condominio)                
                 );
                                 ''')
@@ -212,9 +236,7 @@ class Banco:
                     id_condominio INTEGER PRIMARY KEY AUTOINCREMENT,
                     nome TEXT NULL,
                     id_endereco INTEGER NULL,
-
                     FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
-
                 );
                                 ''')
 
@@ -228,6 +250,82 @@ class Banco:
                                 ''')
 
             conexao.commit()
+
+    def cadastrar_usuario(self, usuario):
+        with sqlite3.connect(
+                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            cursor = conexao.cursor()
+            try:
+
+                sql_query = f''' 
+                    INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, endereco, data_nascimento, tipo_usuario) 
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    '''
+                cursor.execute(sql_query, (
+                    usuario.get_username(),
+                    usuario.get_senha(),
+                    usuario.get_email(),
+                    usuario.get_nome(),
+                    usuario.get_cpf_cnpj(),
+                    usuario.get_rg(),
+                    usuario.get_endereco(),
+                    usuario.get_data_nascimento(),
+                    usuario.get_tipo().value
+                ))
+                conexao.commit()
+
+                id = cursor.lastrowid
+
+                if usuario.get_telefones():
+                    for telefone in usuario.get_telefones():
+                        sql_query = f''' 
+                            INSERT INTO telefone (numero) 
+                            VALUES(?)
+                            '''
+                        cursor.execute(sql_query, (telefone,))
+
+                        id_telefone = cursor.lastrowid
+
+                        sql_query = f''' 
+                            INSERT INTO telefone_usuario (id_usuario, id_telefone) 
+                            VALUES(?, ?)
+                            '''
+                        cursor.execute(sql_query, (id, id_telefone))
+
+                match usuario.get_tipo().value:
+
+                    case Usuario.Tipo.CORRETOR:
+
+                        cursor.execute(f'''
+                                    INSERT INTO corretor (id_usuario, creci)
+                                    VALUES(?, ?)
+                                ''', (id, usuario.get_creci()))
+
+                    case Usuario.Tipo.CAPTADOR:
+
+                        cursor.execute(f'''
+                                    INSERT INTO captador (id_usuario, salario)
+                                    VALUES(?, ?)
+                                ''', (id, usuario.get_salario()))
+
+                    case Usuario.Tipo.GERENTE:
+
+                        cursor.execute(f'''
+                                    INSERT INTO gerente (id_usuario, salario)
+                                    VALUES(?, ?)
+                                ''', (id, usuario.get_salario()))
+
+                    case Usuario.Tipo.CLIENTE:
+                        cursor.execute(f'''
+                                    INSERT INTO cliente (id_usuario)
+                                    VALUES(?)
+                                ''', (id,))
+                conexao.commit()
+                return True
+            except Exception as e:
+                erro = f"ERRO! Banco.cadastrar_usuario: {e}"
+                print(erro)
+                return False
 
     def remover(self, campo_desejado, valor, tabela):
         with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
@@ -278,18 +376,84 @@ class Banco:
                 nome = registro[4]
                 cpf_cnpj = registro[5]
                 rg = registro[6]
-                telefone = registro[7]
-                endereco = registro[8]
+                endereco = registro[7]
                 data_nascimento = registro[9]
-                tipo_usuario = registro[10]
+                tipo_usuario = registro[9]
 
                 usuario = Usuario.Usuario(
                     username, senha, email, nome, cpf_cnpj, tipo_usuario)
                 usuario.set_id(id_usuario)
                 usuario.set_rg(rg)
-                usuario.set_telefone(telefone)
                 usuario.set_endereco(endereco)
                 usuario.set_data_nascimento(data_nascimento)
+
+                sql_query = f''' 
+                            SELECT id_telefone FROM telefone_usuario 
+                            WHERE id_usuario = ?
+                            '''
+                cursor.execute(sql_query, (id_usuario,))
+                registros = cursor.fetchall()
+
+                if registros:
+                    telefones = []
+                    for id_telefone in registros:
+                        sql_query = f''' 
+                            SELECT numero FROM telefone 
+                            WHERE id_telefone = ?
+                                '''
+                        cursor.execute(sql_query, (id_telefone,))
+                        registro = cursor.fetchone()
+                    usuario.set_telefones(telefones)
+
+                match tipo_usuario:
+
+                    case Usuario.Tipo.CORRETOR:
+
+                        cursor.execute(f'''
+                                    SELECT creci FROM corretor 
+                                    WHERE id_usuario = ?
+                                ''', (id,))
+                        creci = cursor.fetchone()
+                        if creci:
+                            creci = int(creci)
+                        usuario = Corretor.Corretor(
+                            username, senha, email, nome, cpf_cnpj, creci)
+
+                    case Usuario.Tipo.CAPTADOR:
+                        usuario = Captador.Captador(
+                            username, senha, email, nome, cpf_cnpj)
+
+                        cursor.execute(f'''
+                                    SELECT salario FROM captador 
+                                    WHERE id_usuario = ?
+                                ''', (id,))
+                        salario = cursor.fetchone()
+                        if salario:
+                            salario = float(salario)
+                        usuario.set_salario(salario)
+
+                    case Usuario.Tipo.GERENTE:
+                        usuario = Gerente.Gerente(
+                            username, senha, email, nome, cpf_cnpj)
+
+                        cursor.execute(f'''
+                                    SELECT salario FROM gerente 
+                                    WHERE id_usuario = ?
+                                ''', (id,))
+                        salario = cursor.fetchone()
+                        if salario:
+                            salario = float(salario)
+                        usuario.set_salario(salario)
+
+                    case Usuario.Tipo.CLIENTE:
+                        usuario = Cliente.Cliente(
+                            username, senha, email, nome, cpf_cnpj)
+
+                        # cursor.execute(f'''
+                        #             SELECT * FROM cliente
+                        #             WHERE id_usuario = ?
+                        #         ''', (id,))
+                        # registros = cursor.fetchone()
 
                 return usuario
 
@@ -653,8 +817,6 @@ class Banco:
                     match tipo:
 
                         case Usuario.Tipo.CORRETOR:
-                            usuario = Corretor.Corretor(
-                                username, senha_hash_banco, email, nome, cpf_cnpj, tipo)
 
                             cursor.execute(f'''
                                     SELECT * FROM corretor 
@@ -664,11 +826,12 @@ class Banco:
                             creci = registros[1]
                             if creci:
                                 creci = int(creci)
-                            usuario.set_creci(creci)
+                            usuario = Corretor.Corretor(
+                                username, senha_hash_banco, email, nome, cpf_cnpj, creci)
 
                         case Usuario.Tipo.CAPTADOR:
                             usuario = Captador.Captador(
-                                username, senha_hash_banco, email, nome, cpf_cnpj, tipo)
+                                username, senha_hash_banco, email, nome, cpf_cnpj)
 
                             cursor.execute(f'''
                                     SELECT * FROM captador 
@@ -683,7 +846,7 @@ class Banco:
 
                         case Usuario.Tipo.GERENTE:
                             usuario = Gerente.Gerente(
-                                username, senha_hash_banco, email, nome, cpf_cnpj, tipo)
+                                username, senha_hash_banco, email, nome, cpf_cnpj)
 
                             cursor.execute(f'''
                                     SELECT * FROM gerente 
@@ -697,7 +860,7 @@ class Banco:
 
                         case Usuario.Tipo.CLIENTE:
                             usuario = Cliente.Cliente(
-                                username, senha_hash_banco, email, nome, cpf_cnpj, tipo)
+                                username, senha_hash_banco, email, nome, cpf_cnpj)
 
                             cursor.execute(f'''
                                     SELECT * FROM cliente 
