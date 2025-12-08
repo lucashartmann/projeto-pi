@@ -4,7 +4,7 @@ from textual.screen import Screen
 from textual.containers import Grid, HorizontalGroup
 
 from controller import Controller
-from model import Init, Corretor, Gerente
+from model import Init, Usuario
 
 
 class TelaCadastroPessoa(Screen):
@@ -23,17 +23,17 @@ class TelaCadastroPessoa(Screen):
 
         yield Header()
 
-        if isinstance(Init.usuario_atual, Administrador.Administrador):
+        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif isinstance(Init.usuario_atual, Corretor.Corretor):
+        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-        elif isinstance(Init.usuario_atual, Gerente.Gerente):
+        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
         with Grid():
-            if isinstance(Init.usuario_atual, Administrador.Administrador):
+            if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
                 yield Static("Username", id="stt_username")
                 yield TextArea(placeholder="username aqui", id="inpt_username")
                 yield Static("Senha", id="stt_senha")
@@ -56,9 +56,9 @@ class TelaCadastroPessoa(Screen):
                 yield Static("RG", id="stt_rg")
                 yield TextArea(placeholder="rg aqui", id="inpt_rg")
         with HorizontalGroup(id="hg_operacoes"):
-            if isinstance(Init.usuario_atual, Administrador.Administrador):
+            if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
                 yield Select([("Usuário", "Usuario")], allow_blank=False, id="select_tabelas")
-            elif isinstance(Init.usuario_atual, Gerente.Gerente):
+            elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
                 yield Select([("Comprador", "Comprador"), (
                     "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")], allow_blank=False, id="select_tabelas")
             else:
@@ -109,11 +109,11 @@ class TelaCadastroPessoa(Screen):
             "#tab_cadastro_pessoa", Tab).id
 
     def on_mount(self):
-        if isinstance(Init.usuario_atual, Administrador.Administrador):
+        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             self.query_one("#select_tabelas", Select).set_options(
                 [("Comprador", "Comprador"), (
                     "Proprietário", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador"), ("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
-        elif isinstance(Init.usuario_atual, Gerente.Gerente):
+        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
             self.query_one("#select_tabelas", Select).set_options(
                 [("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
         else:

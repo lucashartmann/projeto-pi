@@ -13,19 +13,13 @@ class TelaEstoque(Screen):
     TITLE = "Estoque"
 
     imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
-    compradores = Init.imobiliaria.get_lista_compradores()
-    proprietarios = Init.imobiliaria.get_lista_proprietarios()
-    clientes_filtrados = []
-    gerentes = []
-    captadores = []
-    corretorres = []
-    administradores = []
+    usuarios = Init.imobiliaria.get_lista_usuarios()
+    # proprietarios = Init.imobiliaria.get_lista_proprietarios()
     imoveis_filtrados = []
     filtrou_select = False
     filtrou_input = False
     select_evento = ""
 
-    objeto = Init.um_imovel
 
     def compose(self):
         yield Header()

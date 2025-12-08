@@ -26,7 +26,7 @@ class Init:
     gerente = Gerente.Gerente(username="gerente", senha="123", email="gerente@example.com",
                               nome="Pedro", cpf_cnpj="22222222222")
 
-    gerente_dois = Gerente.Gerente(username="gerente", senha="123", email="gerente2@example.com",
+    gerente_dois = Gerente.Gerente(username="gerente2", senha="123", email="gerente2@example.com",
                                    nome="Rosangela", cpf_cnpj="33333333333")
 
     comprador = Cliente.Cliente(username="cliente", senha="123", email="cliente@example.com",

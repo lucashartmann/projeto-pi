@@ -32,7 +32,6 @@ class App(App):
     }
 
     def on_mount(self):
-        Init.inicializar()
 
         # Init.usuario_atual = Init.administrador
         # self.push_screen("tela_atendimento")

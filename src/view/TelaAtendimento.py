@@ -3,7 +3,7 @@ from textual.containers import Horizontal, Vertical
 from textual.widgets import Static, Footer, Header, Tab, Tabs
 from textual.containers import Horizontal
 
-from model import Corretor, Init, Gerente, Atendimento
+from model import Usuario, Init, Atendimento
 
 
 class ContainerCliente(Horizontal):
@@ -16,7 +16,7 @@ class ContainerCliente(Horizontal):
 
 
 class TelaAtendimento(Screen):
-    compradores = Init.imobiliaria.get_lista_compradores()
+    compradores = Init.imobiliaria.get_lista_clientes()
     atendimentos = Init.imobiliaria.get_lista_atendimentos()
     recem_cadastrados = compradores[-1:-6]
     em_atendimento = []
@@ -26,11 +26,11 @@ class TelaAtendimento(Screen):
 
     def compose(self):
         yield Header()
-        if isinstance(Init.usuario_atual, Administrador.Administrador):
+        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif isinstance(Init.usuario_atual, Corretor.Corretor):
+        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-        elif isinstance(Init.usuario_atual, Gerente.Gerente):
+        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:

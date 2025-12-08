@@ -5,7 +5,7 @@ from textual.containers import Horizontal, Vertical, Grid, VerticalScroll, Cente
 import requests
 import datetime
 
-from model import Init, Imovel, Corretor, Gerente, Endereco, Anuncio, Condominio, Captador
+from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
 from controller import Controller
 
 from textual_image.widget import Image
@@ -64,11 +64,11 @@ class TelaCadastroImovel(Screen):
 
     def compose(self):
         yield Header()
-        if isinstance(Init.usuario_atual, Administrador.Administrador):
+        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif isinstance(Init.usuario_atual, Corretor.Corretor):
+        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-        elif isinstance(Init.usuario_atual, Gerente.Gerente):
+        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
@@ -229,7 +229,7 @@ class TelaCadastroImovel(Screen):
                 self.imovel.get_captador().get_telefone())
             container.query_one("#st_email", Static).update(
                 self.imovel.get_captador().get_email())
-        elif self.imovel is None and isinstance(Init.usuario_atual, Captador.Captador):
+        elif self.imovel is None and Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
             container = ContainerFuncionario()
             container_captador.mount(container, after=container_captador.query_one(Static))
             container.query_one("#st_nome", Static).update(
@@ -251,7 +251,7 @@ class TelaCadastroImovel(Screen):
             container.query_one("#st_email", Static).update(
                 self.imovel.get_corretor().get_email())
 
-        elif self.imovel is None and isinstance(Init.usuario_atual, Corretor.Corretor):
+        elif self.imovel is None and Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
             container = ContainerFuncionario()
             container_corretor.mount(container, after=container_corretor.query_one(Static))
             container.query_one("#st_nome", Static).update(

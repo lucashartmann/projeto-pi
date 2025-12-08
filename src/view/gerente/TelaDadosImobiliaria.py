@@ -6,7 +6,7 @@ from textual.widgets import Tab, Tabs, Static, Header, Footer
 from textual.containers import VerticalGroup, Grid
 
 
-from model import Init, Gerente
+from model import Init, Usuario
 
 
 class TelaDadosImobiliaria(Screen):
@@ -15,9 +15,9 @@ class TelaDadosImobiliaria(Screen):
 
     def compose(self):
         yield Header()
-        if isinstance(Init.usuario_atual, Administrador.Administrador):
+        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif isinstance(Init.usuario_atual, Gerente.Gerente):
+        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         yield Grid()
