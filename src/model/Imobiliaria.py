@@ -35,9 +35,9 @@ class Imobiliaria:
         return self.banco_dados.atualizar(campo_desejado, valor, tabela)
     
     def verificar_usuario(self, 
-        username, senha, tipo_usuario):
+        username, senha):
         return self.banco_dados.verificar_usuario(
-        username, senha, tipo_usuario)
+        username, senha)
 
     def cadastrar_endereco(self, endereco):
         return self.banco_dados.cadastrar_endereco(endereco)
@@ -75,5 +75,11 @@ class Imobiliaria:
     def cadastrar_lista_filtros(self, lista_filtros, tabela):
         return self.banco_dados.cadastrar_lista_filtros(lista_filtros, tabela)
     
-    def get_endereco_por_cep(self, cep):
-        return self.banco_dados.get_endereco_por_cep(cep)
+    def verificar_endereco(self, endereco):
+        return self.banco_dados.verificar_endereco(endereco)
+    
+    def get_condominio_por_id_endereco(self, id):
+        return self.banco_dados.get_condominio_por_id_endereco(id)
+    
+    def cadastrar_condominio(self, condominio):
+        return self.banco_dados.cadastrar_condominio(condominio)

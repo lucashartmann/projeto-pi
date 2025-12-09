@@ -67,11 +67,11 @@ class Init:
     imobiliaria.cadastrar_usuario(corretor_dois)
 
     endereco = Endereco.Endereco(
-        rua="Rua A", bairro="Centro", cep="12345-678", cidade="Cidade X", uf="Estado Y")
+        rua="Rua A", bairro="Centro", cep=12345678, cidade="Cidade X", uf="Estado Y")
     endereco.set_numero("123")
 
     endereco_dois = Endereco.Endereco(
-        rua="Rua B", bairro="Bairro Z", cep="87654-321", cidade="Cidade W", uf="Estado V")
+        rua="Rua B", bairro="Bairro Z", cep=87654321, cidade="Cidade W", uf="Estado V")
     endereco_dois.set_numero("456")
 
     cadastro = imobiliaria.cadastrar_endereco(endereco)
@@ -80,9 +80,9 @@ class Init:
     consulta_dois = None
 
     if cadastro:
-        consulta = imobiliaria.get_endereco_por_cep("12345-678")
+        consulta = imobiliaria.verificar_endereco(endereco)
     if cadastro_dois:
-        consulta_dois = imobiliaria.get_endereco_por_cep("87654-321")
+        consulta_dois = imobiliaria.verificar_endereco(endereco_dois)
 
     if consulta:
         imovel_um = Imovel.Imovel(

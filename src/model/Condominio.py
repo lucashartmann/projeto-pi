@@ -4,6 +4,13 @@ class Condominio:
         self.nome = nome
         self.endereco = endereco
         self.filtros = dict()
+        
+    def set_filtros(self, filtros):
+        self.filtros = filtros
+        
+    def get_filtros(self):
+        return self.filtros
+        
     
     def get_id(self):
         return self.id

@@ -1,5 +1,31 @@
 Screen {
-    background: rgba(193, 217, 240, 1);
+    background: rgba(229, 228, 228, 1);
+    color: black;
+}
+
+Input, Checkbox, MyInput, MaskedInput, Select SelectOverlay, Select Horizontal, TextArea {
+    background: rgba(229, 228, 228, 1);
+    color: black;
+}
+
+.input--cursor, .input--selection {
+    background: black;
+    color: white;
+}
+
+
+.text-area--cursor, .text-area--selection {
+    background: black;
+    color: white;
+}
+
+# TODO: arrumar, selecionar texto do masked input
+# .masked-input--selection {
+#     color: black;
+#     background: black;
+# }
+
+Select Static {
     color: black;
 }
 

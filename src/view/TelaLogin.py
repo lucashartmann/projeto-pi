@@ -74,7 +74,7 @@ class TelaLogin(Screen):
             email = self.query_one("#inpt_email").value.strip()
             login = Controller.salvar_login(username, senha, email)
         else:
-            login = Controller.verificar_login(username, senha, tipo_usuario)
+            login = Controller.verificar_login(username, senha)
 
         self.notify(login)
 

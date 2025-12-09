@@ -23,12 +23,13 @@ class ContainerImovel(Container):
         yield Button("Ver mais", id="bt_comprar")
 
     def on_button_pressed(self, evento: Button.Pressed):
-        imovel = Banco.get_imovel_por_codigo(self.id_imovel)
+        banco = Banco()
+        imovel = banco.get_imovel_por_id(self.id_imovel)
         if imovel:
             self.app.switch_screen(
                 TelaDadosImovel.TelaDadosImovel(imovel=imovel))
         else:
-            self.screen.notify("ERTRO. Imóvel não encontrado.")
+            self.screen.notify("ERRO. Imóvel não encontrado.")
 
 
 class TelaEstoqueCliente(Screen):

@@ -39,9 +39,9 @@ class TelaCadastroPessoa(Screen):
                 yield Static("Senha", id="stt_senha")
             else:
                 # yield TextArea(placeholder="senha aqui", id="inpt_senha")
-                yield Static("Nome", id="stt_nome")
+                yield Static("[red]*[/]Nome", id="stt_nome")
                 yield TextArea(placeholder="nome aqui", id="inpt_nome")
-                yield Static("Email", id="stt_email")
+                yield Static("[red]*[/]Email", id="stt_email")
                 yield TextArea(placeholder="email aqui", id="inpt_email")
                 yield Static("Telefone", id="stt_telefone")
                 yield MaskedInput(template="(00) 00000-0000", id="inpt_telefone")
@@ -51,7 +51,7 @@ class TelaCadastroPessoa(Screen):
                 # yield TextArea(placeholder="idade aqui", id="inpt_idade")
                 yield Static("Data de nascimento", id="stt_data_nascimento")
                 yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento")
-                yield Static("CPF", id="stt_cpf")
+                yield Static("[red]*[/]CPF", id="stt_cpf")
                 yield MaskedInput(template="00000000000", id="inpt_cpf")
                 yield Static("RG", id="stt_rg")
                 yield TextArea(placeholder="rg aqui", id="inpt_rg")
@@ -111,8 +111,7 @@ class TelaCadastroPessoa(Screen):
     def on_mount(self):
         if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             self.query_one("#select_tabelas", Select).set_options(
-                [("Comprador", "Comprador"), (
-                    "Proprietário", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador"), ("Funcionario", "Funcionario"), ("Gerente", "Gerente")])
+                [("Usuário"), ("Usuário")])
         elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
             self.query_one("#select_tabelas", Select).set_options(
                 [("Funcionario", "Funcionario"), ("Gerente", "Gerente")])

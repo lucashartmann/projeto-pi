@@ -11,10 +11,15 @@ TelaEstoque Input {
     margin: 1;
 }
 
-TelaEstoque DataTable {
-    margin: 1 1 1 0;
+TelaEstoque VerticalScroll {
+    height: 100%;
     width: 100%;
 }
+
+TelaEstoque #container_resultado {
+    height: auto;
+}
+
 
 TelaEstoque #v_left {
     width: 24%;
@@ -31,7 +36,6 @@ TelaEstoque #container_filtragem Select {
 }
 
 
-
 TelaEstoque #container_filtragem Static {
     width: 12;
 }
@@ -41,7 +45,7 @@ TelaEstoque #segundo {
 }
 
 TelaEstoque #segundo TextArea {
-    height: 5;
+    height: auto;
 }
 
 TelaEstoque #segundo Static {
@@ -66,7 +70,7 @@ TelaEstoque .imovel Checkbox {
 }
 
 TelaEstoque .imovel {
-    background: white;
+    background: rgb(200,200,200);
     margin: 2 2 2 2;
     height: 12;
 }

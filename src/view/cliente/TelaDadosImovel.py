@@ -14,8 +14,6 @@ class TelaDadosImovel(Screen):
     def __init__(self, name=None, id=None, classes=None, imovel=None):
         super().__init__(name, id, classes)
         self.imovel = imovel
-        self.condominio = Banco.get_condominio_por_id_imovel(
-            self.imovel.get_id())
 
     TITLE = "Dados do Imóvel"
 

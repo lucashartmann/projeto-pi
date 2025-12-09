@@ -6,33 +6,27 @@ TelaCadastroImovel #h_buttons{
     height: auto;
 }
 
-TelaCadastroImovel #ta_banheiros, TelaCadastroImovel #ta_vagas, TelaCadastroImovel #ta_varandas, TelaCadastroImovel #ta_quartos, TelaCadastroImovel #ta_estado, TelaCadastroImovel #ta_salas, TelaCadastroImovel #ta_numero, TelaCadastroImovel #ta_bloco {
-    width: 24%;
-}
-
-TelaCadastroImovel #ta_nome_condominio {
-    column-span: 1;
-}
-
-TelaCadastroImovel #ta_estado{
-    column-span: 5;
-}
-
-TelaCadastroImovel #ta_area_privativa {
-    column-span: 7;
-}
-
-TelaCadastroImovel #ta_ref{
-    column-span: 3;
-}
-
-TelaCadastroImovel #select_estado {
-    column-span: 3;
-}
-
-
-TelaCadastroImovel #ta_complemento {
+TelaCadastroImovel #container_cadastro #ta_banheiros, TelaCadastroImovel #container_cadastro #ta_vagas, TelaCadastroImovel #container_cadastro #ta_varandas, TelaCadastroImovel #container_cadastro #ta_quartos, TelaCadastroImovel #container_cadastro #ta_salas, TelaCadastroImovel #container_cadastro #ta_numero, TelaCadastroImovel #container_cadastro #ta_bloco, TelaCadastroImovel #container_cadastro #ta_estado, TelaCadastroImovel #container_cadastro #ta_andar {
     width: 45%;
+}
+
+TelaCadastroImovel #container_cadastro #select_status{
+    column-span: 2;
+    width: 50%;
+}
+
+TelaCadastroImovel #container_cadastro #ta_nome_condominio {
+    column-span: 4;
+    width: 78%;
+}
+
+
+TelaCadastroImovel #container_cadastro #ta_cep{
+    width: 80%;
+}
+
+TelaCadastroImovel #container_cadastro #ta_complemento {
+    width: 60%;
 }
 
 TelaCadastroImovel #container_cadastro {
@@ -40,8 +34,8 @@ TelaCadastroImovel #container_cadastro {
     height: 100%;
     grid-size: 10;
     margin: 1 2 2 2;
-    background: rgba(225, 216, 216, 0.87);
     grid-columns: 20;
+    border: black 10%;
 }
 
 TelaCadastroImovel #container_cadastro TextArea {
@@ -49,12 +43,20 @@ TelaCadastroImovel #container_cadastro TextArea {
     
 }
 
+TelaCadastroImovel #container_cadastro #ta_estado {
+    column-span: 3;
+    width: auto;
+}
+
+TelaCadastroImovel #container_cadastro #ta_rua {
+    column-span: 3;
+    width: 90%;
+}
 
 TelaCadastroImovel #container_cadastro MaskedInput {
     width: 90%;
     
 }
-
 
 TelaCadastroImovel #container_cadastro #ta_bloco {
     width: 40%;
