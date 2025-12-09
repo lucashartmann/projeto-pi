@@ -159,19 +159,30 @@ class TelaEstoque(Screen):
 
         if imoveis != self.imoveis:
             self.imoveis = imoveis
-            condicao = True
+            if self.tabela == "imovel":
+                condicao = True
 
         if clientes != self.clientes:
             self.clientes = clientes
-            condicao = True
+            if self.tabela == "cliente":
+                condicao = True
 
         if usuarios != self.usuarios:
             self.usuarios = usuarios
-            condicao = True
+            if self.tabela == "usuario":
+                condicao = True
 
         if ceps != self.ceps:
             self.ceps = ceps
-            condicao = True
+            
+        if ruas != self.ruas:
+            self.ruas = ruas
+            
+        if bairros != self.bairros:
+            self.bairros = bairros
+            
+        if cidades != self.cidades:
+            self.cidades = cidades
 
         # if proprietarios != self.proprietarios:
         #     self.proprietarios = proprietarios
