@@ -41,19 +41,31 @@ TelaEstoque #container_filtragem Static {
 }
 
 TelaEstoque #segundo {
-    margin-left: 30;
+    align: center middle;
+    width: 100%;
 }
 
-TelaEstoque #segundo TextArea {
+TelaEstoque #segundo Input {
     height: auto;
+    width: auto;
+    min-width: 10%;
 }
 
 TelaEstoque #segundo Static {
     margin-top: 2;
 }
 
+TelaEstoque #primeiro Static {
+    margin-top: 1;
+}
+
+TelaEstoque #primeiro Select Static {
+    margin-top: 0;
+}
+
 TelaEstoque #primeiro {
-    margin-left: 60;
+    align: center middle;
+    width: 100%;
 }
 
 

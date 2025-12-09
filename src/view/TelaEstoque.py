@@ -1,8 +1,9 @@
-from textual.widgets import Input, TextArea, Footer, Header, Tab, Checkbox, Tabs, Select, Static
+from textual.widgets import Input, TextArea, Footer, Header, Tab, Checkbox, Tabs, Select, Static, Input
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.events import Click
 from textual import on
+from textual.suggester import SuggestFromList
 
 from model import Init, Imovel, Usuario
 from database.Banco import Banco
@@ -10,6 +11,7 @@ from database.Banco import Banco
 from textual_image.widget import Image
 
 from view import TelaCadastroImovel
+
 
 class TelaEstoque(Screen):
 
@@ -20,11 +22,15 @@ class TelaEstoque(Screen):
     usuarios = Init.imobiliaria.get_lista_usuarios()
     # proprietarios = Init.imobiliaria.get_lista_proprietarios()
     clientes = Init.imobiliaria.get_lista_clientes()
+    ruas = (imovel.get_endereco().get_rua() for imovel in imoveis)
+    cidades = (imovel.get_endereco().get_cidade() for imovel in imoveis)
+    bairros = (imovel.get_endereco().get_bairro() for imovel in imoveis)
+    ceps = (str(imovel.get_endereco().get_cep()) for imovel in imoveis)
     imoveis_filtrados = []
     filtrou_select = False
     filtrou_input = False
     select_evento = ""
-
+    objeto = Init.imovel_um
 
     def compose(self):
         yield Header()
@@ -40,25 +46,25 @@ class TelaEstoque(Screen):
         yield Input(placeholder="pesquise aqui")
         yield TextArea(read_only=True, id="tx_dados")
         with Vertical(id="container_filtragem"):
-                with Horizontal(id="primeiro"):
-                    yield Select([("Imoveis", "Imovel"), ("Compradores", "Comprador"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel")], allow_blank=False, id="select_tabelas")
-                    yield Static("Categoria:")
-                    yield Select([(valor.value, valor) for valor in Imovel.Categoria])
-                    yield Static("Status:")
-                    yield Select([(valor.value, valor) for valor in Imovel.Status])
-                with Horizontal(id="segundo"):
-                    yield Static("Rua")
-                    yield TextArea()
-                    yield Static("Bairro")
-                    yield TextArea()
-                    yield Static("Cidade")
-                    yield TextArea()
-                    yield Static("Complemento")
-                    yield TextArea()
-                    yield Static("CEP")
-                    yield TextArea()
+            with Horizontal(id="primeiro"):
+                yield Select([("Imoveis", "Imovel"), ("Clientes", "Cliente"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel"), ("Vendas", "Venda")], allow_blank=False, id="select_tabelas")
+                yield Static("Categoria:")
+                yield Select([(valor.value, valor) for valor in Imovel.Categoria])
+                yield Static("Status:")
+                yield Select([(valor.value, valor) for valor in Imovel.Status])
+            with Horizontal(id="segundo"):
+                yield Static("Rua")
+                yield Input(suggester=SuggestFromList(self.ruas, case_sensitive=False))
+                yield Static("Bairro")
+                yield Input(suggester=SuggestFromList(self.bairros, case_sensitive=False))
+                yield Static("Cidade")
+                yield Input(suggester=SuggestFromList(self.cidades, case_sensitive=False))
+                yield Static("Complemento")
+                yield Input()
+                yield Static("CEP")
+                yield Input(suggester=SuggestFromList(self.ceps, case_sensitive=False))
         with Vertical(id="container_resultado"):
-                pass
+            pass
 
         yield Footer(show_command_palette=False)
 
@@ -73,28 +79,25 @@ class TelaEstoque(Screen):
         if evento.select.id == "select_tabelas":
             self.tabela = evento.select.value.lower()
 
-            # match evento.value:
-            #     case "Imovel":
-            #         self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
-            #         self.objeto = Init.um_imovel
-            #     case  "Comprador":
-            #         self.imoveis = Init.imobiliaria.get_lista_compradores()
-            #         self.objeto = Init.comprador
-            #     case "Proprietario":
-            #         self.imoveis = Init.imobiliaria.get_lista_proprietarios()
-            #         self.objeto = Init.proprietario
-            #     case "Corretor":
-            #         self.imoveis = Init.imobiliaria.get_lista_corretores()
-            #         self.objeto = Init.corretor
-            #     case "Captador":
-            #         self.imoveis = Init.imobiliaria.get_lista_captadores()
-            #         self.objeto = Init.captador
-            #     case "Venda":
-            #         self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()  # TODO
-            #         self.objeto = Init.um_imovel
-            #     case "Aluguel":
-            #         self.imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()  # TODO
-            #         self.objeto = Init.um_imovel
+            match evento.value:
+                case "Imovel":
+                    self.objeto = Init.imovel_um
+                case  "Cliente":
+                    self.objeto = Init.comprador
+                case "Proprietario":
+                    self.objeto = Init.proprietario
+                case "Corretor":
+                    self.objeto = Init.corretor
+                case "Captador":
+                    self.objeto = Init.captador
+                case "Venda":
+                    self.objeto = None
+                case "Aluguel":
+                    self.objeto = None
+                case "Gerente":
+                    self.objeto = Init.gerente
+                case "Admnistrador":
+                    self.objeto = Init.administrador
 
             self.imoveis_filtrados = []
             self.atualizar()
@@ -141,8 +144,16 @@ class TelaEstoque(Screen):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
 
         imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
-        clientes = Init.imobiliaria.get_lista_clientes()
+        usuarios = Init.imobiliaria.get_lista_usuarios()
         # proprietarios = Init.imobiliaria.get_lista_proprietarios()
+        clientes = Init.imobiliaria.get_lista_clientes()
+        ruas = (imovel.get_endereco().get_rua() for imovel in self.imoveis)
+        cidades = (imovel.get_endereco().get_cidade()
+                   for imovel in self.imoveis)
+        bairros = (imovel.get_endereco().get_bairro()
+                   for imovel in self.imoveis)
+        ceps = (str(imovel.get_endereco().get_cep())
+                for imovel in self.imoveis)
 
         condicao = False
 
@@ -154,13 +165,21 @@ class TelaEstoque(Screen):
             self.clientes = clientes
             condicao = True
 
+        if usuarios != self.usuarios:
+            self.usuarios = usuarios
+            condicao = True
+
+        if ceps != self.ceps:
+            self.ceps = ceps
+            condicao = True
+
         # if proprietarios != self.proprietarios:
         #     self.proprietarios = proprietarios
         #     condicao = True
 
         if condicao:
             self.atualizar()
-        
+
     @on(Click)
     def on_click(self, evento: Click):
         if "imovel" in evento.widget.parent.parent.classes:
@@ -171,7 +190,7 @@ class TelaEstoque(Screen):
                     TelaCadastroImovel.TelaCadastroImovel(imovel=imovel))
             else:
                 self.screen.notify("ERRO. Imóvel não encontrado.")
-                
+
     def atualizar(self):
         self.query_one("#container_resultado").remove_children()
 
@@ -201,7 +220,7 @@ class TelaEstoque(Screen):
             if imovel.get_condominio():
                 container3.mount(
                     Static(f"{imovel.get_status().value} - {imovel.get_condominio().get_nome()}", classes="stt_status"))
-            
+
             container3.mount(Static(
                 f"{imovel.get_endereco().get_rua()}, {imovel.get_endereco().get_numero()}/{imovel.get_complemento()}"))
             container3.mount(Static(f"{imovel.get_endereco().get_cidade()}"))
@@ -231,8 +250,8 @@ class TelaEstoque(Screen):
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value
         palavras = texto.split()
-
-        if len(palavras) > 0:
+        # TODO: Pensar em como implementar a filtragem por endereco por exemplo
+        if len(palavras) > 0 and self.objeto:
             self.imoveis_filtrados = []
             for palavra in palavras:
                 if palavra[:-1].lower() in self.objeto.__dict__.keys():

@@ -24,6 +24,8 @@ TelaCadastroPessoa Grid {
     margin-bottom: 4; 
     height: auto;
     width: 100%;
+    border: black 10%;
+    margin: 5;
 }
 
 TelaCadastroPessoa VerticalGroup {
@@ -57,4 +59,8 @@ TelaCadastroPessoa #hg_operacoes Select {
 
 TelaCadastroPessoa #hg_operacoes Button {
     width: 38%;
+}
+
+TelaCadastroPessoa #hg_operacoes {
+    margin: 5;
 }
