@@ -25,6 +25,10 @@ Input, Checkbox, MyInput, MaskedInput, Select SelectOverlay, Select Horizontal, 
 #     background: black;
 # }
 
+# .-warning  {
+#     background: rgba(187, 183, 137, 1);   
+# }
+
 Select Static {
     color: black;
 }

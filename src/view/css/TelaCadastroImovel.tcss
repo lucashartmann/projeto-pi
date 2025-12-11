@@ -76,6 +76,7 @@ TelaCadastroImovel #container_cadastro Select Static {
 
 TelaCadastroImovel #container_anuncio {
     display: none;
+    border: black 10%;
 }
 
 TelaCadastroImovel #container_info_condominio {
@@ -85,8 +86,17 @@ TelaCadastroImovel #container_info_condominio {
 TelaCadastroImovel #container_imagens {
     width: 100%;
     height: auto;
-    background: white;
+    background: rgb(200, 200, 200);
+    margin: 2;
 }
+
+TelaCadastroImovel #container_anexos {
+    width: 100%;
+    height: auto;
+    background: rgb(200, 200, 200);
+    margin: 2;
+}
+
 
 TelaCadastroImovel #container_info_imovel {
     display: none;
@@ -98,7 +108,6 @@ TelaCadastroImovel #container_info {
 }
 
 TelaCadastroImovel #container_anuncio {
-    background: white;
     width: 100%;
     height: auto;
     content-align: center middle;
@@ -110,7 +119,6 @@ TelaCadastroImovel #container_anuncio #ta_titulo_anuncio {
 }
 
 TelaCadastroImovel Checkbox {
-    background: white;
     width: auto;
     height: auto;
 }
@@ -133,7 +141,7 @@ TelaCadastroImovel #container_anuncio #container_info_condominio{
 }
 
 TelaCadastroImovel #container_anuncio TextArea {
-    background: white;
+    background: rgb(200, 200, 200);
     width: 50%;
     height: 10;
     color: black;
@@ -155,15 +163,37 @@ TelaCadastroImovel #container_anuncio Static {
 
 TelaCadastroImovel .stt_container_titulo {
     text-align: center;
-    background: rgb(200,200,200);
+    background: rgb(200, 200, 200);
     width: 100%;
     height: 10%;
     color: black;
 }
 
 TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
-    background: rgb(200,200,200);
-    margin-top: 2;
+    background: rgb(200, 200, 200);
+    margin: 2;
     width: 100%;
     height: 30%;
+}
+
+
+TelaCadastroImovel #container_imagens Static{
+    text-align: center;
+    align: center middle;
+}
+
+TelaCadastroImovel #container_anexos Static{
+    text-align: center;
+    align: center middle;
+}
+
+TelaCadastroImovel ContainerFuncionario{
+    background: rgba(159, 159, 159, 1);
+    margin: 2;
+    color: black;
+}
+
+TelaCadastroImovel ContainerFuncionario Static{
+    border: solid black;
+    margin: 0;
 }

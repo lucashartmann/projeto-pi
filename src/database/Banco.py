@@ -430,14 +430,15 @@ class Banco:
                                 WHERE id_telefone = ?
                                     '''
                             cursor.execute(sql_query, (id_telefone,))
-                            registro = cursor.fetchone()
+                            numero = cursor.fetchone()[0]
+                            telefones.append(numero)
                     match tipo_usuario:
                         case Usuario.Tipo.CORRETOR:
                             cursor.execute(f'''
                                         SELECT creci FROM corretor 
                                         WHERE id_usuario = ?
-                                    ''', (id,))
-                            creci = cursor.fetchone()
+                                    ''', (id_usuario,))
+                            creci = cursor.fetchone()[0]
                             if creci:
                                 creci = int(creci)
                             usuario = Corretor.Corretor(
@@ -448,8 +449,8 @@ class Banco:
                             cursor.execute(f'''
                                         SELECT salario FROM captador 
                                         WHERE id_usuario = ?
-                                    ''', (id,))
-                            salario = cursor.fetchone()
+                                    ''', (id_usuario,))
+                            salario = cursor.fetchone()[0]
                             if salario:
                                 salario = float(salario)
                             usuario.set_salario(salario)
@@ -459,8 +460,8 @@ class Banco:
                             cursor.execute(f'''
                                         SELECT salario FROM gerente 
                                         WHERE id_usuario = ?
-                                    ''', (id,))
-                            salario = cursor.fetchone()
+                                    ''', (id_usuario,))
+                            salario = cursor.fetchone()[0]
                             if salario:
                                 salario = float(salario)
                             usuario.set_salario(salario)
@@ -470,7 +471,7 @@ class Banco:
                             # cursor.execute(f'''
                             #             SELECT * FROM cliente
                             #             WHERE id_usuario = ?
-                            #         ''', (id,))
+                            #         ''', (id_usuario,))
                             # registros = cursor.fetchone()
                     usuario.set_id(id_usuario)
                     usuario.set_rg(rg)
@@ -703,7 +704,7 @@ class Banco:
 
                 for registro in registros:
                     nome = registro[1]
-                    list.append(nome)
+                    lista.append(nome)
 
                 return lista
 
@@ -726,7 +727,7 @@ class Banco:
 
                 for registro in registros:
                     nome = registro[1]
-                    list.append(nome)
+                    lista.append(nome)
 
                 return lista
 
@@ -1398,19 +1399,13 @@ class Banco:
                 quant_varandas = dados[7]
                 if quant_varandas:
                     quant_varandas = int(quant_varandas)
-                id_condominio = dados[8]
-                condominio = None
-                if id_condominio:
-                    condominio = self.get_condominio_por_id(
-                        int(id_condominio))
-                categoria = dados[9]
+                categoria = dados[8]
                 if categoria:
                     categoria = Imovel.Categoria(categoria)
                 id_endereco = dados[9]
                 endereco = None
                 if id_endereco:
                     endereco = self.get_endereco_por_id(int(id_endereco))
-
                 status = dados[10]
                 if status:
                     status = Imovel.Status(status)
@@ -1553,7 +1548,7 @@ class Banco:
                 imovel.set_filtros(filtros)
                 return imovel
         except Exception as e:
-            erro = f"ERRO! Banco.get_imovel_por_codigo: {e}"
+            erro = f"ERRO! Banco.get_imovel_por_id: {e}"
             print(erro)
             return None
 

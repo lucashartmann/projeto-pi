@@ -75,8 +75,8 @@ class TelaCadastroImovel(Screen):
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
         with Horizontal(id="h_buttons"):
-            yield Button("Apagar", id="bt_apagar_cadastro")
-            yield Button("Salvar", id="bt_salvar_alteracoes")
+            yield Button("Apagar", id="bt_apagar_cadastro", variant="warning")
+            yield Button("Salvar", id="bt_salvar_alteracoes", variant="success")
 
         with VerticalScroll():
             yield Tabs(Tab("Cadastro", id="tab_imovel"), Tab("Anuncio", id="tab_anuncio"), id="tabs_anuncio")
@@ -161,11 +161,13 @@ class TelaCadastroImovel(Screen):
                             yield Checkbox(label=nome)
 
             with Grid(id="container_imagens"):
+                yield Static("Imagens: ")
                 yield Button("Editar", id="bt_editar_imagens")
 
                 # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
 
             with Grid(id="container_anexos"):
+                yield Static("Anexos: ")
                 yield Button("Adicionar", id="bt_adicionar_anexos")
 
                 # TODO: Pegar o widget de documento, possibilitar adicionar, remover
@@ -192,17 +194,24 @@ class TelaCadastroImovel(Screen):
                 container_captador.mount(
                     container, after=container_captador.query_one(Static))
 
+                container.query_one("#st_nome", Static).update(
+                    Init.usuario_atual.get_nome())
+                container.query_one("#st_telefone", Static).update(
+                    "".join(str(telefone for telefone in Init.usuario_atual.get_telefones())))
+                container.query_one("#st_email", Static).update(
+                    Init.usuario_atual.get_email())
+
             elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
                 container = ContainerFuncionario()
                 container_corretor.mount(
                     container, after=container_corretor.query_one(Static))
 
-            container.query_one("#st_nome", Static).update(
-                Init.usuario_atual.get_nome())
-            container.query_one("#st_telefone", Static).update(
-                "".join(str(telefone for telefone in Init.usuario_atual.get_telefones())))
-            container.query_one("#st_email", Static).update(
-                Init.usuario_atual.get_email())
+                container.query_one("#st_nome", Static).update(
+                    Init.usuario_atual.get_nome())
+                container.query_one("#st_telefone", Static).update(
+                    "".join(str(telefone for telefone in Init.usuario_atual.get_telefones())))
+                container.query_one("#st_email", Static).update(
+                    Init.usuario_atual.get_email())
 
         if self.imovel:
             lista = self.imovel.get_filtros()
@@ -226,16 +235,17 @@ class TelaCadastroImovel(Screen):
             container_proprietario = self.query_one(
                 "#container_proprietario", Vertical)
 
-            if self.imovel.get_proprietario():
-                container = ContainerFuncionario()
-                container_proprietario.mount(
-                    container, after=container_proprietario.query_one(Static))
-                container.query_one("#st_nome", Static).update(
-                    self.imovel.get_proprietario().get_nome())
-                container.query_one("#st_telefone", Static).update(
-                    self.imovel.get_proprietario().get_telefone())
-                container.query_one("#st_email", Static).update(
-                    self.imovel.get_proprietario().get_email())
+            if self.imovel.get_proprietarios():
+                for proprietario in self.imovel.proprietarios():
+                    container = ContainerFuncionario()
+                    container_proprietario.mount(
+                        container, after=container_proprietario.query_one(Static))
+                    container.query_one("#st_nome", Static).update(
+                        proprietario.get_nome())
+                    container.query_one("#st_telefone", Static).update(
+                        proprietario.get_telefone())
+                    container.query_one("#st_email", Static).update(
+                        proprietario.get_email())
 
             if self.imovel.get_corretor():
                 container = ContainerFuncionario()
@@ -502,9 +512,7 @@ class TelaCadastroImovel(Screen):
                 endereco = Endereco.Endereco(rua, bairro,
                                              cep, cidade, estado)
                 endereco.set_numero(numero)
-                # anuncio.set_anexos()
-                # anuncio.set_videos()
-                # anuncio.set_fotos()
+            
                 titulo = self.query_one("#ta_titulo_anuncio", TextArea).text
                 descricao = self.query_one(
                     "#ta_descricao_anuncio", TextArea).text
@@ -512,10 +520,40 @@ class TelaCadastroImovel(Screen):
                     anuncio = self.imovel.get_anuncio()
                 else:
                     anuncio = Anuncio.Anuncio()
+                    
+                imagens = []
+                
+                try:
+                    for widget_imagem in self.query_one("container_imagens").query(Image):
+                        imagens.append(widget_imagem.image)
+                except:
+                    pass
+                    
+                # anuncio.set_anexos()
+                # anuncio.set_videos()
+                # anuncio.set_fotos()
 
                 anuncio.set_titulo(titulo)
                 anuncio.set_descricao(descricao)
+                anuncio.set_imagens(imagens)
 
+                filtros_imovel = []
+                filtros_condominio = []
+
+                try:
+                    for check in self.query_one("container_info_imovel").query(Checkbox):
+                        if check.value:
+                            filtros_imovel.append(check.label)
+                except: 
+                    pass
+                
+                try:
+                    for check in self.query_one("container_info_condominio").query(Checkbox):
+                        if check.value:
+                            filtros_condominio.append(check.label)
+                except:
+                    pass
+                
                 if self.imovel:
                     imovel = self.imovel
                     imovel.set_endereco(endereco)
@@ -524,7 +562,7 @@ class TelaCadastroImovel(Screen):
                 else:
                     imovel = Imovel.Imovel(
                         endereco, status_imovel, categoria_imovel)
-
+                imovel.set_filtros(filtros_imovel)
                 imovel.set_complemento(complemento)
                 if not self.imovel:
                     imovel.set_anuncio(anuncio)
@@ -559,6 +597,8 @@ class TelaCadastroImovel(Screen):
                 else:
                     condominio = Condominio.Condominio(
                         nome_condominio, endereco)
+
+                condominio.set_filtros(filtros_condominio)
 
                 if not self.imovel:
                     imovel.set_condominio(condominio)

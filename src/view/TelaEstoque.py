@@ -1,4 +1,4 @@
-from textual.widgets import Input, TextArea, Footer, Header, Tab, Checkbox, Tabs, Select, Static, Input
+from textual.widgets import Input, TextArea, Footer, Header, Tab, Checkbox, Tabs, Select, Static, Input, Button
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.events import Click
@@ -28,6 +28,8 @@ class TelaEstoque(Screen):
     bairros = (imovel.get_endereco().get_bairro() for imovel in imoveis)
     ceps = (str(imovel.get_endereco().get_cep()) for imovel in imoveis)
     imoveis_filtrados = []
+    lista = []
+    lista_filtrada = []
     filtrou_select = False
     filtrou_input = False
     select_evento = ""
@@ -65,12 +67,21 @@ class TelaEstoque(Screen):
                 yield Input()
                 yield Static("CEP")
                 yield Input(suggester=SuggestFromList(self.ceps, case_sensitive=False))
+            with Horizontal(id="h_filtro"):
+                yield Select([("Data Cadastro", "Data Cadastro"), ("Valor Venda", "Valor Venda"), ("Valor Aluguel", "Valor Aluguel"), ("Data Atualização", "Data Atualização")], id="select_filtro")
+                yield Button("⬇️", id="seta", flat=True)
         with Vertical(id="container_resultado"):
             pass
 
         yield Footer(show_command_palette=False)
-        
-    
+
+    def on_button_pressed(self):
+        if self.query_one(Button).label == "⬇️":
+            self.query_one(Button).label = "⬆️"
+        else:
+            self.query_one(Button).label = "⬇️"
+        self.atualizar()
+
     def on_mount(self):
         # self.query_one("#segundo").self.query_one(Input).BINDINGS.append(Binding(
         #     "tab",
@@ -113,7 +124,8 @@ class TelaEstoque(Screen):
 
             self.imoveis_filtrados = []
             self.atualizar()
-
+        elif evento.select.id == "select_filtro":
+            self.atualizar()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
@@ -184,13 +196,13 @@ class TelaEstoque(Screen):
 
         if ceps != self.ceps:
             self.ceps = ceps
-            
+
         if ruas != self.ruas:
             self.ruas = ruas
-            
+
         if bairros != self.bairros:
             self.bairros = bairros
-            
+
         if cidades != self.cidades:
             self.cidades = cidades
 
@@ -204,13 +216,12 @@ class TelaEstoque(Screen):
     @on(Click)
     def on_click(self, evento: Click):
         widget = ""
-        
+
         if "dados0" in evento.widget.parent.parent.classes:
             widget = evento.widget.parent.parent.parent
         elif "dados1" in evento.widget.parent.parent.classes:
             widget = evento.widget.parent.parent.parent.parent
-            
-            
+
         if widget and widget.classes:
             if "imovel" in widget.classes:
                 banco = Banco()
@@ -231,6 +242,52 @@ class TelaEstoque(Screen):
             lista = self.imoveis_filtrados
         else:
             lista = self.imoveis
+
+        lista_filtrada = []
+
+        match self.query_one("#select_filtro", Select).value:
+            case "Data Cadastro":
+                for imovel in lista:
+                    if imovel.get_data_cadastro():
+                        lista_filtrada.append(imovel)
+                if lista_filtrada:
+                    for imovel in lista:
+                        for imovel2 in lista_filtrada:
+                            if imovel.get_data_cadastro() and imovel.get_data_cadastro() >= imovel2.get_data_cadastro():
+                                lista_filtrada.append(imovel)
+                                break
+            case "Valor Venda":
+                for imovel in lista:
+                    if imovel.get_data_cadastro():
+                        lista_filtrada.append(imovel)
+                if lista_filtrada:
+                    for imovel in lista:
+                        for imovel2 in lista_filtrada:
+                            if imovel.get_valor_venda() and imovel.get_valor_venda() >= imovel2.get_valor_venda():
+                                lista_filtrada.append(imovel)
+                                break
+            case "Valor Aluguel":
+                for imovel in lista:
+                    if imovel.get_valor_aluguel():
+                        lista_filtrada.append(imovel)
+                if lista_filtrada:
+                    for imovel in lista:
+                        for imovel2 in lista_filtrada:
+                            if imovel.get_valor_aluguel() and imovel.get_valor_aluguel() >= imovel2.get_valor_aluguel():
+                                lista_filtrada.append(imovel)
+                                break
+            case "Data Atualização":
+                for imovel in lista:
+                    if imovel.get_data_modificacao():
+                        lista_filtrada.append(imovel)
+                if lista_filtrada:
+                    for imovel in lista:
+                        for imovel2 in lista_filtrada:
+                            if imovel.get_data_modificacao() and imovel.get_data_modificacao() >= imovel2.get_data_modificacao():
+                                lista_filtrada.append(imovel)
+                                break
+        if lista_filtrada:
+            lista = lista_filtrada
 
         for imovel in lista:
             container = Horizontal(classes="imovel", name=imovel.get_id())
