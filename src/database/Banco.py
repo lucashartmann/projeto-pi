@@ -1260,6 +1260,20 @@ class Banco:
                     endereco,
                     data
                 ))
+                id = cursor.lastrowid
+                if proprietario.get_telefones():
+                    for telefone in proprietario.get_telefones():
+                        sql_query = f''' 
+                            INSERT INTO telefone (numero) 
+                            VALUES(?)
+                            '''
+                        cursor.execute(sql_query, (telefone,))
+                        id_telefone = cursor.lastrowid
+                        sql_query = f''' 
+                            INSERT INTO telefone_proprietario (id_proprietario, id_telefone) 
+                            VALUES(?, ?)
+                            '''
+                        cursor.execute(sql_query, (id, id_telefone))
                 conexao.commit()
                 return True
         except Exception as e:
@@ -1495,33 +1509,16 @@ class Banco:
                             SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                             WHERE id_imovel = ?
                         ''', (id_imovel,))
-                cpf_proprietarios = cursor.fetchall()
+                cpf_cnpj_proprietarios = cursor.fetchall()
 
                 proprietarios = []
 
-                if cpf_proprietarios:
-                    for cpf in registros_imovel_filtros:
-                        cpf = cpf[0]
-                        cursor.execute(f'''
-                                SELECT * FROM proprietario 
-                                WHERE cpf_cnpj = ?
-                            ''', (cpf,))
-                        registro = cursor.fetchone()
-                        if registro:
-                            id_proprietario = int(registro[0])
-                            email = registro[1]
-                            nome = registro[2]
-                            cpf_cnpj = registro[3]
-                            rg = registro[4]
-                            data_nascimento = registro[5]
-                            if data_nascimento:
-                                data_nascimento = datetime.strptime(
-                                    data_nascimento, "%d-%m-%Y")
-                            proprietario = Proprietario.Proprietario(
-                                email, nome, cpf_cnpj)
-                            proprietario.set_id(id_proprietario)
-                            proprietario.set_data_nascimento(data_nascimento)
-                            proprietario.set_rg(rg)
+                if cpf_cnpj_proprietarios:
+                    for cpf_cnpj in registros_imovel_filtros:
+                        cpf_cnpj = cpf_cnpj[0]
+                        proprietario = self.get_proprietario_por_cpf_cnpj(
+                            cpf_cnpj)
+                        if proprietario:
                             proprietarios.append(proprietario)
 
                 imovel.set_proprietarios(proprietarios)
@@ -1803,34 +1800,16 @@ class Banco:
                             SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                             WHERE id_imovel = ?
                         ''', (id_imovel,))
-                    cpf_proprietarios = cursor.fetchall()
+                    cpf_cnpj_proprietarios = cursor.fetchall()
 
                     proprietarios = []
 
-                    if cpf_proprietarios:
-                        for cpf in registros_imovel_filtros:
-                            cpf = cpf[0]
-                            cursor.execute(f'''
-                                SELECT * FROM proprietario 
-                                WHERE cpf_cnpj = ?
-                            ''', (cpf,))
-                            registro = cursor.fetchone()
-                            if registro:
-                                id_proprietario = int(registro[0])
-                                email = registro[1]
-                                nome = registro[2]
-                                cpf_cnpj = registro[3]
-                                rg = registro[4]
-                                data_nascimento = registro[5]
-                                if data_nascimento:
-                                    data_nascimento = datetime.strptime(
-                                        data_nascimento, "%d-%m-%Y")
-                                proprietario = Proprietario.Proprietario(
-                                    email, nome, cpf_cnpj)
-                                proprietario.set_id(id_proprietario)
-                                proprietario.set_data_nascimento(
-                                    data_nascimento)
-                                proprietario.set_rg(rg)
+                    if cpf_cnpj_proprietarios:
+                        for cpf_cnpj in registros_imovel_filtros:
+                            cpf_cnpj = cpf_cnpj[0]
+                            proprietario = self.get_proprietario_por_cpf_cnpj(
+                                cpf_cnpj)
+                            if proprietario:
                                 proprietarios.append(proprietario)
 
                     imovel.set_proprietarios(proprietarios)
@@ -1999,34 +1978,16 @@ class Banco:
                             SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                             WHERE id_imovel = ?
                         ''', (id_imovel,))
-                    cpf_proprietarios = cursor.fetchall()
+                    cpf_cnpj_proprietarios = cursor.fetchall()
 
                     proprietarios = []
 
-                    if cpf_proprietarios:
-                        for cpf in registros_imovel_filtros:
-                            cpf = cpf[0]
-                            cursor.execute(f'''
-                                SELECT * FROM proprietario 
-                                WHERE cpf_cnpj = ?
-                            ''', (cpf,))
-                            registro = cursor.fetchone()
-                            if registro:
-                                id_proprietario = int(registro[0])
-                                email = registro[1]
-                                nome = registro[2]
-                                cpf_cnpj = registro[3]
-                                rg = registro[4]
-                                data_nascimento = registro[5]
-                                if data_nascimento:
-                                    data_nascimento = datetime.strptime(
-                                        data_nascimento, "%d-%m-%Y")
-                                proprietario = Proprietario.Proprietario(
-                                    email, nome, cpf_cnpj)
-                                proprietario.set_id(id_proprietario)
-                                proprietario.set_data_nascimento(
-                                    data_nascimento)
-                                proprietario.set_rg(rg)
+                    if cpf_cnpj_proprietarios:
+                        for cpf_cnpj in registros_imovel_filtros:
+                            cpf_cnpj = cpf_cnpj[0]
+                            proprietario = self.get_proprietario_por_cpf_cnpj(
+                                cpf_cnpj)
+                            if proprietario:
                                 proprietarios.append(proprietario)
 
                     imovel.set_proprietarios(proprietarios)
@@ -2499,6 +2460,149 @@ class Banco:
                          endereco, data_nascimento, tipo_usuario, usuario.get_cpf_cnpj()
                          )
                 cursor.execute(sql_update_query, dados)
+
+                usuario_consulta = self.get_usuario_por_cpf_cnpj(
+                    usuario.get_cpf_cnpj())
+
+                if usuario_consulta.get_telefones() and usuario_consulta.get_telefones() != usuario.get_telefones():
+                    for telefone in usuario_consulta.get_telefones():
+                        if telefone not in usuario.get_telefones():
+
+                            cursor.execute(f"""
+                            SELECT id_telefone FROM telefone
+                            WHERE numero = ?;
+                            """, (telefone,))
+
+                            id = cursor.fetchone()[0]
+
+                            cursor.execute(f"""
+                            DELETE FROM telefone
+                            WHERE numero = ?;
+                            """, (telefone,))
+
+                            sql_delete_query = f"""
+                            DELETE FROM telefone_usuario
+                            WHERE id_telefone = ?;
+                            """
+                            cursor.execute(sql_delete_query, (id,))
+
+                    if usuario.get_telefones():
+                        for telefone in usuario.get_telefones():
+                            if telefone not in usuario_consulta.get_telefones():
+                                sql_query = f''' 
+                                    INSERT INTO telefone (numero) 
+                                    VALUES(?)
+                                    '''
+                                cursor.execute(sql_query, (telefone,))
+                                id_telefone = cursor.lastrowid
+                                sql_query = f''' 
+                                    INSERT INTO telefone_usuario (id_usuario, id_telefone) 
+                                    VALUES(?, ?)
+                                    '''
+                                cursor.execute(
+                                    sql_query, (usuario.get_id(), id_telefone))
+
+                    match usuario.get_tipo():
+                        case Usuario.Tipo.CORRETOR:
+                            cursor.execute(f'''
+                                        UPDATE corretor
+                                        SET creci = ?
+                                        WHERE id_usuario = ?;
+                                    ''', (usuario.get_creci(), usuario.get_id()))
+                        case Usuario.Tipo.CAPTADOR:
+                            cursor.execute(f'''
+                                        UPDATE captador
+                                        SET salario = ?
+                                        WHERE id_usuario = ?;
+                                    ''', (usuario.get_salario(), usuario.get_id()))
+                        case Usuario.Tipo.GERENTE:
+                            cursor.execute(f'''
+                                        UPDATE gerente
+                                        SET salario = ?
+                                        WHERE id_usuario = ?;
+                                    ''', (usuario.get_salario(), usuario.get_id()))
+                        # case Usuario.Tipo.CLIENTE:
+                        #     cursor.execute(f'''
+                        #                 UPDATE cliente (id_usuario)
+                        #                 WHERE id_usuario = ?;
+                        #             ''', (id,))
+
+                conexao.commit()
+                return True
+        except Exception as e:
+            print(f"ERRO Banco.atualizar_usuario {e}")
+            return False
+
+    def atualizar_proprietario(self, proprietario):
+        # TODO: atualizar telefones
+        try:
+            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+                cursor = conexao.cursor()
+                sql_update_query = f"""
+                UPDATE proprietario
+                SET email = ?,
+                    nome = ?,
+                    cpf_cnpj = ?,
+                    rg = ?,
+                    id_endereco = ?,
+                    data_nascimento = ?,
+                WHERE cpf_cnpj = ?;
+                """
+                endereco = proprietario.get_endereco()
+                if endereco:
+                    endereco = endereco.get_id()
+
+                data_nascimento = proprietario.get_data_nascimento()
+                if data_nascimento:
+                    data_nascimento = data_nascimento.strftime("%d-%m-%Y")
+
+                dados = (proprietario.get_email(), proprietario.get_nome(),
+                         proprietario.get_cpf_cnpj(), proprietario.get_rg(),
+                         endereco, data_nascimento, proprietario.get_cpf_cnpj()
+                         )
+                cursor.execute(sql_update_query, dados)
+
+                proprietario_consulta = self.get_proprietario_por_cpf_cnpj(
+                    proprietario.get_cpf_cnpj())
+
+                if proprietario_consulta.get_telefones() and proprietario_consulta.get_telefones() != proprietario.get_telefones():
+                    for telefone in proprietario_consulta.get_telefones():
+                        if telefone not in proprietario.get_telefones():
+
+                            cursor.execute(f"""
+                            SELECT id_telefone FROM telefone
+                            WHERE numero = ?;
+                            """, (telefone,))
+
+                            id = cursor.fetchone()[0]
+
+                            cursor.execute(f"""
+                            DELETE FROM telefone
+                            WHERE numero = ?;
+                            """, (telefone,))
+
+                            sql_delete_query = f"""
+                            DELETE FROM telefone_proprietario
+                            WHERE id_telefone = ?;
+                            """
+                            cursor.execute(sql_delete_query, (id,))
+
+                    if proprietario.get_telefones():
+                        for telefone in proprietario.get_telefones():
+                            if telefone not in proprietario_consulta.get_telefones():
+                                sql_query = f''' 
+                                    INSERT INTO telefone (numero) 
+                                    VALUES(?)
+                                    '''
+                                cursor.execute(sql_query, (telefone,))
+                                id_telefone = cursor.lastrowid
+                                sql_query = f''' 
+                                    INSERT INTO telefone_proprietario (id_usuario, id_telefone) 
+                                    VALUES(?, ?)
+                                    '''
+                                cursor.execute(
+                                    sql_query, (proprietario.get_id(), id_telefone))
+
                 conexao.commit()
                 return True
         except Exception as e:
