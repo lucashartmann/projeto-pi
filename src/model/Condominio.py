@@ -3,7 +3,7 @@ class Condominio:
         self.id = None
         self.nome = nome
         self.endereco = endereco
-        self.filtros = dict()
+        self.filtros = []
         
     def set_filtros(self, filtros):
         self.filtros = filtros

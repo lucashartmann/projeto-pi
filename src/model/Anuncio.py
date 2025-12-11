@@ -1,11 +1,18 @@
 class Anuncio:
     def __init__(self):
+        self.id = None
         self.descricao = None
         self.titulo = None
         self.id = None
         self.imagens = []
         self.videos = []
         self.anexos = []
+        
+    def get_id(self):
+        return self.id
+    
+    def set_id(self, id):
+        self.id = id
 
     def get_descricao(self):
         return self.descricao

@@ -57,20 +57,15 @@ class Imobiliaria:
     def get_lista_usuarios(self):
         return self.banco_dados.get_lista_usuarios()
     
-    def get_lista_usuarios_por_condicao(self, campo_desejado, valor):
-        return self.banco_dados.get_lista_usuarios_por_condicao(campo_desejado, valor)
+    def get_usuario_por_cpf_cnpj(self, cpf):
+        return self.banco_dados.get_usuario_por_cpf_cnpj(cpf)
     
-    def get_usuario_por_cpf(self, cpf):
-        return self.banco_dados.get_usuario_por_cpf(cpf)
-    
-    def get_proprietario_por_cpf(self, cpf):
-        return self.banco_dados.get_proprietario_por_cpf(cpf)
+    def get_proprietario_por_cpf_cnpj(self, cpf):
+        return self.banco_dados.get_proprietario_por_cpf_cnpj(cpf)
     
     def get_lista_clientes(self):
         return self.banco_dados.get_lista_clientes()
     
-    def remover(self, campo_desejado, valor, tabela):
-        return self.banco_dados.remover(campo_desejado, valor, tabela)
     
     def cadastrar_lista_filtros(self, lista_filtros, tabela):
         return self.banco_dados.cadastrar_lista_filtros(lista_filtros, tabela)
@@ -83,3 +78,33 @@ class Imobiliaria:
     
     def cadastrar_condominio(self, condominio):
         return self.banco_dados.cadastrar_condominio(condominio)
+    
+    def get_lista_proprietarios(self):
+        return self.banco_dados.get_lista_proprietarios()
+    
+    def get_lista_enderecos(self):
+        return self.banco_dados.get_lista_enderecos()
+    
+    def get_lista_filtros_apartamento(self):
+        return self.banco_dados.get_lista_filtros_apartamento()
+    
+    def get_lista_filtros_condominio(self):
+        return self.banco_dados.get_lista_filtros_condominio()
+    
+    def atualizar_anuncio(self, anuncio):
+        return self.banco_dados.atualizar_anuncio(anuncio)
+    
+    def atualizar_condominio(self, condominio):
+        return self.banco_dados.atualizar_condominio(condominio)
+    
+    def remover_usuario(self, cpf):
+        return self.banco_dados.remover_usuario(cpf)
+    
+    def remover_proprietario(self, cpf):
+        return self.banco_dados.remover_proprietario(cpf)
+    
+    def atualizar_usuario(self, usuario):
+        return self.banco_dados.atualizar_usuario(usuario)
+    
+    def atualizar_proprietario(self, proprietario):
+        return self.banco_dados.atualizar_proprietario(proprietario)

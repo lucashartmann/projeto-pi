@@ -94,14 +94,14 @@ class Imovel:
         self.area_privativa = 0
         self.situacao = None
         self.ocupacao = None
-        self.proprietario = None
+        self.proprietarios = []
         self.corretor = None
         self.captador = None
         self.data_cadastro = None
         self.data_modificacao = None
         self.anuncio = None
         self.condominio = None
-        self.filtros = dict()
+        self.filtros = []
         self.complemento = None
         
     def get_complemento(self):
@@ -260,11 +260,11 @@ class Imovel:
     def set_ocupacao(self, value):
         self.ocupacao = value
 
-    def get_proprietario(self):
-        return self.proprietario
+    def get_proprietarios(self):
+        return self.proprietarios
 
-    def set_proprietario(self, value):
-        self.proprietario = value
+    def set_proprietarios(self, value):
+        self.proprietarios = value
 
     def get_corretor(self):
         return self.corretor

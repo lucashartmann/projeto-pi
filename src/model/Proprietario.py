@@ -8,6 +8,13 @@ class Proprietario:
         self.telefones = []
         self.endereco = None
         self.data_nascimento = None
+        self.imoveis = []
+        
+    def set_imoveis(self, valor):
+        self.imoveis = valor
+        
+    def get_imoveis(self):
+        return self.imoveis
 
     def get_id(self):
         return self.id

@@ -85,20 +85,19 @@ class TelaCadastroImovel(Screen):
                 yield Static("ref:", id="stt_ref")
                 yield TextArea(disabled=True, id="ta_ref")
                 yield Static("Categoria:", id="stt_categoria")
-                yield Select([(valor.value, valor) for valor in Imovel.Categoria], id="select_categoria")
+                yield Select([(valor.value, valor) for valor in Imovel.Categoria], id="select_categoria", prompt="Selecionar")
                 yield Static("Situação:", id="stt_situacao")
-                yield Select([(valor.value, valor) for valor in Imovel.Situacao], id="select_situacao")
+                yield Select([(valor.value, valor) for valor in Imovel.Situacao], id="select_situacao", prompt="Selecionar")
                 yield Static("Estado:", id="stt_estado_select")
-                yield Select([(valor.value, valor) for valor in Imovel.Estado], id="select_estado")
+                yield Select([(valor.value, valor) for valor in Imovel.Estado], id="select_estado", prompt="Selecionar")
                 yield Static("Ocupação:", id="stt_ocupacao")
-                yield Select([(valor.value, valor) for valor in Imovel.Ocupacao], id="select_ocupacao")
+                yield Select([(valor.value, valor) for valor in Imovel.Ocupacao], id="select_ocupacao", prompt="Selecionar")
                 yield Static("Status:", id="stt_status")
-                yield Select([(valor.value, valor) for valor in Imovel.Status], id="select_status")
+                yield Select([(valor.value, valor) for valor in Imovel.Status], id="select_status", prompt="Selecionar")
                 yield Static("Nome do Condomínio", id="stt_nome_condominio")
                 yield TextArea(id="ta_nome_condominio")
                 yield Static("Ano de Construção", id="stt_ano_construcao")
-                yield MaskedInput(template="00/00/0000", id="ta_ano_construcao", validators=Length(minimum=10, maximum=10), valid_empty=True)
-
+                yield MaskedInput(template="0000", id="ta_ano_construcao", validators=Length(minimum=10, maximum=10), valid_empty=True)
                 yield Static("[red]*[/]CEP", id="stt_cep")
                 yield MaskedInput(template="00000-000", id="ta_cep", validators=Length(minimum=9, maximum=9), valid_empty=False)
                 yield Static("[red]*[/]Rua", id="stt_rua")
@@ -150,52 +149,16 @@ class TelaCadastroImovel(Screen):
                 yield Static("Apartamento")
 
                 with Grid(id="container_info_imovel"):
-                    yield Checkbox("Aceita Pet", id="imovel_pet")
-                    yield Checkbox("Churrasqueira", id="imovel_churrasqueira")
-                    yield Checkbox("Armarios Embutidos", id="imovel_armarios_embutidos")
-                    yield Checkbox("Cozinha Americana", id="imovel_cozinha_americana")
-                    yield Checkbox("Area de Servico", id="imovel_area_servico")
-                    yield Checkbox("Suite Master", id="imovel_suite_master")
-                    yield Checkbox("Banheiro com janela", id="imovel_banheiro_janela")
-                    yield Checkbox("Piscina", id="imovel_piscina")
-                    yield Checkbox("Lareira", id="imovel_lareira")
-                    yield Checkbox("Ar-condicionado", id="imovel_ar")
-                    yield Checkbox("Semi-Mobiliado", id="imovel_semi_mobiliado")
-                    yield Checkbox("Mobiliado", id="imovel_mobiliado")
-                    yield Checkbox("Dependencia de Empregada", id="imovel_dependencia_empregada")
-                    yield Checkbox("Dispensa", id="imovel_dispensa")
-                    yield Checkbox("Deposito", id="imovel_deposito")
-
+                    lista = Init.imobiliaria.get_lista_filtros_apartamento()
+                    if lista:
+                        for nome in lista:
+                            yield Checkbox(label=nome)
                 yield Static("Condomínio")
                 with Grid(id="container_info_condominio"):
-                    yield Checkbox("Churrasqueira Coletiva", id="condominio_churrasqueira")
-                    yield Checkbox("Piscina", id="condominio_piscina")
-                    yield Checkbox("Piscina Infantil", id="condominio_piscina_infantil")
-                    yield Checkbox("Piscina Aquecida", id="condominio_piscina_aquecida")
-                    yield Checkbox("Quiosque", id="condominio_quiosque")
-                    yield Checkbox("Sauna", id="condominio_sauna")
-                    yield Checkbox("Quadra de Esportes", id="condominio_quadra_esportes")
-                    yield Checkbox("Jardim", id="condominio_jardim")
-                    yield Checkbox("Salão de Festas", id="condominio_salao_festas")
-                    yield Checkbox("Academia", id="condominio_academia")
-                    yield Checkbox("Sala de Jogos", id="condominio_sala_jogos")
-                    yield Checkbox("Playground", id="condominio_playground")
-                    yield Checkbox("Brinquedoteca", id="condominio_brinquedoteca")
-                    yield Checkbox("Vaga Coberta", id="condominio_vaga_coberta")
-                    yield Checkbox("Estacionamento", id="condominio_estacionamento")
-                    yield Checkbox("Vaga para Visitantes", id="condominio_vaga_visitantes")
-                    yield Checkbox("Mercado", id="condominio_mercado")
-                    yield Checkbox("Mesa de Sinuca", id="condominio_sinuca")
-                    yield Checkbox("Mesa de Ping-Pong", id="condominio_ping_pong")
-                    yield Checkbox("Mesa de Pebolim", id="condominio_pebolim")
-                    yield Checkbox("Quadra de Tenis", id="condominio_tenis")
-                    yield Checkbox("Quadra de Futebol", id="condominio_futebol")
-                    yield Checkbox("Quadra de Basquete", id="condominio_basquete")
-                    yield Checkbox("Quadra de Volei", id="condominio_volei")
-                    yield Checkbox("Quadra de Areia", id="condominio_areia")
-                    yield Checkbox("Bicicletario", id="condominio_bicicletario")
-                    yield Checkbox("Heliponto", id="condominio_heliponto")
-                    yield Checkbox("Elevador de Serviço", id="condominio_elevador_servico")
+                    lista = Init.imobiliaria.get_lista_filtros_condominio()
+                    if lista:
+                        for nome in lista:
+                            yield Checkbox(label=nome)
 
             with Grid(id="container_imagens"):
                 yield Button("Editar", id="bt_editar_imagens")
@@ -220,21 +183,20 @@ class TelaCadastroImovel(Screen):
 
     def on_mount(self):
         container_captador = self.query_one("#container_captador", Vertical)
+        container_corretor = self.query_one("#container_corretor", Vertical)
 
-        if self.imovel and self.imovel.get_captador():
-            container = ContainerFuncionario()
-            container_captador.mount(
-                container, after=container_captador.query_one(Static))
-            container.query_one("#st_nome", Static).update(
-                self.imovel.get_captador().get_nome())
-            container.query_one("#st_telefone", Static).update(
-                self.imovel.get_captador().get_telefone())
-            container.query_one("#st_email", Static).update(
-                self.imovel.get_captador().get_email())
-        elif self.imovel is None and Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
-            container = ContainerFuncionario()
-            container_captador.mount(
-                container, after=container_captador.query_one(Static))
+        if self.imovel is None and (Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR or Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR):
+
+            if Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
+                container = ContainerFuncionario()
+                container_captador.mount(
+                    container, after=container_captador.query_one(Static))
+
+            elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
+                container = ContainerFuncionario()
+                container_corretor.mount(
+                    container, after=container_corretor.query_one(Static))
+
             container.query_one("#st_nome", Static).update(
                 Init.usuario_atual.get_nome())
             container.query_one("#st_telefone", Static).update(
@@ -242,189 +204,173 @@ class TelaCadastroImovel(Screen):
             container.query_one("#st_email", Static).update(
                 Init.usuario_atual.get_email())
 
-        container_corretor = self.query_one("#container_corretor", Vertical)
-
-        if self.imovel and self.imovel.get_corretor():
-            container = ContainerFuncionario()
-            container_corretor.mount(
-                container, after=container_corretor.query_one(Static))
-            container.query_one("#st_nome", Static).update(
-                self.imovel.get_corretor().get_nome())
-            container.query_one("#st_telefone", Static).update(
-                self.imovel.get_corretor().get_telefone())
-            container.query_one("#st_email", Static).update(
-                self.imovel.get_corretor().get_email())
-
-        elif self.imovel is None and Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
-            container = ContainerFuncionario()
-            container_corretor.mount(
-                container, after=container_corretor.query_one(Static))
-            container.query_one("#st_nome", Static).update(
-                Init.usuario_atual.get_nome())
-            container.query_one("#st_telefone", Static).update(
-                Init.usuario_atual.get_telefone())
-            container.query_one("#st_email", Static).update(
-                Init.usuario_atual.get_email())
-
-        container_proprietario = self.query_one(
-            "#container_proprietario", Vertical)
-
         if self.imovel:
-            container = ContainerFuncionario()
-            container_proprietario.mount(
-                container, after=container_proprietario.query_one(Static))
-            container.query_one("#st_nome", Static).update(
-                self.imovel.get_proprietario().get_nome())
-            container.query_one("#st_telefone", Static).update(
-                self.imovel.get_proprietario().get_telefone())
-            container.query_one("#st_email", Static).update(
-                self.imovel.get_proprietario().get_email())
-            
-            # categoria_imovel = self.query_one(
-            #         "#select_categoria", Select).value = self.imovel.get_categoria().value
-            # situacao_imovel = self.query_one(
-            #         "#select_situacao", Select).value = self.imovel.get_situacao().value
-            # estado_imovel = self.query_one("#select_estado", Select).value
-            # ocupacao_imovel = self.query_one(
-                # "#select_ocupacao", Select).value
-            # # status_imovel = self.query_one("#select_status", Select).value
-            # if status_imovel == "NoSelection" or status_imovel == Select.BLANK:
-                # # status_imovel = None
-            # if categoria_imovel == "NoSelection" or categoria_imovel == Select.BLANK:
-                # # categoria_imovel = None
-            # if situacao_imovel == "NoSelection" or situacao_imovel == Select.BLANK:
-                # # situacao_imovel = None
-            # if estado_imovel == "NoSelection" or estado_imovel == Select.BLANK:
-                # # estado_imovel = None
-            # if ocupacao_imovel == "NoSelection" or ocupacao_imovel == Select.BLANK:
-                # # ocupacao_imovel = None
-            # nome_condominio = self.query_one(
-                # "#ta_nome_condominio", TextArea).text
-            # rua = self.query_one("#ta_rua", TextArea).text
-            # numero = self.converter("número", self.query_one(
-                # "#ta_numero", Input).value, int, evento)
-            # complemento = self.query_one(
-                # "#ta_complemento", TextArea).text.strip()
-            # # bloco = self.query_one("#ta_bloco", TextArea).text.strip()
-            # cep = self.query_one(
-                # "#ta_cep", MaskedInput)
-            # if not cep._valid:
-                # self.notify("ERRO! CEP inválido")
-                # return
-            # cep_str = self.query_one(
-                # "#ta_cep", MaskedInput).value.strip().strip("-")
-            # cep = int(''.join(filter(str.isdigit, cep_str)))
-            # bairro = self.query_one("#ta_bairro", TextArea).text
-            # cidade = self.query_one("#ta_cidade", TextArea).text
-            # estado = self.query_one(
-                # "#ta_estado", MaskedInput)
-            # if estado._valid:
-                # estado = self.query_one(
-                    # "#ta_estado", MaskedInput).value.strip()
-            # salas = self.query_one(
-                # "#ta_salas", MaskedInput)
-            # if salas._valid:
-                # salas = self.converter("salas", self.query_one(
-                    # "#ta_salas", MaskedInput).value, int, evento)
-            # banheiros = self.query_one(
-                # "#ta_banheiros", MaskedInput)
-            # if banheiros._valid:
-                # banheiros = self.converter("banheiros", self.query_one(
-                    # "#ta_banheiros", MaskedInput).value, int, evento)
-            # vagas = self.query_one(
-                # "#ta_vagas", MaskedInput)
-            # if vagas._valid:
-                # vagas = self.converter("vagas", self.query_one(
-                    # "#ta_vagas", MaskedInput).value, int, evento)
-            # varandas = self.query_one(
-                # "#ta_varandas", MaskedInput)
-            # if varandas._valid:
-                # varandas = self.converter("varandas", self.query_one(
-                    # "#ta_varandas", MaskedInput).value, int, evento)
-            # quartos = self.query_one(
-                # "#ta_quartos", MaskedInput)
-            # if quartos._valid:
-                # quartos = self.converter("quartos", self.query_one(
-                    # "#ta_quartos", MaskedInput).value, int, evento)
-            # area_total = self.converter("area_total", self.query_one(
-                # "#ta_area_total", Input).value.strip("m²"), float, evento)
-            # area_privativa = self.converter("area_privativa", self.query_one(
-                # "#ta_area_privativa", Input).value.strip("m²"), float, evento)
-            # venda = self.converter("venda", self.query_one(
-                # "#ta_venda", Input).value.strip("m²"), float, evento)
-            # aluguel = self.converter("aluguel", self.query_one(
-                # "#ta_aluguel", Input).value.strip("m²"), float, evento)
-            # valor_condominio = self.converter("valor_condominio", self.query_one(
-                # "#ta_condominio", Input).value.strip("m²"), float, evento)
-            # iptu = self.converter("iptu", self.query_one(
-                # "#ta_iptu", Input).value.strip("m²"), float, evento)
-            # andar = self.query_one("#ta_andar", MaskedInput)
-            # if andar._valid:
-                # andar = self.query_one("#ta_andar", MaskedInput).value
-            # ano_construcao = self.query_one(
-                # "#ta_ano_construcao", MaskedInput)
-            # if ano_construcao._valid:
-                # ano_construcao = self.query_one(
-                    # "#ta_ano_construcao", MaskedInput).value.split("/")
-                # if ano_construcao:
-                    # if ano_construcao[-1] and ano_construcao[1] and ano_construcao[0]:
-                        # ano_construcao = datetime.datetime(year=int(
-                            # # ano_construcao[-1]), month=int(ano_construcao[1]), day=int(ano_construcao[0]))
-            # endereco = Endereco.Endereco(rua, bairro,
-                                        #  cep, cidade, estado)
-            # # endereco.set_numero(numero)
-            # anuncio.set_anexos()
-            # anuncio.set_videos()
-            # anuncio.set_fotos()
-            # # titulo = self.query_one("#ta_titulo_anuncio", TextArea).text
-            # # descricao = self.query_one(
-            #         "#ta_descricao_anuncio", TextArea).text
+            lista = self.imovel.get_filtros()
+            if lista:
+                for nome in lista:
+                    for checkbox in self.query(Checkbox):
+                        if checkbox.label == nome:
+                            checkbox.value = True
 
-        container_imagens = self.query_one("#container_imagens", Grid)
+            if self.imovel.get_condominio() and self.imovel.get_condominio().get_filtros():
+                lista = self.imovel.get_condominio().get_filtros()
+                if lista:
+                    for nome in lista:
+                        for checkbox in self.query(Checkbox):
+                            if checkbox.label == nome:
+                                checkbox.value = True
 
-        if self.imovel and self.imovel.get_anuncio().get_imagens():
-            for imagem in self.imovel.get_anuncio().get_imagens():
-                container_imagens.mount(
-                    Image(imagem, id="st_imagem_anuncio"), after=container_imagens.query_one(Button))
+            self.query_one("#ta_ref", TextArea).text = str(
+                self.imovel.get_id())
+
+            container_proprietario = self.query_one(
+                "#container_proprietario", Vertical)
+
+            if self.imovel.get_proprietario():
+                container = ContainerFuncionario()
+                container_proprietario.mount(
+                    container, after=container_proprietario.query_one(Static))
+                container.query_one("#st_nome", Static).update(
+                    self.imovel.get_proprietario().get_nome())
+                container.query_one("#st_telefone", Static).update(
+                    self.imovel.get_proprietario().get_telefone())
+                container.query_one("#st_email", Static).update(
+                    self.imovel.get_proprietario().get_email())
+
+            if self.imovel.get_corretor():
+                container = ContainerFuncionario()
+                container_corretor.mount(
+                    container, after=container_corretor.query_one(Static))
+                container.query_one("#st_nome", Static).update(
+                    self.imovel.get_corretor().get_nome())
+                container.query_one("#st_telefone", Static).update(
+                    self.imovel.get_corretor().get_telefone())
+                container.query_one("#st_email", Static).update(
+                    self.imovel.get_corretor().get_email())
+
+            if self.imovel.get_captador():
+                container = ContainerFuncionario()
+                container_captador.mount(
+                    container, after=container_captador.query_one(Static))
+                container.query_one("#st_nome", Static).update(
+                    self.imovel.get_captador().get_nome())
+                container.query_one("#st_telefone", Static).update(
+                    self.imovel.get_captador().get_telefone())
+                container.query_one("#st_email", Static).update(
+                    self.imovel.get_captador().get_email())
+
+            if self.imovel.get_categoria() is not None:
+                self.query_one(
+                    "#select_categoria", Select).value = self.imovel.get_categoria()
+            if self.imovel.get_situacao() is not None:
+                self.query_one(
+                    "#select_situacao", Select).value = self.imovel.get_situacao()
+            if self.imovel.get_estado() is not None:
+                self.query_one("#select_estado",
+                               Select).value = self.imovel.get_estado()
+            if self.imovel.get_ocupacao() is not None:
+                self.query_one(
+                    "#select_ocupacao", Select).value = self.imovel.get_ocupacao()
+            if self.imovel.get_ocupacao() is not None:
+                self.query_one("#select_status",
+                               Select).value = self.imovel.get_ocupacao()
+            if self.imovel.get_condominio() is not None and self.imovel.get_condominio().get_nome():
+                self.query_one(
+                    "#ta_nome_condominio", TextArea).text = self.imovel.get_condominio().get_nome()
+            self.query_one(
+                "#ta_rua", TextArea).text = self.imovel.get_endereco().get_rua()
+            if self.imovel.get_endereco().get_numero() is not None:
+                self.query_one(
+                    "#ta_numero", Input).value = str(self.imovel.get_endereco().get_numero())
+            if self.imovel.get_complemento() is not None:
+                self.query_one(
+                    "#ta_complemento", TextArea).text = self.imovel.get_complemento()
+            if self.imovel.get_bloco() is not None:
+                self.query_one(
+                    "#ta_bloco", TextArea).text = self.imovel.get_bloco()
+            cep = str(self.imovel.get_endereco().get_cep())
+            cep = cep[:5] + "-" + cep[5:]
+            self.query_one(
+                "#ta_cep", MaskedInput).value = cep
+            self.query_one(
+                "#ta_bairro", TextArea).text = self.imovel.get_endereco().get_bairro()
+            self.query_one(
+                "#ta_cidade", TextArea).text = self.imovel.get_endereco().get_cidade()
+            self.query_one(
+                "#ta_estado", MaskedInput).value = self.imovel.get_endereco().get_uf()
+            if self.imovel.get_quant_salas() is not None:
+                self.query_one(
+                    "#ta_salas", MaskedInput).value = str(self.imovel.get_quant_salas())
+            if self.imovel.get_quant_banheiros() is not None:
+                self.query_one(
+                    "#ta_banheiros", MaskedInput).value = str(self.imovel.get_quant_banheiros())
+            if self.imovel.get_quant_vagas() is not None:
+                self.query_one(
+                    "#ta_vagas", MaskedInput).value = str(self.imovel.get_quant_vagas())
+            if self.imovel.get_quant_varandas() is not None:
+                self.query_one(
+                    "#ta_varandas", MaskedInput).value = str(self.imovel.get_quant_varandas())
+            if self.imovel.get_quant_quartos() is not None:
+                self.query_one(
+                    "#ta_quartos", MaskedInput).value = str(self.imovel.get_quant_quartos())
+            if self.imovel.get_area_total() is not None:
+                self.query_one(
+                    "#ta_area_total", Input).value = str(self.imovel.get_area_total())
+            if self.imovel.get_area_privativa() is not None:
+                self.query_one(
+                    "#ta_area_privativa", Input).value = str(self.imovel.get_area_privativa())
+            if self.imovel.get_valor_venda() is not None:
+                self.query_one(
+                    "#ta_venda", Input).value = str(self.imovel.get_valor_venda())
+            if self.imovel.get_valor_aluguel() is not None:
+                self.query_one(
+                    "#ta_aluguel", Input).value = str(self.imovel.get_valor_aluguel())
+            if self.imovel.get_valor_condominio() is not None:
+                self.query_one(
+                    "#ta_condominio", Input).value = str(self.imovel.get_valor_condominio())
+            if self.imovel.get_iptu() is not None:
+                self.query_one(
+                    "#ta_iptu", Input).value = str(self.imovel.get_iptu())
+            if self.imovel.get_andar() is not None:
+                self.query_one(
+                    "#ta_andar", MaskedInput).value = str(self.imovel.get_andar())
+            if self.imovel.get_ano_construcao() is not None:
+                self.query_one(
+                    "#ta_ano_construcao", MaskedInput).value = str(self.imovel.get_ano_construcao())
+            if self.imovel.get_anuncio() is not None and self.imovel.get_anuncio().get_titulo():
+                self.query_one(
+                    "#ta_titulo_anuncio", TextArea).text = self.imovel.get_anuncio().get_titulo()
+            if self.imovel.get_anuncio() is not None and self.imovel.get_anuncio().get_descricao():
+                self.query_one(
+                    "#ta_descricao_anuncio", TextArea).text = self.imovel.get_anuncio().get_descricao()
+
+            if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_imagens():
+                container_imagens = self.query_one("#container_imagens", Grid)
+                for imagem in self.imovel.get_anuncio().get_imagens():
+                    container_imagens.mount(
+                        Image(imagem, id="st_imagem_anuncio"), after=container_imagens.query_one(Button))
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_imovel", Tab).id
 
-    def converter(self, string, dado, dadosejado, evento):
-        if dado == "":
-            return ""
-
-        try:
-            dado = dadosejado(dado.strip())
-            return dado
-        except Exception as e:
-            self.notify(
-                f"ERRO! Não foi possivel converter {string} '{dado}' para {dadosejado}")
-            evento.stop
-            return
-
     def on_input_changed(self, evento: MaskedInput.Changed):
         self.salvo = False
         if evento.input.id == "ta_cep":
-            cep = str(evento.input.value.strip().strip("-"))
+            cep = str(evento.input.value.strip())
             self.query_one("#ta_bairro", TextArea).clear()
             self.query_one("#ta_estado", MaskedInput).clear()
             self.query_one("#ta_rua", TextArea).clear()
             self.query_one("#ta_cidade", TextArea).clear()
-
             if len(cep) > 8:
                 try:
                     link = f"https://viacep.com.br/ws/{cep}/json/"
-
                     requisicao = requests.get(link)
                     dados = requisicao.json()
-
                     logradouro = dados["logradouro"]
                     bairro = dados["bairro"]
                     cidade = dados["localidade"]
                     uf = dados["uf"]
-
                     self.query_one("#ta_bairro", TextArea).text = bairro
                     self.query_one("#ta_estado", MaskedInput).value = uf
                     self.query_one("#ta_rua", TextArea).text = logradouro
@@ -470,8 +416,8 @@ class TelaCadastroImovel(Screen):
                 nome_condominio = self.query_one(
                     "#ta_nome_condominio", TextArea).text
                 rua = self.query_one("#ta_rua", TextArea).text
-                numero = self.converter("número", self.query_one(
-                    "#ta_numero", Input).value, int, evento)
+                numero = int(self.query_one(
+                    "#ta_numero", Input).value)
                 complemento = self.query_one(
                     "#ta_complemento", TextArea).text.strip()
                 bloco = self.query_one("#ta_bloco", TextArea).text.strip()
@@ -481,9 +427,10 @@ class TelaCadastroImovel(Screen):
                 if not cep._valid:
                     self.notify("ERRO! CEP inválido")
                     return
-                cep_str = self.query_one(
-                    "#ta_cep", MaskedInput).value.strip().strip("-")
-                cep = int(''.join(filter(str.isdigit, cep_str)))
+                else:
+                    cep = self.query_one(
+                        "#ta_cep", MaskedInput).value.strip()
+                    cep = int("".join(cep.split("-")))
                 bairro = self.query_one("#ta_bairro", TextArea).text
                 cidade = self.query_one("#ta_cidade", TextArea).text
                 estado = self.query_one(
@@ -491,56 +438,67 @@ class TelaCadastroImovel(Screen):
                 if estado._valid:
                     estado = self.query_one(
                         "#ta_estado", MaskedInput).value.strip()
+                else:
+                    estado = None
                 salas = self.query_one(
                     "#ta_salas", MaskedInput)
                 if salas._valid:
-                    salas = self.converter("salas", self.query_one(
-                        "#ta_salas", MaskedInput).value, int, evento)
+                    salas = int(self.query_one(
+                        "#ta_salas", MaskedInput).value)
+                else:
+                    salas = None
                 banheiros = self.query_one(
                     "#ta_banheiros", MaskedInput)
                 if banheiros._valid:
-                    banheiros = self.converter("banheiros", self.query_one(
-                        "#ta_banheiros", MaskedInput).value, int, evento)
+                    banheiros = int(self.query_one(
+                        "#ta_banheiros", MaskedInput).value)
+                else:
+                    banheiros = None
                 vagas = self.query_one(
                     "#ta_vagas", MaskedInput)
                 if vagas._valid:
-                    vagas = self.converter("vagas", self.query_one(
-                        "#ta_vagas", MaskedInput).value, int, evento)
+                    vagas = int(self.query_one(
+                        "#ta_vagas", MaskedInput).value)
+                else:
+                    vagas = None
                 varandas = self.query_one(
                     "#ta_varandas", MaskedInput)
                 if varandas._valid:
-                    varandas = self.converter("varandas", self.query_one(
-                        "#ta_varandas", MaskedInput).value, int, evento)
+                    varandas = int(self.query_one(
+                        "#ta_varandas", MaskedInput).value)
+                else:
+                    varandas = None
                 quartos = self.query_one(
                     "#ta_quartos", MaskedInput)
                 if quartos._valid:
-                    quartos = self.converter("quartos", self.query_one(
-                        "#ta_quartos", MaskedInput).value, int, evento)
-                area_total = self.converter("area_total", self.query_one(
-                    "#ta_area_total", Input).value.strip("m²"), float, evento)
-                area_privativa = self.converter("area_privativa", self.query_one(
-                    "#ta_area_privativa", Input).value.strip("m²"), float, evento)
-                venda = self.converter("venda", self.query_one(
-                    "#ta_venda", Input).value.strip("m²"), float, evento)
-                aluguel = self.converter("aluguel", self.query_one(
-                    "#ta_aluguel", Input).value.strip("m²"), float, evento)
-                valor_condominio = self.converter("valor_condominio", self.query_one(
-                    "#ta_condominio", Input).value.strip("m²"), float, evento)
-                iptu = self.converter("iptu", self.query_one(
-                    "#ta_iptu", Input).value.strip("m²"), float, evento)
+                    quartos = int(self.query_one(
+                        "#ta_quartos", MaskedInput).value)
+                else:
+                    quartos = None
+                area_total = float(self.query_one(
+                    "#ta_area_total", Input).value)
+                area_privativa = float(self.query_one(
+                    "#ta_area_privativa", Input).value)
+                venda = float(self.query_one(
+                    "#ta_venda", Input).value)
+                aluguel = float(self.query_one(
+                    "#ta_aluguel", Input).value)
+                valor_condominio = float(self.query_one(
+                    "#ta_condominio", Input).value)
+                iptu = float(self.query_one(
+                    "#ta_iptu", Input).value)
                 andar = self.query_one("#ta_andar", MaskedInput)
                 if andar._valid:
                     andar = self.query_one("#ta_andar", MaskedInput).value
+                else:
+                    andar = None
                 ano_construcao = self.query_one(
                     "#ta_ano_construcao", MaskedInput)
                 if ano_construcao._valid:
-                    ano_construcao = self.query_one(
-                        "#ta_ano_construcao", MaskedInput).value.split("/")
-                    if ano_construcao:
-                        if ano_construcao[-1] and ano_construcao[1] and ano_construcao[0]:
-                            ano_construcao = datetime.datetime(year=int(
-                                ano_construcao[-1]), month=int(ano_construcao[1]), day=int(ano_construcao[0]))
-
+                    ano_construcao = int(self.query_one(
+                        "#ta_ano_construcao", MaskedInput).value)
+                else:
+                    ano_construcao = None
                 endereco = Endereco.Endereco(rua, bairro,
                                              cep, cidade, estado)
                 endereco.set_numero(numero)
@@ -550,23 +508,37 @@ class TelaCadastroImovel(Screen):
                 titulo = self.query_one("#ta_titulo_anuncio", TextArea).text
                 descricao = self.query_one(
                     "#ta_descricao_anuncio", TextArea).text
-                anuncio = Anuncio.Anuncio()
+                if self.imovel:
+                    anuncio = self.imovel.get_anuncio()
+                else:
+                    anuncio = Anuncio.Anuncio()
+
                 anuncio.set_titulo(titulo)
                 anuncio.set_descricao(descricao)
-                imovel = Imovel.Imovel(
-                    endereco, status_imovel, categoria_imovel)
+
+                if self.imovel:
+                    imovel = self.imovel
+                    imovel.set_endereco(endereco)
+                    imovel.set_status(status_imovel)
+                    imovel.set_categoria(categoria_imovel)
+                else:
+                    imovel = Imovel.Imovel(
+                        endereco, status_imovel, categoria_imovel)
+
                 imovel.set_complemento(complemento)
-                imovel.set_anuncio(anuncio)
+                if not self.imovel:
+                    imovel.set_anuncio(anuncio)
                 imovel.set_andar(andar)
                 imovel.set_ano_construcao(ano_construcao)
                 imovel.set_area_privativa(area_privativa)
-                # imovel.set_captador()
+                if Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
+                    imovel.set_captador(Init.usuario_atual)
+                elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
+                    imovel.set_corretor(Init.usuario_atual)
                 imovel.set_area_total(area_total)
                 imovel.set_bloco(bloco)
-                # imovel.set_corretor()
                 imovel.set_iptu(iptu)
                 imovel.set_valor_condominio(valor_condominio)
-              
                 imovel.set_valor_venda(venda)
                 imovel.set_valor_aluguel(aluguel)
                 imovel.set_quant_banheiros(banheiros)
@@ -577,13 +549,25 @@ class TelaCadastroImovel(Screen):
                 imovel.set_situacao(situacao_imovel)
                 imovel.set_estado(estado_imovel)
                 imovel.set_ocupacao(ocupacao_imovel)
-                imovel.set_id(ref)
+                if not self.imovel:
+                    imovel.set_id(ref)
                 imovel.set_data_modificacao(datetime.datetime.now())
-                condominio = Condominio.Condominio(
+                if self.imovel:
+                    condominio = self.imovel.get_condominio()
+                    condominio.set_nome(nome_condominio)
+                    condominio.set_endereco(endereco)
+                else:
+                    condominio = Condominio.Condominio(
                         nome_condominio, endereco)
-                imovel.set_condominio(condominio)
-                cadastro = Controller.cadastrar_imovel(imovel)
-              
+
+                if not self.imovel:
+                    imovel.set_condominio(condominio)
+
+                if self.imovel:
+                    cadastro = Controller.editar_imovel(imovel)
+                else:
+                    cadastro = Controller.cadastrar_imovel(imovel)
+
                 self.notify(cadastro)
                 self.salvo = True
                 self.acao = True
@@ -606,12 +590,6 @@ class TelaCadastroImovel(Screen):
             try:
                 if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
                     self.app.switch_screen("tela_cadastro_pessoa")
-
-                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                    self.app.switch_screen("tela_cadastro_imovel")
-
-                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                    self.app.switch_screen("tela_cadastro_imovel")
 
                 elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
                     self.app.switch_screen("tela_estoque")

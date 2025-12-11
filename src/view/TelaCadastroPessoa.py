@@ -1,10 +1,9 @@
 import datetime
-from textual.widgets import Button, Tab, Tabs, Select, Header, Footer, SelectionList, Static, TextArea, MaskedInput
+from textual.widgets import Button, Tab, Tabs, Select, Header, Footer, SelectionList, Static, TextArea, MaskedInput, Input
 from textual.screen import Screen
 from textual.containers import Grid, HorizontalGroup
-
 from controller import Controller
-from model import Init, Usuario
+from model import Init, Usuario, Captador, Cliente, Corretor, Proprietario
 
 
 class TelaCadastroPessoa(Screen):
@@ -37,8 +36,8 @@ class TelaCadastroPessoa(Screen):
                 yield Static("Username", id="stt_username")
                 yield TextArea(placeholder="username aqui", id="inpt_username")
                 yield Static("Senha", id="stt_senha")
+                yield TextArea(placeholder="senha aqui", id="inpt_senha")
             else:
-                # yield TextArea(placeholder="senha aqui", id="inpt_senha")
                 yield Static("[red]*[/]Nome", id="stt_nome")
                 yield TextArea(placeholder="nome aqui", id="inpt_nome")
                 yield Static("[red]*[/]Email", id="stt_email")
@@ -47,8 +46,6 @@ class TelaCadastroPessoa(Screen):
                 yield MaskedInput(template="(00) 00000-0000", id="inpt_telefone")
                 # yield Static("Endereco", id="stt_endereco")
                 # yield TextArea(placeholder="endereco aqui", id="inpt_endereco")
-                # yield Static("Idade", id="stt_idade")
-                # yield TextArea(placeholder="idade aqui", id="inpt_idade")
                 yield Static("Data de nascimento", id="stt_data_nascimento")
                 yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento")
                 yield Static("[red]*[/]CPF", id="stt_cpf")
@@ -59,10 +56,10 @@ class TelaCadastroPessoa(Screen):
             if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
                 yield Select([("Usuário", "Usuario")], allow_blank=False, id="select_tabelas")
             elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
-                yield Select([("Comprador", "Comprador"), (
-                    "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador")], allow_blank=False, id="select_tabelas")
+                yield Select([("Cliente", "Cliente"), (
+                    "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador")], allow_blank=False, id="select_tabelas")
             else:
-                yield Select([("Comprador", "Comprador"), (
+                yield Select([("Cliente", "Cliente"), (
                     "Proprietario", "Proprietario")], allow_blank=False, id="select_tabelas")
 
             yield Select([("Adicionar", "Adicionar"), ("Editar", "Editar"), ("Remover", "Remover")], allow_blank=False, id="select_operacoes")
@@ -150,7 +147,6 @@ class TelaCadastroPessoa(Screen):
                     self.montou_remover = False
 
             case "Remover":
-           
 
                 if self.montou_editar and self.montou_remover == False:
                     self.query_one(Grid).remove_children(
@@ -168,98 +164,118 @@ class TelaCadastroPessoa(Screen):
                 self.valor_select = "Remover"
 
     def limpar_text_area(self):
-        for tx in self.query(TextArea):
-            tx.text = ""
+        if TextArea in self.query():
+            for tx in self.query(TextArea):
+                tx.text = ""
         if MaskedInput in self.query():
+            for m_i in self.query(MaskedInput):
+                m_i.value = ""    
+        if Input in self.query():
             for m_i in self.query(MaskedInput):
                 m_i.value = ""
 
     def on_button_pressed(self):
-        lista_valores = [widget for widget in self.query_one(
-            Grid).query() if not isinstance(widget, Static)]
-        lista_chaves = [
-            static for static in self.query_one(Grid).query(Static)]
+        nome = self.query_one("#inpt_nome", TextArea).text
+        email = self.query_one("#inpt_email", TextArea).text
+        telefone = None
+        data_nascimento = self.query_one(
+            "#inpt_data_nascimento", MaskedInput)
+        if data_nascimento._valid:
+            data_nascimento = self.query_one(
+                "#inpt_data_nascimento", MaskedInput).value.split("/")
+            data_nascimento = datetime.datetime(
+                year=data_nascimento[-1], month=data_nascimento[1], day=data_nascimento[0])
+        else:
+            data_nascimento = None
+        cpf = self.query_one("#inpt_cpf", MaskedInput).value.strip()
+        if cpf._valid:
+            cpf = self.query_one("#inpt_cpf", MaskedInput).value.strip()
+        else:
+            self.notify("ERRO. CPF inválido")
+            return
+        rg = TextArea(placeholder="rg aqui", id="inpt_rg")
+        if not rg._valid:
+            rg = TextArea(placeholder="rg aqui", id="inpt_rg").text
+        else:
+            rg = None
 
         match self.valor_select:
             case "Editar":
-                cpf_pesquisa = self.query_one("#inpt_id_pesquisa", MaskedInput).value
-                nome = self.query_one("#inpt_nome", TextArea).text
-                email = self.query_one("#inpt_email", TextArea).text
-                telefone = self.query_one("#inpt_telefone", MaskedInput).value.strip().strip(
-                    "(").strip(")").strip("-")
-                data_nascimento = self.query_one(
-                    "#inpt_data_nascimento", MaskedInput).value.strip("/")
-                cpf = self.query_one("#inpt_cpf", MaskedInput).value.strip()
-                rg = TextArea(placeholder="rg aqui", id="inpt_rg").text
+                cpf_pesquisa = self.query_one("#inpt_id_pesquisa", MaskedInput)
+                if cpf_pesquisa._valid:
+                    cpf = self.query_one(
+                        "#inpt_id_pesquisa", MaskedInput).value
+                else:
+                    self.notify("ERRO. CPF inválido")
+                    return
 
                 match self.query_one("#select_tabelas", Select).value:
-                    case "Comprador":
-                        atualizacao = Controller.editar_comprador(cpf_pesquisa,
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                    case "Cliente":
+                        comprador = Cliente.Cliente(cpf_pesquisa,
+                                                    nome, email, telefone, data_nascimento, cpf, rg)
+                        atualizacao = Controller.editar_usuario(comprador)
                     case "Proprietario":
-                        atualizacao = Controller.editar_proprietario(cpf_pesquisa,
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                        comprador = Proprietario.Proprietario(cpf_pesquisa,
+                                                              nome, email, telefone, data_nascimento, cpf, rg)
+                        atualizacao = Controller.editar_proprietario(comprador)
                     case "Corretor":
-                        atualizacao = Controller.editar_corretor(cpf_pesquisa,
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                        comprador = Corretor.Corretor(cpf_pesquisa,
+                                                      nome, email, telefone, data_nascimento, cpf, rg)
+                        atualizacao = Controller.editar_usuario(comprador)
                     case "Captador":
-                        atualizacao = Controller.editar_captador(cpf_pesquisa,
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                        comprador = Captador.Captador(cpf_pesquisa,
+                                                      nome, email, telefone, data_nascimento, cpf, rg)
+                        atualizacao = Controller.editar_usuario(comprador)
                     case "Administrador":
-                        atualizacao = Controller.editar_administrador(cpf_pesquisa,
-                            nome, email, telefone, data_nascimento, cpf, rg)
-
-           
+                        comprador = Usuario.Usuario(cpf_pesquisa,
+                                                    nome, email, telefone, data_nascimento, cpf, rg, tipo=Usuario.Tipo.ADMINISTRADOR)
+                        atualizacao = Controller.editar_usuario(comprador)
 
                 self.notify(atualizacao)
                 self.limpar_text_area()
-             
 
             case "Adicionar":
-                nome = self.query_one("#inpt_nome", TextArea).text
-                email = self.query_one("#inpt_email", TextArea).text
-                telefone = self.query_one("#inpt_telefone", MaskedInput).value.strip().strip(
-                    "(").strip(")").strip("-")
-                data_nascimento = self.query_one(
-                    "#inpt_data_nascimento", MaskedInput).value.strip("/")
-                cpf = self.query_one("#inpt_cpf", MaskedInput).value.strip()
-                rg = TextArea(placeholder="rg aqui", id="inpt_rg").text
-           
                 match self.query_one("#select_tabelas", Select).value:
                     case "Comprador":
-                        cadatro = Controller.cadastrar_comprador(
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                        comprador = Cliente.Cliente(cpf_pesquisa,
+                                                    nome, email, telefone, data_nascimento, cpf, rg)
+                        atualizacao = Controller.cadastrar_usuario(comprador)
                     case "Proprietario":
-                        cadatro = Controller.cadastrar_proprietario(
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                        comprador = Proprietario.Proprietario(cpf_pesquisa,
+                                                              nome, email, telefone, data_nascimento, cpf, rg)
+                        atualizacao = Controller.cadastrar_proprietario(
+                            comprador)
                     case "Corretor":
-                        cadatro = Controller.cadastrar_corretor(
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                        comprador = Corretor.Corretor(cpf_pesquisa,
+                                                      nome, email, telefone, data_nascimento, cpf, rg)
+                        atualizacao = Controller.cadastrar_usuario(comprador)
                     case "Captador":
-                        cadatro = Controller.cadastrar_captador(
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                        comprador = Captador.Captador(cpf_pesquisa,
+                                                      nome, email, telefone, data_nascimento, cpf, rg)
+                        atualizacao = Controller.cadastrar_usuario(comprador)
                     case "Administrador":
-                        cadatro = Controller.cadastrar_administrador(
-                            nome, email, telefone, data_nascimento, cpf, rg)
+                        comprador = Usuario.Usuario(cpf_pesquisa,
+                                                    nome, email, telefone, data_nascimento, cpf, rg, tipo=Usuario.Tipo.ADMINISTRADOR)
+                        atualizacao = Controller.cadastrar_usuario(comprador)
 
-                self.notify(cadatro)
+                self.notify(atualizacao)
                 self.limpar_text_area()
-            case "Remover":
-                cpf = self.query_one("#inpt_id_pesquisa", MaskedInput).value
 
-                match self.query_one("#select_tabelas", Select).value:
-                    case "Comprador":
-                        remocao = Controller.remover_comprador(cpf)
-                    case "Proprietario":
-                        remocao = Controller.remover_proprietario(cpf)
-                    case "Corretor":
-                        remocao = Controller.remover_corretor(cpf)
-                    case "Captador":
-                        remocao = Controller.remover_captador(cpf)
-                    # case "Administrador":
-                    #     remocao = Controller.remover_administrador(id)
+            case "Remover":
+                cpf_pesquisa = self.query_one("#inpt_id_pesquisa", MaskedInput)
+                if cpf_pesquisa._valid:
+                    cpf = self.query_one(
+                        "#inpt_id_pesquisa", MaskedInput).value
+                else:
+                    self.notify("ERRO. CPF inválido")
+                    return
+
+                if self.query_one("#select_tabelas", Select).value == "Proprietario":
+                    remocao = Controller.remover_proprietario(cpf)
+                else:
+                    remocao = Controller.remover_usuario(cpf)
+
                 self.notify(remocao)
                 self.limpar_text_area()
-             
 
         self.limpar_text_area()

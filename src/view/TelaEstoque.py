@@ -4,6 +4,7 @@ from textual.screen import Screen
 from textual.events import Click
 from textual import on
 from textual.suggester import SuggestFromList
+from textual.binding import Binding
 
 from model import Init, Imovel, Usuario
 from database.Banco import Banco
@@ -31,6 +32,7 @@ class TelaEstoque(Screen):
     filtrou_input = False
     select_evento = ""
     objeto = Init.imovel_um
+    tabela = "Imovel"
 
     def compose(self):
         yield Header()
@@ -47,11 +49,11 @@ class TelaEstoque(Screen):
         yield TextArea(read_only=True, id="tx_dados")
         with Vertical(id="container_filtragem"):
             with Horizontal(id="primeiro"):
-                yield Select([("Imoveis", "Imovel"), ("Clientes", "Cliente"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel"), ("Vendas", "Venda")], allow_blank=False, id="select_tabelas")
+                yield Select([("Imoveis", "Imovel"), ("Clientes", "Cliente"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador"), ("Vendas", "Venda"), ("Alugueis", "Aluguel"), ("Vendas", "Venda")], allow_blank=False, id="select_tabelas", prompt="Selecionar")
                 yield Static("Categoria:")
-                yield Select([(valor.value, valor) for valor in Imovel.Categoria])
+                yield Select([(valor.value, valor) for valor in Imovel.Categoria], prompt="Selecionar")
                 yield Static("Status:")
-                yield Select([(valor.value, valor) for valor in Imovel.Status])
+                yield Select([(valor.value, valor) for valor in Imovel.Status], prompt="Selecionar")
             with Horizontal(id="segundo"):
                 yield Static("Rua")
                 yield Input(suggester=SuggestFromList(self.ruas, case_sensitive=False))
@@ -67,6 +69,16 @@ class TelaEstoque(Screen):
             pass
 
         yield Footer(show_command_palette=False)
+        
+    
+    def on_mount(self):
+        # self.query_one("#segundo").self.query_one(Input).BINDINGS.append(Binding(
+        #     "tab",
+        #     "cursor_right",
+        #     "Move cursor right or accept the completion suggestion",
+        #     show=False,
+        # ),)
+        self.atualizar()
 
     def setup_dados(self):
         if len(self.imoveis_filtrados) > 0:
@@ -102,8 +114,6 @@ class TelaEstoque(Screen):
             self.imoveis_filtrados = []
             self.atualizar()
 
-    def on_mount(self):
-        self.atualizar()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
@@ -159,17 +169,17 @@ class TelaEstoque(Screen):
 
         if imoveis != self.imoveis:
             self.imoveis = imoveis
-            if self.tabela == "imovel":
+            if self.tabela == "Imovel":
                 condicao = True
 
         if clientes != self.clientes:
             self.clientes = clientes
-            if self.tabela == "cliente":
+            if self.tabela == "Cliente":
                 condicao = True
 
         if usuarios != self.usuarios:
             self.usuarios = usuarios
-            if self.tabela == "usuario":
+            if self.tabela == "Usuario":
                 condicao = True
 
         if ceps != self.ceps:
@@ -193,14 +203,24 @@ class TelaEstoque(Screen):
 
     @on(Click)
     def on_click(self, evento: Click):
-        if "imovel" in evento.widget.parent.parent.classes:
-            banco = Banco()
-            imovel = banco.get_imovel_por_id(int(evento.widget.name))
-            if imovel:
-                self.app.switch_screen(
-                    TelaCadastroImovel.TelaCadastroImovel(imovel=imovel))
-            else:
-                self.screen.notify("ERRO. Imóvel não encontrado.")
+        widget = ""
+        
+        if "dados0" in evento.widget.parent.parent.classes:
+            widget = evento.widget.parent.parent.parent
+        elif "dados1" in evento.widget.parent.parent.classes:
+            widget = evento.widget.parent.parent.parent.parent
+            
+            
+        if widget and widget.classes:
+            if "imovel" in widget.classes:
+                banco = Banco()
+                if widget.name:
+                    imovel = banco.get_imovel_por_id(int(widget.name))
+                    if imovel:
+                        self.app.switch_screen(
+                            TelaCadastroImovel.TelaCadastroImovel(imovel=imovel))
+                    else:
+                        self.screen.notify("ERRO. Imóvel não encontrado.")
 
     def atualizar(self):
         self.query_one("#container_resultado").remove_children()
