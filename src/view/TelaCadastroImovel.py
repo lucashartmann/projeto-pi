@@ -7,8 +7,9 @@ import datetime
 
 from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
 from controller import Controller
-
+from utils import Midia
 from textual_image.widget import Image
+from utils.textual_pdf.pdf_viewer import PDFViewer
 
 
 class PopUp(ModalScreen):
@@ -162,13 +163,15 @@ class TelaCadastroImovel(Screen):
 
             with Grid(id="container_imagens"):
                 yield Static("Imagens: ")
-                yield Button("Editar", id="bt_editar_imagens")
+                with Center():
+                    yield Button("Adicionar", id="bt_adicionar_imagens")
 
                 # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
 
             with Grid(id="container_anexos"):
                 yield Static("Anexos: ")
-                yield Button("Adicionar", id="bt_adicionar_anexos")
+                with Center():
+                    yield Button("Adicionar", id="bt_adicionar_anexos")
 
                 # TODO: Pegar o widget de documento, possibilitar adicionar, remover
 
@@ -391,6 +394,22 @@ class TelaCadastroImovel(Screen):
     def on_button_pressed(self, evento: Button.Pressed):
 
         match evento.button.id:
+
+            case "bt_apagar_cadastro":
+                self.mount(PopUpApagar())
+
+            case "bt_adicionar_imagens":
+                caminho = Midia.selecionar_arquivo(Midia.Tipo.IMAGEM)
+                if caminho:
+                    self.query_one("#container_imagens", Grid).mount(
+                        Image(caminho), after=self.query_one("#container_imagens", Grid).query_one(Center))
+
+            case "bt_adicionar_anexos":
+                caminho = Midia.selecionar_arquivo(Midia.Tipo.DOCUMENTO)
+                if caminho:
+                    self.query_one("#container_anexos", Grid).mount(
+                        PDFViewer(caminho), after=self.query_one("#container_anexos", Grid).query_one(Center))
+
             case "bt_salvar_alteracoes":
 
                 ref = self.query_one("#ta_ref", TextArea).text.strip()
@@ -512,7 +531,7 @@ class TelaCadastroImovel(Screen):
                 endereco = Endereco.Endereco(rua, bairro,
                                              cep, cidade, estado)
                 endereco.set_numero(numero)
-            
+
                 titulo = self.query_one("#ta_titulo_anuncio", TextArea).text
                 descricao = self.query_one(
                     "#ta_descricao_anuncio", TextArea).text
@@ -520,16 +539,23 @@ class TelaCadastroImovel(Screen):
                     anuncio = self.imovel.get_anuncio()
                 else:
                     anuncio = Anuncio.Anuncio()
-                    
+
                 imagens = []
-                
+                anexos = []
+
                 try:
                     for widget_imagem in self.query_one("container_imagens").query(Image):
-                        imagens.append(widget_imagem.image)
+                        imagens.append(Midia.get_bytes(widget_imagem.image))
                 except:
                     pass
-                    
-                # anuncio.set_anexos()
+
+                try:
+                    for widget_anexo in self.query_one("container_anexos").query(PDFViewer):
+                        anexos.append(Midia.get_bytes(widget_anexo.path))
+                except:
+                    pass
+
+                anuncio.set_anexos(anexos)
                 # anuncio.set_videos()
                 # anuncio.set_fotos()
 
@@ -544,16 +570,16 @@ class TelaCadastroImovel(Screen):
                     for check in self.query_one("container_info_imovel").query(Checkbox):
                         if check.value:
                             filtros_imovel.append(check.label)
-                except: 
+                except:
                     pass
-                
+
                 try:
                     for check in self.query_one("container_info_condominio").query(Checkbox):
                         if check.value:
                             filtros_condominio.append(check.label)
                 except:
                     pass
-                
+
                 if self.imovel:
                     imovel = self.imovel
                     imovel.set_endereco(endereco)
@@ -611,9 +637,6 @@ class TelaCadastroImovel(Screen):
                 self.notify(cadastro)
                 self.salvo = True
                 self.acao = True
-
-            case "bt_apagar_cadastro":
-                self.mount(PopUpApagar())
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         # if self.salvo == False:

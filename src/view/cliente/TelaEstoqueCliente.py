@@ -22,7 +22,7 @@ class ContainerImovel(Container):
         yield Static("R$ 255.000,00", id="tx_preco")
         yield Button("Ver mais", id="bt_comprar")
 
-    def on_button_pressed(self, evento: Button.Pressed):
+    def on_button_pressed(self):
         banco = Banco()
         imovel = banco.get_imovel_por_id(self.id_imovel)
         if imovel:
@@ -51,17 +51,17 @@ class TelaEstoqueCliente(Screen):
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
         elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CLIENTE:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
-            
+
         with VerticalScroll():
             with Grid(id="hg_pesquisa"):
-                    yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
-                    yield Select([(valor.value, valor) for valor in Imovel.Categoria])
-                    yield Static("CEP desejado")
-                    yield MaskedInput(template="00000-000")
-                    yield Static("Apartamento:")
-                    yield SelectionList(("Aceita Pet", "aceita_pet"), ("Churrasqueira", "churrasqueira"), ("Armarios Embutidos", "armarios_embutidos"), ("Cozinha Americana", "cozinha_americana"), ("Area de Servico", "area_de_servico"), ("Suite Master", "suite_master"), ("Banheiro com janela", "banheiro_com_janela"), ("Piscina", "piscina"), ("Lareira", "lareira"), ("Ar-condicionado", "ar_condicionado"), ("Semi-Mobiliado", "semi_mobiliado"), ("Mobiliado", "mobiliado"), ("Dependencia de Empregada", "dependencia_de_empregada"), ("Dispensa", "dispensa"), ("Deposito", "deposito"), id="filtro_apartamento", compact=True)
-                    yield Static("Condominio:")
-                    yield SelectionList(("Churrasqueira Coletiva", "churrasqueira_coletiva"), ("Piscina", "piscina"), ("Piscina Infantil", "piscina_infantil"), ("Piscina Aquecida", "piscina_aquecida"), ("Quiosque", "quiosque"), ("Sauna", "sauna"), ("Quadra de Esportes", "quadra_de_esportes"), ("Jardim", "jardim"), ("Salão de Festas", "salao_de_festas"), ("Academia", "academia"), ("Sala de Jogos", "sala_de_jogos"), ("Playground", "playground"), ("Brinquedoteca", "brinquedoteca"), ("Vaga Coberta", "vaga_coberta"), ("Estacionamento", "estacionamento"), ("Vaga para Visitantes", "vaga_para_visitantes"), ("Mercado", "mercado"), ("Mesa de Sinuca", "mesa_de_sinuca"), ("Mesa de Ping-Pong", "mesa_de_ping_pong"), ("Mesa de Pebolim", "mesa_de_pebolim"), ("Quadra de Tenis", "quadra_de_tenis"), ("Quadra de Futebol", "quadra_de_futebol"), ("Quadra de Basquete", "quadra_de_basquete"), ("Quadra de Volei", "quadra_de_volei"), ("Quadra de Areia", "quadra_de_areia"), ("Bicicletario", "bicicletario"), ("Heliponto", "heliponto"), ("Elevador de Serviço", "elevador_de_servico"), id="filtro_condominio", compact=True)
+                yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
+                yield Select([(valor.value, valor) for valor in Imovel.Categoria])
+                yield Static("CEP desejado")
+                yield MaskedInput(template="00000-000")
+                yield Static("Apartamento:")
+                yield SelectionList(("Aceita Pet", "aceita_pet"), ("Churrasqueira", "churrasqueira"), ("Armarios Embutidos", "armarios_embutidos"), ("Cozinha Americana", "cozinha_americana"), ("Area de Servico", "area_de_servico"), ("Suite Master", "suite_master"), ("Banheiro com janela", "banheiro_com_janela"), ("Piscina", "piscina"), ("Lareira", "lareira"), ("Ar-condicionado", "ar_condicionado"), ("Semi-Mobiliado", "semi_mobiliado"), ("Mobiliado", "mobiliado"), ("Dependencia de Empregada", "dependencia_de_empregada"), ("Dispensa", "dispensa"), ("Deposito", "deposito"), id="filtro_apartamento", compact=True)
+                yield Static("Condominio:")
+                yield SelectionList(("Churrasqueira Coletiva", "churrasqueira_coletiva"), ("Piscina", "piscina"), ("Piscina Infantil", "piscina_infantil"), ("Piscina Aquecida", "piscina_aquecida"), ("Quiosque", "quiosque"), ("Sauna", "sauna"), ("Quadra de Esportes", "quadra_de_esportes"), ("Jardim", "jardim"), ("Salão de Festas", "salao_de_festas"), ("Academia", "academia"), ("Sala de Jogos", "sala_de_jogos"), ("Playground", "playground"), ("Brinquedoteca", "brinquedoteca"), ("Vaga Coberta", "vaga_coberta"), ("Estacionamento", "estacionamento"), ("Vaga para Visitantes", "vaga_para_visitantes"), ("Mercado", "mercado"), ("Mesa de Sinuca", "mesa_de_sinuca"), ("Mesa de Ping-Pong", "mesa_de_ping_pong"), ("Mesa de Pebolim", "mesa_de_pebolim"), ("Quadra de Tenis", "quadra_de_tenis"), ("Quadra de Futebol", "quadra_de_futebol"), ("Quadra de Basquete", "quadra_de_basquete"), ("Quadra de Volei", "quadra_de_volei"), ("Quadra de Areia", "quadra_de_areia"), ("Bicicletario", "bicicletario"), ("Heliponto", "heliponto"), ("Elevador de Serviço", "elevador_de_servico"), id="filtro_condominio", compact=True)
             yield ListView(id="lst_item")
             yield Footer(show_command_palette=False)
 
@@ -74,27 +74,29 @@ class TelaEstoqueCliente(Screen):
             lista = self.imoveis_filtrados
         else:
             lista = self.imoveis
-            
+
         if not lista:
             stt = Static("Nenhum imóvel encontrado", id="tx_status")
             self.query_one("#lst_item").mount(stt)
             stt.styles.align = ("center", "middle")
-            self.query_one("#lst_item").styles.content_align = ("center", "middle")
+            self.query_one("#lst_item").styles.content_align = (
+                "center", "middle")
         # else:
         #     self.query_one("#lst_item").styles.content_align = None
 
         for imovel in lista:
-            if imovel.get_anuncio() and imovel.get_anuncio().get_imagens():
+            if imovel.get_anuncio():
                 container = ContainerImovel()
                 list_item = ListItem(name=imovel.get_nome())
                 list_view.append(list_item)
                 list_item.mount(container)
 
-                container.query_one("#ti_imagem").image = BytesIO(
-                    imovel.get_anuncio().get_imagens()[0])
+                if imovel.get_anuncio().get_imagens():
+                    container.query_one("#ti_imagem").image = BytesIO(
+                        imovel.get_anuncio().get_imagens()[0])
 
-                container.query_one("#ti_imagem").styles.width = 40
-                container.query_one("#ti_imagem").styles.height = 15
+                    container.query_one("#ti_imagem").styles.width = 40
+                    container.query_one("#ti_imagem").styles.height = 15
 
                 if imovel.get_titulo(
                 ):
@@ -136,10 +138,9 @@ class TelaEstoqueCliente(Screen):
         self.atualizar_imagens()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-            
-            if event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                self.app.switch_screen("tela_dados_cliente")
 
+        if event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+            self.app.switch_screen("tela_dados_cliente")
 
     def on_button_pressed(self, evento: Button.Pressed):
         match evento.button.id:

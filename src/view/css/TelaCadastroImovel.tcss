@@ -79,6 +79,41 @@ TelaCadastroImovel #container_anuncio {
     border: black 10%;
 }
 
+TelaCadastroImovel #container_anexos {
+    width: 100%;
+    height: auto;
+    height: 30%;
+    background: rgb(200, 200, 200);
+    margin: 2;
+    grid-size: 10;
+    content-align-vertical: middle;
+}
+
+TelaCadastroImovel #container_anexos  Center{
+    height: 100%;
+    content-align: center middle;
+    align: center middle;
+}
+
+TelaCadastroImovel #container_anexos Static{
+    text-align: center;
+    align: center middle;
+    content-align: center middle;
+    height: 100%;
+}
+
+TelaCadastroImovel #container_anexos PDFViewer {
+    width: 100%;
+    height: 100%;
+    column-span: 1;
+    margin: 1;
+}
+
+TelaCadastroImovel #container_anexos PDFViewer Image {
+    width: 100%;
+    height: 100%;
+}
+
 TelaCadastroImovel #container_info_condominio {
     display: none;
 }
@@ -88,15 +123,26 @@ TelaCadastroImovel #container_imagens {
     height: auto;
     background: rgb(200, 200, 200);
     margin: 2;
+    grid-size: 10;
+    grid-gutter: 2;
+    height: 30%;
+    content-align-vertical: middle;
+    align-vertical: middle;
 }
 
-TelaCadastroImovel #container_anexos {
-    width: 100%;
-    height: auto;
-    background: rgb(200, 200, 200);
-    margin: 2;
+TelaCadastroImovel #container_imagens Image{
+   background: transparent;
+   width: 100%;
+   height: 100%;
+   margin: 1;
+   column-span: 1;
 }
 
+TelaCadastroImovel #container_imagens Center {
+    height: 100%;
+    content-align: center middle;
+    align: center middle;
+}
 
 TelaCadastroImovel #container_info_imovel {
     display: none;
@@ -180,12 +226,11 @@ TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, 
 TelaCadastroImovel #container_imagens Static{
     text-align: center;
     align: center middle;
+    content-align: center middle;
+    height: 100%;
 }
 
-TelaCadastroImovel #container_anexos Static{
-    text-align: center;
-    align: center middle;
-}
+
 
 TelaCadastroImovel ContainerFuncionario{
     background: rgba(159, 159, 159, 1);

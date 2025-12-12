@@ -73,21 +73,23 @@ TelaEstoqueCliente ListItem Button {
 }
 
 TelaEstoqueCliente ListView {
+        border: black 10%;
         layout: grid;
         grid-size: 3;
         grid-gutter: 1;
         align: center middle;
-        background: rgba(193, 217, 240, 1);
         width: 100%;
         height: 100%;
+        background: rgba(229, 228, 228, 1);
 }
     
 TelaEstoqueCliente ListItem {
-        background: rgba(202, 216, 227, 1);
+        border: black 10%;
         height: 56%;
         width: 60%;
         color: green;
         align: center middle;
+        background: rgba(229, 228, 228, 1);
 }
 
 TelaEstoqueCliente .item {

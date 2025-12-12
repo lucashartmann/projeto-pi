@@ -1,7 +1,5 @@
 #### TODO:
 
-- [ ] Poder ver clientes e funcionarios cadastrados
-
 - [ ] Quando clicar no cliente cadastrado mostrar seus dados, se ele é comprador ou proprietario, se for proprietario mostrar os imoveis
 
 - [ ] Implementar a tela de atendimento
@@ -12,8 +10,4 @@
 
 - [ ] Testar tela de login
 
-- [ ] Implementar Funcionario?
-
-- [ ] Criar classe usuário? 
-
-- [ ] linkar os campos dos imoveis com a classe Anuncio
+- [ ] Arrumar Tela Atendimentos, Tela de Estoque de Cliente, Tela de Cadastro de venda e aluguel

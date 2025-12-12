@@ -13,7 +13,6 @@ class TelaCadastroVendaAluguel(Screen):
         elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
-
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_venda_aluguel", Tab).id
@@ -22,9 +21,6 @@ class TelaCadastroVendaAluguel(Screen):
         try:
             if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
                 self.app.switch_screen("tela_cadastro_pessoa")
-
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                self.app.switch_screen("tela_cadastro_imovel")
 
             elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
                 self.app.switch_screen("tela_cadastro_imovel")
@@ -46,9 +42,6 @@ class TelaCadastroVendaAluguel(Screen):
 
             elif event.tabs.active == self.query_one("#tab_atendimento", Tab).id:
                 self.app.switch_screen("tela_atendimento")
-
-            elif event.tabs.active == self.query_one("#tab_cadastro_venda_aluguel", Tab).id:
-                self.app.switch_screen("tela_cadastro_venda_aluguel")
 
         except:
             pass

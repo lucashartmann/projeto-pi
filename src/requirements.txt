@@ -13,3 +13,6 @@ uc-micro-py==1.0.3
 psutil
 requests
 ngrok
+pymupdf
+python-docx
+beautifulsoup4

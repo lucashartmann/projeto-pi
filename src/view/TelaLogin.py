@@ -10,7 +10,7 @@ class MyInput(Input):
         super().__init__(*args, **kwargs)
 
     def compose(self):
-        yield Switch()
+        yield Switch(animate=False)
 
     def on_mount(self):
         self.query_one(Switch).styles.dock = "right"

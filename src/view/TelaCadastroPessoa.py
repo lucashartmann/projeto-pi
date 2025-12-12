@@ -18,6 +18,10 @@ class TelaCadastroPessoa(Screen):
     perfis = None
     perfil_atual = None
 
+    def __init__(self, name=None, id=None, classes=None, pessoa=None):
+        super().__init__(name, id, classes)
+        self.pessoa = pessoa
+
     def compose(self):
 
         yield Header()
@@ -42,8 +46,8 @@ class TelaCadastroPessoa(Screen):
                 yield TextArea(placeholder="nome aqui", id="inpt_nome")
                 yield Static("[red]*[/]Email", id="stt_email")
                 yield TextArea(placeholder="email aqui", id="inpt_email")
-                yield Static("Telefone", id="stt_telefone")
-                yield MaskedInput(template="(00) 00000-0000", id="inpt_telefone")
+                # yield Static("Telefone", id="stt_telefone")
+                # yield MaskedInput(template="(00) 00000-0000", id="inpt_telefone")
                 # yield Static("Endereco", id="stt_endereco")
                 # yield TextArea(placeholder="endereco aqui", id="inpt_endereco")
                 yield Static("Data de nascimento", id="stt_data_nascimento")
@@ -68,13 +72,8 @@ class TelaCadastroPessoa(Screen):
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
-            if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-                self.app.switch_screen("tela_cadastro_pessoa")
 
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                self.app.switch_screen("tela_cadastro_imovel")
-
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+            if event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
                 self.app.switch_screen("tela_cadastro_imovel")
 
             elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
@@ -106,6 +105,7 @@ class TelaCadastroPessoa(Screen):
             "#tab_cadastro_pessoa", Tab).id
 
     def on_mount(self):
+        
         if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             self.query_one("#select_tabelas", Select).set_options(
                 [("Usuário"), ("Usuário")])
@@ -115,6 +115,28 @@ class TelaCadastroPessoa(Screen):
         else:
             self.query_one("#select_tabelas", Select).set_options([("Comprador", "Comprador"), (
                 "Proprietário", "Proprietario")])
+            
+        if self.pessoa:
+            self.query_one(
+                "#inpt_nome", TextArea).text = self.pessoa.get_nome()
+            if self.pessoa.get_email():
+                self.query_one(
+                    "#inpt_email", TextArea).text = self.pessoa.get_email()
+            if self.pessoa.get_data_nascimento():
+                self.query_one(
+                    "#inpt_data_nascimento", MaskedInput).value = self.pessoa.get_data_nascimento().strftime("%d/%m/%Y")
+            if self.pessoa.get_cpf_cnpj():
+                self.query_one("#inpt_cpf", MaskedInput).value = str(
+                    self.pessoa.get_cpf_cnpj())
+            if self.pessoa.get_rg():
+                self.query_one("#inpt_rg", TextArea).value = str(
+                    self.pessoa.get_rg())
+            try:
+                if self.pessoa.get_tipo():
+                    self.query_one("#select_tabelas", Select).value = self.pessoa.get_tipo(
+                    ).value.lower().capitalize()
+            except Exception as e:
+                print(e)
 
     def on_select_changed(self, evento: Select.Changed):
 
@@ -169,7 +191,7 @@ class TelaCadastroPessoa(Screen):
                 tx.text = ""
         if MaskedInput in self.query():
             for m_i in self.query(MaskedInput):
-                m_i.value = ""    
+                m_i.value = ""
         if Input in self.query():
             for m_i in self.query(MaskedInput):
                 m_i.value = ""
@@ -193,9 +215,9 @@ class TelaCadastroPessoa(Screen):
         else:
             self.notify("ERRO. CPF inválido")
             return
-        rg = TextArea(placeholder="rg aqui", id="inpt_rg")
+        rg = self.query_one("#inpt_rg", TextArea)
         if not rg._valid:
-            rg = TextArea(placeholder="rg aqui", id="inpt_rg").text
+            rg = self.query_one("#inpt_rg", TextArea).text.strip()
         else:
             rg = None
 
@@ -209,55 +231,73 @@ class TelaCadastroPessoa(Screen):
                     self.notify("ERRO. CPF inválido")
                     return
 
-                match self.query_one("#select_tabelas", Select).value:
-                    case "Cliente":
-                        comprador = Cliente.Cliente(cpf_pesquisa,
-                                                    nome, email, telefone, data_nascimento, cpf, rg)
-                        atualizacao = Controller.editar_usuario(comprador)
-                    case "Proprietario":
-                        comprador = Proprietario.Proprietario(cpf_pesquisa,
-                                                              nome, email, telefone, data_nascimento, cpf, rg)
-                        atualizacao = Controller.editar_proprietario(comprador)
-                    case "Corretor":
-                        comprador = Corretor.Corretor(cpf_pesquisa,
-                                                      nome, email, telefone, data_nascimento, cpf, rg)
-                        atualizacao = Controller.editar_usuario(comprador)
-                    case "Captador":
-                        comprador = Captador.Captador(cpf_pesquisa,
-                                                      nome, email, telefone, data_nascimento, cpf, rg)
-                        atualizacao = Controller.editar_usuario(comprador)
-                    case "Administrador":
-                        comprador = Usuario.Usuario(cpf_pesquisa,
-                                                    nome, email, telefone, data_nascimento, cpf, rg, tipo=Usuario.Tipo.ADMINISTRADOR)
-                        atualizacao = Controller.editar_usuario(comprador)
+                if not self.pessoa():
+                    match self.query_one("#select_tabelas", Select).value:
+                        case "Cliente":
+                            comprador = Cliente.Cliente(cpf_pesquisa,
+                                                        nome, email, telefone, data_nascimento, cpf, rg)
+                            atualizacao = Controller.editar_usuario(comprador)
+                        case "Proprietario":
+                            comprador = Proprietario.Proprietario(cpf_pesquisa,
+                                                                  nome, email, telefone, data_nascimento, cpf, rg)
+                            atualizacao = Controller.editar_proprietario(
+                                comprador)
+                        case "Corretor":
+                            comprador = Corretor.Corretor(cpf_pesquisa,
+                                                          nome, email, telefone, data_nascimento, cpf, rg)
+                            atualizacao = Controller.editar_usuario(comprador)
+                        case "Captador":
+                            comprador = Captador.Captador(cpf_pesquisa,
+                                                          nome, email, telefone, data_nascimento, cpf, rg)
+                            atualizacao = Controller.editar_usuario(comprador)
+                        case "Administrador":
+                            comprador = Usuario.Usuario(cpf_pesquisa,
+                                                        nome, email, telefone, data_nascimento, cpf, rg, tipo=Usuario.Tipo.ADMINISTRADOR)
+                            atualizacao = Controller.editar_usuario(comprador)
+                else:
+                    if isinstance(self.pessoa, Proprietario.Proprietario):
+                        atualizacao = Controller.editar_proprietario(
+                            self.pessoa)
+                    else:
+                        atualizacao = Controller.editar_usuario(self.pessoa)
 
                 self.notify(atualizacao)
                 self.limpar_text_area()
 
             case "Adicionar":
-                match self.query_one("#select_tabelas", Select).value:
-                    case "Comprador":
-                        comprador = Cliente.Cliente(cpf_pesquisa,
-                                                    nome, email, telefone, data_nascimento, cpf, rg)
-                        atualizacao = Controller.cadastrar_usuario(comprador)
-                    case "Proprietario":
-                        comprador = Proprietario.Proprietario(cpf_pesquisa,
-                                                              nome, email, telefone, data_nascimento, cpf, rg)
-                        atualizacao = Controller.cadastrar_proprietario(
-                            comprador)
-                    case "Corretor":
-                        comprador = Corretor.Corretor(cpf_pesquisa,
-                                                      nome, email, telefone, data_nascimento, cpf, rg)
-                        atualizacao = Controller.cadastrar_usuario(comprador)
-                    case "Captador":
-                        comprador = Captador.Captador(cpf_pesquisa,
-                                                      nome, email, telefone, data_nascimento, cpf, rg)
-                        atualizacao = Controller.cadastrar_usuario(comprador)
-                    case "Administrador":
-                        comprador = Usuario.Usuario(cpf_pesquisa,
-                                                    nome, email, telefone, data_nascimento, cpf, rg, tipo=Usuario.Tipo.ADMINISTRADOR)
-                        atualizacao = Controller.cadastrar_usuario(comprador)
-
+                if not self.pessoa():
+                    match self.query_one("#select_tabelas", Select).value:
+                        case "Comprador":
+                            comprador = Cliente.Cliente(cpf_pesquisa,
+                                                        nome, email, telefone, data_nascimento, cpf, rg)
+                            atualizacao = Controller.cadastrar_usuario(
+                                comprador)
+                        case "Proprietario":
+                            comprador = Proprietario.Proprietario(cpf_pesquisa,
+                                                                  nome, email, telefone, data_nascimento, cpf, rg)
+                            atualizacao = Controller.cadastrar_proprietario(
+                                comprador)
+                        case "Corretor":
+                            comprador = Corretor.Corretor(cpf_pesquisa,
+                                                          nome, email, telefone, data_nascimento, cpf, rg)
+                            atualizacao = Controller.cadastrar_usuario(
+                                comprador)
+                        case "Captador":
+                            comprador = Captador.Captador(cpf_pesquisa,
+                                                          nome, email, telefone, data_nascimento, cpf, rg)
+                            atualizacao = Controller.cadastrar_usuario(
+                                comprador)
+                        case "Administrador":
+                            comprador = Usuario.Usuario(cpf_pesquisa,
+                                                        nome, email, telefone, data_nascimento, cpf, rg, tipo=Usuario.Tipo.ADMINISTRADOR)
+                            atualizacao = Controller.cadastrar_usuario(
+                                comprador)
+                else:
+                    if isinstance(self.pessoa, Proprietario.Proprietario):
+                        atualizacao = Controller.editar_proprietario(
+                            self.pessoa)
+                    else:
+                        atualizacao = Controller.editar_usuario(self.pessoa)
                 self.notify(atualizacao)
                 self.limpar_text_area()
 

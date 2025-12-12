@@ -6,7 +6,6 @@ from textual_image.widget import Image
 
 from model import Init, Usuario, Atendimento
 from controller import Controller
-from database.Banco import Banco
 
 
 class TelaDadosImovel(Screen):
@@ -33,62 +32,30 @@ class TelaDadosImovel(Screen):
 
         with HorizontalGroup():
             with VerticalScroll(id="dados_imovel"):
-                yield Image(self.imovel.get_anuncio().get_imagens()[0], id="imagem_imovel")
-                with HorizontalGroup(id="galeria_fotos"):
-                    for imagem in self.imovel.get_anuncio().get_imagens():
-                        yield Image(imagem, classes="foto_pequena")
+                if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_imagens():
+                    yield Image(self.imovel.get_anuncio().get_imagens()[0], id="imagem_imovel")
+                    with HorizontalGroup(id="galeria_fotos"):
+                        for imagem in self.imovel.get_anuncio().get_imagens():
+                            yield Image(imagem, classes="foto_pequena")
                 yield Static("Descrição", id="stt_descricao", classes="titulo")
                 yield Static(self.imovel.get_anuncio().get_descricao(), id="descricao")
                 yield Static("Infraestrutura Apartamento", id="stt_infraestrutura", classes="titulo")
                 with Grid(id="container_info_imovel"):
-                    yield Checkbox("Aceita Pet", id="imovel_pet", value=self.imovel.get_aceita_pet())
-                    yield Checkbox("Churrasqueira", id="imovel_churrasqueira", value=self.imovel.get_churrasqueira())
-                    yield Checkbox("Armarios Embutidos", id="imovel_armarios_embutidos", value=self.imovel.get_armarios_embutidos())
-                    yield Checkbox("Cozinha Americana", id="imovel_cozinha_americana", value=self.imovel.get_cozinha_americana())
-                    yield Checkbox("Area de Servico", id="imovel_area_servico", value=self.imovel.get_area_servico())
-                    yield Checkbox("Suite Master", id="imovel_suite_master", value=self.imovel.get_suite_master())
-                    yield Checkbox("Banheiro com janela", id="imovel_banheiro_janela", value=self.imovel.get_banheiro_janela())
-                    yield Checkbox("Piscina", id="imovel_piscina", value=self.imovel.get_piscina())
-                    yield Checkbox("Lareira", id="imovel_lareira", value=self.imovel.get_lareira())
-                    yield Checkbox("Ar-condicionado", id="imovel_ar", value=self.imovel.get_ar())
-                    yield Checkbox("Semi-Mobiliado", id="imovel_semi_mobiliado", value=self.imovel.get_semi_mobiliado())
-                    yield Checkbox("Mobiliado", id="imovel_mobiliado", value=self.imovel.get_mobiliado())
-                    yield Checkbox("Dependencia de Empregada", id="imovel_dependencia_empregada", value=self.imovel.get_dependencia_empregada())
-                    yield Checkbox("Dispensa", id="imovel_dispensa", value=self.imovel.get_dispensa())
-                    yield Checkbox("Deposito", id="imovel_deposito", value=self.imovel.get_deposito())
+                    lista = self.imovel.get_filtros()
+                    if lista:
+                        for nome in lista:
+                            yield Checkbox(label=nome, value=True, disabled=True)
                 yield Static("Infraestrutura Condominio", id="stt_infraestrutura", classes="titulo")
 
                 with Grid(id="container_info_condominio"):
-                    yield Checkbox("Churrasqueira Coletiva", id="condominio_churrasqueira", value=self.condominio.churrasqueira_coletiva)
-                    yield Checkbox("Piscina", id="condominio_piscina", value=self.condominio.piscina)
-                    yield Checkbox("Piscina Infantil", id="condominio_piscina_infantil", value=self.condominio.piscina_infantil)
-                    yield Checkbox("Piscina Aquecida", id="condominio_piscina_aquecida", value=self.condominio.piscina_aquecida)
-                    yield Checkbox("Quiosque", id="condominio_quiosque", value=self.condominio.quiosque)
-                    yield Checkbox("Sauna", id="condominio_sauna", value=self.condominio.sauna)
-                    yield Checkbox("Quadra de Esportes", id="condominio_quadra_esportes", value=self.condominio.quadra_esportes)
-                    yield Checkbox("Jardim", id="condominio_jardim", value=self.condominio.jardim)
-                    yield Checkbox("Salão de Festas", id="condominio_salao_festas", value=self.condominio.salao_festas)
-                    yield Checkbox("Academia", id="condominio_academia", value=self.condominio.academia)
-                    yield Checkbox("Sala de Jogos", id="condominio_sala_jogos", value=self.condominio.sala_jogos)
-                    yield Checkbox("Playground", id="condominio_playground", value=self.condominio.playground)
-                    yield Checkbox("Brinquedoteca", id="condominio_brinquedoteca", value=self.condominio.brinquedoteca)
-                    yield Checkbox("Vaga Coberta", id="condominio_vaga_coberta", value=self.condominio.vaga_coberta)
-                    yield Checkbox("Estacionamento", id="condominio_estacionamento", value=self.condominio.estacionamento)
-                    yield Checkbox("Vaga para Visitantes", id="condominio_vaga_visitantes", value=self.condominio.vaga_visitantes)
-                    yield Checkbox("Mercado", id="condominio_mercado", value=self.condominio.mercado)
-                    yield Checkbox("Mesa de Sinuca", id="condominio_sinuca", value=self.condominio.mesa_sinuca)
-                    yield Checkbox("Mesa de Ping-Pong", id="condominio_ping_pong", value=self.condominio.mesa_ping_pong)
-                    yield Checkbox("Mesa de Pebolim", id="condominio_pebolim", value=self.condominio.mesa_pebolim)
-                    yield Checkbox("Quadra de Tenis", id="condominio_tenis", value=self.condominio.quadra_tenis)
-                    yield Checkbox("Quadra de Futebol", id="condominio_futebol", value=self.condominio.quadra_futebol)
-                    yield Checkbox("Quadra de Basquete", id="condominio_basquete", value=self.condominio.quadra_basquete)
-                    yield Checkbox("Quadra de Volei", id="condominio_volei", value=self.condominio.quadra_volei)
-                    yield Checkbox("Quadra de Areia", id="condominio_areia", value=self.condominio.quadra_areia)
-                    yield Checkbox("Bicicletario", id="condominio_bicicletario", value=self.condominio.bicicletario)
-                    yield Checkbox("Heliponto", id="condominio_heliponto", value=self.condominio.heliponto)
-                    yield Checkbox("Elevador de Serviço", id="condominio_elevador_servico", value=self.condominio.elevador_servico)
+                    lista = []
+                    if self.imovel.get_condominio():
+                        lista = self.imovel.get_condominio().get_filtros()
+                    if lista:
+                        for nome in lista:
+                            yield Checkbox(label=nome, value=True, disabled=True)
 
-                yield Static("Mapa", id="mapa", classes="titulo")
+                # yield Static("Mapa", id="mapa", classes="titulo")
             with VerticalScroll(id="entrar_contato"):
                 with HorizontalGroup():
                     yield Button("Agendar Visita")
@@ -96,7 +63,7 @@ class TelaDadosImovel(Screen):
                 if self.imovel.get_valor_venda():
                     yield Static("Valor Venda:")
                     yield Static(f"R$ {self.imovel.get_valor_venda():.2f}", classes="valor")
-                elif self.imovel.get_valor_aluguel():
+                if self.imovel.get_valor_aluguel():
                     yield Static("Valor Aluguel:")
                     yield Static(f"R$ {self.imovel.get_valor_aluguel():.2f}", classes="valor")
                 with HorizontalGroup():
@@ -123,9 +90,6 @@ class TelaDadosImovel(Screen):
         try:
             if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
                 self.app.switch_screen("tela_cadastro_pessoa")
-
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                self.app.switch_screen("tela_cadastro_imovel")
 
             elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
                 self.app.switch_screen("tela_cadastro_imovel")

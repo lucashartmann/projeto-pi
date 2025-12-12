@@ -9,6 +9,20 @@ class Venda_Aluguel:
         self.data_venda = None
         self.comissao_captador = None
         self.comissao_corretor = None
+        self.data_cadastro = None
+        self.data_modificacao = None
+    
+    def set_data_cadastro(self, data):
+        self.data_cadastro = data
+
+    def get_data_cadastro(self):
+        return self.data_cadastro
+
+    def set_data_modificacao(self, data):
+        self.data_modificacao = data
+
+    def get_data_modificacao(self):
+        return self.data_modificacao
 
     def get_id_venda(self):
         return self.id_venda

@@ -189,9 +189,6 @@ class TelaDadosCliente(Screen):
             elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
                 self.app.switch_screen("tela_cadastro_imovel")
 
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                self.app.switch_screen("tela_cadastro_imovel")
-
             elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
                 self.app.switch_screen("tela_estoque")
 
@@ -203,9 +200,6 @@ class TelaDadosCliente(Screen):
 
             elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
                 self.app.switch_screen("tela_estoque_cliente")
-
-            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                self.app.switch_screen("tela_dados_cliente")
 
             elif event.tabs.active == self.query_one("#tab_atendimento", Tab).id:
                 self.app.switch_screen("tela_atendimento")
