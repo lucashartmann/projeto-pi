@@ -114,9 +114,8 @@ class TelaEstoque(Screen):
                     self.objeto = Init.comprador
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    lista_filtrada = list(
+                    self.lista = list(
                         usuario for usuario in self.usuarios if usuario.get_tipo() == Usuario.Tipo.CLIENTE)
-                    self.lista = lista_filtrada
                 case "Proprietario":
                     self.objeto = Init.proprietario
                     select.set_options(
@@ -126,16 +125,14 @@ class TelaEstoque(Screen):
                     self.objeto = Init.corretor
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    lista_filtrada = list(usuario for usuario in self.usuarios if usuario.get_tipo(
+                    self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(
                     ) == Usuario.Tipo.CORRETOR)
-                    self.lista = lista_filtrada
                 case "Captador":
                     self.objeto = Init.captador
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    lista_filtrada = list(usuario for usuario in self.usuarios if usuario.get_tipo(
+                    self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(
                     ) == Usuario.Tipo.CAPTADOR)
-                    self.lista = lista_filtrada
                 case "Venda":
                     self.objeto = None
                 case "Aluguel":
@@ -144,16 +141,14 @@ class TelaEstoque(Screen):
                     self.objeto = Init.gerente
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    lista_filtrada = list(
+                    self.lista = list(
                         usuario for usuario in self.usuarios if usuario.get_tipo() == Usuario.Tipo.GERENTE)
-                    self.lista = lista_filtrada
                 case "Admnistrador":
                     self.objeto = Init.administrador
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    lista_filtrada = list(usuario for usuario in self.usuarios if usuario.get_tipo(
+                    self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(
                     ) == Usuario.Tipo.ADMINISTRADOR)
-                    self.lista = lista_filtrada
 
             self.lista_filtrada = []
             self.atualizar()
@@ -394,7 +389,9 @@ class TelaEstoque(Screen):
                 container.mount(container2)
                 container3 = Vertical(classes="dados1")
                 container2.mount(container3)
-
+                
+                container3.mount(
+                    Static(f"Nome {pessoa.get_nome()}", classes="stt_ref"))
                 container3.mount(
                     Static(f"CPF-CNPJ {pessoa.get_cpf_cnpj()}", classes="stt_ref"))
                 if pessoa.get_email():

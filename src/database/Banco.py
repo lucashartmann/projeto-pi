@@ -44,8 +44,8 @@ class Banco:
             CREATE TABLE IF NOT EXISTS telefone_usuario (
                 id_usuario INTEGER,
                 id_telefone INTEGER,
-                FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-                FOREIGN KEY (id_telefone) REFERENCES telefone(telefone)
+                FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+                FOREIGN KEY (id_telefone) REFERENCES telefone(telefone) ON DELETE CASCADE
                          );
             ''')
 
@@ -53,8 +53,8 @@ class Banco:
             CREATE TABLE IF NOT EXISTS telefone_proprietario (
                 id_telefone INTEGER,
                 id_proprietario INTEGER,
-                FOREIGN KEY (id_telefone) REFERENCES telefone(telefone)
-                FOREIGN KEY (id_proprietario) REFERENCES roprietario (id_proprietario)
+                FOREIGN KEY (id_telefone) REFERENCES telefone(telefone) ON DELETE CASCADE,
+                FOREIGN KEY (id_proprietario) REFERENCES roprietario (id_proprietario) ON DELETE CASCADE
                          );
             ''')
 
@@ -74,7 +74,7 @@ class Banco:
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS cliente (
                     id_usuario INTEGER PRIMARY KEY,
-                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
                 );
                                 ''')
 
@@ -94,14 +94,14 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS captador (
                     id_usuario INTEGER PRIMARY KEY,
                     salario REAL NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
                 );
                                 ''')
             cursor.execute(f'''
                 CREATE TABLE IF NOT EXISTS corretor (
                     id_usuario INTEGER PRIMARY KEY,
                     creci TEXT NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
                 );
                                 ''')
 
@@ -147,7 +147,7 @@ class Banco:
                     id_anuncio INTEGER  NULL,
                     midia BLOB  NULL,
                     tipo TEXT  NULL,
-                    FOREIGN KEY (id_anuncio) references anuncio (id_anuncio)
+                    FOREIGN KEY (id_anuncio) references anuncio (id_anuncio) ON DELETE CASCADE
                 );
                                 ''')
 
@@ -172,7 +172,7 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS gerente (
                     id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
                     salario REAL NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
                 );
                                 ''')
             cursor.execute(f'''
@@ -191,7 +191,7 @@ class Banco:
                     status TEXT NULL,
                     FOREIGN KEY (id_imovel) REFERENCES imovel (id_imovel),
                     FOREIGN KEY (cpf_cnpj_corretor) references corretor (cpf_cnpj),
-                    FOREIGN KEY (cpf_cnpj_comprador) references comprador (cpf_cnpj)
+                    FOREIGN KEY (cpf_cnpj_comprador) references comprador (cpf_cnpj) ON DELETE CASCADE
                 );
                                 ''')
 
@@ -213,8 +213,8 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS imovel_filtros (
                     id_filtros_imovel INTEGER,
                     id_imovel INTEGER, 
-                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel (id_filtros_imovel),
-                    FOREIGN KEY (id_imovel) references imovel (id_imovel)                
+                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel (id_filtros_imovel) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE                
                 );
                                 ''')
 
@@ -222,8 +222,8 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS condominio_filtros (
                     id_filtros_condominio INTEGER,
                     id_condominio INTEGER, 
-                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio (id_filtros_condominio),
-                    FOREIGN KEY (id_condominio) references condominio (id_condominio)                
+                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio (id_filtros_condominio) ON DELETE CASCADE,
+                    FOREIGN KEY (id_condominio) references condominio (id_condominio) ON DELETE CASCADE               
                 );
                                 ''')
 
@@ -240,8 +240,8 @@ class Banco:
                 CREATE TABLE IF NOT EXISTS proprietario_imovel (
                     cpf_cnpj_proprietario INTEGER  NULL,
                     id_imovel INTEGER NULL,
-                    FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj_proprietario),
-                    FOREIGN KEY (id_imovel) references imovel (id_imovel)                
+                    FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj_proprietario) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE                
                 );
                                 ''')
 
@@ -2391,36 +2391,6 @@ class Banco:
         except Exception as e:
             erro = f"ERRO! Banco.atualizar_condominio: {e}"
             print(erro)
-            return False
-
-    def remover_usuario(self, cpf_cnpj):
-        try:
-            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
-                cursor = conexao.cursor()
-                sql_delete_query = f"""
-                DELETE FROM usuario
-                WHERE cpf_cnpj = ?;
-                """
-                cursor.execute(sql_delete_query, (cpf_cnpj,))
-                conexao.commit()
-                return True
-        except Exception as e:
-            print(f"ERRO Banco.remover_usuario {e}")
-            return False
-
-    def remover_proprietario(self, cpf_cnpj):
-        try:
-            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
-                cursor = conexao.cursor()
-                sql_delete_query = f"""
-                DELETE FROM proprietario
-                WHERE cpf_cnpj = ?;
-                """
-                cursor.execute(sql_delete_query, (cpf_cnpj,))
-                conexao.commit()
-                return True
-        except Exception as e:
-            print(f"ERRO Banco.remover_proprietario {e}")
             return False
 
     def atualizar_usuario(self, usuario):

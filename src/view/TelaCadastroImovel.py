@@ -10,14 +10,196 @@ from controller import Controller
 from utils import Midia
 from textual_image.widget import Image
 from utils.textual_pdf.pdf_viewer import PDFViewer
+from enum import Enum
+
+
+class Busca(ModalScreen):
+    class Tipo(Enum):
+        PROPRIETARIO = 0
+        CORRETOR = 0
+        CAPTADOR = 0
+
+    def __init__(self, name=None, id=None, classes=None, tipo=None):
+        super().__init__(name, id, classes)
+        self.tipo = tipo
+
+    lista = []
+    lista_filtrada = []
+
+    def on_mount(self):
+        match self.tipo:
+            case self.Tipo.PROPRIETARIO:
+                proprietarios = Init.imobiliaria.get_lista_proprietarios()
+                self.lista = proprietarios
+            case self.Tipo.CORRETOR:
+                usuarios = Init.imobiliaria.get_lista_usuarios()
+                self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
+                ) == Usuario.Tipo.CORRETOR)
+            case self.Tipo.CAPTADOR:
+                usuarios = Init.imobiliaria.get_lista_usuarios()
+                self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
+                ) == Usuario.Tipo.CAPTADOR)
+
+    def compose(self):
+        with Vertical(id="dialog"):
+            with Horizontal():
+                yield Input(placeholder="pesquise aqui")
+                yield Button("Voltar")
+            yield TextArea(read_only=True, id="tx_dados")
+            with Vertical(id="container_resultado"):
+                pass
+
+    def on_button_pressed(self):
+        self.app.pop_screen()
+
+    def on_checkbox_changed(self, evento: Checkbox.Changed):
+        container = evento.checkbox.parent
+        cpf_cnpj = container.name
+        if cpf_cnpj:
+            pessoa_atual = None
+            for pessoa in self.lista:
+                if pessoa.get_cpf_cnpj() == cpf_cnpj:
+                    pessoa_atual = pessoa
+                    break
+
+            if not pessoa_atual:
+                return
+            else:
+                if evento.checkbox.value == False and pessoa_atual in self.screen.selecionados:
+                    self.screen.selecionados.remove(pessoa_atual)
+                elif evento.checkbox.value == True and pessoa_atual not in self.screen.selecionados:
+                    self.screen.selecionados.append(pessoa_atual)
+                else:
+                    return
+
+    def atualizar(self):
+        self.query_one("#container_resultado").remove_children()
+
+        lista = []
+
+        if self.lista_filtrada:
+            lista = self.lista_filtrada
+        else:
+            lista = self.lista
+
+            for pessoa in lista:
+                container = Horizontal(
+                    classes="imovel", name=pessoa.get_cpf_cnpj())
+                self.query_one("#container_resultado").mount(container)
+
+                if pessoa in self.screen.selecionados:
+                    container.mount(Checkbox(value=True))
+                else:
+                    container.mount(Checkbox(value=False))
+                container2 = Vertical(classes="dados0")
+                container.mount(container2)
+                container3 = Vertical(classes="dados1")
+                container2.mount(container3)
+
+                container3.mount(
+                    Static(f"Nome {pessoa.get_nome()}", classes="stt_ref"))
+                container3.mount(
+                    Static(f"CPF-CNPJ {pessoa.get_cpf_cnpj()}", classes="stt_ref"))
+                if pessoa.get_email():
+                    container3.mount(
+                        Static(f"Email {pessoa.get_email()}", classes="stt_bairro"))
+                if pessoa.get_telefones():
+                    for telefone in pessoa.get_telefones():
+                        container3.mount(
+                            Static(f"Telefone: {telefone}", classes="stt_bairro"))
+
+        self.setup_dados()
+
+    def on_input_changed(self, evento: Input.Changed):
+        texto = evento.value
+        palavras = texto.split()
+        if len(palavras) > 0 and self.objeto:
+            self.lista_filtrada = []
+            for palavra in palavras:
+                if palavra[:-1].lower() in self.objeto.__dict__.keys():
+                    index = palavras.index(palavra)
+                    self.filtro(palavras, index, palavra[:-1].lower())
+                    self.atualizar()
+                elif "endereco" in self.objeto.__dict__.keys():
+                    endereco = Endereco.Endereco()
+                    if palavra[:-1].lower() in endereco.__dict__.keys():
+                        index = palavras.index(palavra)
+                        self.filtro(palavras, index,
+                                    f"endereco().{palavra[:-1].lower()}")
+                        self.atualizar()
+        else:
+            self.atualizar()
+
+    def filtro(self, palavras, index, filtro_recebido):
+        nova_lista = []
+        campo = f"get_{filtro_recebido}"
+
+        if index + 1 < len(palavras):
+            filtro = " ".join((palavras[index+1:]))
+
+            if "," in filtro:
+                filtro = filtro[0:filtro.index(
+                    ",")]
+            if "-" in filtro.split():
+                for palavraa in filtro.split("-"):
+                    if filtro.index("-")+1 < len(filtro) and palavraa not in nova_lista:
+                        nova_lista.append(palavraa.strip())
+
+            if len(self.lista_filtrada) > 0:
+                objetos_temp = []
+                if len(nova_lista) > 0:
+                    for p in nova_lista:
+                        for objeto in self.lista_filtrada:
+                            try:
+                                if p in getattr(objeto, campo)() and objeto not in objetos_temp:
+                                    objetos_temp.append(
+                                        objeto)
+                            except:
+                                if p == getattr(objeto, campo)() and objeto not in objetos_temp:
+                                    objetos_temp.append(
+                                        objeto)
+                else:
+                    for objeto in self.lista_filtrada:
+                        try:
+                            if filtro in getattr(objeto, campo)() and objeto not in objetos_temp:
+                                objetos_temp.append(objeto)
+                        except:
+                            if filtro == getattr(objeto, campo)() and objeto not in objetos_temp:
+                                objetos_temp.append(objeto)
+
+                if len(objetos_temp) > 0:
+                    self.lista_filtrada = objetos_temp
+            else:
+                if len(nova_lista) > 0:
+                    for p in nova_lista:
+                        for objeto in self.imoveis:
+                            try:
+                                if p in getattr(objeto, campo)() and objeto not in self.lista_filtrada:
+                                    self.lista_filtrada.append(
+                                        objeto)
+                            except:
+                                if p == getattr(objeto, campo)() and objeto not in self.lista_filtrada:
+                                    self.lista_filtrada.append(
+                                        objeto)
+
+                else:
+                    for objeto in self.imoveis:
+                        try:
+                            if filtro in getattr(objeto, campo)() and objeto not in self.lista_filtrada:
+                                self.lista_filtrada.append(objeto)
+                        except:
+                            if filtro == getattr(objeto, campo)() and objeto not in self.lista_filtrada:
+                                self.lista_filtrada.append(objeto)
 
 
 class PopUp(ModalScreen):
+
     def compose(self):
-        yield Static("Imovel nao salvo, deseja continuar?")
-        with Horizontal():
-            yield Button("Confirmar", id="bt_confirmar")
-            yield Button("Cancelar")
+        with Vertical(id="dialog"):
+            yield Static("Imovel nao salvo, deseja continuar?")
+            with Horizontal():
+                yield Button("Confirmar", id="bt_confirmar")
+                yield Button("Cancelar")
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_confirmar":
@@ -25,27 +207,30 @@ class PopUp(ModalScreen):
         else:
             self.screen.confirmar_salvamento = False
 
-        self.remove()
+        self.app.pop_screen()
 
 
 class PopUpApagar(ModalScreen):
+
     def compose(self):
-        yield Static("Certeza que deseja apagar?")
-        with Horizontal():
-            yield Button("Confirmar", id="bt_confirmar")
-            yield Button("Cancelar")
+        with Vertical(id="dialog"):
+            yield Static("Certeza que deseja apagar?")
+            with Horizontal():
+                yield Button("Confirmar", id="bt_confirmar")
+                yield Button("Cancelar")
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_confirmar":
-            ref = int(self.query_one("#ta_ref", TextArea).text)
-            remocao = Controller.remover(ref, "imovel")
+            ref = int(self.screen.query_one("#ta_ref", TextArea).text)
+            remocao = Controller.remover
+            ("id_imovel", ref, "imovel")
             self.screen.notify(remocao)
             self.screen.acao == True
 
-        self.remove()
+        self.app.pop_screen()
 
 
-class ContainerFuncionario(Horizontal):
+class ContainerFuncionario(Vertical):
     def compose(self):
         yield Static("Nome do cliente", id="st_nome")
         yield Static("Telefone do cliente", id="st_telefone")
@@ -55,7 +240,7 @@ class ContainerFuncionario(Horizontal):
 class TelaCadastroImovel(Screen):
 
     CSS_PATH = "css/TelaCadastroImovel.tcss"
-
+    selecionados = []
     salvo = False
     acao = False
 
@@ -175,44 +360,50 @@ class TelaCadastroImovel(Screen):
 
                 # TODO: Pegar o widget de documento, possibilitar adicionar, remover
 
-            with Vertical(id="container_proprietario"):
+            with Vertical(id="container_proprietario1"):
                 yield Static("Proprietario: ", classes="stt_container_titulo")
+                with Horizontal(id="container_proprietario"):
+                    yield Button("Editar", classes="bt_editar_pessoa")
 
-            with Vertical(id="container_corretor"):
+            with Vertical(id="container_corretor1"):
                 yield Static("Corretor: ", classes="stt_container_titulo")
+                with Horizontal(id="container_corretor"):
+                    yield Button("Editar", classes="bt_editar_pessoa")
 
-            with Vertical(id="container_captador"):
+            with Vertical(id="container_captador1"):
                 yield Static("Captador: ", classes="stt_container_titulo")
+                with Horizontal(id="container_captador"):
+                    yield Button("Editar", classes="bt_editar_pessoa")
 
         yield Footer(show_command_palette=False)
 
     def on_mount(self):
-        container_captador = self.query_one("#container_captador", Vertical)
-        container_corretor = self.query_one("#container_corretor", Vertical)
+        container_captador = self.query_one("#container_captador")
+        container_corretor = self.query_one("#container_corretor")
 
         if self.imovel is None and (Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR or Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR):
 
             if Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
+                self.selecionados.append(Init.usuario_atual)
                 container = ContainerFuncionario()
                 container_captador.mount(
-                    container, after=container_captador.query_one(Static))
-
-                container.query_one("#st_nome", Static).update(
-                    Init.usuario_atual.get_nome())
-                container.query_one("#st_telefone", Static).update(
-                    "".join(str(telefone for telefone in Init.usuario_atual.get_telefones())))
-                container.query_one("#st_email", Static).update(
-                    Init.usuario_atual.get_email())
+                    container, after=container_captador.query_one(Button))
 
             elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
+                self.selecionados.append(Init.usuario_atual)
                 container = ContainerFuncionario()
                 container_corretor.mount(
-                    container, after=container_corretor.query_one(Static))
+                    container, after=container_corretor.query_one(Button))
 
+            if Init.usuario_atual.get_nome():
                 container.query_one("#st_nome", Static).update(
                     Init.usuario_atual.get_nome())
+            if Init.usuario_atual.get_telefones():
                 container.query_one("#st_telefone", Static).update(
-                    "".join(str(telefone for telefone in Init.usuario_atual.get_telefones())))
+                    "\n".join(str(telefone) for telefone in Init.usuario_atual.get_telefones()))
+            else:
+                 container.query_one("#st_telefone", Static).styles.display = None
+            if Init.usuario_atual.get_email():
                 container.query_one("#st_email", Static).update(
                     Init.usuario_atual.get_email())
 
@@ -236,41 +427,62 @@ class TelaCadastroImovel(Screen):
                 self.imovel.get_id())
 
             container_proprietario = self.query_one(
-                "#container_proprietario", Vertical)
+                "#container_proprietario")
 
             if self.imovel.get_proprietarios():
                 for proprietario in self.imovel.proprietarios():
+                    self.selecionados.append(proprietario)
                     container = ContainerFuncionario()
                     container_proprietario.mount(
-                        container, after=container_proprietario.query_one(Static))
+                        container, after=container_proprietario.query_one(Button))
                     container.query_one("#st_nome", Static).update(
                         proprietario.get_nome())
-                    container.query_one("#st_telefone", Static).update(
-                        proprietario.get_telefone())
-                    container.query_one("#st_email", Static).update(
-                        proprietario.get_email())
-
+                    if proprietario.get_telefones():
+                        container.query_one("#st_telefone", Static).update(
+                            "\n".join(str(telefone) for telefone in proprietario.get_telefones()))
+                    else:
+                        container.query_one("#st_telefone", Static).styles.display = None
+                    if proprietario.get_email():
+                        container.query_one("#st_email", Static).update(
+                            proprietario.get_email())
+                    else:
+                        container.query_one("#st_email", Static).styles.display = None
+                        
             if self.imovel.get_corretor():
+                self.selecionados.append(self.imovel.get_corretor())
                 container = ContainerFuncionario()
                 container_corretor.mount(
-                    container, after=container_corretor.query_one(Static))
+                    container, after=container_corretor.query_one(Button))
                 container.query_one("#st_nome", Static).update(
                     self.imovel.get_corretor().get_nome())
-                container.query_one("#st_telefone", Static).update(
-                    self.imovel.get_corretor().get_telefone())
-                container.query_one("#st_email", Static).update(
-                    self.imovel.get_corretor().get_email())
+                if Init.usuario_atual.get_telefones():
+                    container.query_one("#st_telefone", Static).update(
+                        "\n".join(str(telefone) for telefone in self.imovel.get_corretor().get_telefones()))
+                else:
+                    container.query_one("#st_telefone", Static).styles.display = None
+                if self.imovel.get_corretor().get_email():
+                    container.query_one("#st_email", Static).update(
+                        self.imovel.get_corretor().get_captador().get_email())
+                else:
+                    container.query_one("#st_email", Static).styles.display = None
 
             if self.imovel.get_captador():
+                self.selecionados.append(self.imovel.get_captador())
                 container = ContainerFuncionario()
                 container_captador.mount(
-                    container, after=container_captador.query_one(Static))
+                    container, after=container_captador.query_one(Button))
                 container.query_one("#st_nome", Static).update(
                     self.imovel.get_captador().get_nome())
-                container.query_one("#st_telefone", Static).update(
-                    self.imovel.get_captador().get_telefone())
-                container.query_one("#st_email", Static).update(
-                    self.imovel.get_captador().get_email())
+                if self.imovel.get_captador().get_telefones():
+                    container.query_one("#st_telefone", Static).update(
+                        "\n".join(str(telefone) for telefone in self.imovel.get_captador().get_telefones()))
+                else:
+                    container.query_one("#st_telefone", Static).styles.display = None
+                if self.imovel.get_captador().get_email():
+                    container.query_one("#st_email", Static).update(
+                        self.imovel.get_captador().get_email())
+                else:
+                    container.query_one("#st_email", Static).styles.display = None
 
             if self.imovel.get_categoria() is not None:
                 self.query_one(
@@ -392,11 +604,14 @@ class TelaCadastroImovel(Screen):
                     self.notify("ERRO! CEP inválido")
 
     def on_button_pressed(self, evento: Button.Pressed):
+        
+        if "bt_editar_pessoa" in evento.button.classes:
+            self.app.push_screen(Busca())
 
         match evento.button.id:
 
             case "bt_apagar_cadastro":
-                self.mount(PopUpApagar())
+                self.app.push_screen(PopUpApagar())
 
             case "bt_adicionar_imagens":
                 caminho = Midia.selecionar_arquivo(Midia.Tipo.IMAGEM)
@@ -556,9 +771,6 @@ class TelaCadastroImovel(Screen):
                     pass
 
                 anuncio.set_anexos(anexos)
-                # anuncio.set_videos()
-                # anuncio.set_fotos()
-
                 anuncio.set_titulo(titulo)
                 anuncio.set_descricao(descricao)
                 anuncio.set_imagens(imagens)
@@ -595,10 +807,14 @@ class TelaCadastroImovel(Screen):
                 imovel.set_andar(andar)
                 imovel.set_ano_construcao(ano_construcao)
                 imovel.set_area_privativa(area_privativa)
+                
+                #TODO: arrumar
                 if Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
                     imovel.set_captador(Init.usuario_atual)
                 elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
                     imovel.set_corretor(Init.usuario_atual)
+                    
+                    
                 imovel.set_area_total(area_total)
                 imovel.set_bloco(bloco)
                 imovel.set_iptu(iptu)

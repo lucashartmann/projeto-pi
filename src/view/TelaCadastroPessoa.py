@@ -105,7 +105,7 @@ class TelaCadastroPessoa(Screen):
             "#tab_cadastro_pessoa", Tab).id
 
     def on_mount(self):
-        
+
         if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             self.query_one("#select_tabelas", Select).set_options(
                 [("Usuário"), ("Usuário")])
@@ -115,7 +115,7 @@ class TelaCadastroPessoa(Screen):
         else:
             self.query_one("#select_tabelas", Select).set_options([("Comprador", "Comprador"), (
                 "Proprietário", "Proprietario")])
-            
+
         if self.pessoa:
             self.query_one(
                 "#inpt_nome", TextArea).text = self.pessoa.get_nome()
@@ -304,16 +304,18 @@ class TelaCadastroPessoa(Screen):
             case "Remover":
                 cpf_pesquisa = self.query_one("#inpt_id_pesquisa", MaskedInput)
                 if cpf_pesquisa._valid:
-                    cpf = self.query_one(
+                    cpf_pesquisa = self.query_one(
                         "#inpt_id_pesquisa", MaskedInput).value
                 else:
                     self.notify("ERRO. CPF inválido")
                     return
 
                 if self.query_one("#select_tabelas", Select).value == "Proprietario":
-                    remocao = Controller.remover_proprietario(cpf)
+                    remocao = Controller.remover(
+                        "id_proprietario", cpf_pesquisa, "proprietario")
                 else:
-                    remocao = Controller.remover_usuario(cpf)
+                    remocao = Controller.remover(
+                        "id_usuario", cpf_pesquisa, "usuario")
 
                 self.notify(remocao)
                 self.limpar_text_area()

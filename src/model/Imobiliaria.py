@@ -97,14 +97,12 @@ class Imobiliaria:
     def atualizar_condominio(self, condominio):
         return self.banco_dados.atualizar_condominio(condominio)
     
-    def remover_usuario(self, cpf):
-        return self.banco_dados.remover_usuario(cpf)
-    
-    def remover_proprietario(self, cpf):
-        return self.banco_dados.remover_proprietario(cpf)
     
     def atualizar_usuario(self, usuario):
         return self.banco_dados.atualizar_usuario(usuario)
     
     def atualizar_proprietario(self, proprietario):
         return self.banco_dados.atualizar_proprietario(proprietario)
+    
+    def remover(self, campo_desejado, valor, tabela):
+        return self.banco_dados.remover(campo_desejado, valor, tabela)

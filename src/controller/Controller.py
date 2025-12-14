@@ -1,4 +1,4 @@
-from model import Cliente, Corretor, Init, Captador
+from model import Cliente, Init
 import datetime
 
 
@@ -11,42 +11,45 @@ def cadastrar_atendimento(atendimento):
         return "ERRO ao cadastrar atendimento"
 
 
-def remover_usuario(cpf):
+def remover(campo_desejado, valor, tabela):
+    """
+    Remove registros de uma tabela com base em um campo e valor informados.
 
-    remocao = Init.imobiliaria.remover_usuario(cpf)
+    Parâmetros:
+        campo_desejado (str): Nome da coluna usada na condição WHERE.
+        valor (Any): Valor a ser comparado com o campo informado.
+        tabela (str): Nome da tabela onde o registro será removido.
 
-    if remocao == True:
-        return f"'Usuario - {cpf}' removida com sucesso"
-    else:
-        return f"ERRO ao remover 'Usuario - {cpf}'"
+    Exemplo:
+        remover("id_proprietario", 5, "proprietario")
+    """
     
-def remover_proprietario(cpf):
-
-    remocao = Init.imobiliaria.remover_proprietario(cpf)
+    remocao = Init.imobiliaria.remover(campo_desejado, valor, tabela)
 
     if remocao == True:
-        return f"'Proprietario - {cpf}' removida com sucesso"
+        return f"'{valor}' removido com sucesso"
     else:
-        return f"ERRO ao remover 'proprietario-{cpf}'"
+        return f"ERRO ao remover '{valor}'"
+
 
 
 def editar_proprietario(proprietario):
     cadastrado = Init.imobiliaria.atualizar_proprietario(proprietario)
 
     if cadastrado:
-        return f"proprietario editado!\n"
+        return f"Proprietário editado!\n"
     else:
-        return "ERRO"
+        return "ERRO ao editar proprietário"
 
 
 def cadastrar_proprietario(proprietario):
-  
+
     cadastrado = Init.imobiliaria.cadastrar_proprietario(proprietario)
 
     if cadastrado:
-        return f"Proprietario cadastrado!\n {proprietario}"
+        return f"Proprietário cadastrado!\n {proprietario}"
     else:
-        return "ERRO"
+        return "ERRO ao cadastrar proprietário"
 
 
 def editar_usuario(usuario):
@@ -55,7 +58,7 @@ def editar_usuario(usuario):
     if cadastrado:
         return f"Usuário editado!\n"
     else:
-        return "ERRO"
+        return "ERRO ao esitar usuário"
 
 
 def cadastrar_usuario(usuario):
@@ -64,7 +67,7 @@ def cadastrar_usuario(usuario):
     if cadastrado:
         return f"Usuário cadastrado!\n"
     else:
-        return "ERRO"
+        return "ERRO ao cadastrar usuário"
 
 
 def editar_imovel(imovel):
@@ -85,7 +88,7 @@ def editar_imovel(imovel):
                     endereco = Init.imobiliaria.verificar_endereco(
                         imovel.get_endereco())
             if not endereco:
-                return "ERRO! Problema com o endereço"
+                return "ERRO ao editar imóvel! Problema com o endereço"
             else:
                 imovel.get_endereco().set_id(endereco.get_id())
 
@@ -133,7 +136,7 @@ def cadastrar_imovel(imovel):
                 imovel.get_endereco())
 
     if not endereco:
-        return "ERRO! Problema com o endereço"
+        return "ERRO ao cadastrar imóvel! Problema com o endereço"
     else:
         imovel.get_endereco().set_id(endereco.get_id())
         consultar_condominio = Init.imobiliaria.get_condominio_por_id_endereco(
@@ -161,7 +164,7 @@ def cadastrar_imovel(imovel):
         if cadastrado == True:
             return f"imovel cadastrado!\n"
         else:
-            return "ERRO: ao cadastrar_imovel"
+            return "ERRO ao cadastrar imóvel"
 
 
 def verificar_login(username, senha):
@@ -175,7 +178,7 @@ def verificar_login(username, senha):
         Init.usuario_atual = consulta
         return "Login realizado com sucesso"
     else:
-        return "ERRO"
+        return "ERRO ao realizar login"
 
 
 def salvar_login(username, senha, email):
@@ -192,4 +195,4 @@ def salvar_login(username, senha, email):
         Init.usuario_atual = um_usuario
         return "Cadastro realizado com sucesso"
     else:
-        return "ERRO. Tente Novamente"
+        return "ERRO ao cadastrar. Tente Novamente"

@@ -65,7 +65,7 @@ class PDFViewer(Container):
                 return "msword"
             else:
                 return "txt"
-       
+
         path = Path(path)
         guess, _ = mimetypes.guess_type(path)
         print(guess)
@@ -80,15 +80,18 @@ class PDFViewer(Container):
 
         if file_type == "pdf":
             try:
-                self.doc = fitz.open(stream=path.getvalue(), filetype="pdf") if isinstance(path, io.BytesIO) else fitz.open(path)
+                self.doc = fitz.open(stream=path.getvalue(), filetype="pdf") if isinstance(
+                    path, io.BytesIO) else fitz.open(path)
                 if self.doc.is_encrypted and self.doc.needs_pass:
-                    raise PDFHasAPasswordError(f"{path} é protegido por senha.")
+                    raise PDFHasAPasswordError(
+                        f"{path} é protegido por senha.")
                 self.total_pages = self.doc.page_count
             except (FileDataError, EmptyFileError):
                 raise NotAPDFError(f"{path} não é um PDF válido.")
 
         elif file_type in ("plain", "txt"):
-            text = path.getvalue().decode(errors="ignore") if isinstance(path, io.BytesIO) else Path(path).read_text(encoding="utf-8", errors="ignore")
+            text = path.getvalue().decode(errors="ignore") if isinstance(
+                path, io.BytesIO) else Path(path).read_text(encoding="utf-8", errors="ignore")
             self.doc = text.splitlines()
             self.total_pages = max(1, len(self.doc) // 40 + 1)
 
@@ -98,12 +101,15 @@ class PDFViewer(Container):
             paragraphs = [p.text for p in doc.paragraphs if p.text.strip()]
             wrapped_lines = []
             for p in paragraphs:
-                wrapped_lines.extend(textwrap.wrap(p, width=80))  # Wrap at 80 characters
+                # Wrap at 80 characters
+                wrapped_lines.extend(textwrap.wrap(p, width=80))
             self.doc = wrapped_lines
-            self.total_pages = max(1, len(wrapped_lines) // 30 + 1)  # Estimate pages based on wrapped lines
+            # Estimate pages based on wrapped lines
+            self.total_pages = max(1, len(wrapped_lines) // 30 + 1)
 
         elif file_type in ("markdown", "md"):
-            text = path.getvalue().decode(errors="ignore") if isinstance(path, io.BytesIO) else Path(path).read_text(encoding="utf-8", errors="ignore")
+            text = path.getvalue().decode(errors="ignore") if isinstance(
+                path, io.BytesIO) else Path(path).read_text(encoding="utf-8", errors="ignore")
             self.doc = self._split_markdown_pages(text)
             self.total_pages = len(self.doc)
 
@@ -169,14 +175,15 @@ class PDFViewer(Container):
         image = PILImage.new("RGB", (width, height), "white")
         draw = ImageDraw.Draw(image)
         font = ImageFont.load_default()
-        
+
         # Define the maximum width for text (accounting for margins)
         max_text_width = width - 20  # 10 pixels margin on each side
-        
+
         y = 10
         for line in lines:
             # Wrap the text to fit within the image width
-            wrapped_lines = textwrap.wrap(line, width=80)  # Adjust width based on font size
+            # Adjust width based on font size
+            wrapped_lines = textwrap.wrap(line, width=80)
             for wrapped_line in wrapped_lines:
                 draw.text((10, y), wrapped_line, fill="black", font=font)
                 y += 18  # Adjust line spacing

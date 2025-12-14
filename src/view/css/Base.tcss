@@ -2,6 +2,14 @@ Screen {
     background: rgba(229, 228, 228, 1);
     color: black;
 }
+ModalScreen {
+        layout: vertical;
+        overflow-y: auto;
+        background: $background 60%;
+        &:ansi {
+            background: transparent;                   
+        }
+}
 
 Input, Checkbox, MyInput, MaskedInput, Select SelectOverlay, Select Horizontal, TextArea {
     background: rgba(229, 228, 228, 1);

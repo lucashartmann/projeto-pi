@@ -215,7 +215,7 @@ TelaCadastroImovel .stt_container_titulo {
     color: black;
 }
 
-TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
+TelaCadastroImovel #container_captador1, TelaCadastroImovel #container_corretor1, TelaCadastroImovel #container_proprietario1 {
     background: rgb(200, 200, 200);
     margin: 2;
     width: 100%;
@@ -236,9 +236,47 @@ TelaCadastroImovel ContainerFuncionario{
     background: rgba(159, 159, 159, 1);
     margin: 2;
     color: black;
+    width: auto;
 }
 
 TelaCadastroImovel ContainerFuncionario Static{
     border: solid black;
     margin: 0;
+    width: auto;
+}
+
+TelaCadastroImovel .dados0 {
+    height: 20;
+    margin-left: 2;
+}
+
+TelaCadastroImovel .dados2 {
+    height: 10;
+}
+
+TelaCadastroImovel .stt_bairro {
+    text-style: bold;
+}
+
+TelaCadastroImovel .stt_ref {
+    border: black;
+    width: auto;
+}
+
+PopUpApagar, QuitScreen, Busca{
+    align: center middle;
+}
+
+#dialog {
+    padding: 0 1;
+    width: 20;
+    height: 11;
+    border: thick $background 80%;
+    background: $surface;
+}
+
+TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
+    width: 100%;
+    height: 100%;
+    align: center middle;
 }
