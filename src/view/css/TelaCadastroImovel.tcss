@@ -269,10 +269,34 @@ PopUpApagar, QuitScreen, Busca{
 
 #dialog {
     padding: 0 1;
-    width: 20;
+    width: 20%;
     height: 11;
     border: thick $background 80%;
-    background: $surface;
+    background: rgba(229, 228, 228, 1);
+    align: center middle;
+    text-align: center;
+    content-align: center middle;
+}
+
+#dialog Horizontal{
+    width: 100%;
+    height: 100%;
+    align: center middle;
+    text-align: center;
+    content-align: center middle;
+}
+
+#dialog Horizontal Button{
+    margin:2;
+    align: center middle;
+    text-align: center;
+    content-align: center middle;
+}
+
+#dialog Static{
+    align: center middle;
+    text-align: center;
+    content-align: center middle;
 }
 
 TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {

@@ -73,7 +73,8 @@ class Busca(ModalScreen):
                     return
 
     def atualizar(self):
-        self.query_one("#container_resultado").remove_children()
+        self.app.get_screen("tela_cadastro_imovel").query_one(
+            "#container_resultado").remove_children()
 
         lista = []
 
@@ -85,7 +86,8 @@ class Busca(ModalScreen):
             for pessoa in lista:
                 container = Horizontal(
                     classes="imovel", name=pessoa.get_cpf_cnpj())
-                self.query_one("#container_resultado").mount(container)
+                self.app.get_screen("tela_cadastro_imovel").query_one(
+                    "#container_resultado").mount(container)
 
                 if pessoa in self.screen.selecionados:
                     container.mount(Checkbox(value=True))
@@ -203,9 +205,11 @@ class PopUp(ModalScreen):
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_confirmar":
-            self.screen.confirmar_salvamento = True
+            self.app.get_screen(
+                "tela_cadastro_imovel").confirmar_salvamento = True
         else:
-            self.screen.confirmar_salvamento = False
+            self.app.get_screen(
+                "tela_cadastro_imovel").confirmar_salvamento = False
 
         self.app.pop_screen()
 
@@ -221,11 +225,12 @@ class PopUpApagar(ModalScreen):
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_confirmar":
-            ref = int(self.screen.query_one("#ta_ref", TextArea).text)
+            ref = int(self.app.get_screen(
+                "tela_cadastro_imovel").query_one("#ta_ref", TextArea).text)
             remocao = Controller.remover
             ("id_imovel", ref, "imovel")
-            self.screen.notify(remocao)
-            self.screen.acao == True
+            self.app.get_screen("tela_cadastro_imovel").notify(remocao)
+            self.app.get_screen("tela_cadastro_imovel").acao == True
 
         self.app.pop_screen()
 
@@ -363,17 +368,17 @@ class TelaCadastroImovel(Screen):
             with Vertical(id="container_proprietario1"):
                 yield Static("Proprietario: ", classes="stt_container_titulo")
                 with Horizontal(id="container_proprietario"):
-                    yield Button("Editar", classes="bt_editar_pessoa")
+                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_proprietario")
 
             with Vertical(id="container_corretor1"):
                 yield Static("Corretor: ", classes="stt_container_titulo")
                 with Horizontal(id="container_corretor"):
-                    yield Button("Editar", classes="bt_editar_pessoa")
+                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_corretor")
 
             with Vertical(id="container_captador1"):
                 yield Static("Captador: ", classes="stt_container_titulo")
                 with Horizontal(id="container_captador"):
-                    yield Button("Editar", classes="bt_editar_pessoa")
+                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
 
         yield Footer(show_command_palette=False)
 
@@ -402,7 +407,8 @@ class TelaCadastroImovel(Screen):
                 container.query_one("#st_telefone", Static).update(
                     "\n".join(str(telefone) for telefone in Init.usuario_atual.get_telefones()))
             else:
-                 container.query_one("#st_telefone", Static).styles.display = None
+                container.query_one(
+                    "#st_telefone", Static).styles.display = None
             if Init.usuario_atual.get_email():
                 container.query_one("#st_email", Static).update(
                     Init.usuario_atual.get_email())
@@ -441,13 +447,15 @@ class TelaCadastroImovel(Screen):
                         container.query_one("#st_telefone", Static).update(
                             "\n".join(str(telefone) for telefone in proprietario.get_telefones()))
                     else:
-                        container.query_one("#st_telefone", Static).styles.display = None
+                        container.query_one(
+                            "#st_telefone", Static).styles.display = None
                     if proprietario.get_email():
                         container.query_one("#st_email", Static).update(
                             proprietario.get_email())
                     else:
-                        container.query_one("#st_email", Static).styles.display = None
-                        
+                        container.query_one(
+                            "#st_email", Static).styles.display = None
+
             if self.imovel.get_corretor():
                 self.selecionados.append(self.imovel.get_corretor())
                 container = ContainerFuncionario()
@@ -459,12 +467,14 @@ class TelaCadastroImovel(Screen):
                     container.query_one("#st_telefone", Static).update(
                         "\n".join(str(telefone) for telefone in self.imovel.get_corretor().get_telefones()))
                 else:
-                    container.query_one("#st_telefone", Static).styles.display = None
+                    container.query_one(
+                        "#st_telefone", Static).styles.display = None
                 if self.imovel.get_corretor().get_email():
                     container.query_one("#st_email", Static).update(
                         self.imovel.get_corretor().get_captador().get_email())
                 else:
-                    container.query_one("#st_email", Static).styles.display = None
+                    container.query_one(
+                        "#st_email", Static).styles.display = None
 
             if self.imovel.get_captador():
                 self.selecionados.append(self.imovel.get_captador())
@@ -477,12 +487,14 @@ class TelaCadastroImovel(Screen):
                     container.query_one("#st_telefone", Static).update(
                         "\n".join(str(telefone) for telefone in self.imovel.get_captador().get_telefones()))
                 else:
-                    container.query_one("#st_telefone", Static).styles.display = None
+                    container.query_one(
+                        "#st_telefone", Static).styles.display = None
                 if self.imovel.get_captador().get_email():
                     container.query_one("#st_email", Static).update(
                         self.imovel.get_captador().get_email())
                 else:
-                    container.query_one("#st_email", Static).styles.display = None
+                    container.query_one(
+                        "#st_email", Static).styles.display = None
 
             if self.imovel.get_categoria() is not None:
                 self.query_one(
@@ -581,7 +593,7 @@ class TelaCadastroImovel(Screen):
 
     def on_input_changed(self, evento: MaskedInput.Changed):
         self.salvo = False
-        if evento.input.id == "ta_cep":
+        if evento.input.id == "ta_cep" and not self.imovel:
             cep = str(evento.input.value.strip())
             self.query_one("#ta_bairro", TextArea).clear()
             self.query_one("#ta_estado", MaskedInput).clear()
@@ -604,10 +616,15 @@ class TelaCadastroImovel(Screen):
                     self.notify("ERRO! CEP inválido")
 
     def on_button_pressed(self, evento: Button.Pressed):
-        
-        if "bt_editar_pessoa" in evento.button.classes:
-            self.app.push_screen(Busca())
 
+        if "bt_editar_pessoa" in evento.button.classes:
+            match evento.button.id:
+                case "br_editar_proprietario":
+                    self.app.push_screen(Busca(tipo=Busca.Tipo.PROPRIETARIO))
+                case "br_editar_corretor":
+                    self.app.push_screen(Busca(tipo=Busca.Tipo.CORRETOR))
+                case "br_editar_captador":
+                    self.app.push_screen(Busca(tipo=Busca.Tipo.CAPTADOR))
         match evento.button.id:
 
             case "bt_apagar_cadastro":
@@ -807,14 +824,13 @@ class TelaCadastroImovel(Screen):
                 imovel.set_andar(andar)
                 imovel.set_ano_construcao(ano_construcao)
                 imovel.set_area_privativa(area_privativa)
-                
-                #TODO: arrumar
+
+                # TODO: arrumar
                 if Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
                     imovel.set_captador(Init.usuario_atual)
                 elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
                     imovel.set_corretor(Init.usuario_atual)
-                    
-                    
+
                 imovel.set_area_total(area_total)
                 imovel.set_bloco(bloco)
                 imovel.set_iptu(iptu)
