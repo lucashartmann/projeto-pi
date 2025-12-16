@@ -146,6 +146,7 @@ TelaCadastroImovel ContainerImagem Button#deletar{
     text-align:center;
     color: red;
     border: none;
+    margin: 0;
 }
 
 TelaCadastroImovel ContainerImagem Button#deletar:hover{
@@ -156,6 +157,20 @@ TelaCadastroImovel ContainerImagem Horizontal{
    width: 100%;
    height: 100%;
 }
+
+# ContainerImagem PDFViewer {
+#     width: 100%;
+#     height: 100%;
+#     margin: 0;
+#     border: none;
+# }
+
+# ContainerImagem PDFViewer Image {
+#     width: 100%;
+#     height: 100%;
+#     margin: 0;
+#     border: none;
+# }
 
 TelaCadastroImovel ContainerImagem Horizontal Button{
    width: 50%;
@@ -171,6 +186,7 @@ TelaCadastroImovel #container_imagens Image{
    width: 100%;
    height: 70%;
 }
+
 
 TelaCadastroImovel #container_imagens Center {
     height: 100%;

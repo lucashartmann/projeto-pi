@@ -32,10 +32,11 @@ class App(App):
     }
 
     def on_mount(self):
-        Init.usuario_atual = Init.captador
-        self.push_screen("tela_cadastro_imovel")
+        # Init.usuario_atual = Init.captador
+        # self.push_screen("tela_cadastro_imovel")
+        self.use_command_palette = False
 
-        # self.push_screen("tela_login")
+        self.push_screen("tela_login")
 
     def action_enviar_email(self):
         tela_login = self.get_screen("tela_login")

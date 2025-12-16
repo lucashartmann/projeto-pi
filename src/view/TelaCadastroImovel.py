@@ -19,9 +19,10 @@ from enum import Enum
 
 
 class ImagemAmpliada(ModalScreen):
-    def __init__(self, name=None, id=None, classes=None, imagem=None):
+    def __init__(self, name=None, id=None, classes=None, imagem=None, documento=None):
         super().__init__(name, id, classes)
         self.imagem = imagem
+        self.documento = documento
 
     TITLE = "Imagem Ampliada"
 
@@ -29,15 +30,26 @@ class ImagemAmpliada(ModalScreen):
         yield Header()
         with Horizontal(id="dialog"):
             yield Static("<", id="esquerda")
-            yield Image(self.imagem)
+            if self.imagem:
+                yield Image(self.imagem)
+            elif self.documento:
+                yield PDFViewer(self.documento)
             yield Static(">", id="direita")
 
     @on(Click)
     def clicou_duas_vezes(self, evento: Click):
         if isinstance(evento.widget, Static):
-            imagens = list(container.query_one(Image).image for container in self.app.get_screen("tela_cadastro_imovel").query_one(
-                "#container_imagens").query(ContainerImagem))
-            index = imagens.index(self.imagem)
+            if self.imagem:
+                imagens = list(container.query_one(Image).image for container in self.app.get_screen("tela_cadastro_imovel").query_one(
+                    "#container_imagens").query(ContainerImagem))
+                index = imagens.index(self.imagem)
+            elif self.documento:
+                imagens = list(container.query_one(PDFViewer).path for container in self.app.get_screen("tela_cadastro_imovel").query_one(
+                    "#container_anexos").query(ContainerImagem))
+                index = imagens.index(self.documento)
+            else:
+                return
+            
 
             if evento.widget.id == "esquerda":
                 if index - 1 >= 0:
@@ -49,26 +61,45 @@ class ImagemAmpliada(ModalScreen):
 
 
 class ContainerImagem(Vertical):
-    def __init__(self, *children, name=None, id=None, classes=None, disabled=False, markup=True, imagem=None):
+    def __init__(self, *children, name=None, id=None, classes=None, disabled=False, markup=True, imagem=None, documento=None):
         super().__init__(*children, name=name, id=id,
                          classes=classes, disabled=disabled, markup=markup)
         self.imagem = imagem
+        self.documento = documento
 
     def compose(self):
         yield Button("X", id="deletar", flat=True)
-        yield Image(self.imagem)
+        if self.imagem:
+            yield Image(self.imagem)
+        elif self.documento:
+            yield PDFViewer(self.documento)
+        else:
+            return
         with Horizontal():
             yield Button("<", flat=True, id="esquerda")
             yield Button(">", flat=True, id="direita")
 
     @on(Click)
     def clicou_duas_vezes(self, evento: Click):
-        if evento.chain == 2 and isinstance(evento.widget, _ImageSixelImpl):
-            self.app.push_screen(ImagemAmpliada(
-                imagem=self.query_one(Image).image))
+        if evento.chain == 2:
+            if isinstance(evento.widget, _ImageSixelImpl) and self.imagem:
+                self.app.push_screen(ImagemAmpliada(
+                    imagem=self.query_one(Image).image))
+            elif isinstance(evento.widget, _ImageSixelImpl) and self.documento:
+                self.app.push_screen(ImagemAmpliada(
+                    documento=self.query_one(PDFViewer).path))
+            else:
+                return
 
     async def on_button_pressed(self, evento: Button.Pressed):
-        container = self.screen.query_one("#container_imagens", Grid)
+        container = None
+        if self.imagem:
+            container = self.screen.query_one("#container_imagens", Grid)
+        elif self.documento:
+            container = self.screen.query_one("#container_anexos", Grid)
+        else:
+            return
+
         lista = list(container.query_children())
         posicao = lista.index(self)
 
@@ -670,7 +701,7 @@ class TelaCadastroImovel(Screen):
                 container_anexos = self.query_one("#container_anexos", Grid)
                 for anexo in self.imovel.get_anuncio().get_anexos():
                     container_anexos.mount(
-                        PDFViewer(anexo), after=self.query_one("#container_anexos", Grid).query_one(Center))
+                        ContainerImagem(documento=anexo), after=self.query_one("#container_anexos", Grid).query_one(Center))
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
@@ -727,7 +758,7 @@ class TelaCadastroImovel(Screen):
                 if caminhos:
                     for caminho in caminhos:
                         self.query_one("#container_anexos", Grid).mount(
-                            PDFViewer(caminho), after=self.query_one("#container_anexos", Grid).query_one(Center))
+                            ContainerImagem(documento=caminho), after=self.query_one("#container_anexos", Grid).query_one(Center))
 
             case "bt_salvar_alteracoes":
 
@@ -870,8 +901,9 @@ class TelaCadastroImovel(Screen):
                     pass
 
                 try:
-                    for widget_anexo in self.query_one("container_anexos").query(PDFViewer):
-                        anexos.append(Midia.get_bytes(widget_anexo.path))
+                    for widget_anexo in self.query_one("container_anexos").query(ContainerImagem):
+                        anexos.append(Midia.get_bytes(
+                            widget_imagem.query_one(PDFViewer).path))
                 except:
                     pass
 

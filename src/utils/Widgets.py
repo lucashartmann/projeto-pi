@@ -13,4 +13,7 @@ class Header(Header):
                    before=self.query_one(_header.HeaderTitle))
 
     def on_button_pressed(self):
-        self.app.pop_screen()
+        if len(self.app.screen_stack) > 2:
+            self.app.pop_screen()
+        else:
+            self.app.exit()
