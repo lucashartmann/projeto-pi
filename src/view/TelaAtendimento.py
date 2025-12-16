@@ -1,8 +1,8 @@
 from textual.screen import Screen
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Static, Footer, Header, Tab, Tabs
+from textual.widgets import Static, Footer, Tab, Tabs
 from textual.containers import Horizontal
-
+from utils.Widgets import Header
 from model import Usuario, Init, Atendimento
 
 

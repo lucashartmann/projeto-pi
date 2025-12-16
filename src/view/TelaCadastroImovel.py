@@ -1,5 +1,5 @@
 from textual.screen import Screen, ModalScreen
-from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button, Header, Footer, Input
+from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button, Footer, Input
 from textual.containers import Horizontal, Vertical, Grid, VerticalScroll, Center
 from textual.validation import Length
 from textual.events import Click
@@ -11,6 +11,7 @@ import datetime
 from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
 from controller import Controller
 from utils import Midia
+from utils.Widgets import Header
 from textual_image.widget import Image
 from textual_image.widget.sixel import _ImageSixelImpl
 from utils.textual_pdf.pdf_viewer import PDFViewer
@@ -18,30 +19,34 @@ from enum import Enum
 
 
 class ImagemAmpliada(ModalScreen):
-    def __init__(self, name = None, id = None, classes = None, imagem = None):
+    def __init__(self, name=None, id=None, classes=None, imagem=None):
         super().__init__(name, id, classes)
         self.imagem = imagem
-        
+
+    TITLE = "Imagem Ampliada"
+
     def compose(self):
+        yield Header()
         with Horizontal(id="dialog"):
             yield Static("<", id="esquerda")
             yield Image(self.imagem)
             yield Static(">", id="direita")
-            
+
     @on(Click)
-    def clicou_duas_vezes(self, evento:Click):
+    def clicou_duas_vezes(self, evento: Click):
         if isinstance(evento.widget, Static):
             imagens = list(container.query_one(Image).image for container in self.app.get_screen("tela_cadastro_imovel").query_one(
-            "#container_imagens").query(ContainerImagem))
+                "#container_imagens").query(ContainerImagem))
             index = imagens.index(self.imagem)
-            
+
             if evento.widget.id == "esquerda":
                 if index - 1 >= 0:
                     self.query_one(Image).image = imagens[index - 1]
             else:
-                if index + 1 <= len(imagens):
+                if index + 1 < len(imagens):
                     self.query_one(Image).image = imagens[index + 1]
             # self.app.pop_screen()
+
 
 class ContainerImagem(Vertical):
     def __init__(self, *children, name=None, id=None, classes=None, disabled=False, markup=True, imagem=None):
@@ -50,17 +55,18 @@ class ContainerImagem(Vertical):
         self.imagem = imagem
 
     def compose(self):
+        yield Button("X", id="deletar", flat=True)
         yield Image(self.imagem)
         with Horizontal():
             yield Button("<", flat=True, id="esquerda")
-            # yeld Button("X", id="deletar")
             yield Button(">", flat=True, id="direita")
-            
+
     @on(Click)
-    def clicou_duas_vezes(self, evento:Click):
+    def clicou_duas_vezes(self, evento: Click):
         if evento.chain == 2 and isinstance(evento.widget, _ImageSixelImpl):
-            self.app.push_screen(ImagemAmpliada(imagem=self.query_one(Image).image))
-            
+            self.app.push_screen(ImagemAmpliada(
+                imagem=self.query_one(Image).image))
+
     async def on_button_pressed(self, evento: Button.Pressed):
         container = self.screen.query_one("#container_imagens", Grid)
         lista = list(container.query_children())
@@ -87,6 +93,8 @@ class Busca(ModalScreen):
         CORRETOR = 0
         CAPTADOR = 0
 
+    TITLE = "Busca"
+
     def __init__(self, name=None, id=None, classes=None, tipo=None):
         super().__init__(name, id, classes)
         self.tipo = tipo
@@ -107,18 +115,17 @@ class Busca(ModalScreen):
                 usuarios = Init.imobiliaria.get_lista_usuarios()
                 self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
                 ) == Usuario.Tipo.CAPTADOR)
+        self.atualizar()
 
     def compose(self):
+        yield Header()
         with Vertical(id="dialog"):
             with Horizontal():
                 yield Input(placeholder="pesquise aqui")
                 yield Button("Voltar")
-            yield TextArea(read_only=True, id="tx_dados")
-            with Vertical(id="container_resultado"):
+            # yield TextArea(read_only=True, id="tx_dados")
+            with VerticalScroll(id="container_resultado"):
                 pass
-
-    def on_button_pressed(self):
-        self.app.pop_screen()
 
     def on_checkbox_changed(self, evento: Checkbox.Changed):
         container = evento.checkbox.parent
@@ -133,15 +140,17 @@ class Busca(ModalScreen):
             if not pessoa_atual:
                 return
             else:
-                if evento.checkbox.value == False and pessoa_atual in self.screen.selecionados:
-                    self.screen.selecionados.remove(pessoa_atual)
-                elif evento.checkbox.value == True and pessoa_atual not in self.screen.selecionados:
-                    self.screen.selecionados.append(pessoa_atual)
+                if evento.checkbox.value == False and pessoa_atual in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                    self.app.get_screen(
+                        "tela_cadastro_imovel").selecionados.remove(pessoa_atual)
+                elif evento.checkbox.value == True and pessoa_atual not in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                    self.app.get_screen(
+                        "tela_cadastro_imovel").selecionados.append(pessoa_atual)
                 else:
                     return
 
     def atualizar(self):
-        self.app.get_screen("tela_cadastro_imovel").query_one(
+        self.query_one(
             "#container_resultado").remove_children()
 
         lista = []
@@ -154,10 +163,10 @@ class Busca(ModalScreen):
             for pessoa in lista:
                 container = Horizontal(
                     classes="imovel", name=pessoa.get_cpf_cnpj())
-                self.app.get_screen("tela_cadastro_imovel").query_one(
+                self.query_one(
                     "#container_resultado").mount(container)
 
-                if pessoa in self.screen.selecionados:
+                if pessoa in self.app.get_screen("tela_cadastro_imovel").selecionados:
                     container.mount(Checkbox(value=True))
                 else:
                     container.mount(Checkbox(value=False))
@@ -177,8 +186,6 @@ class Busca(ModalScreen):
                     for telefone in pessoa.get_telefones():
                         container3.mount(
                             Static(f"Telefone: {telefone}", classes="stt_bairro"))
-
-        self.setup_dados()
 
     def on_input_changed(self, evento: Input.Changed):
         texto = evento.value
@@ -264,32 +271,38 @@ class Busca(ModalScreen):
 
 class PopUp(ModalScreen):
 
+    TITLE = "Salvar"
+
     def compose(self):
+        yield Header()
         with Vertical(id="dialog"):
             yield Static("Imovel nao salvo, deseja continuar?")
             with Horizontal():
                 yield Button("Confirmar", id="bt_confirmar")
-                yield Button("Cancelar")
+                yield Button("Cancelar", id="bt_cancelar")
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_confirmar":
             self.app.get_screen(
                 "tela_cadastro_imovel").confirmar_salvamento = True
-        else:
+            self.app.pop_screen()
+        elif evento.button.id == "bt_cancelar":
             self.app.get_screen(
                 "tela_cadastro_imovel").confirmar_salvamento = False
-
-        self.app.pop_screen()
+            self.app.pop_screen()
 
 
 class PopUpApagar(ModalScreen):
 
+    TITLE = "Apagar"
+
     def compose(self):
+        yield Header()
         with Vertical(id="dialog"):
             yield Static("Certeza que deseja apagar?")
             with Horizontal():
                 yield Button("Confirmar", id="bt_confirmar")
-                yield Button("Cancelar")
+                yield Button("Cancelar", id="bt_cancelar")
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_confirmar":
@@ -299,8 +312,9 @@ class PopUpApagar(ModalScreen):
             ("id_imovel", ref, "imovel")
             self.app.get_screen("tela_cadastro_imovel").notify(remocao)
             self.app.get_screen("tela_cadastro_imovel").acao == True
-
-        self.app.pop_screen()
+            self.app.pop_screen()
+        elif evento.button.id == "bt_cancelar":
+            self.app.pop_screen()
 
 
 class ContainerFuncionario(Vertical):
@@ -421,7 +435,8 @@ class TelaCadastroImovel(Screen):
 
             with Grid(id="container_imagens"):
                 yield Static("Imagens: ")
-                yield Button("Adicionar", id="bt_adicionar_imagens")
+                with Center():
+                    yield Button("Adicionar", id="bt_adicionar_imagens")
 
                 # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
 
@@ -432,20 +447,17 @@ class TelaCadastroImovel(Screen):
 
                 # TODO: Pegar o widget de documento, possibilitar adicionar, remover
 
-            with Vertical(id="container_proprietario1"):
+            with Grid(id="container_proprietario"):
                 yield Static("Proprietario: ", classes="stt_container_titulo")
-                with Horizontal(id="container_proprietario"):
-                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_proprietario")
+                yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_proprietario")
 
-            with Vertical(id="container_corretor1"):
+            with Grid(id="container_corretor"):
                 yield Static("Corretor: ", classes="stt_container_titulo")
-                with Horizontal(id="container_corretor"):
-                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_corretor")
+                yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_corretor")
 
-            with Vertical(id="container_captador1"):
+            with Grid(id="container_captador"):
                 yield Static("Captador: ", classes="stt_container_titulo")
-                with Horizontal(id="container_captador"):
-                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
+                yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
 
         yield Footer(show_command_palette=False)
 
@@ -652,7 +664,13 @@ class TelaCadastroImovel(Screen):
                 container_imagens = self.query_one("#container_imagens", Grid)
                 for imagem in self.imovel.get_anuncio().get_imagens():
                     container_imagens.mount(
-                        ContainerImagem(imagem=imagem, id="st_imagem_anuncio"), after=container_imagens.query_one(Button))
+                        ContainerImagem(imagem=imagem, id="st_imagem_anuncio"), after=container_imagens.query_one(Center))
+
+            if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_anexos():
+                container_anexos = self.query_one("#container_anexos", Grid)
+                for anexo in self.imovel.get_anuncio().get_anexos():
+                    container_anexos.mount(
+                        PDFViewer(anexo), after=self.query_one("#container_anexos", Grid).query_one(Center))
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
@@ -702,14 +720,14 @@ class TelaCadastroImovel(Screen):
                 if caminhos:
                     for caminho in caminhos:
                         self.query_one("#container_imagens", Grid).mount(
-                            ContainerImagem(imagem=caminho), after=self.query_one("#container_imagens", Grid).query_one(Button))
+                            ContainerImagem(imagem=caminho), after=self.query_one("#container_imagens", Grid).query_one(Center))
 
             case "bt_adicionar_anexos":
                 caminhos = Midia.selecionar_arquivo(Midia.Tipo.DOCUMENTO)
                 if caminhos:
                     for caminho in caminhos:
                         self.query_one("#container_anexos", Grid).mount(
-                            PDFViewer(caminho), after=self.query_one("#container_anexos", Grid).query_one(Button))
+                            PDFViewer(caminho), after=self.query_one("#container_anexos", Grid).query_one(Center))
 
             case "bt_salvar_alteracoes":
 

@@ -134,8 +134,22 @@ TelaCadastroImovel ContainerImagem{
    background: transparent;
    width: 100%;
    height: 100%;
-   margin: 1;
+   margin: 0;
    column-span: 1;
+}
+
+TelaCadastroImovel ContainerImagem Button#deletar{
+    background: black;
+    width: 100%;
+    min-height: 0;
+    min-height: 9%;
+    text-align:center;
+    color: red;
+    border: none;
+}
+
+TelaCadastroImovel ContainerImagem Button#deletar:hover{
+    background: 90% rgba(11, 148, 240, 1);
 }
 
 TelaCadastroImovel ContainerImagem Horizontal{
@@ -146,9 +160,10 @@ TelaCadastroImovel ContainerImagem Horizontal{
 TelaCadastroImovel ContainerImagem Horizontal Button{
    width: 50%;
    min-width: 0;
-   margin-right: 1;
-   height: 30%;
-   min-height: 0;
+   margin-right: 0;
+   min-height: 17%;
+    border: none;
+    text-align:center;
 }
 
 TelaCadastroImovel #container_imagens Image{
@@ -228,17 +243,20 @@ TelaCadastroImovel #container_anuncio Static {
 
 TelaCadastroImovel .stt_container_titulo {
     text-align: center;
-    background: rgb(200, 200, 200);
     width: 100%;
-    height: 10%;
+    height: auto;
     color: black;
 }
 
-TelaCadastroImovel #container_captador1, TelaCadastroImovel #container_corretor1, TelaCadastroImovel #container_proprietario1 {
+TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
     background: rgb(200, 200, 200);
     margin: 2;
     width: 100%;
     height: 30%;
+    grid-size: 10;
+    grid-gutter: 2;
+    content-align-vertical: middle;
+    align-vertical: middle;
 }
 
 
@@ -253,15 +271,21 @@ TelaCadastroImovel #container_imagens Static{
 
 TelaCadastroImovel ContainerFuncionario{
     background: rgba(159, 159, 159, 1);
-    margin: 2;
     color: black;
     width: auto;
+    column-span: 2;
+    height:80%;
+    text-align: center;
+    content-align: center middle;
+    align: center middle;
 }
 
 TelaCadastroImovel ContainerFuncionario Static{
     border: solid black;
     margin: 0;
     width: auto;
+    align: center middle;
+    height: auto;
 }
 
 TelaCadastroImovel .dados0 {
@@ -285,6 +309,7 @@ TelaCadastroImovel .stt_ref {
 PopUpApagar, QuitScreen, Busca{
     align: center middle;
 }
+
 
 #dialog {
     padding: 0 1;
@@ -318,11 +343,6 @@ PopUpApagar, QuitScreen, Busca{
     content-align: center middle;
 }
 
-TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
-    width: 100%;
-    height: 100%;
-    align: center middle;
-}
 
 ImagemAmpliada {
     align: center middle;
@@ -336,7 +356,7 @@ ImagemAmpliada #dialog{
     margin: 0;
 }
 
-ImagemAmpliada Static{
+ImagemAmpliada #dialog Static{
     background: rgba(168, 161, 161, 1);
     width: 9%;
     height: 100%;
@@ -344,7 +364,44 @@ ImagemAmpliada Static{
     padding: 0;
 }
 
+ImagemAmpliada #dialog Static:hover{
+    background: rgba(14, 187, 235, 1);
+}
+
 ImagemAmpliada Image{
     width: 85%;
     height: 100%;
+}
+
+
+Busca {
+    align: center middle;
+}
+
+Busca #dialog {
+    width: 50%;
+    height: 50%;
+    color: black;
+}
+
+Busca #dialog Horizontal{
+    width: 100%;
+    height: auto;
+    color: black;
+    dock:top;
+    border: none;
+}
+
+Busca #dialog TextArea{
+    width: 100%;
+    height: auto;
+    color: black;
+    margin: 0;
+}
+
+Busca #dialog #container_resultado{
+    width: 100%;
+    height: auto;
+    color: black;
+    margin: 0;
 }

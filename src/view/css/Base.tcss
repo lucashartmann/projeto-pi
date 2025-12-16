@@ -1,7 +1,35 @@
+Header Button {
+    color: red;
+    background: transparent;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    min-width: 0;
+    dock: left;
+    padding: 0 1;
+    width: 8;
+    content-align: left middle;
+    border: none;
+}
+
+Header Button:hover {
+    color: white;
+    background: red;
+}
+
+Header HeaderTitle {
+    color: white;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    content-align: center middle;
+    width: 100%;
+}
+
 Screen {
     background: rgba(229, 228, 228, 1);
     color: black;
 }
+
 ModalScreen {
         layout: vertical;
         overflow-y: auto;
@@ -41,13 +69,11 @@ Select Static {
     color: black;
 }
 
-Header HeaderIcon {
-    display: none;
-}
-
 Footer, Header {
     background: black;
     color: white;
+    height: 2%;
+    width: 100%;
 }
 
 Tab {

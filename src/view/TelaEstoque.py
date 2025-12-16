@@ -1,9 +1,10 @@
-from textual.widgets import Input, TextArea, Footer, Header, Tab, Checkbox, Tabs, Select, Static, Input, Button
+from textual.widgets import Input, TextArea, Footer, Tab, Checkbox, Tabs, Select, Static, Input, Button
 from textual.containers import Horizontal, Vertical
 from textual.screen import Screen
 from textual.events import Click
 from textual import on
 from textual.suggester import SuggestFromList
+from utils.Widgets import Header
 
 from model import Init, Imovel, Usuario, Endereco, Captador, Corretor, Condominio
 from database.Banco import Banco
@@ -389,7 +390,7 @@ class TelaEstoque(Screen):
                 container.mount(container2)
                 container3 = Vertical(classes="dados1")
                 container2.mount(container3)
-                
+
                 container3.mount(
                     Static(f"Nome {pessoa.get_nome()}", classes="stt_ref"))
                 container3.mount(

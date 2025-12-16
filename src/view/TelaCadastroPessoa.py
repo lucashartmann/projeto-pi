@@ -1,9 +1,10 @@
 import datetime
-from textual.widgets import Button, Tab, Tabs, Select, Header, Footer, SelectionList, Static, TextArea, MaskedInput, Input
+from textual.widgets import Button, Tab, Tabs, Select, Footer, SelectionList, Static, TextArea, MaskedInput, Input
 from textual.screen import Screen
 from textual.containers import Grid, HorizontalGroup
 from controller import Controller
 from model import Init, Usuario, Captador, Cliente, Corretor, Proprietario
+from utils.Widgets import Header
 
 
 class TelaCadastroPessoa(Screen):

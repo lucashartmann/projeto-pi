@@ -1,7 +1,7 @@
 from textual.screen import Screen
-from textual.widgets import Input, Button, Select, Label, Header, Footer, Switch
+from textual.widgets import Input, Button, Select, Label, Footer, Switch
 from textual.containers import VerticalGroup
-
+from utils.Widgets import Header
 from controller import Controller
 
 
