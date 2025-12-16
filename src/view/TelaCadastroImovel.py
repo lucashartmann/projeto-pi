@@ -2,6 +2,9 @@ from textual.screen import Screen, ModalScreen
 from textual.widgets import MaskedInput, Static, TextArea, Tab, Tabs, Select, Checkbox, Button, Header, Footer, Input
 from textual.containers import Horizontal, Vertical, Grid, VerticalScroll, Center
 from textual.validation import Length
+from textual.events import Click
+from textual import on
+
 import requests
 import datetime
 
@@ -9,8 +12,73 @@ from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
 from controller import Controller
 from utils import Midia
 from textual_image.widget import Image
+from textual_image.widget.sixel import _ImageSixelImpl
 from utils.textual_pdf.pdf_viewer import PDFViewer
 from enum import Enum
+
+
+class ImagemAmpliada(ModalScreen):
+    def __init__(self, name = None, id = None, classes = None, imagem = None):
+        super().__init__(name, id, classes)
+        self.imagem = imagem
+        
+    def compose(self):
+        with Horizontal(id="dialog"):
+            yield Static("<", id="esquerda")
+            yield Image(self.imagem)
+            yield Static(">", id="direita")
+            
+    @on(Click)
+    def clicou_duas_vezes(self, evento:Click):
+        if isinstance(evento.widget, Static):
+            imagens = list(container.query_one(Image).image for container in self.app.get_screen("tela_cadastro_imovel").query_one(
+            "#container_imagens").query(ContainerImagem))
+            index = imagens.index(self.imagem)
+            
+            if evento.widget.id == "esquerda":
+                if index - 1 >= 0:
+                    self.query_one(Image).image = imagens[index - 1]
+            else:
+                if index + 1 <= len(imagens):
+                    self.query_one(Image).image = imagens[index + 1]
+            # self.app.pop_screen()
+
+class ContainerImagem(Vertical):
+    def __init__(self, *children, name=None, id=None, classes=None, disabled=False, markup=True, imagem=None):
+        super().__init__(*children, name=name, id=id,
+                         classes=classes, disabled=disabled, markup=markup)
+        self.imagem = imagem
+
+    def compose(self):
+        yield Image(self.imagem)
+        with Horizontal():
+            yield Button("<", flat=True, id="esquerda")
+            # yeld Button("X", id="deletar")
+            yield Button(">", flat=True, id="direita")
+            
+    @on(Click)
+    def clicou_duas_vezes(self, evento:Click):
+        if evento.chain == 2 and isinstance(evento.widget, _ImageSixelImpl):
+            self.app.push_screen(ImagemAmpliada(imagem=self.query_one(Image).image))
+            
+    async def on_button_pressed(self, evento: Button.Pressed):
+        container = self.screen.query_one("#container_imagens", Grid)
+        lista = list(container.query_children())
+        posicao = lista.index(self)
+
+        print(posicao)
+
+        match evento.button.id:
+            case "esquerda":
+                if posicao > 2:
+                    posicao -= 1
+                    container.move_child(self, before=posicao)
+            case "direita":
+                posicao += 1
+                if posicao < len(lista):
+                    container.move_child(self, after=posicao)
+            case "deletar":
+                self.remove()
 
 
 class Busca(ModalScreen):
@@ -353,8 +421,7 @@ class TelaCadastroImovel(Screen):
 
             with Grid(id="container_imagens"):
                 yield Static("Imagens: ")
-                with Center():
-                    yield Button("Adicionar", id="bt_adicionar_imagens")
+                yield Button("Adicionar", id="bt_adicionar_imagens")
 
                 # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
 
@@ -585,7 +652,7 @@ class TelaCadastroImovel(Screen):
                 container_imagens = self.query_one("#container_imagens", Grid)
                 for imagem in self.imovel.get_anuncio().get_imagens():
                     container_imagens.mount(
-                        Image(imagem, id="st_imagem_anuncio"), after=container_imagens.query_one(Button))
+                        ContainerImagem(imagem=imagem, id="st_imagem_anuncio"), after=container_imagens.query_one(Button))
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
@@ -631,16 +698,18 @@ class TelaCadastroImovel(Screen):
                 self.app.push_screen(PopUpApagar())
 
             case "bt_adicionar_imagens":
-                caminho = Midia.selecionar_arquivo(Midia.Tipo.IMAGEM)
-                if caminho:
-                    self.query_one("#container_imagens", Grid).mount(
-                        Image(caminho), after=self.query_one("#container_imagens", Grid).query_one(Center))
+                caminhos = Midia.selecionar_arquivo(Midia.Tipo.IMAGEM)
+                if caminhos:
+                    for caminho in caminhos:
+                        self.query_one("#container_imagens", Grid).mount(
+                            ContainerImagem(imagem=caminho), after=self.query_one("#container_imagens", Grid).query_one(Button))
 
             case "bt_adicionar_anexos":
-                caminho = Midia.selecionar_arquivo(Midia.Tipo.DOCUMENTO)
-                if caminho:
-                    self.query_one("#container_anexos", Grid).mount(
-                        PDFViewer(caminho), after=self.query_one("#container_anexos", Grid).query_one(Center))
+                caminhos = Midia.selecionar_arquivo(Midia.Tipo.DOCUMENTO)
+                if caminhos:
+                    for caminho in caminhos:
+                        self.query_one("#container_anexos", Grid).mount(
+                            PDFViewer(caminho), after=self.query_one("#container_anexos", Grid).query_one(Button))
 
             case "bt_salvar_alteracoes":
 
@@ -776,8 +845,9 @@ class TelaCadastroImovel(Screen):
                 anexos = []
 
                 try:
-                    for widget_imagem in self.query_one("container_imagens").query(Image):
-                        imagens.append(Midia.get_bytes(widget_imagem.image))
+                    for widget_imagem in self.query_one("container_imagens").query(ContainerImagem):
+                        imagens.append(Midia.get_bytes(
+                            widget_imagem.query_one(Image).image))
                 except:
                     pass
 

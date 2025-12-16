@@ -30,13 +30,13 @@ def selecionar_arquivo(tipo):
     root = tk.Tk()
     root.withdraw()
 
-    caminho = filedialog.askopenfilename(
+    caminhos = filedialog.askopenfilenames(
         title="Selecione uma imagem",
         filetypes=tipo.value
     )
 
     root.destroy()
-    return caminho
+    return caminhos
 
 
 def get_bytes(caminho):
