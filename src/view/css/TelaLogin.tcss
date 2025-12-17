@@ -48,6 +48,37 @@ TelaLogin Button {
     color: black;
 }
 
+App.dark TelaLogin Button{
+    background: #121212;
+    color: #ede6e6ff;
+}
+
+App.dark TelaLogin Button:hover{
+    background: #161313ff;
+}
+
+App.dark TelaLogin Header Button:hover {
+    color: white;
+    background: red;
+}
+
+TelaLogin Header Button, App.dark TelaLogin Header Button{
+    width: 100%;
+    margin: 0;
+    color: red;
+    background: transparent;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    height: 100%;
+    min-width: 0;
+    padding: 0;
+    dock:left;
+    width: 8;
+    content-align: left middle;
+    border: none;
+}
+
 TelaLogin #bt_criar_conta {
     width: 100%;
     margin: 1;
@@ -57,8 +88,9 @@ TelaLogin #bt_criar_conta {
 TelaLogin MyInput Switch {
     width: 10;
     height: 100%;
+    min-height: 0;
 }
 
 TelaLogin MyInput {
-    height: 30%;
+    height: 22%;
 }

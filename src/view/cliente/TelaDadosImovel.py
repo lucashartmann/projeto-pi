@@ -1,6 +1,7 @@
-from textual.widgets import Static, Button, Footer, Header, Checkbox, Tab, Tabs
+from textual.widgets import Static, Button, Footer, Checkbox, Tab, Tabs
 from textual.screen import Screen
 from textual.containers import VerticalScroll, HorizontalGroup, Grid
+from utils.Widgets import Header
 
 from textual_image.widget import Image
 

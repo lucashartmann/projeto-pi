@@ -28,6 +28,10 @@ TelaCadastroPessoa Grid {
     margin: 5;
 }
 
+App.dark TelaCadastroPessoa Grid {
+    border: #ede6e6ff 10%;
+}
+
 TelaCadastroPessoa VerticalGroup {
     height: auto;
 }

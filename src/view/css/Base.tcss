@@ -1,15 +1,49 @@
+Screen {
+    background: rgba(229, 228, 228, 1);
+    color: black;
+}
+
+Header {
+    layout: horizontal;
+    width: 100%;
+    background: black;
+    color: white;
+    height: auto;
+    width: 100%;
+    content-align-vertical: middle;
+    text-align: center;
+}
+
 Header Button {
     color: red;
     background: transparent;
     width: auto;
     height: auto;
     min-height: 0;
+    height: 100%;
     min-width: 0;
-    dock: left;
-    padding: 0 1;
+    padding: 0;
+    dock:left;
     width: 8;
     content-align: left middle;
     border: none;
+}
+
+Header Switch {
+    color: red;
+    background: transparent;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    min-width: 0;
+    padding: 0;
+    width: 7;
+    content-align: left middle;
+    border: solid 10%;
+}
+
+Header HeaderClock, Header HeaderClockSpace {
+    display: none;
 }
 
 Header Button:hover {
@@ -22,12 +56,12 @@ Header HeaderTitle {
     text-wrap: nowrap;
     text-overflow: ellipsis;
     content-align: center middle;
-    width: 100%;
-}
-
-Screen {
-    background: rgba(229, 228, 228, 1);
-    color: black;
+    width: 97%;
+    height: 100%;
+    margin: 0;
+    border: none;
+    min-height: 0;
+    min-width: 0;
 }
 
 ModalScreen {
@@ -61,20 +95,91 @@ Input, Checkbox, MyInput, MaskedInput, Select SelectOverlay, Select Horizontal, 
 #     background: black;
 # }
 
-# .-warning  {
-#     background: rgba(187, 183, 137, 1);   
-# }
+.-warning  {
+    background: rgba(209, 200, 26, 1); 
+    border-top: tall rgba(209, 200, 26, 1);
+    border-bottom: tall rgba(209, 200, 26, 1);
+
+    &:hover {
+                background: rgba(252, 240, 8, 1);
+                border-bottom: tall rgba(252, 240, 8, 1);
+                border-top: tall rgba(252, 240, 8, 1);
+    }
+
+    &.-active {
+                background: $success;
+                border-bottom: tall rgba(209, 200, 26, 1);
+                border-top: tall rgba(209, 200, 26, 1);
+    }
+}
+
+.-error {
+            color: auto;
+            background: $error;
+            border-top: tall $error-lighten-2;
+            border-bottom: tall $error-darken-3;
+        &:hover {
+                background: $error-darken-1;
+                border-top: tall $error;
+        }
+
+        &.-active {
+                background: $error;
+                border-bottom: tall $error-lighten-2;
+                border-top: tall $error-darken-2;
+            }
+}   
+
+.-success {
+            color: auto;
+            background: rgba(10, 64, 15, 1);
+            border-top: tall rgba(10, 64, 15, 1);
+            border-bottom: tall rgba(10, 64, 15, 1);
+
+    &:hover {
+                background: $success-darken-1;
+                border-top: tall $success-darken-1;
+                border-bottom: tall $success-darken-1;
+    }
+
+    &.-active {
+                background: $success;
+                border-bottom: tall rgba(10, 64, 15, 1);
+                border-top: tall rgba(10, 64, 15, 1);
+    }
+}
+          
+.-accent {
+            color: auto;
+            background: $accent;
+            border-top: tall $accent-lighten-2;
+            border-bottom: tall $accent-darken-3;
+
+        &:hover {
+                background: $accent-darken-1;
+                border-top: tall $accent;
+            }
+
+        &.-active {
+                background: $accent;
+                border-bottom: tall $accent-lighten-2;
+                border-top: tall $accent-darken-2;
+        }
+}
+
 
 Select Static {
     color: black;
 }
 
-Footer, Header {
+Footer {
     background: black;
     color: white;
-    height: 2%;
+    height: auto;
     width: 100%;
 }
+
+
 
 Tab {
     color: black;
@@ -82,4 +187,112 @@ Tab {
 
 Underline .underline--bar {
     color: black;
+}
+
+App.dark Screen {
+    background: #121212;
+    color: #ede6e6ff;
+}
+
+App.dark Tab {
+    color: #ede6e6ff;
+}
+
+App.dark Select Static {
+    color: #ede6e6ff;
+}
+
+
+App.dark Input, App.dark MaskedInput, App.dark TextArea, App.dark Checkbox,App.dark  MyInput, App.dark Select SelectOverlay, App.dark Select Horizontal {
+   background: #322b2bff;
+   color: #ede6e6ff;
+}
+
+App.dark .input--cursor, App.dark .input--selection {
+    background: #ede6e6ff;
+    color: black;
+}
+
+
+App.dark .text-area--cursor, App.dark .text-area--selection {
+    background: #ede6e6ff;
+    color: black;
+}
+
+App.dark Underline .underline--bar {
+    color: #c2b2b2ff;
+}
+
+
+App.dark .-warning  {
+    color: auto;
+    background: rgba(110, 107, 22, 1); 
+    border-top: tall rgba(110, 107, 22, 1);
+    border-bottom: tall rgba(110, 107, 22, 1);
+
+    &:hover {
+                background: rgba(131, 127, 27, 1);
+                border-bottom: tall rgba(131, 127, 27, 1);
+                border-top: tall rgba(131, 127, 27, 1);
+    }
+
+    &.-active {
+                background: $success;
+                border-bottom: tall rgba(110, 107, 22, 1);
+                border-top: tall rgba(110, 107, 22, 1);
+    }
+}
+
+App.dark .-error {
+            color: auto;
+            background: $error;
+            border-top: tall $error-lighten-2;
+            border-bottom: tall $error-darken-3;
+        &:hover {
+                background: $error-darken-1;
+                border-top: tall $error;
+        }
+
+        &.-active {
+                background: $error;
+                border-bottom: tall $error-lighten-2;
+                border-top: tall $error-darken-2;
+            }
+}   
+
+App.dark .-success {
+            color: auto;
+            background: rgba(10, 64, 15, 1);
+            border-top: tall rgba(10, 64, 15, 1);
+            border-bottom: tall rgba(10, 64, 15, 1);
+
+    &:hover {
+                background: $success-darken-1;
+                border-top: tall $success-darken-1;
+                border-bottom: tall $success-darken-1;
+    }
+
+    &.-active {
+                background: $success;
+                border-bottom: tall rgba(10, 64, 15, 1);
+                border-top: tall rgba(10, 64, 15, 1);
+    }
+}
+          
+.-accent {
+            color: auto;
+            background: $accent;
+            border-top: tall $accent-lighten-2;
+            border-bottom: tall $accent-darken-3;
+
+        &:hover {
+                background: $accent-darken-1;
+                border-top: tall $accent;
+            }
+
+        &.-active {
+                background: $accent;
+                border-bottom: tall $accent-lighten-2;
+                border-top: tall $accent-darken-2;
+        }
 }

@@ -38,6 +38,10 @@ TelaCadastroImovel #container_cadastro {
     border: black 10%;
 }
 
+App.dark TelaCadastroImovel #container_cadastro {
+    border: #ede6e6ff 10%;
+}
+
 TelaCadastroImovel #container_cadastro TextArea {
     height: 60%;
     
@@ -79,6 +83,11 @@ TelaCadastroImovel #container_anuncio {
     border: black 10%;
 }
 
+
+App.dark TelaCadastroImovel #container_anuncio{
+    border: #ede6e6ff 10%;
+}
+
 TelaCadastroImovel #container_anexos {
     width: 100%;
     height: auto;
@@ -87,6 +96,10 @@ TelaCadastroImovel #container_anexos {
     margin: 2;
     grid-size: 10;
     content-align-vertical: middle;
+}
+
+App.dark TelaCadastroImovel #container_anexos {
+    background: #1a1717ff;
 }
 
 TelaCadastroImovel #container_anexos  Center{
@@ -129,6 +142,11 @@ TelaCadastroImovel #container_imagens {
     content-align-vertical: middle;
     align-vertical: middle;
 }
+
+App.dark TelaCadastroImovel #container_imagens {
+    background: #1a1717ff;
+}
+
 
 TelaCadastroImovel ContainerImagem{
    background: transparent;
@@ -243,6 +261,11 @@ TelaCadastroImovel #container_anuncio TextArea {
     color: black;
 }
 
+App.dark TelaCadastroImovel #container_anuncio TextArea{
+   background: #322b2bff;
+   color: #ede6e6ff;
+}
+
 TelaCadastroImovel #container_anuncio #container_info_condominio Static{
     margin:0;
 }
@@ -264,6 +287,10 @@ TelaCadastroImovel .stt_container_titulo {
     color: black;
 }
 
+App.dark TelaCadastroImovel .stt_container_titulo{
+    color: #ede6e6ff;
+}
+
 TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
     background: rgb(200, 200, 200);
     margin: 2;
@@ -275,6 +302,10 @@ TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, 
     align-vertical: middle;
 }
 
+App.dark TelaCadastroImovel #container_captador, App.dark TelaCadastroImovel #container_corretor, App.dark TelaCadastroImovel #container_proprietario {
+    background: #1a1717ff;
+}
+
 
 TelaCadastroImovel #container_imagens Static{
     text-align: center;
@@ -283,7 +314,15 @@ TelaCadastroImovel #container_imagens Static{
     height: 100%;
 }
 
+App.dark TelaCadastroImovel ContainerFuncionario{
+    background: #221e1eff;
+    color: #ede6e6ff;
+}
 
+App.dark TelaCadastroImovel ContainerFuncionario Static{ 
+    color: #ede6e6ff;
+    border: solid #494141ff;
+}
 
 TelaCadastroImovel ContainerFuncionario{
     background: rgba(159, 159, 159, 1);
@@ -304,6 +343,11 @@ TelaCadastroImovel ContainerFuncionario Static{
     height: auto;
 }
 
+
+App.dark TelaCadastroImovel ContainerFuncionario Static{
+    border: solid #ede6e6ff;
+}
+
 TelaCadastroImovel .dados0 {
     height: 20;
     margin-left: 2;
@@ -322,6 +366,10 @@ TelaCadastroImovel .stt_ref {
     width: auto;
 }
 
+App.dark TelaCadastroImovel .stt_ref{
+    border: #ede6e6ff;
+}
+
 PopUpApagar, QuitScreen, Busca{
     align: center middle;
 }
@@ -337,6 +385,11 @@ PopUpApagar, QuitScreen, Busca{
     text-align: center;
     content-align: center middle;
 }
+
+App.dark #dialog{
+    background: #121212;
+}
+
 
 #dialog Horizontal{
     width: 100%;
@@ -384,6 +437,15 @@ ImagemAmpliada #dialog Static:hover{
     background: rgba(14, 187, 235, 1);
 }
 
+
+App.dark ImagemAmpliada #dialog Static{
+    background: #322b2bff;
+}
+
+App.dark ImagemAmpliada #dialog Static:hover{
+    background: #413939ff;
+}
+
 ImagemAmpliada Image{
     width: 85%;
     height: 100%;
@@ -420,4 +482,20 @@ Busca #dialog #container_resultado{
     height: auto;
     color: black;
     margin: 0;
+}
+
+App.dark Busca #dialog {
+    color: #ede6e6ff;
+}
+
+App.dark Busca #dialog Horizontal{
+    color: #ede6e6ff;
+}
+
+App.dark Busca #dialog TextArea{
+    color: #ede6e6ff;
+}
+
+App.dark Busca #dialog #container_resultado{
+    color: #ede6e6ff;
 }

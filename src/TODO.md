@@ -12,6 +12,5 @@
 
 - [ ] Arrumar Tela Atendimentos, Tela de Estoque de Cliente, Tela de Cadastro de venda e aluguel
 
-- [ ] Fazer Modo Noturno
-
 - [ ] Corrigir PDFWidget
+

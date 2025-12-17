@@ -67,7 +67,6 @@ class TelaLogin(Screen):
 
         username = self.query_one("#input_username").value.strip()
         senha = self.query_one("#input_senha").value.strip()
-        tipo_usuario = self.query_one(Select).value
         login = ""
 
         if self.montou:

@@ -1,7 +1,8 @@
 import hashlib
 from textual.screen import Screen
-from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, Header, MaskedInput, SelectionList, Input, Switch
+from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, MaskedInput, SelectionList, Input, Switch
 from textual.containers import Grid
+from utils.Widgets import Header
 
 from model import Init, Usuario
 from database.Banco import Banco

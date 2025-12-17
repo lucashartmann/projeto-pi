@@ -26,6 +26,7 @@ class ImagemAmpliada(ModalScreen):
 
     TITLE = "Imagem Ampliada"
 
+
     def compose(self):
         yield Header()
         with Horizontal(id="dialog"):
@@ -782,6 +783,8 @@ class TelaCadastroImovel(Screen):
 
                 if categoria_imovel == "NoSelection" or categoria_imovel == Select.BLANK:
                     categoria_imovel = None
+                    self.notify("ERRO! Selecione a categoria")
+                    return
 
                 if situacao_imovel == "NoSelection" or situacao_imovel == Select.BLANK:
                     situacao_imovel = None
@@ -903,7 +906,7 @@ class TelaCadastroImovel(Screen):
                 try:
                     for widget_anexo in self.query_one("container_anexos").query(ContainerImagem):
                         anexos.append(Midia.get_bytes(
-                            widget_imagem.query_one(PDFViewer).path))
+                            widget_anexo.query_one(PDFViewer).path))
                 except:
                     pass
 

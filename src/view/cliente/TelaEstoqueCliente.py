@@ -1,8 +1,8 @@
-from textual.widgets import Static, Button, ListItem, ListView, Footer, Header, Select, Input, Tab, Tabs, SelectionList, MaskedInput
+from textual.widgets import Static, Button, ListItem, ListView, Footer, Select, Input, Tab, Tabs, SelectionList, MaskedInput
 from textual import on
 from textual.screen import Screen
 from textual.containers import VerticalScroll, Container, Grid
-
+from utils.Widgets import Header
 from textual_image.widget import Image
 
 from model import Init, Usuario, Imovel

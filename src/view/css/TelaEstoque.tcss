@@ -12,7 +12,6 @@ TelaEstoque #container_resultado {
 }
 
 TelaEstoque #h_filtro {
-    background: gray;
     width: auto;
     min-width: 17%;
     height: auto;
@@ -20,6 +19,7 @@ TelaEstoque #h_filtro {
     # margin-top: 5;
     # margin-right: 2;
 }
+
 
 TelaEstoque #h_filtro Select {
    width: auto;
@@ -32,13 +32,29 @@ TelaEstoque #h_filtro Select Static{
 
 
 TelaEstoque #h_filtro #seta{
-    background: white;
+    background: transparent;
     text-align: center;
     height: 100%;
     min-width: 0;
     width: auto;
+    border: black 40%;
     color: black;
     margin: 0;
+}
+
+
+TelaEstoque #h_filtro #seta:hover{
+    background: rgba(196, 191, 191, 1);
+}
+
+App.dark #h_filtro #seta:hover{
+    background: #4a4343ff;
+}
+
+App.dark #h_filtro #seta{
+    background: #1a1717ff;
+    color: #ede6e6ff;
+    border: #ede6e6ff 40%;
 }
 
 TelaEstoque #container_filtragem {
@@ -103,6 +119,11 @@ TelaEstoque .imovel {
     margin: 2 2 2 2;
     height: 12;
 }
+
+App.dark TelaEstoque .imovel{
+    background: #1a1717ff;
+}
+
 TelaEstoque .dados0 {
     height: 20;
     margin-left: 2;
@@ -119,4 +140,8 @@ TelaEstoque .stt_bairro {
 TelaEstoque .stt_ref {
     border: black;
     width: auto;
+}
+
+App.dark TelaEstoque .stt_ref{
+    border: #ede6e6ff;
 }

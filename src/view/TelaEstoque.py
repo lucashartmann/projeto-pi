@@ -58,16 +58,10 @@ class TelaEstoque(Screen):
                 yield Static("Status:")
                 yield Select([(valor.value, valor) for valor in Imovel.Status], prompt="Selecionar")
             with Horizontal(id="segundo"):
-                yield Static("Rua")
-                yield Input(suggester=SuggestFromList(self.ruas, case_sensitive=False))
-                yield Static("Bairro")
-                yield Input(suggester=SuggestFromList(self.bairros, case_sensitive=False))
-                yield Static("Cidade")
-                yield Input(suggester=SuggestFromList(self.cidades, case_sensitive=False))
-                yield Static("Complemento")
-                yield Input()
                 yield Static("CEP")
                 yield Input(suggester=SuggestFromList(self.ceps, case_sensitive=False))
+                yield Static("Número")
+                yield Input()
             with Horizontal(id="h_filtro"):
                 yield Select([("Data Cadastro", "Data Cadastro"), ("Valor Venda", "Valor Venda"), ("Valor Aluguel", "Valor Aluguel"), ("Data Atualização", "Data Atualização")], id="select_filtro")
                 yield Button("⬇️", id="seta", flat=True)
@@ -108,44 +102,52 @@ class TelaEstoque(Screen):
             match evento.value:
                 case "Imovel":
                     self.objeto = Init.imovel_um
+                    self.query_one("#segundo").styles.display = "block"
                     select.set_options([("Data Cadastro", "Data Cadastro"), ("Valor Venda", "Valor Venda"), (
                         "Valor Aluguel", "Valor Aluguel"), ("Data Atualização", "Data Atualização")])
                     self.lista = self.imoveis
                 case  "Cliente":
                     self.objeto = Init.comprador
+                    self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(
                         usuario for usuario in self.usuarios if usuario.get_tipo() == Usuario.Tipo.CLIENTE)
                 case "Proprietario":
                     self.objeto = Init.proprietario
+                    self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = self.proprietarios
                 case "Corretor":
                     self.objeto = Init.corretor
+                    self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(
                     ) == Usuario.Tipo.CORRETOR)
                 case "Captador":
                     self.objeto = Init.captador
+                    self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(
                     ) == Usuario.Tipo.CAPTADOR)
                 case "Venda":
                     self.objeto = None
+                    self.query_one("#segundo").styles.display = "none"
                 case "Aluguel":
                     self.objeto = None
                 case "Gerente":
                     self.objeto = Init.gerente
+                    self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(
                         usuario for usuario in self.usuarios if usuario.get_tipo() == Usuario.Tipo.GERENTE)
                 case "Admnistrador":
                     self.objeto = Init.administrador
+                    self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(

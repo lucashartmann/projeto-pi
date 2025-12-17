@@ -1,7 +1,6 @@
 from view.App import App
 from controller import Controller
 import sys
-import os
 
 comando = sys.argv[1:]
 
