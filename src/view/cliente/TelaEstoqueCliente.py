@@ -128,7 +128,6 @@ class TelaEstoqueCliente(Screen):
 
         imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
 
-
         try:
             if imoveis != self.imoveis:
                 self.imoveis = imoveis
@@ -262,3 +261,35 @@ class TelaEstoqueCliente(Screen):
                     self.atualizar_imagens()
         else:
             self.atualizar_imagens()
+
+        def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+            # if self.salvo == False:
+            #     self.mount(PopUp)
+
+            try:
+                if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
+                    self.app.switch_screen("tela_cadastro_pessoa")
+
+                elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_imovel")
+
+                elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
+                    self.app.switch_screen("tela_estoque")
+
+                elif event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
+                    self.app.switch_screen("tela_dados_imobiliaria")
+
+                elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
+                    self.app.switch_screen("tela_servidor")
+
+                elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
+                    self.app.switch_screen("tela_dados_cliente")
+
+                elif event.tabs.active == self.query_one("#tab_atendimento", Tab).id:
+                    self.app.switch_screen("tela_atendimento")
+
+                elif event.tabs.active == self.query_one("#tab_cadastro_venda_aluguel", Tab).id:
+                    self.app.switch_screen("tela_cadastro_venda_aluguel")
+
+            except:
+                pass

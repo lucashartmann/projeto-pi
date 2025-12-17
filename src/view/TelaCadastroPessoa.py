@@ -5,6 +5,7 @@ from textual.containers import Grid, HorizontalGroup
 from controller import Controller
 from model import Init, Usuario, Captador, Cliente, Corretor, Proprietario
 from utils.Widgets import Header
+from textual.validation import Length
 
 
 class TelaCadastroPessoa(Screen):
@@ -52,11 +53,11 @@ class TelaCadastroPessoa(Screen):
                 # yield Static("Endereco", id="stt_endereco")
                 # yield TextArea(placeholder="endereco aqui", id="inpt_endereco")
                 yield Static("Data de nascimento", id="stt_data_nascimento")
-                yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento")
+                yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento", validators=Length(minimum=10, maximum=10), valid_empty=True)
                 yield Static("[red]*[/]CPF", id="stt_cpf")
-                yield MaskedInput(template="00000000000", id="inpt_cpf")
+                yield MaskedInput(template="000.000.000-00", id="inpt_cpf", validators=Length(minimum=11, maximum=14), valid_empty=True)
                 yield Static("RG", id="stt_rg")
-                yield TextArea(placeholder="rg aqui", id="inpt_rg")
+                yield Input(id="inpt_rg", placeholder="RG aqui", validators=Length(minimum=7, maximum=9), valid_empty=True)
         with HorizontalGroup(id="hg_operacoes"):
             if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
                 yield Select([("Usuário", "Usuario")], allow_blank=False, id="select_tabelas")
@@ -127,10 +128,16 @@ class TelaCadastroPessoa(Screen):
                 self.query_one(
                     "#inpt_data_nascimento", MaskedInput).value = self.pessoa.get_data_nascimento().strftime("%d/%m/%Y")
             if self.pessoa.get_cpf_cnpj():
-                self.query_one("#inpt_cpf", MaskedInput).value = str(
-                    self.pessoa.get_cpf_cnpj())
+                cpf = str(self.pessoa.get_cpf_cnpj())
+                cpf_formatado = (
+                    cpf[:3] + "." +
+                    cpf[3:6] + "." +
+                    cpf[6:9] + "-" +
+                    cpf[9:]
+                )
+                self.query_one("#inpt_cpf", MaskedInput).value = cpf_formatado
             if self.pessoa.get_rg():
-                self.query_one("#inpt_rg", TextArea).value = str(
+                self.query_one("#inpt_rg", Input).value = str(
                     self.pessoa.get_rg())
             try:
                 if self.pessoa.get_tipo():
@@ -213,12 +220,21 @@ class TelaCadastroPessoa(Screen):
         cpf = self.query_one("#inpt_cpf", MaskedInput).value.strip()
         if cpf._valid:
             cpf = self.query_one("#inpt_cpf", MaskedInput).value.strip()
+            if cpf != "":
+                cpf = "".join(cpf.split("."))
+                cpf = "".join(cpf.split("-"))
+            else: 
+                cpf = None
         else:
             self.notify("ERRO. CPF inválido")
             return
-        rg = self.query_one("#inpt_rg", TextArea)
+        rg = self.query_one("#inpt_rg", MaskedInput)
         if not rg._valid:
-            rg = self.query_one("#inpt_rg", TextArea).text.strip()
+            rg = self.query_one("#inpt_rg", Input).value.strip()
+            if rg != "":
+                rg = int(rg)
+            else: 
+                rg = None
         else:
             rg = None
 
@@ -256,6 +272,12 @@ class TelaCadastroPessoa(Screen):
                                                         nome, email, telefone, data_nascimento, cpf, rg, tipo=Usuario.Tipo.ADMINISTRADOR)
                             atualizacao = Controller.editar_usuario(comprador)
                 else:
+                    self.pessoa.set_email(email)
+                    self.pessoa.set_nome(nome)
+                    self.pessoa.set_cpf_cnpj(cpf)
+                    self.pessoa.set_rg(rg)
+                    self.pessoa.set_data_nascimento(data_nascimento)
+            
                     if isinstance(self.pessoa, Proprietario.Proprietario):
                         atualizacao = Controller.editar_proprietario(
                             self.pessoa)
@@ -294,6 +316,12 @@ class TelaCadastroPessoa(Screen):
                             atualizacao = Controller.cadastrar_usuario(
                                 comprador)
                 else:
+                    self.pessoa.set_email(email)
+                    self.pessoa.set_nome(nome)
+                    self.pessoa.set_cpf_cnpj(cpf)
+                    self.pessoa.set_rg(rg)
+                    self.pessoa.set_data_nascimento(data_nascimento)
+                    
                     if isinstance(self.pessoa, Proprietario.Proprietario):
                         atualizacao = Controller.editar_proprietario(
                             self.pessoa)

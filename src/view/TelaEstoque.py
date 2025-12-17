@@ -22,10 +22,14 @@ class TelaEstoque(Screen):
     imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
     usuarios = Init.imobiliaria.get_lista_usuarios()
     proprietarios = Init.imobiliaria.get_lista_proprietarios()
-    ruas = list((imovel.get_endereco().get_rua() for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
-    cidades = list((imovel.get_endereco().get_cidade() for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
-    bairros = list((imovel.get_endereco().get_bairro() for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
-    ceps = list(str((imovel.get_endereco().get_cep()) for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
+    ruas = list((imovel.get_endereco().get_rua()
+                for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
+    cidades = list((imovel.get_endereco().get_cidade(
+    ) for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
+    bairros = list((imovel.get_endereco().get_bairro(
+    ) for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
+    ceps = list(str((imovel.get_endereco().get_cep())
+                for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
     lista_filtrada = []
     lista = []
     filtrou_select = False
@@ -69,6 +73,7 @@ class TelaEstoque(Screen):
             pass
 
         yield Footer(show_command_palette=False)
+        
 
     def on_button_pressed(self):
         if self.query_one(Button).label == "⬇️":
@@ -144,7 +149,7 @@ class TelaEstoque(Screen):
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(
-                        usuario for usuario in self.usuarios if  self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.GERENTE)
+                        usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.GERENTE)
                 case "Admnistrador":
                     self.objeto = Init.administrador
                     self.query_one("#segundo").styles.display = "none"
@@ -199,13 +204,14 @@ class TelaEstoque(Screen):
         imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
         usuarios = Init.imobiliaria.get_lista_usuarios()
         proprietarios = Init.imobiliaria.get_lista_proprietarios()
-        ruas = list((imovel.get_endereco().get_rua() for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
+        ruas = list((imovel.get_endereco().get_rua(
+        ) for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
         cidades = list((imovel.get_endereco().get_cidade()
-                   for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
+                        for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
         bairros = list((imovel.get_endereco().get_bairro()
-                   for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
+                        for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
         ceps = list((str(imovel.get_endereco().get_cep())
-                for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
+                     for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
 
         condicao = False
 
