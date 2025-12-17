@@ -1,7 +1,6 @@
 from model import Cliente, Init
 import datetime
 
-
 def cadastrar_atendimento(atendimento):
     cadastro = Init.imobiliaria.cadastrar_atendimento(atendimento)
 
@@ -73,9 +72,9 @@ def cadastrar_usuario(usuario):
 def editar_imovel(imovel):
 
     imovel_encontrado = Init.imobiliaria.get_estoque(
-    ).get_imovel_por_codigo(imovel.get_id())
+    ).get_imovel_por_id(imovel.get_id())
     if imovel_encontrado:
-        if imovel.get_endereco().get_cep() != imovel_encontrado.get_endereco().get_cep() or imovel.get_endereco().get_numero() != imovel_encontrado.get_endereco().get_numero():
+        if imovel.get_endereco() != imovel_encontrado.get_endereco():
             consultar_endereco = Init.imobiliaria.verificar_endereco(
                 imovel.get_endereco())
             endereco = None

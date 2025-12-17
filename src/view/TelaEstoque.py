@@ -22,10 +22,10 @@ class TelaEstoque(Screen):
     imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
     usuarios = Init.imobiliaria.get_lista_usuarios()
     proprietarios = Init.imobiliaria.get_lista_proprietarios()
-    ruas = (imovel.get_endereco().get_rua() for imovel in imoveis)
-    cidades = (imovel.get_endereco().get_cidade() for imovel in imoveis)
-    bairros = (imovel.get_endereco().get_bairro() for imovel in imoveis)
-    ceps = (str(imovel.get_endereco().get_cep()) for imovel in imoveis)
+    ruas = list((imovel.get_endereco().get_rua() for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
+    cidades = list((imovel.get_endereco().get_cidade() for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
+    bairros = list((imovel.get_endereco().get_bairro() for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
+    ceps = list(str((imovel.get_endereco().get_cep()) for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
     lista_filtrada = []
     lista = []
     filtrou_select = False
@@ -112,7 +112,7 @@ class TelaEstoque(Screen):
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(
-                        usuario for usuario in self.usuarios if usuario.get_tipo() == Usuario.Tipo.CLIENTE)
+                        usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.CLIENTE)
                 case "Proprietario":
                     self.objeto = Init.proprietario
                     self.query_one("#segundo").styles.display = "none"
@@ -124,14 +124,14 @@ class TelaEstoque(Screen):
                     self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(
+                    self.lista = list(usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo(
                     ) == Usuario.Tipo.CORRETOR)
                 case "Captador":
                     self.objeto = Init.captador
                     self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(
+                    self.lista = list(usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo(
                     ) == Usuario.Tipo.CAPTADOR)
                 case "Venda":
                     self.objeto = None
@@ -144,13 +144,13 @@ class TelaEstoque(Screen):
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(
-                        usuario for usuario in self.usuarios if usuario.get_tipo() == Usuario.Tipo.GERENTE)
+                        usuario for usuario in self.usuarios if  self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.GERENTE)
                 case "Admnistrador":
                     self.objeto = Init.administrador
                     self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    self.lista = list(usuario for usuario in self.usuarios if usuario.get_tipo(
+                    self.lista = list(usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo(
                     ) == Usuario.Tipo.ADMINISTRADOR)
 
             self.lista_filtrada = []
@@ -196,28 +196,28 @@ class TelaEstoque(Screen):
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
 
-        # imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
-        # usuarios = Init.imobiliaria.get_lista_usuarios()
-        # proprietarios = Init.imobiliaria.get_lista_proprietarios()
-        ruas = (imovel.get_endereco().get_rua() for imovel in self.imoveis)
-        cidades = (imovel.get_endereco().get_cidade()
-                   for imovel in self.imoveis)
-        bairros = (imovel.get_endereco().get_bairro()
-                   for imovel in self.imoveis)
-        ceps = (str(imovel.get_endereco().get_cep())
-                for imovel in self.imoveis)
+        imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+        usuarios = Init.imobiliaria.get_lista_usuarios()
+        proprietarios = Init.imobiliaria.get_lista_proprietarios()
+        ruas = list((imovel.get_endereco().get_rua() for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
+        cidades = list((imovel.get_endereco().get_cidade()
+                   for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
+        bairros = list((imovel.get_endereco().get_bairro()
+                   for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
+        ceps = list((str(imovel.get_endereco().get_cep())
+                for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
 
-        # condicao = False
+        condicao = False
 
-        # if imoveis != self.imoveis:
-        #     self.imoveis = imoveis
-        #     if self.tabela == "Imovel":
-        #         condicao = True
+        if imoveis != self.imoveis:
+            self.imoveis = imoveis
+            if self.tabela == "Imovel":
+                condicao = True
 
-        # if usuarios != self.usuarios:
-        #     self.usuarios = usuarios
-        #     if self.tabela == "Usuario":
-        #         condicao = True
+        if usuarios != self.usuarios:
+            self.usuarios = usuarios
+            if self.tabela == "Usuario":
+                condicao = True
 
         if ceps != self.ceps:
             self.ceps = ceps
@@ -231,13 +231,16 @@ class TelaEstoque(Screen):
         if cidades != self.cidades:
             self.cidades = cidades
 
-        # if proprietarios != self.proprietarios:
-        #     self.proprietarios = proprietarios
-        #     if self.tabela == "Proprietario":
-        #         condicao = True
+        if proprietarios != self.proprietarios:
+            self.proprietarios = proprietarios
+            if self.tabela == "Proprietario":
+                condicao = True
 
-        # if condicao:
-        #     self.atualizar()
+        try:
+            if condicao:
+                self.atualizar()
+        except:
+            pass
 
     @on(Click)
     def on_click(self, evento: Click):

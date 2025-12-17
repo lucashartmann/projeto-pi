@@ -34,9 +34,9 @@ class App(App):
 
     def on_mount(self):
         self.use_command_palette = False
-        # Init.usuario_atual = Init.captador
-        # self.push_screen("tela_cadastro_imovel")
-        self.push_screen("tela_login")
+        Init.usuario_atual = Init.administrador
+        self.push_screen("tela_cadastro_imovel")
+        # self.push_screen("tela_login")
 
     def action_enviar_email(self):
         tela_login = self.get_screen("tela_login")

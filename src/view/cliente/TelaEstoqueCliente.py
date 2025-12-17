@@ -12,9 +12,9 @@ from view.cliente import TelaDadosImovel
 
 
 class ContainerImovel(Container):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, id_imovel=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.id_imovel = ""
+        self.id_imovel = id_imovel
 
     def compose(self):
         yield Image(r"", id="ti_imagem")
@@ -86,21 +86,21 @@ class TelaEstoqueCliente(Screen):
 
         for imovel in lista:
             if imovel.get_anuncio():
-                container = ContainerImovel()
-                list_item = ListItem(name=imovel.get_nome())
+                container = ContainerImovel(id_imovel=imovel.get_id())
+                list_item = ListItem()
                 list_view.append(list_item)
                 list_item.mount(container)
 
-                if imovel.get_anuncio().get_imagens():
+                if imovel.get_anuncio() and imovel.get_anuncio().get_imagens():
                     container.query_one("#ti_imagem").image = BytesIO(
                         imovel.get_anuncio().get_imagens()[0])
 
                     container.query_one("#ti_imagem").styles.width = 40
                     container.query_one("#ti_imagem").styles.height = 15
 
-                if imovel.get_titulo(
+                if imovel.get_anuncio() and imovel.get_anuncio().get_titulo(
                 ):
-                    container.query_one("#tx_nome").content = imovel.get_titulo(
+                    container.query_one("#tx_nome").content = imovel.get_anuncio().get_titulo(
                     )
                 else:
                     container.query_one("#tx_nome").styles.display = "none"
@@ -119,8 +119,6 @@ class TelaEstoqueCliente(Screen):
                     container.query_one(
                         "#tx_preco").styles.display = "none"
 
-                container.id_imovel = imovel.get_id()
-
                 list_item.styles.width = 30
                 list_item.styles.height = 30
 
@@ -130,9 +128,13 @@ class TelaEstoqueCliente(Screen):
 
         imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
 
-        if imoveis != self.imoveis:
-            self.imoveis = imoveis
-            self.atualizar_imagens()
+
+        try:
+            if imoveis != self.imoveis:
+                self.imoveis = imoveis
+                self.atualizar_imagens()
+        except:
+            pass
 
     def on_mount(self):
         self.atualizar_imagens()

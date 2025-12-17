@@ -711,6 +711,7 @@ class Banco:
         except Exception as e:
             print(f"ERRO! Banco.get_lista_filtros_apartamento: {e}")
             return []
+        
 
     def get_lista_filtros_condominio(self):
         try:
@@ -906,7 +907,6 @@ class Banco:
 
     def get_anuncio_por_id(self, id_anuncio):
         try:
-
             with sqlite3.connect(
                     "data\\Imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
@@ -919,19 +919,19 @@ class Banco:
                     raise Exception(f"Não existe anúncio com id {id_anuncio}")
                 anuncio = Anuncio.Anuncio()
                 id_anuncio = registro[0]
+                if id_anuncio:
+                    id_anuncio = int(id_anuncio)
                 descricao = registro[1]
                 titulo = registro[2]
                 anuncio.set_id(id_anuncio)
                 anuncio.set_descricao(descricao)
                 anuncio.set_titulo(titulo)
-                mapa_anexos = self.get_lista_anexos_por_id_anuncio
-                (id_anuncio)
-                if mapa_anexos["Imagens"] and isinstance(mapa_anexos["Imagens"], list):
+                mapa_anexos = self.get_lista_anexos_por_id_anuncio(id_anuncio)
+                if mapa_anexos and mapa_anexos["Imagens"]:
                     anuncio.set_imagens(mapa_anexos["Imagens"])
-                if mapa_anexos["Videos"] and isinstance(mapa_anexos["Videos"], list):
-                    anuncio.set_videos(mapa_anexos["Videos"] and isinstance(
-                        mapa_anexos["Imagens"], list))
-                if mapa_anexos["Documentos"] and isinstance(mapa_anexos["Documentos"], list):
+                if mapa_anexos and mapa_anexos["Videos"]:
+                    anuncio.set_videos(mapa_anexos["Videos"])
+                if mapa_anexos and mapa_anexos["Documentos"] :
                     anuncio.set_anexos(mapa_anexos["Documentos"])
                 return anuncio
         except Exception as e:
@@ -982,7 +982,7 @@ class Banco:
                     elif tipo == "Documento":
                         documentos.append(blob)
                     elif tipo == "Video":
-                        documentos.append(blob)
+                        videos.append(blob)
                 mapa = dict()
                 mapa["Imagens"] = imagens
                 mapa["Videos"] = videos
@@ -1311,7 +1311,7 @@ class Banco:
                     for anexo in anuncio.get_anexos():
                         self.cadastrar_anexo(id_anuncio, anexo, "Documento")
 
-                return True
+                return cursor.lastrowid
         except Exception as e:
             erro = f"ERRO! Banco.cadastrar_anuncio: {e}"
             print(erro)
@@ -2282,8 +2282,8 @@ class Banco:
                 query = '''
                         UPDATE anuncio SET
                             descricao = ?,
-                            titulo = ?,
-                        WHERE id_anuncio = ?
+                            titulo = ?
+                        WHERE id_anuncio = ?;
                     '''
 
                 valores = (
@@ -2356,8 +2356,8 @@ class Banco:
 
                 query = '''
                         UPDATE condominio SET
-                            nome = ?,
-                        WHERE id_condominio = ?
+                            nome = ?
+                        WHERE id_condominio = ?;
                     '''
 
                 valores = (
@@ -2515,7 +2515,7 @@ class Banco:
                     cpf_cnpj = ?,
                     rg = ?,
                     id_endereco = ?,
-                    data_nascimento = ?,
+                    data_nascimento = ?
                 WHERE cpf_cnpj = ?;
                 """
                 endereco = proprietario.get_endereco()

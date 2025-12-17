@@ -109,7 +109,7 @@ class TelaCadastroPessoa(Screen):
 
         if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             self.query_one("#select_tabelas", Select).set_options(
-                [("Usuário"), ("Usuário")])
+                [("Usuário", "Usuário")])
         elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
             self.query_one("#select_tabelas", Select).set_options(
                 [("Funcionario", "Funcionario"), ("Gerente", "Gerente")])

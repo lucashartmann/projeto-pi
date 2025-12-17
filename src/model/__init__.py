@@ -1,4 +1,4 @@
-from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Anuncio, Gerente, Usuario, Proprietario
+from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Anuncio, Gerente, Usuario, Proprietario, Condominio
 
 
 class Init:
@@ -75,24 +75,69 @@ class Init:
         cadastro_dois = imobiliaria.cadastrar_endereco(endereco_dois)
     consulta = None
     consulta_dois = None
-
     consulta = imobiliaria.verificar_endereco(endereco)
+    condominio_um = Condominio.Condominio("Way", consulta)
+    imobiliaria.cadastrar_condominio(condominio_um)
+    consultar_condominio = imobiliaria.get_condominio_por_id_endereco(
+        consulta.get_id())
+    anuncio = Anuncio.Anuncio()
     imovel_um = Imovel.Imovel(
         endereco=consulta, status=Imovel.Status.VENDA, categoria=Imovel.Categoria.APARTAMENTO)
+
     imovel_dois = Imovel.Imovel(
         endereco=consulta, status=Imovel.Status.ALUGUEL, categoria=Imovel.Categoria.APARTAMENTO)
     imovel_tres = Imovel.Imovel(
         endereco=consulta, status=Imovel.Status.VENDIDO, categoria=Imovel.Categoria.LOFT)
     if not imobiliaria.get_estoque().get_lista_imoveis():
-        imobiliaria.get_estoque().cadastrar_imovel(imovel_um)
-        imobiliaria.get_estoque().cadastrar_imovel(imovel_dois)
-        imobiliaria.get_estoque().cadastrar_imovel(imovel_tres)
+        cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(anuncio)
+        if cadastro_anuncio is not None:
+            anuncio.set_id(cadastro_anuncio)
+            imovel_um.set_anuncio(anuncio)
+            imovel_um.set_condominio(consultar_condominio)
+            imobiliaria.get_estoque().cadastrar_imovel(imovel_um)
+
+        cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
+            anuncio)
+
+        if cadastro_anuncio is not None:
+            anuncio.set_id(cadastro_anuncio)
+            imovel_dois.set_anuncio(anuncio)
+            imovel_dois.set_condominio(consultar_condominio)
+            imobiliaria.get_estoque().cadastrar_imovel(imovel_dois)
+
+        cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
+            anuncio)
+
+        if cadastro_anuncio is not None:
+            anuncio.set_id(cadastro_anuncio)
+            imovel_tres.set_anuncio(anuncio)
+            imovel_tres.set_condominio(consultar_condominio)
+            imobiliaria.get_estoque().cadastrar_imovel(imovel_tres)
 
     consulta_dois = imobiliaria.verificar_endereco(endereco_dois)
+    condominio_dois = Condominio.Condominio("Premium", consulta_dois)
+    imobiliaria.cadastrar_condominio(condominio_dois)
+    consultar_condominio2 = imobiliaria.get_condominio_por_id_endereco(
+        consulta_dois.get_id())
     imovel_quatro = Imovel.Imovel(
         endereco=consulta_dois, status=Imovel.Status.PENDENTE, categoria=Imovel.Categoria.TERRENO)
     imovel_cinco = Imovel.Imovel(
         endereco=consulta_dois, status=Imovel.Status.VENDA_ALUGUEL, categoria=Imovel.Categoria.CASA)
     if not imobiliaria.get_estoque().get_lista_imoveis():
-        imobiliaria.get_estoque().cadastrar_imovel(imovel_quatro)
-        imobiliaria.get_estoque().cadastrar_imovel(imovel_cinco)
+        cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
+            anuncio)
+
+        if cadastro_anuncio is not None:
+            anuncio.set_id(cadastro_anuncio)
+            imovel_quatro.set_anuncio(anuncio)
+            imovel_quatro.set_condominio(consultar_condominio2)
+            imobiliaria.get_estoque().cadastrar_imovel(imovel_quatro)
+
+        cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
+            anuncio)
+
+        if cadastro_anuncio is not None:
+            anuncio.set_id(cadastro_anuncio)
+            imovel_cinco.set_anuncio(anuncio)
+            imovel_cinco.set_condominio(consultar_condominio2)
+            imobiliaria.get_estoque().cadastrar_imovel(imovel_cinco)
