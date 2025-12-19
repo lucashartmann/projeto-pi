@@ -12,8 +12,8 @@ from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
 from controller import Controller
 from utils import Midia
 from utils.Widgets import Header
-from textual_image.widget import Image
-from textual_image.widget.sixel import _ImageSixelImpl
+from utils.textual_image.widget import Image
+from utils.textual_image.widget.sixel import _ImageSixelImpl
 from utils.textual_pdf.pdf_viewer import PDFViewer
 from enum import Enum
 
