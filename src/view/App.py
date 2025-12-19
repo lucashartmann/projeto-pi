@@ -31,7 +31,6 @@ class App(App):
         Binding("ctrl+q", "app.quit", "Sair"),
     }
 
-
     def on_mount(self):
         self.use_command_palette = False
         Init.usuario_atual = Init.administrador

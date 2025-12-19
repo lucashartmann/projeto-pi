@@ -604,8 +604,7 @@ class TelaCadastroImovel(Screen):
                 else:
                     container.query_one(
                         "#st_email", Static).styles.display = None
-                    
-                    
+
             if self.imovel.get_status() is not None:
                 self.query_one(
                     "#select_status", Select).value = self.imovel.get_status()
@@ -693,7 +692,7 @@ class TelaCadastroImovel(Screen):
             if self.imovel.get_anuncio() is not None and self.imovel.get_anuncio().get_descricao():
                 self.query_one(
                     "#ta_descricao_anuncio", TextArea).text = self.imovel.get_anuncio().get_descricao()
-                
+
             print(self.imovel.get_anuncio())
             # print(self.imovel.get_anuncio().get_imagens())
 
@@ -967,15 +966,15 @@ class TelaCadastroImovel(Screen):
 
                 try:
                     for widget_imagem in self.query_one("#container_imagens").query(ContainerImagem):
-                            imagens.append(Midia.get_bytes(
-                                widget_imagem.query_one(Image).image))
+                        imagens.append(Midia.get_bytes(
+                            widget_imagem.query_one(Image).image))
                 except:
                     pass
-                
+
                 try:
                     for widget_anexo in self.query_one("#container_anexos").query(ContainerImagem):
-                            anexos.append(Midia.get_bytes(
-                                widget_anexo.query_one(PDFViewer).path))
+                        anexos.append(Midia.get_bytes(
+                            widget_anexo.query_one(PDFViewer).path))
                 except:
                     pass
 

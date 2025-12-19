@@ -3,10 +3,10 @@ from textual.screen import Screen
 from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, MaskedInput, SelectionList, Input, Switch
 from textual.containers import Grid
 from utils.Widgets import Header
-
+from textual.validation import Length
 from model import Init, Usuario
 from database.Banco import Banco
-
+from controller import Controller
 import datetime
 
 
@@ -41,23 +41,23 @@ class TelaDadosCliente(Screen):
 
         with Grid():
             yield Static("Username")
-            yield TextArea(Init.usuario_atual.get_username(), id="inpt_username")
+            yield TextArea(id="inpt_username")
             yield Static("Nome")
-            yield TextArea(Init.usuario_atual.get_nome(), id="inpt_nome")
+            yield TextArea(id="inpt_nome")
             yield Static("CPF/CNPJ")
-            yield MaskedInput(value=Init.usuario_atual.get_cpf_cnpj(), template="000.000.000-00", id="inpt_cpf")
+            yield MaskedInput(template="000.000.000-00", id="inpt_cpf", validators=Length(minimum=11, maximum=14), valid_empty=True)
             yield Static("RG")
-            yield TextArea(Init.usuario_atual.get_rg(), id="inpt_rg")
-            yield Static("Telefone")
-            yield MaskedInput(value=Init.usuario_atual.get_telefone(), template="(00) 00000-0000", id="inpt_telefone")
+            yield Input(id="inpt_rg", placeholder="RG aqui", validators=Length(minimum=7, maximum=9), valid_empty=True)
+            # yield Static("Telefone")
+            # yield MaskedInput(template="(00) 00000-0000", id="inpt_telefone")
             # yield Static("Endereco")
             # yield TextArea(Init.usuario_atual.get_endereco())
             yield Static("Email")
-            yield TextArea(Init.usuario_atual.get_email(), id="inpt_email")
+            yield TextArea(id="inpt_email")
             yield Static("Senha")
-            yield MyInput(placeholder="mudar senha", id="inpt_senha", password=True)
+            yield MyInput(placeholder="alterar senha", id="inpt_senha", password=True)
             yield Static("Data de nascimento", id="stt_data_nascimento")
-            yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento")
+            yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento", validators=Length(minimum=10, maximum=10), valid_empty=True)
 
         yield Static("Procurando por:")
         with Grid():
@@ -73,25 +73,88 @@ class TelaDadosCliente(Screen):
         # yield Static("Imoveis do usuário", id="stt_compras")
         yield Footer(show_command_palette=False)
 
-    def on_screen_resume(self):
-        pass
+    def on_mount(self):
+        self.atualizar()
+
+    def atualizar(self):
+        if Init.usuario_atual.get_username():
+            self.query_one("#inpt_username",
+                           TextArea).text = Init.usuario_atual.get_username()
+        if Init.usuario_atual.get_nome():
+            self.query_one(
+                "#inpt_nome", TextArea).text = Init.usuario_atual.get_nome()
+        if Init.usuario_atual.get_cpf_cnpj():
+            cpf = str(Init.usuario_atual.get_cpf_cnpj())
+            cpf_formatado = (
+                cpf[:3] + "." +
+                cpf[3:6] + "." +
+                cpf[6:9] + "-" +
+                cpf[9:]
+            )
+            self.query_one(
+                "#inpt_cpf", MaskedInput).value = cpf_formatado
+        if Init.usuario_atual.get_rg():
+            self.query_one(
+                "#inpt_rg", Input).value = Init.usuario_atual.get_rg()
+
+        if Init.usuario_atual.get_email():
+            self.query_one(
+                "#inpt_email", TextArea).text = Init.usuario_atual.get_email()
+
+        # self.query_one( MaskedInput(value=Init.usuario_atual.get_telefone(), template="(00) 00000-0000", id="inpt_telefone")
+
+        # self.query_one( TextArea(Init.usuario_atual.get_endereco())
+
+        # self.query_one( MyInput(placeholder="mudar senha", id="inpt_senha", password=True)
+
+        # self.query_one( MaskedInput(template="00/00/0000", id="inpt_data_nascimento")
+
+        # self.query_one( MaskedInput(template="00")
+
+        # self.query_one( MaskedInput(template="00")
+
+        # self.query_one( MaskedInput(template="00000-000")
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.label == "Salvar":
 
             username = self.query_one("#inpt_username", TextArea).text.strip()
             nome = self.query_one("#inpt_nome", TextArea).text
-            cpf_cnpj = self.query_one(
-                "#inpt_cpf", MaskedInput).text.strip().strip(".").strip("-")
-            rg = self.query_one("#inpt_rg", TextArea).text.strip()
-            telefone = self.query_one(
-                "#inpt_telefone", MaskedInput).value.strip("(").strip(")")
+            # telefone = self.query_one(
+            #     "#inpt_telefone", MaskedInput).value.strip("(").strip(")")
             email = self.query_one("#inpt_email", TextArea).text.strip()
             senha = self.query_one("#inpt_senha", TextArea).text.strip()
             data_nascimento = self.query_one(
-                "#inpt_cpf", MaskedInput).text.strip().split("/")
-            data_nascimento = datetime.datetime(
-                year=data_nascimento[-1], day=data_nascimento[0], month=data_nascimento[1])
+                "#inpt_data_nascimento", MaskedInput)
+            if data_nascimento._valid:
+                data_nascimento = self.query_one(
+                    "#inpt_data_nascimento", MaskedInput).value.split("/")
+                data_nascimento = datetime.datetime(
+                    year=data_nascimento[-1], month=data_nascimento[1], day=data_nascimento[0])
+            else:
+                data_nascimento = None
+            cpf_cnpj = self.query_one("#inpt_cpf", MaskedInput).value.strip()
+            if cpf_cnpj._valid:
+                cpf_cnpj = self.query_one(
+                    "#inpt_cpf", MaskedInput).value.strip()
+                if cpf_cnpj != "":
+                    cpf_cnpj = "".join(cpf_cnpj.split("."))
+                    cpf_cnpj = "".join(cpf_cnpj.split("-"))
+                else:
+                    cpf_cnpj = None
+            else:
+                self.notify("ERRO. cpf_cnpj inválido")
+                return
+            rg = self.query_one("#inpt_rg", Input)
+            if not rg._valid:
+                rg = self.query_one("#inpt_rg", Input).value.strip()
+                if rg != "":
+                    rg = int(rg)
+                else:
+                    rg = None
+            else:
+                rg = None
+
             tipo_imoveis_desejados = evento.selection_list.selected
             quant_quartos_desejado = int(self.query_one(
                 "", MaskedInput).text.strip())
@@ -100,80 +163,25 @@ class TelaDadosCliente(Screen):
             cep_desejado = int(self.query_one(
                 "", MaskedInput).text.strip.strip("-"))
 
-            if username != Init.usuario_atual.get_username() and username:
-                alteracao = Banco.atualizar_comprador(
-                    "username", username, Init.usuario_atual.get_cpf_cnpj())
-                if alteracao:
-                    Init.usuario_atual.set_username(username)
-                else:
-                    self.query_one("#stt_username", Static).content += "[red]X"
+            Init.usuario_atual.set_username(username)
 
             if senha:
                 senha_hash = hashlib.sha256(
                     senha.get_senha().encode('utf-8')).hexdigest()
-                if senha_hash != Init.usuario_atual.get_senha():
-                    alteracao = Banco.atualizar_comprador(
-                        "senha", senha_hash, Init.usuario_atual.get_cpf_cnpj())
-                    if alteracao:
-                        Init.usuario_atual.set_senha(senha_hash)
-                    else:
-                        self.query_one(
-                            "#stt_senha", Static).content += "[red]X"
+                Init.usuario_atual.set_senha(senha_hash)
 
-            if email != Init.usuario_atual.get_email() and email:
-                alteracao = Banco.atualizar_comprador(
-                    "email", email, Init.usuario_atual.get_cpf_cnpj())
-                if alteracao:
-                    Init.usuario_atual.set_email(email)
-                else:
-                    self.query_one("#stt_email", Static).content += "[red]X"
+            Init.usuario_atual.set_email(email)
+            Init.usuario_atual.set_nome(nome)
+            Init.usuario_atual.set_cpf_cnpj(cpf_cnpj)
+            Init.usuario_atual.set_rg(rg)
 
-            if nome != Init.usuario_atual.get_nome() and nome:
-                alteracao = Banco.atualizar_comprador(
-                    "nome", nome, Init.usuario_atual.get_cpf_cnpj())
-                if alteracao:
-                    Init.usuario_atual.set_nome(nome)
-                else:
-                    self.query_one("#stt_nome", Static).content += "[red]X"
+            # Init.usuario_atual.set_telefones(telefones)
 
-            if cpf_cnpj != Init.usuario_atual.get_cpf_cnpj() and cpf_cnpj:
-                alteracao = Banco.atualizar_comprador(
-                    "cpf_cnpj", cpf_cnpj, Init.usuario_atual.get_cpf_cnpj())
-                if alteracao:
-                    Init.usuario_atual.set_cpf_cnpj(cpf_cnpj)
-                else:
-                    self.query_one("#stt_cpf_cnpj", Static).content += "[red]X"
+            Init.usuario_atual.set_data_nascimento(data_nascimento)
 
-            if rg != Init.usuario_atual.get_rg() and rg:
-                alteracao = Banco.atualizar_comprador(
-                    "rg", rg, Init.usuario_atual.get_cpf_cnpj())
-                if alteracao:
-                    Init.usuario_atual.set_rg(rg)
-                else:
-                    self.query_one("#stt_rg", Static).content += "[red]X"
+            mensagem = Controller.editar_usuario(Init.usuario_atual)
 
-            if telefone != Init.usuario_atual.get_telefone() and telefone:
-                alteracao = Banco.atualizar_comprador(
-                    "telefone", telefone, Init.usuario_atual.get_cpf_cnpj())
-                if alteracao:
-                    Init.usuario_atual.set_telefone(telefone)
-                else:
-                    self.query_one("#stt_telefone", Static).content += "[red]X"
-
-            # if username != Init.usuario_atual.get_username() and username:
-            # alteracao = Banco.atualizar_comprador("endereco")
-            if data_nascimento != Init.usuario_atual.get_data_nascimento() and data_nascimento:
-                alteracao = Banco.atualizar_comprador(
-                    "data_nascimento", data_nascimento, Init.usuario_atual.get_cpf_cnpj())
-                if alteracao:
-                    Init.usuario_atual.set_data_nascimento(data_nascimento)
-                else:
-                    self.query_one("#stt_data_nascimento",
-                                   Static).content += "[red]X"
-
-            # mensagem = Controller.atualizar_dado_cliente(dados)
-
-            # self.notify(mensagem, markup=False)
+            self.notify(mensagem, markup=False)
 
     def on_selection_list_selected_changed(self, evento: SelectionList.SelectedChanged):
         Init.usuario_atual.set_tipos_imoveis_desejados = evento.selection_list.selected
@@ -181,6 +189,7 @@ class TelaDadosCliente(Screen):
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
             "#tab_dados_cliente", Tab).id
+        self.atualizar()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
