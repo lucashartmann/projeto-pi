@@ -4,6 +4,15 @@ TelaCadastroImovel #h_buttons Button{
 
 TelaCadastroImovel #h_buttons{
     height: auto;
+    border: black 10%;
+    width: auto;
+    margin: 1;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+App.dark TelaCadastroImovel #h_buttons {
+    border: #ede6e6ff 10%;
 }
 
 TelaCadastroImovel #container_cadastro #ta_banheiros, TelaCadastroImovel #container_cadastro #ta_vagas, TelaCadastroImovel #container_cadastro #ta_varandas, TelaCadastroImovel #container_cadastro #ta_quartos, TelaCadastroImovel #container_cadastro #ta_salas, TelaCadastroImovel #container_cadastro #ta_numero, TelaCadastroImovel #container_cadastro #ta_bloco, TelaCadastroImovel #container_cadastro #ta_estado, TelaCadastroImovel #container_cadastro #ta_andar {
@@ -33,10 +42,31 @@ TelaCadastroImovel #container_cadastro {
     width: 100%;
     height: 100%;
     grid-size: 10;
-    margin: 1 2 2 2;
+    margin: 1 1 2 2;
     grid-columns: 20;
     border: black 10%;
+    &.breakpoint-aa { 
+        grid-size: 2; 
+        grid-columns: auto;
+    }
+    &.breakpoint-sm { 
+        grid-size: 4; 
+        grid-columns: auto;
+    }
+    &.breakpoint-luu { 
+        grid-size: 4; 
+        grid-columns: auto;
+    }
+    &.breakpoint-md { 
+        grid-size: 13; 
+        grid-columns: auto;
+    }
+    &.breakpoint-lg { 
+        # grid-size: 9; 
+    }
 }
+
+
 
 App.dark TelaCadastroImovel #container_cadastro {
     border: #ede6e6ff 10%;
@@ -115,29 +145,31 @@ TelaCadastroImovel #container_anexos Static{
     height: 100%;
 }
 
-TelaCadastroImovel #container_anexos PDFViewer {
-    width: 100%;
-    height: 100%;
-    column-span: 1;
-    margin: 1;
-}
-
-TelaCadastroImovel #container_anexos PDFViewer Image {
-    width: 100%;
-    height: 100%;
-}
 
 TelaCadastroImovel #container_info_condominio {
     display: none;
 }
 
-TelaCadastroImovel #container_imagens {
+TelaCadastroImovel #detalhees {
+    display: block;
     width: 100%;
+    height: 100%;
+     border: black 10%;
+    margin: 5;
+    margin-bottom: 2;
+    margin-top: 0;
+}
+
+App.dark TelaCadastroImovel #detalhees  {
+    border: #ede6e6ff 10%;
+}
+
+TelaCadastroImovel #container_imagens {    
+    width: 100%;
+    margin: 2;
     height: auto;
     background: rgb(200, 200, 200);
-    margin: 2;
     grid-size: 10;
-    grid-gutter: 2;
     height: 30%;
     content-align-vertical: middle;
     align-vertical: middle;
@@ -147,14 +179,12 @@ App.dark TelaCadastroImovel #container_imagens {
     background: #1a1717ff;
 }
 
+TelaCadastroImovel #container_imagens ContainerImagem {
+    margin: 1;
+    width:auto;
 
-TelaCadastroImovel ContainerImagem{
-   background: transparent;
-   width: 100%;
-   height: 100%;
-   margin: 0;
-   column-span: 1;
 }
+
 
 TelaCadastroImovel ContainerImagem Button#deletar{
     background: black;
@@ -201,8 +231,10 @@ TelaCadastroImovel ContainerImagem Horizontal Button{
 
 TelaCadastroImovel #container_imagens Image{
    background: transparent;
-   width: 100%;
-   height: 70%;
+    width: 100%;
+    height: 80%;
+    column-span: 1;
+    margin: 0;
 }
 
 
@@ -413,44 +445,6 @@ App.dark #dialog{
 }
 
 
-ImagemAmpliada {
-    align: center middle;
-}
-
-
-ImagemAmpliada #dialog{
-    align: center middle;
-    width: 90%;
-    height: 90%;
-    margin: 0;
-}
-
-ImagemAmpliada #dialog Static{
-    background: rgba(168, 161, 161, 1);
-    width: 9%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-ImagemAmpliada #dialog Static:hover{
-    background: rgba(14, 187, 235, 1);
-}
-
-
-App.dark ImagemAmpliada #dialog Static{
-    background: #322b2bff;
-}
-
-App.dark ImagemAmpliada #dialog Static:hover{
-    background: #413939ff;
-}
-
-ImagemAmpliada Image{
-    width: 85%;
-    height: 100%;
-}
-
 
 Busca {
     align: center middle;
@@ -499,3 +493,91 @@ App.dark Busca #dialog TextArea{
 App.dark Busca #dialog #container_resultado{
     color: #ede6e6ff;
 }
+
+TelaCadastroImovel #container_anexos PDFViewer {
+    width: 100%;
+    height: 80%;
+    column-span: 1;
+    margin: 0;
+}
+
+TelaCadastroImovel #container_anexos PDFViewer Image {
+    width: 100%;
+    height: 100%;
+}
+
+
+TelaCadastroImovel #container_anexos ContainerImagem {
+   margin: 1;
+   width:auto;
+}
+
+#dialog #esquerda{
+    dock: left;
+}
+
+#dialog #direita{
+    dock: right;
+}
+
+ImagemAmpliada Image{
+    width: auto;
+    height: auto;
+    align: center middle;
+    content-align: center middle;
+    margin: 2;
+}
+
+ImagemAmpliada PDFViewer Image{
+    width: auto;
+    height: auto;
+    align: center middle;
+    content-align: center middle;
+    margin: 0;
+}
+
+
+ImagemAmpliada PDFViewer{
+    width: 100%;
+    height: 100%;
+    align: center middle;
+    content-align: center middle;
+    margin: 2;
+}
+
+
+ImagemAmpliada {
+    align: center middle;
+    content-align: center middle;
+}
+
+
+ImagemAmpliada #dialog{
+    align: center middle;
+    width: 90%;
+    height: 90%;
+    margin: 0;
+    content-align: center middle;
+}
+
+ImagemAmpliada #dialog Static{
+    border: black 12%;
+    width: 9%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+ImagemAmpliada #dialog Static:hover{
+    background: rgba(166, 168, 169, 1);
+}
+
+
+App.dark ImagemAmpliada #dialog Static{
+    background: #322b2bff;
+}
+
+App.dark ImagemAmpliada #dialog Static:hover{
+    background: #413939ff;
+}
+

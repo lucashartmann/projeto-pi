@@ -1,10 +1,8 @@
 from textual.widgets import Static, Button, Footer, Checkbox, Tab, Tabs
 from textual.screen import Screen
-from textual.containers import VerticalScroll, HorizontalGroup, Grid
-from utils.Widgets import Header
-
-from textual_image.widget import Image
-
+from textual.containers import VerticalScroll, HorizontalGroup
+from utils.Widgets import Header, ResponsiveGrid
+from utils.textual_image.widget import Image
 from model import Init, Usuario, Atendimento
 from controller import Controller
 
@@ -41,14 +39,14 @@ class TelaDadosImovel(Screen):
                 yield Static("Descrição", id="stt_descricao", classes="titulo")
                 yield Static(self.imovel.get_anuncio().get_descricao(), id="descricao")
                 yield Static("Infraestrutura Apartamento", id="stt_infraestrutura", classes="titulo")
-                with Grid(id="container_info_imovel"):
+                with ResponsiveGrid(id="container_info_imovel"):
                     lista = self.imovel.get_filtros()
                     if lista:
                         for nome in lista:
                             yield Checkbox(label=nome, value=True, disabled=True)
                 yield Static("Infraestrutura Condominio", id="stt_infraestrutura", classes="titulo")
 
-                with Grid(id="container_info_condominio"):
+                with ResponsiveGrid(id="container_info_condominio"):
                     lista = []
                     if self.imovel.get_condominio():
                         lista = self.imovel.get_condominio().get_filtros()

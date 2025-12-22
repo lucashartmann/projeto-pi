@@ -4,18 +4,19 @@ from textual.containers import Horizontal, Vertical, Grid, VerticalScroll, Cente
 from textual.validation import Length
 from textual.events import Click
 from textual import on
-
 import requests
 import datetime
-
 from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
 from controller import Controller
 from utils import Midia
-from utils.Widgets import Header
+from utils.Widgets import Header, ResponsiveGrid
 from utils.textual_image.widget import Image
-from utils.textual_image.widget.sixel import _ImageSixelImpl
+from textual_image.widget.sixel import _ImageSixelImpl
 from utils.textual_pdf.pdf_viewer import PDFViewer
 from enum import Enum
+from textual.binding import Binding
+from textual import events
+from textual.geometry import Offset
 
 
 class ImagemAmpliada(ModalScreen):
@@ -23,6 +24,9 @@ class ImagemAmpliada(ModalScreen):
         super().__init__(name, id, classes)
         self.imagem = imagem
         self.documento = documento
+        if self.documento:
+            self.BINDINGS = [Binding("down", "", "next_page"), Binding("page_down", "", "next_page"), Binding("right", "", "next_page"), Binding("up", "", "previous_page"), Binding(
+                "page_up", "", "previous_page"), Binding("left", "", "previous_page"), Binding("home", "", "go_to_start"), Binding("end", "", "go_to_end")]
 
     TITLE = "Imagem Ampliada"
 
@@ -52,11 +56,20 @@ class ImagemAmpliada(ModalScreen):
 
             if evento.widget.id == "esquerda":
                 if index - 1 >= 0:
-                    self.query_one(Image).image = imagens[index - 1]
-            else:
+                    if self.imagem:
+                        self.query_one(Image).image = imagens[index - 1]
+                        self.imagem = imagens[index - 1]
+                    else:
+                        self.query_one(PDFViewer).load(imagens[index - 1])
+                        self.documento = imagens[index - 1]
+            elif evento.widget.id == "direita":
                 if index + 1 < len(imagens):
-                    self.query_one(Image).image = imagens[index + 1]
-            # self.app.pop_screen()
+                    if self.imagem:
+                        self.query_one(Image).image = imagens[index + 1]
+                        self.imagem = imagens[index + 1]
+                    else:
+                        self.query_one(PDFViewer).load(imagens[index + 1])
+                        self.documento = imagens[index + 1]
 
 
 class ContainerImagem(Vertical):
@@ -65,37 +78,16 @@ class ContainerImagem(Vertical):
                          classes=classes, disabled=disabled, markup=markup)
         self.imagem = imagem
         self.documento = documento
+        self.mouse_at_drag_start = None
+        self.offset_at_drag_start = None
+        self.can_focus = False
 
-    def compose(self):
-        yield Button("X", id="deletar", flat=True)
-        if self.imagem:
-            yield Image(self.imagem)
-        elif self.documento:
-            yield PDFViewer(self.documento)
-        else:
-            return
-        with Horizontal():
-            yield Button("<", flat=True, id="esquerda")
-            yield Button(">", flat=True, id="direita")
-
-    @on(Click)
-    def clicou_duas_vezes(self, evento: Click):
-        if evento.chain == 2:
-            if isinstance(evento.widget, _ImageSixelImpl) and self.imagem:
-                self.app.push_screen(ImagemAmpliada(
-                    imagem=self.query_one(Image).image))
-            elif isinstance(evento.widget, _ImageSixelImpl) and self.documento:
-                self.app.push_screen(ImagemAmpliada(
-                    documento=self.query_one(PDFViewer).path))
-            else:
-                return
-
-    async def on_button_pressed(self, evento: Button.Pressed):
+    def on_button_pressed(self, evento: Button.Pressed):
         container = None
         if self.imagem:
-            container = self.screen.query_one("#container_imagens", Grid)
+            container = self.screen.query_one("#container_imagens", ResponsiveGrid)
         elif self.documento:
-            container = self.screen.query_one("#container_anexos", Grid)
+            container = self.screen.query_one("#container_anexos", ResponsiveGrid)
         else:
             return
 
@@ -115,6 +107,127 @@ class ContainerImagem(Vertical):
                     container.move_child(self, after=posicao)
             case "deletar":
                 self.remove()
+
+    # def on_mouse_down(self, event: events.MouseDown) -> None:
+    #     if isinstance(event.widget, Button):
+    #         event.widget.press()
+
+    #     if not isinstance(event.widget, Button):
+
+    #         self.focus()
+
+    #         if not self.parent:
+    #             return
+    #         widget, _ = self.screen.get_widget_at(*event.screen_offset)
+
+    #         if not isinstance(widget, Button):
+
+    #             self.mouse_at_drag_start = event.screen_offset
+    #             self.offset_at_drag_start = Offset(
+    #                 int(self.styles.offset.x.value),
+    #                 int(self.styles.offset.y.value),
+    #             )
+    #             self.capture_mouse()
+
+    #             self.can_focus = False
+
+    # def on_mouse_move(self, event: events.MouseMove):
+    #     if not isinstance(event.widget, Button):
+
+    #         if (
+    #             self.mouse_at_drag_start is not None
+    #             and self.offset_at_drag_start is not None
+    #         ):
+    #             self.styles.offset = (
+    #                 self.offset_at_drag_start.x + event.screen_x - self.mouse_at_drag_start.x,
+    #                 self.offset_at_drag_start.y,
+    #             )
+
+    # def on_mouse_up(self, event: events.MouseUp):
+    #     if not isinstance(event.widget, Button):
+    #         if self.mouse_at_drag_start is None or self.offset_at_drag_start is None:
+    #             return
+
+    #         moved = (
+    #             abs(event.screen_x - self.mouse_at_drag_start.x) > 6
+    #             or abs(event.screen_y - self.mouse_at_drag_start.y) > 6
+    #         )
+
+    #         self.mouse_at_drag_start = None
+    #         self.offset_at_drag_start = None
+
+    #         try:
+    #             self.release_mouse()
+    #         except Exception:
+    #             pass
+    #         self.can_focus = True
+
+    #         if not moved:
+    #             return
+
+    #         if self.imagem:
+    #             container = self.screen.query_one("#container_imagens", ResponsiveGrid)
+    #         elif self.documento:
+    #             container = self.screen.query_one("#container_anexos", ResponsiveGrid)
+    #         else:
+    #             return
+
+    #         widget, _ = self.screen.get_widget_at(*event.screen_offset)
+    #         target = widget
+
+    #         if not self.parent:
+    #             return
+
+    #         while target and target is not container and not isinstance(target, ContainerImagem):
+    #             target = target.parent
+
+    #         children = list(container.query_children())
+
+    #         if target is None or target is container or target is self:
+    #             drop_x = event.screen_x - container.region.x
+    #             insert_idx = None
+    #             for i, child in enumerate(children):
+    #                 if child is self:
+    #                     continue
+    #                 center = child.region.x - container.region.x + child.region.width / 2
+    #                 if drop_x < center:
+    #                     insert_idx = i
+    #                     break
+    #             if insert_idx is None:
+    #                 container.move_child(self, after=len(children) - 1)
+    #             else:
+    #                 container.move_child(self, before=insert_idx)
+    #         else:
+    #             idx = children.index(target)
+    #             if event.screen_x < target.region.x + target.region.width / 2:
+    #                 container.move_child(self, before=idx)
+    #             else:
+    #                 container.move_child(self, after=idx)
+
+    def compose(self):
+        yield Button("X", id="deletar", flat=True)
+        if self.imagem:
+            yield Image(self.imagem)
+        elif self.documento:
+            yield PDFViewer(self.documento)
+        else:
+            return
+        with Horizontal():
+            yield Button("<", flat=True, id="esquerda")
+            yield Button(">", flat=True, id="direita")
+
+    @on(Click)
+    def clicou_duas_vezes(self, evento: Click):
+        if not isinstance(evento.widget, Button):
+            if evento.chain == 2:
+                if isinstance(evento.widget, _ImageSixelImpl) and self.imagem:
+                    self.app.push_screen(ImagemAmpliada(
+                        imagem=self.query_one(Image).image))
+                elif isinstance(evento.widget, _ImageSixelImpl) and self.documento:
+                    self.app.push_screen(ImagemAmpliada(
+                        documento=self.query_one(PDFViewer).path))
+                else:
+                    return
 
 
 class Busca(ModalScreen):
@@ -364,6 +477,8 @@ class TelaCadastroImovel(Screen):
     def __init__(self, name=None, id=None, classes=None, imovel=None):
         super().__init__(name, id, classes)
         self.imovel = imovel
+        
+    
 
     def compose(self):
         yield Header()
@@ -384,7 +499,7 @@ class TelaCadastroImovel(Screen):
         with VerticalScroll():
             yield Tabs(Tab("Cadastro", id="tab_imovel"), Tab("Anuncio", id="tab_anuncio"), id="tabs_anuncio")
 
-            with Grid(id="container_cadastro"):
+            with ResponsiveGrid(id="container_cadastro"):
                 yield Static("ref:", id="stt_ref")
                 yield TextArea(disabled=True, id="ta_ref")
                 yield Static("[red]*[/]Categoria:", id="stt_categoria")
@@ -451,43 +566,45 @@ class TelaCadastroImovel(Screen):
                     yield TextArea(id="ta_descricao_anuncio")
                 yield Static("Apartamento")
 
-                with Grid(id="container_info_imovel"):
+                with ResponsiveGrid(id="container_info_imovel"):
                     lista = Init.imobiliaria.get_lista_filtros_apartamento()
                     if lista:
                         for nome in lista:
                             yield Checkbox(label=nome)
                 yield Static("Condomínio")
-                with Grid(id="container_info_condominio"):
+                with ResponsiveGrid(id="container_info_condominio"):
                     lista = Init.imobiliaria.get_lista_filtros_condominio()
                     if lista:
                         for nome in lista:
                             yield Checkbox(label=nome)
+                            
+            with Vertical(id="detalhees"):
 
-            with Grid(id="container_imagens"):
-                yield Static("Imagens: ")
-                with Center():
-                    yield Button("Adicionar", id="bt_adicionar_imagens")
+                with ResponsiveGrid(id="container_imagens"):
+                    yield Static("Imagens: ")
+                    with Center():
+                        yield Button("Adicionar", id="bt_adicionar_imagens")
 
-                # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
+                    # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
 
-            with Grid(id="container_anexos"):
-                yield Static("Anexos: ")
-                with Center():
-                    yield Button("Adicionar", id="bt_adicionar_anexos")
+                with ResponsiveGrid(id="container_anexos"):
+                    yield Static("Anexos: ")
+                    with Center():
+                        yield Button("Adicionar", id="bt_adicionar_anexos")
 
-                # TODO: Pegar o widget de documento, possibilitar adicionar, remover
+                    # TODO: Pegar o widget de documento, possibilitar adicionar, remover
 
-            with Grid(id="container_proprietario"):
-                yield Static("Proprietario: ", classes="stt_container_titulo")
-                yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_proprietario")
+                with ResponsiveGrid(id="container_proprietario"):
+                    yield Static("Proprietario: ", classes="stt_container_titulo")
+                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_proprietario")
 
-            with Grid(id="container_corretor"):
-                yield Static("Corretor: ", classes="stt_container_titulo")
-                yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_corretor")
+                with ResponsiveGrid(id="container_corretor"):
+                    yield Static("Corretor: ", classes="stt_container_titulo")
+                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_corretor")
 
-            with Grid(id="container_captador"):
-                yield Static("Captador: ", classes="stt_container_titulo")
-                yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
+                with ResponsiveGrid(id="container_captador"):
+                    yield Static("Captador: ", classes="stt_container_titulo")
+                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
 
         yield Footer(show_command_palette=False)
 
@@ -697,16 +814,16 @@ class TelaCadastroImovel(Screen):
             # print(self.imovel.get_anuncio().get_imagens())
 
             if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_imagens():
-                container_imagens = self.query_one("#container_imagens", Grid)
+                container_imagens = self.query_one("#container_imagens", ResponsiveGrid)
                 for imagem in self.imovel.get_anuncio().get_imagens():
                     container_imagens.mount(
                         ContainerImagem(imagem=imagem), after=container_imagens.query_one(Center))
 
             if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_anexos():
-                container_anexos = self.query_one("#container_anexos", Grid)
+                container_anexos = self.query_one("#container_anexos", ResponsiveGrid)
                 for anexo in self.imovel.get_anuncio().get_anexos():
                     container_anexos.mount(
-                        ContainerImagem(documento=anexo), after=self.query_one("#container_anexos", Grid).query_one(Center))
+                        ContainerImagem(documento=anexo), after=self.query_one("#container_anexos", ResponsiveGrid).query_one(Center))
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
@@ -755,14 +872,14 @@ class TelaCadastroImovel(Screen):
                 caminhos = Midia.selecionar_arquivo(Midia.Tipo.IMAGEM)
                 if caminhos:
                     for caminho in caminhos:
-                        self.query_one("#container_imagens", Grid).mount(
+                        self.query_one("#container_imagens", ResponsiveGrid).mount(
                             ContainerImagem(imagem=caminho), after=self.query_one("#container_imagens", Grid).query_one(Center))
 
             case "bt_adicionar_anexos":
                 caminhos = Midia.selecionar_arquivo(Midia.Tipo.DOCUMENTO)
                 if caminhos:
                     for caminho in caminhos:
-                        self.query_one("#container_anexos", Grid).mount(
+                        self.query_one("#container_anexos", ResponsiveGrid).mount(
                             ContainerImagem(documento=caminho), after=self.query_one("#container_anexos", Grid).query_one(Center))
 
             case "bt_salvar_alteracoes":

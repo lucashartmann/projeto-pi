@@ -1,9 +1,10 @@
 # Faturamento diario, mensal, anual, semestre
 # Quantidade de imoveis vendidos
-
 from textual.screen import Screen
 from textual.widgets import Tab, Tabs, Static, Header, Footer
-from textual.containers import VerticalGroup, Grid
+from textual.containers import VerticalGroup
+from utils.Widgets import Header, ResponsiveGrid
+
 
 
 from model import Init, Usuario
@@ -20,7 +21,7 @@ class TelaDadosImobiliaria(Screen):
         elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
-        yield Grid()
+        yield ResponsiveGrid()
         yield Footer(show_command_palette=False)
 
     def on_mount(self):
@@ -28,31 +29,31 @@ class TelaDadosImobiliaria(Screen):
 
     def atualizar(self):
         container = VerticalGroup()
-        self.query_one(Grid).mount(container)
+        self.query_one(ResponsiveGrid).mount(container)
         container.mount(Static("Faturamento Diário:"))
         container.mount(Static("R$ XXXX,XX", classes="valor"))
         container = VerticalGroup()
-        self.query_one(Grid).mount(container)
+        self.query_one(ResponsiveGrid).mount(container)
         container.mount(Static("Faturamento Mensal:"))
         container.mount(Static("R$ XXXX,XX", classes="valor"))
         container = VerticalGroup()
-        self.query_one(Grid).mount(container)
+        self.query_one(ResponsiveGrid).mount(container)
         container.mount(Static("Faturamento Anual:"))
         container.mount(Static("R$ XXXX,XX", classes="valor"))
         container = VerticalGroup()
-        self.query_one(Grid).mount(container)
+        self.query_one(ResponsiveGrid).mount(container)
         container.mount(Static("Faturamento Semestral:"))
         container.mount(Static("R$ XXXX,XX", classes="valor"))
         container = VerticalGroup()
-        self.query_one(Grid).mount(container)
+        self.query_one(ResponsiveGrid).mount(container)
         container.mount(Static("Quantidade de imoveis"))
         container.mount(Static("0", classes="valor"))
         container = VerticalGroup()
-        self.query_one(Grid).mount(container)
+        self.query_one(ResponsiveGrid).mount(container)
         container.mount(Static("Quantidade de clientes"))
         container.mount(Static("0", classes="valor"))
         container = VerticalGroup()
-        self.query_one(Grid).mount(container)
+        self.query_one(ResponsiveGrid).mount(container)
         container.mount(Static("Quantidade de funcionarios"))
         container.mount(Static("0", classes="valor"))
 

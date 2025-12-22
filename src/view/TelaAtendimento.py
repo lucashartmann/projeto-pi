@@ -16,12 +16,12 @@ class ContainerCliente(Horizontal):
 
 
 class TelaAtendimento(Screen):
-    compradores = Init.imobiliaria.get_lista_clientes()
+    compradores = []
     atendimentos = Init.imobiliaria.get_lista_atendimentos()
-    recem_cadastrados = compradores[-1:-6]
+    recem_cadastrados = []
     em_atendimento = []
     pendentes = []
-
+    usuarios = Init.imobiliaria.get_lista_usuarios()
     CSS_PATH = "css/TelaAtendimento.tcss"
 
     def compose(self):
@@ -52,7 +52,8 @@ class TelaAtendimento(Screen):
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
             "#tab_atendimento", Tab).id
-        compradores = Init.imobiliaria.get_lista_compradores()
+        compradores = list(
+            usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.CLIENTE)
         atendimentos = Init.imobiliaria.get_lista_atendimentos()
         atendimentos_em_andamento = []
         atendimentos_pendentes = []
@@ -121,7 +122,10 @@ class TelaAtendimento(Screen):
                 # container.query_one("#st_imovel_interesse").content =
 
     def on_mount(self):
-        self.recem_cadastrados = self.compradores[-1:-6]
+        compradores = list(
+            usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.CLIENTE)
+        if compradores:
+            self.recem_cadastrados = compradores[-1:-6]
         self.em_atendimento = []
         self.pendentes = []
 
@@ -135,7 +139,8 @@ class TelaAtendimento(Screen):
 
         self.ataulizar_andamentos()
         self.atualizar_pendentes()
-        self.atualizar_recem_cadastrados()
+        if self.recem_cadastrados:
+            self.atualizar_recem_cadastrados()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:

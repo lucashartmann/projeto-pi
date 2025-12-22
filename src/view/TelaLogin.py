@@ -1,25 +1,8 @@
 from textual.screen import Screen
-from textual.widgets import Input, Button, Select, Label, Footer, Switch
+from textual.widgets import Input, Button, Select, Label, Footer
 from textual.containers import VerticalGroup
-from utils.Widgets import Header
+from utils.Widgets import Header, MyInput
 from controller import Controller
-
-
-class MyInput(Input):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def compose(self):
-        yield Switch(animate=False)
-
-    def on_mount(self):
-        self.query_one(Switch).styles.dock = "right"
-
-    def on_switch_changed(self, evento: Switch.Changed):
-        if evento.switch.value == True:
-            self.password = False
-        else:
-            self.password = True
 
 
 class TelaLogin(Screen):

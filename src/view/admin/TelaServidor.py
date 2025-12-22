@@ -3,14 +3,12 @@ import subprocess
 import psutil
 import requests
 import asyncio
-
 from ngrok import ngrok
-
 from textual.screen import Screen
-from textual.widgets import Switch, Static, Pretty, Input, Tab, Tabs
-
+from textual.widgets import Switch, Static, Pretty, Input, Tab, Tabs, Footer
 from database.Banco import Banco
 import socket
+from utils.Widgets import Header
 
 
 class TelaServidor(Screen):
@@ -20,6 +18,7 @@ class TelaServidor(Screen):
     CSS_PATH = "css/TelaServidor.tcss"
 
     def compose(self):
+        yield Header()
         yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
         yield Input(placeholder="auth_token do ngrok")
         yield Static("Ligar Local:")
@@ -27,6 +26,7 @@ class TelaServidor(Screen):
         yield Static("Ligar Ngrok")
         yield Switch(value=False, id="ngrok")
         yield Pretty("Servidor desligado")
+        yield Footer(show_command_palette=False)
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(

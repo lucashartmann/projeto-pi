@@ -3,8 +3,7 @@ from textual import on
 from textual.screen import Screen
 from textual.containers import VerticalScroll, Container, Grid
 from utils.Widgets import Header
-from textual_image.widget import Image
-
+from utils.textual_image.widget import Image
 from model import Init, Usuario, Imovel
 from database.Banco import Banco
 from io import BytesIO
@@ -53,7 +52,7 @@ class TelaEstoqueCliente(Screen):
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
 
         with VerticalScroll():
-            with Grid(id="hg_pesquisa"):
+            with ResponsiveGrid(id="hg_pesquisa"):
                 yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
                 yield Select([(valor.value, valor) for valor in Imovel.Categoria])
                 yield Static("CEP desejado")

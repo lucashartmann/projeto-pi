@@ -5,31 +5,21 @@ from textual.events import Click
 from textual import on
 from textual.suggester import SuggestFromList
 from utils.Widgets import Header
-
 from model import Init, Imovel, Usuario, Endereco, Captador, Corretor, Condominio
 from database.Banco import Banco
-
-from textual_image.widget import Image
-
+from utils.textual_image.widget import Image
 from view import TelaCadastroImovel, TelaCadastroPessoa
+from utils.Widgets import Header
 
 
 class TelaEstoque(Screen):
 
     CSS_PATH = "css/TelaEstoque.tcss"
     TITLE = "Estoque"
-
-    imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
-    usuarios = Init.imobiliaria.get_lista_usuarios()
-    proprietarios = Init.imobiliaria.get_lista_proprietarios()
-    ruas = list((imovel.get_endereco().get_rua()
-                for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
-    cidades = list((imovel.get_endereco().get_cidade(
-    ) for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
-    bairros = list((imovel.get_endereco().get_bairro(
-    ) for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
-    ceps = list(str((imovel.get_endereco().get_cep())
-                for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
+    ruas = []
+    cidades = []
+    bairros = []
+    ceps = []
     lista_filtrada = []
     lista = []
     filtrou_select = False
@@ -37,6 +27,9 @@ class TelaEstoque(Screen):
     select_evento = ""
     objeto = Init.imovel_um
     tabela = "Imovel"
+    usuarios = Init.imobiliaria.get_lista_usuarios()
+    imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+    proprietarios = Init.imobiliaria.get_lista_proprietarios()
 
     def compose(self):
         yield Header()
@@ -49,9 +42,10 @@ class TelaEstoque(Screen):
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-        yield Input(placeholder="pesquise aqui")
-        yield TextArea(read_only=True, id="tx_dados")
+    
         with Vertical(id="container_filtragem"):
+            yield Input(placeholder="pesquise aqui")
+            yield TextArea(read_only=True, id="tx_dados")
             with Horizontal(id="primeiro"):
                 if Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
                     yield Select([("Imoveis", "Imovel"), ("Clientes", "Cliente"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador")], allow_blank=False, id="select_tabelas", prompt="Selecionar")
@@ -73,7 +67,6 @@ class TelaEstoque(Screen):
             pass
 
         yield Footer(show_command_palette=False)
-        
 
     def on_button_pressed(self):
         if self.query_one(Button).label == "⬇️":
@@ -89,7 +82,17 @@ class TelaEstoque(Screen):
         #     "Move cursor right or accept the completion suggestion",
         #     show=False,
         # ),)
-        self.lista = self.imoveis
+        imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+        self.ruas = list((imovel.get_endereco().get_rua()
+                          for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
+        self.cidades = list((imovel.get_endereco().get_cidade(
+        ) for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
+        self.bairros = list((imovel.get_endereco().get_bairro(
+        ) for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
+        self.ceps = list(str((imovel.get_endereco().get_cep())
+                             for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
+
+        self.lista = imoveis
         self.atualizar()
 
     def setup_dados(self):
@@ -97,7 +100,7 @@ class TelaEstoque(Screen):
             quant = len(self.lista_filtrada)
         else:
             quant = len(self.lista)
-        self.query_one("#tx_dados").text = f"Quantidade de imoveis: {quant}"
+        self.query_one("#tx_dados").text =  f"Quantidade de imóveis: {quant}\n\nExemplo de busca: 'titulo: Maus - 1984, genero: distopia'"
 
     def on_select_changed(self, evento: Select.Changed):
         if evento.select.id == "select_tabelas":
@@ -201,52 +204,88 @@ class TelaEstoque(Screen):
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one("#tab_estoque", Tab).id
 
-        imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
-        usuarios = Init.imobiliaria.get_lista_usuarios()
-        proprietarios = Init.imobiliaria.get_lista_proprietarios()
-        ruas = list((imovel.get_endereco().get_rua(
-        ) for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
-        cidades = list((imovel.get_endereco().get_cidade()
-                        for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
-        bairros = list((imovel.get_endereco().get_bairro()
-                        for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
-        ceps = list((str(imovel.get_endereco().get_cep())
-                     for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
+        select = self.query_one("#select_tabelas", Select)
+        match select.value:
+            case "Imovel":
+                imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
+                ruas = list((imovel.get_endereco().get_rua(
+                ) for imovel in self.imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_rua()))
+                cidades = list((imovel.get_endereco().get_cidade()
+                                for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cidade()))
+                bairros = list((imovel.get_endereco().get_bairro()
+                                for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_bairro()))
+                ceps = list((str(imovel.get_endereco().get_cep())
+                            for imovel in imoveis if imovel and imovel.get_endereco() and imovel.get_endereco().get_cep()))
+                if ceps != self.ceps:
+                    self.ceps = ceps
+                if ruas != self.ruas:
+                    self.ruas = ruas
+                if bairros != self.bairros:
+                    self.bairros = bairros
+                if cidades != self.cidades:
+                    self.cidades = cidades
+                if imoveis != self.lista:
+                    self.imoveis = imoveis
+                    self.lista = imoveis
+                    self.atualizar()
 
-        condicao = False
+            case  "Cliente":
+                usuarios = Init.imobiliaria.get_lista_usuarios()
+                clientes = list(
+                    usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.CLIENTE)
+                if clientes != self.lista:
+                    self.lista = clientes
+                    self.usuarios = usuarios
+                    self.atualizar()
 
-        if imoveis != self.imoveis:
-            self.imoveis = imoveis
-            if self.tabela == "Imovel":
-                condicao = True
+            case "Proprietario":
+                proprietarios = Init.imobiliaria.get_lista_proprietarios()
+                if proprietarios != self.proprietarios:
+                    self.lista = proprietarios
+                    self.proprietarios = proprietarios
+                    self.atualizar()
 
-        if usuarios != self.usuarios:
-            self.usuarios = usuarios
-            if self.tabela == "Usuario":
-                condicao = True
+            case "Corretor":
+                usuarios = Init.imobiliaria.get_lista_usuarios()
+                corretores = list(usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo(
+                ) == Usuario.Tipo.CORRETOR)
+                if corretores != self.lista:
+                    self.lista = corretores
+                    self.usuarios = usuarios
+                    self.atualizar()
 
-        if ceps != self.ceps:
-            self.ceps = ceps
+            case "Captador":
+                usuarios = Init.imobiliaria.get_lista_usuarios()
+                captadores = list(usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo(
+                ) == Usuario.Tipo.CAPTADOR)
+                if captadores != self.lista:
+                    self.lista = captadores
+                    self.usuarios = usuarios
+                    self.atualizar()
 
-        if ruas != self.ruas:
-            self.ruas = ruas
+            case "Venda":
+                pass
 
-        if bairros != self.bairros:
-            self.bairros = bairros
+            case "Aluguel":
+                pass
 
-        if cidades != self.cidades:
-            self.cidades = cidades
+            case "Gerente":
+                usuarios = Init.imobiliaria.get_lista_usuarios()
+                gerentes = list(
+                    usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.GERENTE)
+                if gerentes != self.lista:
+                    self.lista = gerentes
+                    self.usuarios = usuarios
+                    self.atualizar()
 
-        if proprietarios != self.proprietarios:
-            self.proprietarios = proprietarios
-            if self.tabela == "Proprietario":
-                condicao = True
-
-        try:
-            if condicao:
-                self.atualizar()
-        except:
-            pass
+            case "Admnistrador":
+                usuarios = Init.imobiliaria.get_lista_usuarios()
+                administradores = list(usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo(
+                ) == Usuario.Tipo.ADMINISTRADOR)
+                if administradores != self.lista:
+                    self.lista = administradores
+                    self.usuarios = usuarios
+                    self.atualizar()
 
     @on(Click)
     def on_click(self, evento: Click):

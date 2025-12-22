@@ -3,6 +3,18 @@ Screen {
     color: black;
 }
 
+Tabs Underline {
+        width: 1fr;
+        height: 1;
+        & > .underline--bar {
+            color: black;
+            background: $foreground 90%;
+        }
+        &:ansi {
+            text-style: dim;
+        }
+    }
+
 Header {
     layout: horizontal;
     width: 100%;
@@ -39,8 +51,18 @@ Header Switch {
     padding: 0;
     width: 7;
     content-align: left middle;
-    border: solid 10%;
+    border: solid 10% black;
 }
+
+Header &.-on .switch--slider {
+            color: green;
+        }
+
+Header & .switch--slider {
+        color: red;
+            background: rgb(200,200,200);
+        }
+
 
 Header HeaderClock, Header HeaderClockSpace {
     display: none;
@@ -49,6 +71,10 @@ Header HeaderClock, Header HeaderClockSpace {
 Header Button:hover {
     color: white;
     background: red;
+}
+
+Button:hover {
+    background: gray;
 }
 
 Header HeaderTitle {
@@ -292,3 +318,16 @@ App.dark .-accent {
         border-top: tall $accent-darken-2;
     }
 }
+
+
+App.dark Tabs Underline {
+        width: 1fr;
+        height: 1;
+        & > .underline--bar {
+            color: #322b2bff;
+            background: $foreground 90%;
+        }
+        &:ansi {
+            text-style: dim;
+        }
+    }

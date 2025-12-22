@@ -31,7 +31,7 @@ def selecionar_arquivo(tipo):
     root.withdraw()
 
     caminhos = filedialog.askopenfilenames(
-        title="Selecione uma imagem",
+        title="Selecione",
         filetypes=tipo.value
     )
 

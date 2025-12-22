@@ -1,23 +1,16 @@
-#container_esperando {
-    background: gray;
-    margin: 2;
-}
-
-#container_andamento {
-    background: gray;
-    margin: 2;
-}
-
-#container_cadastrados {
-    background: gray;
+#container_esperando, #container_andamento, #container_cadastrados, Horizontal Vertical Static {
+    background: rgb(200, 200, 200);
     margin: 2;
 }
 
 Horizontal Vertical Static {
-    background: gray;
-    margin: 2;
     height: 15%;
     color: black;
     text-align: center;
     content-align: center middle;
+}
+
+App.dark #container_esperando,App.dark #container_andamento,App.dark  #container_cadastrados,App.dark Horizontal Vertical Static{
+    background: #1a1717ff;
+    color: white;
 }

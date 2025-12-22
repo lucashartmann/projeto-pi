@@ -711,7 +711,6 @@ class Banco:
         except Exception as e:
             print(f"ERRO! Banco.get_lista_filtros_apartamento: {e}")
             return []
-        
 
     def get_lista_filtros_condominio(self):
         try:
@@ -931,7 +930,7 @@ class Banco:
                     anuncio.set_imagens(mapa_anexos["Imagens"])
                 if mapa_anexos and mapa_anexos["Videos"]:
                     anuncio.set_videos(mapa_anexos["Videos"])
-                if mapa_anexos and mapa_anexos["Documentos"] :
+                if mapa_anexos and mapa_anexos["Documentos"]:
                     anuncio.set_anexos(mapa_anexos["Documentos"])
                 return anuncio
         except Exception as e:
@@ -1454,11 +1453,11 @@ class Banco:
                 cpf_cnpj_corretor = dados[21]
                 corretor = None
                 if cpf_cnpj_corretor:
-                    corretor = self.get_usuario_por_cpf(cpf_cnpj_corretor)
+                    corretor = self.get_usuario_por_cpf_cnpj(cpf_cnpj_corretor)
                 cpf_cnpj_captador = dados[22]
                 captador = None
                 if cpf_cnpj_captador:
-                    captador = self.get_usuario_por_cpf(cpf_cnpj_captador)
+                    captador = self.get_usuario_por_cpf_cnpj(cpf_cnpj_captador)
                 data_cadastro = dados[23]
                 if data_cadastro:
                     data_cadastro = datetime.strptime(
@@ -1744,11 +1743,11 @@ class Banco:
                     cpf_cnpj_corretor = dados[21]
                     corretor = None
                     if cpf_cnpj_corretor:
-                        corretor = self.get_usuario_por_cpf(cpf_cnpj_corretor)
+                        corretor = self.get_usuario_por_cpf_cnpj(cpf_cnpj_corretor)
                     cpf_cnpj_captador = dados[22]
                     captador = None
                     if cpf_cnpj_captador:
-                        captador = self.get_usuario_por_cpf(cpf_cnpj_captador)
+                        captador = self.get_usuario_por_cpf_cnpj(cpf_cnpj_captador)
                     data_cadastro = dados[23]
                     if data_cadastro:
                         data_cadastro = datetime.strptime(
@@ -1921,11 +1920,11 @@ class Banco:
                     cpf_cnpj_corretor = dados[21]
                     corretor = None
                     if cpf_cnpj_corretor:
-                        corretor = self.get_usuario_por_cpf(cpf_cnpj_corretor)
+                        corretor = self.get_usuario_por_cpf_cnpj(cpf_cnpj_corretor)
                     cpf_cnpj_captador = dados[22]
                     captador = None
                     if cpf_cnpj_captador:
-                        captador = self.get_usuario_por_cpf(cpf_cnpj_captador)
+                        captador = self.get_usuario_por_cpf_cnpj(cpf_cnpj_captador)
                     data_cadastro = dados[23]
                     if data_cadastro:
                         data_cadastro = datetime.strptime(

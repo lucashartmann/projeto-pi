@@ -1,3 +1,21 @@
+TelaCadastroPessoa #h_buttons Button{
+    margin-right: 2;
+}
+
+TelaCadastroPessoa #h_buttons{
+    height: auto;
+    border: black 10%;
+    width: auto;
+    margin: 5;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+App.dark TelaCadastroPessoa #h_buttons {
+    border: #ede6e6ff 10%;
+}
+
+
 TelaCadastroPessoa TextArea {
     width: 70%;
     min-height: 3;
@@ -5,7 +23,32 @@ TelaCadastroPessoa TextArea {
     color: black;
 }
 
-TelaCadastroPessoa MaskedInput {
+TelaCadastroPessoa #imoveis, TelaCadastroPessoa #inpt_creci, TelaCadastroPessoa #stt_creci, TelaCadastroPessoa #stt_salario, TelaCadastroPessoa #inpt_salario{
+    display: none;
+}
+
+TelaCadastroPessoa #bt_remover_numero {
+    display: none;
+    margin-left: 1;
+    color: red;
+}
+
+TelaCadastroPessoa #container_telefones {
+    width: 100%;
+}
+
+TelaCadastroPessoa #container_telefones Button{
+    min-width: 0;
+    width: 10%;
+}
+
+
+TelaCadastroPessoa #bt_remover_numero:hover {
+    background: red;
+    color: white;
+}
+
+TelaCadastroPessoa MaskedInput, TelaCadastroPessoa Input {
     width: 70%;
     color: black;
 }
@@ -15,20 +58,23 @@ TelaCadastroPessoa Button {
 }
 
 TelaCadastroPessoa Select {
-    width: 70%;
+    width: 10%;
+    margin-left: 5;
 }
 
-TelaCadastroPessoa Grid {
+TelaCadastroPessoa ResponsiveGrid {
     grid-size: 4;
     grid-gutter: 2;
-    margin-bottom: 4; 
     height: auto;
     width: 100%;
     border: black 10%;
     margin: 5;
+    margin-top: 0;
+    margin-bottom: 1; 
+    align: center middle;
 }
 
-App.dark TelaCadastroPessoa Grid {
+App.dark TelaCadastroPessoa ResponsiveGrid {
     border: #ede6e6ff 10%;
 }
 
@@ -52,19 +98,3 @@ TelaCadastroPessoa Tab {
     color: black;    
 }
 
-TelaCadastroPessoa SelectionList {
-    width: 100%;
-    height: auto;
-}
-
-TelaCadastroPessoa #hg_operacoes Select {
-    width: 30%;
-}
-
-TelaCadastroPessoa #hg_operacoes Button {
-    width: 38%;
-}
-
-TelaCadastroPessoa #hg_operacoes {
-    margin: 5;
-}

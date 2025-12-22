@@ -1,8 +1,6 @@
 from textual.app import App
 from textual.binding import Binding
-
 from model import Init
-
 from view import TelaCadastroPessoa, TelaLogin, TelaEstoque, TelaCadastroImovel, TelaAtendimento
 from view.cliente import TelaDadosCliente, TelaEstoqueCliente, TelaDadosImovel
 from view.admin import TelaServidor
@@ -12,7 +10,7 @@ from view.gerente import TelaDadosImobiliaria
 
 class App(App):
     CSS_PATH = "css/Base.tcss"
-
+    
     SCREENS = {
         "tela_cadastro_pessoa": TelaCadastroPessoa.TelaCadastroPessoa,
         "tela_cadastro_imovel": TelaCadastroImovel.TelaCadastroImovel,
@@ -33,7 +31,7 @@ class App(App):
 
     def on_mount(self):
         self.use_command_palette = False
-        Init.usuario_atual = Init.administrador
+        Init.usuario_atual = Init.captador
         self.push_screen("tela_cadastro_imovel")
         # self.push_screen("tela_login")
 

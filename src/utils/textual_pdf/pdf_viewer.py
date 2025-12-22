@@ -45,12 +45,16 @@ class PDFViewer(Container):
         name: str | None = None,
         id: str | None = None,
         classes: str | None = None,
+        font_path: str | None = None,
+        font_size: int = 10,
     ) -> None:
         super().__init__(name=name, id=id, classes=classes)
         assert protocol in ["Auto", "TGP", "Sixel", "Halfcell", "Unicode", ""]
         self.protocol = protocol
         self.path = path
         self.use_keys = use_keys
+        self.font_path = font_path
+        self.font_size = font_size
         self.doc = None
         self.doc_type = None
         self.pages_cache = []
@@ -154,7 +158,7 @@ class PDFViewer(Container):
             mode = "RGBA" if pix.alpha else "RGB"
             return PILImage.frombytes(mode, (pix.width, pix.height), pix.samples)
 
-        elif self.doc_type == "txt":
+        elif self.doc_type in ("txt", "plain"):
             lines = self.doc[page_index * 40:(page_index + 1) * 40]
             return self._draw_text_page(lines)
 
@@ -171,24 +175,75 @@ class PDFViewer(Container):
             raise PDFRuntimeError(f"Tipo desconhecido: {self.doc_type}")
 
     def _draw_text_page(self, lines):
-        width, height = 900, max(300, len(lines) * 20 + 40)
+        width = 900
+
+        # Try to load a TTF font at the requested size; fall back gracefully
+        try:
+            if getattr(self, 'font_path', None):
+                font = ImageFont.truetype(self.font_path, self.font_size)
+            else:
+                font = ImageFont.truetype("arial.ttf", self.font_size)
+        except Exception:
+            try:
+                font = ImageFont.truetype("DejaVuSans.ttf", self.font_size)
+            except Exception:
+                font = ImageFont.load_default()
+
+        # Define a helper that wraps text by pixel width
+        def wrap_text_by_pixel(draw_obj, text, font_obj, max_width):
+            if not text:
+                return [""]
+            words = text.split()
+            lines_out = []
+            line = words[0]
+            for w in words[1:]:
+                test = line + " " + w
+                try:
+                    bbox = draw_obj.textbbox((0, 0), test, font=font_obj)
+                    test_width = bbox[2] - bbox[0]
+                except Exception:
+                    test_width = draw_obj.textlength(test, font=font_obj) if hasattr(draw_obj, "textlength") else len(test) * (self.font_size // 2)
+                if test_width <= max_width:
+                    line = test
+                else:
+                    lines_out.append(line)
+                    line = w
+            lines_out.append(line)
+            return lines_out
+
+        # temporary image to measure wrapped lines
+        temp_img = PILImage.new("RGB", (width, 2000), "white")
+        temp_draw = ImageDraw.Draw(temp_img)
+        max_text_width = width - 20
+
+        est_lines = 0
+        for line in lines:
+            wrapped = wrap_text_by_pixel(temp_draw, line, font, max_text_width)
+            est_lines += max(1, len(wrapped))
+
+        try:
+            ascent, descent = font.getmetrics()
+            line_height = ascent + descent + 4
+        except Exception:
+            line_height = self.font_size + 6
+
+        height = max(300, est_lines * line_height + 40)
+
         image = PILImage.new("RGB", (width, height), "white")
         draw = ImageDraw.Draw(image)
-        font = ImageFont.load_default()
-
-        # Define the maximum width for text (accounting for margins)
-        max_text_width = width - 20  # 10 pixels margin on each side
 
         y = 10
         for line in lines:
-            # Wrap the text to fit within the image width
-            # Adjust width based on font size
-            wrapped_lines = textwrap.wrap(line, width=80)
-            for wrapped_line in wrapped_lines:
+            wrapped = wrap_text_by_pixel(draw, line, font, max_text_width)
+            for wrapped_line in wrapped:
                 draw.text((10, y), wrapped_line, fill="black", font=font)
-                y += 18  # Adjust line spacing
-            if not wrapped_lines:  # Handle empty lines
-                y += 18
+                y += line_height
+            if wrapped == [""]:
+                y += 6
+
+        final_height = max(300, y + 10)
+        if final_height != height:
+            image = image.crop((0, 0, width, final_height))
         return image
 
     def render_page(self):
@@ -211,6 +266,19 @@ class PDFViewer(Container):
                 self.go_to_start()
             case "end":
                 self.go_to_end()
+                
+    def load(self, path: str | Path | io.BytesIO, reset_page: bool = True):
+        print(path)
+        try:
+            self.path = path
+            self._check_file(path)
+            if reset_page:
+                self.current_page = 0
+            
+            self.render_page()
+        except Exception as e:
+                print("ERRO!", e)
+                pass
 
     def next_page(self):
         if self.current_page < self.total_pages - 1:

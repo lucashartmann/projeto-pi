@@ -1,11 +1,9 @@
 import hashlib
 from textual.screen import Screen
 from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, MaskedInput, SelectionList, Input, Switch
-from textual.containers import Grid
-from utils.Widgets import Header
+from utils.Widgets import Header, ResponsiveGrid
 from textual.validation import Length
 from model import Init, Usuario
-from database.Banco import Banco
 from controller import Controller
 import datetime
 
@@ -39,7 +37,7 @@ class TelaDadosCliente(Screen):
         elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CLIENTE:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
 
-        with Grid():
+        with ResponsiveGrid():
             yield Static("Username")
             yield TextArea(id="inpt_username")
             yield Static("Nome")
@@ -60,7 +58,7 @@ class TelaDadosCliente(Screen):
             yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento", validators=Length(minimum=10, maximum=10), valid_empty=True)
 
         yield Static("Procurando por:")
-        with Grid():
+        with ResponsiveGrid():
             # yield SelectionList([(valor.value, valor.value) for valor in Imovel.Categoria], id="select_categoria")
             yield Static("Quartos")
             yield MaskedInput(template="00")
