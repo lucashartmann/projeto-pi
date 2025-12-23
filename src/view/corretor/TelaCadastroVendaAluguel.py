@@ -1,7 +1,9 @@
 from textual.screen import Screen
 from textual.widgets import Tab, Tabs
 from model import Init, Usuario
-from utils.Widgets import Header, ResponsiveGrid
+from utils.Widgets import Header
+from textual.containers import Grid
+
 
 class TelaCadastroVendaAluguel(Screen):
     CSS_PATH = "css/TelaCadastroVendaAluguel.tcss"

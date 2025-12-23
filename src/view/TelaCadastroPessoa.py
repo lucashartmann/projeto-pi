@@ -1,10 +1,10 @@
 import datetime
 from textual.widgets import Button, Tab, Tabs, Select, Footer, Static, TextArea, MaskedInput, Input
 from textual.screen import Screen, ModalScreen
-from textual.containers import HorizontalGroup, Vertical, Horizontal
+from textual.containers import HorizontalGroup, Vertical, Horizontal, Grid
 from controller import Controller
 from model import Init, Usuario, Captador, Cliente, Corretor, Proprietario, Gerente, Endereco
-from utils.Widgets import Header, ResponsiveGrid, MyInput
+from utils.Widgets import Header, MyInput
 from textual.validation import Length
 import requests
 
@@ -106,7 +106,7 @@ class TelaCadastroPessoa(Screen):
         with Horizontal(id="h_buttons"):
             yield Button("Apagar", id="bt_apagar_cadastro", variant="warning")
             yield Button("Salvar", id="bt_salvar_alteracoes", variant="success")
-        with ResponsiveGrid():
+        with Grid():
             if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
                 yield Static("Username", id="stt_username")
                 yield TextArea(placeholder="username aqui", id="inpt_username")
@@ -296,16 +296,16 @@ class TelaCadastroPessoa(Screen):
                     MaskedInput)
                 self.query_one("#container_telefones").mount(MaskedInput(template="(00) 00000-0000",
                                                                          classes="inpt_telefone"), before=self.query_one("#container_telefones").query_one(Button))
-                self.query_one(ResponsiveGrid).mount(MaskedInput(template="(00) 00000-0000", classes="inpt_telefone",
-                                                                 value=valor), after=self.query_one(ResponsiveGrid).query_one("#stt_telefone"))
+                self.query_one(Grid).mount(MaskedInput(template="(00) 00000-0000", classes="inpt_telefone",
+                                                       value=valor), after=self.query_one(Grid).query_one("#stt_telefone"))
                 self.query_one("#container_telefones").query_one(
                     "#bt_remover_numero").styles.display = "block"
 
             case "bt_remover_numero":
                 lista = list(self.query_one(
-                    ResponsiveGrid).query(".inpt_telefone"))
+                    Grid).query(".inpt_telefone"))
 
-                self.query_one(ResponsiveGrid).remove_children(
+                self.query_one(Grid).remove_children(
                     [lista[-1], lista[-2]])
 
                 self.query_one("#container_telefones").mount(MaskedInput(template="(00) 00000-0000", classes="inpt_telefone",
@@ -373,7 +373,7 @@ class TelaCadastroPessoa(Screen):
                     email = None
                 telefones = []
 
-                for input in self.query_one(ResponsiveGrid).query(".inpt_telefone"):
+                for input in self.query_one(Grid).query(".inpt_telefone"):
                     if input._valid and input.value != "":
                         numero = input.value
                         numero = "".join(numero.split("("))

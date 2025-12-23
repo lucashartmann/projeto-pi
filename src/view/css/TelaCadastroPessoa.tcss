@@ -62,7 +62,7 @@ TelaCadastroPessoa Select {
     margin-left: 5;
 }
 
-TelaCadastroPessoa ResponsiveGrid {
+TelaCadastroPessoa Grid {
     grid-size: 4;
     grid-gutter: 2;
     height: auto;
@@ -74,7 +74,16 @@ TelaCadastroPessoa ResponsiveGrid {
     align: center middle;
 }
 
-App.dark TelaCadastroPessoa ResponsiveGrid {
+App.tamanho-34 TelaCadastroPessoa Grid {
+    grid-size: 2;
+}
+
+App.tamanho-34 TelaCadastroPessoa Select {
+    width: 35%;
+}
+
+
+App.dark TelaCadastroPessoa Grid {
     border: #ede6e6ff 10%;
 }
 

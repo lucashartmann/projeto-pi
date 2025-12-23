@@ -1,7 +1,8 @@
 import hashlib
 from textual.screen import Screen
+from textual.containers import Grid
 from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, MaskedInput, SelectionList, Input, Switch
-from utils.Widgets import Header, ResponsiveGrid
+from utils.Widgets import Header
 from textual.validation import Length
 from model import Init, Usuario
 from controller import Controller
@@ -37,7 +38,7 @@ class TelaDadosCliente(Screen):
         elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CLIENTE:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
 
-        with ResponsiveGrid():
+        with Grid():
             yield Static("Username")
             yield TextArea(id="inpt_username")
             yield Static("Nome")
@@ -58,7 +59,7 @@ class TelaDadosCliente(Screen):
             yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento", validators=Length(minimum=10, maximum=10), valid_empty=True)
 
         yield Static("Procurando por:")
-        with ResponsiveGrid():
+        with Grid():
             # yield SelectionList([(valor.value, valor.value) for valor in Imovel.Categoria], id="select_categoria")
             yield Static("Quartos")
             yield MaskedInput(template="00")

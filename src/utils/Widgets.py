@@ -2,6 +2,7 @@ from textual.widgets import Header, _header, Button, Switch, Input
 from textual.containers import Grid
 from textual import events
 
+
 class Header(Header):
 
     BINDINGS = []
@@ -39,25 +40,6 @@ class Header(Header):
             self.app.refresh_css()
 
 
-class ResponsiveGrid(Grid):
-
-    WIDTH_BREAKPOINS = {
-        34: "breakpoint-aa",
-        64: "breakpoint-sm",
-        98: "breakpoint-luuu",
-        128: "breakpoint-md",
-        192: "breakpoint-lg",
-    }
-    
-    def on_resize(self, event: events.Resize) -> None:
-        for cls in self.WIDTH_BREAKPOINS.values():
-            self.remove_class(cls)
-
-        for w in sorted(self.WIDTH_BREAKPOINS, reverse=True):
-            if event.size.width > w:
-                self.add_class(self.WIDTH_BREAKPOINS[w])
-                break
-
 class MyInput(Input):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,4 +55,3 @@ class MyInput(Input):
             self.password = False
         else:
             self.password = True
-

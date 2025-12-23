@@ -11,7 +11,7 @@ class Proprietario:
         self.imoveis = []
         self.data_cadastro = None
         self.data_modificacao = None
-    
+
     def set_data_cadastro(self, data):
         self.data_cadastro = data
 
@@ -26,7 +26,7 @@ class Proprietario:
 
     def set_imoveis(self, valor):
         self.imoveis = valor
-        
+
     def get_imoveis(self):
         return self.imoveis
 

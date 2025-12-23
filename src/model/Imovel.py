@@ -103,22 +103,22 @@ class Imovel:
         self.condominio = None
         self.filtros = []
         self.complemento = None
-        
+
     def get_complemento(self):
         return self.complemento
-    
+
     def set_complemento(self, complemento):
         self.complemento = complemento
-        
+
     def set_filtros(self, filtros):
         self.filtros = filtros
-        
+
     def get_filtros(self):
         return self.filtros
-        
+
     def get_condominio(self):
         return self.condominio
-    
+
     def set_condominio(self, nome):
         self.condominio = nome
 

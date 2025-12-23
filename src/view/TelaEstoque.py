@@ -42,7 +42,7 @@ class TelaEstoque(Screen):
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-    
+
         with Vertical(id="container_filtragem"):
             yield Input(placeholder="pesquise aqui")
             yield TextArea(read_only=True, id="tx_dados")
@@ -100,7 +100,8 @@ class TelaEstoque(Screen):
             quant = len(self.lista_filtrada)
         else:
             quant = len(self.lista)
-        self.query_one("#tx_dados").text =  f"Quantidade de imóveis: {quant}\n\nExemplo de busca: 'titulo: Maus - 1984, genero: distopia'"
+        self.query_one(
+            "#tx_dados").text = f"Quantidade de imóveis: {quant}\n\nExemplo de busca: 'titulo: Maus - 1984, genero: distopia'"
 
     def on_select_changed(self, evento: Select.Changed):
         if evento.select.id == "select_tabelas":

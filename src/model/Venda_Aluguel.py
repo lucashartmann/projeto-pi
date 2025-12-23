@@ -11,7 +11,7 @@ class Venda_Aluguel:
         self.comissao_corretor = None
         self.data_cadastro = None
         self.data_modificacao = None
-    
+
     def set_data_cadastro(self, data):
         self.data_cadastro = data
 

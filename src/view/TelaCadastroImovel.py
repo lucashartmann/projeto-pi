@@ -9,7 +9,7 @@ import datetime
 from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
 from controller import Controller
 from utils import Midia
-from utils.Widgets import Header, ResponsiveGrid
+from utils.Widgets import Header
 from utils.textual_image.widget import Image
 from textual_image.widget.sixel import _ImageSixelImpl
 from utils.textual_pdf.pdf_viewer import PDFViewer
@@ -85,9 +85,9 @@ class ContainerImagem(Vertical):
     def on_button_pressed(self, evento: Button.Pressed):
         container = None
         if self.imagem:
-            container = self.screen.query_one("#container_imagens", ResponsiveGrid)
+            container = self.screen.query_one("#container_imagens", Grid)
         elif self.documento:
-            container = self.screen.query_one("#container_anexos", ResponsiveGrid)
+            container = self.screen.query_one("#container_anexos", Grid)
         else:
             return
 
@@ -166,9 +166,9 @@ class ContainerImagem(Vertical):
     #             return
 
     #         if self.imagem:
-    #             container = self.screen.query_one("#container_imagens", ResponsiveGrid)
+    #             container = self.screen.query_one("#container_imagens", Grid)
     #         elif self.documento:
-    #             container = self.screen.query_one("#container_anexos", ResponsiveGrid)
+    #             container = self.screen.query_one("#container_anexos", Grid)
     #         else:
     #             return
 
@@ -496,10 +496,9 @@ class TelaCadastroImovel(Screen):
             yield Button("Apagar", id="bt_apagar_cadastro", variant="warning")
             yield Button("Salvar", id="bt_salvar_alteracoes", variant="success")
 
-        with VerticalScroll():
-            yield Tabs(Tab("Cadastro", id="tab_imovel"), Tab("Anuncio", id="tab_anuncio"), id="tabs_anuncio")
+        yield Tabs(Tab("Cadastro", id="tab_imovel"), Tab("Anuncio", id="tab_anuncio"), id="tabs_anuncio")
 
-            with ResponsiveGrid(id="container_cadastro"):
+        with Grid(id="container_cadastro"):
                 yield Static("ref:", id="stt_ref")
                 yield TextArea(disabled=True, id="ta_ref")
                 yield Static("[red]*[/]Categoria:", id="stt_categoria")
@@ -557,7 +556,7 @@ class TelaCadastroImovel(Screen):
                 yield Static("Valor IPTU:", id="stt_iptu")
                 yield Input(id="ta_iptu", type="number")
 
-            with Vertical(id="container_anuncio"):
+        with Vertical(id="container_anuncio"):
                 yield Static("Titulo")
                 with Center():
                     yield TextArea(id="ta_titulo_anuncio")
@@ -566,43 +565,42 @@ class TelaCadastroImovel(Screen):
                     yield TextArea(id="ta_descricao_anuncio")
                 yield Static("Apartamento")
 
-                with ResponsiveGrid(id="container_info_imovel"):
+                with Grid(id="container_info_imovel"):
                     lista = Init.imobiliaria.get_lista_filtros_apartamento()
                     if lista:
                         for nome in lista:
                             yield Checkbox(label=nome)
                 yield Static("Condomínio")
-                with ResponsiveGrid(id="container_info_condominio"):
+                with Grid(id="container_info_condominio"):
                     lista = Init.imobiliaria.get_lista_filtros_condominio()
                     if lista:
                         for nome in lista:
                             yield Checkbox(label=nome)
                             
-            with Vertical(id="detalhees"):
 
-                with ResponsiveGrid(id="container_imagens"):
+        with Grid(id="container_imagens"):
                     yield Static("Imagens: ")
                     with Center():
                         yield Button("Adicionar", id="bt_adicionar_imagens")
 
                     # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
 
-                with ResponsiveGrid(id="container_anexos"):
+        with Grid(id="container_anexos"):
                     yield Static("Anexos: ")
                     with Center():
                         yield Button("Adicionar", id="bt_adicionar_anexos")
 
                     # TODO: Pegar o widget de documento, possibilitar adicionar, remover
 
-                with ResponsiveGrid(id="container_proprietario"):
+        with Grid(id="container_proprietario"):
                     yield Static("Proprietario: ", classes="stt_container_titulo")
                     yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_proprietario")
 
-                with ResponsiveGrid(id="container_corretor"):
+        with Grid(id="container_corretor"):
                     yield Static("Corretor: ", classes="stt_container_titulo")
                     yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_corretor")
 
-                with ResponsiveGrid(id="container_captador"):
+        with Grid(id="container_captador"):
                     yield Static("Captador: ", classes="stt_container_titulo")
                     yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
 
@@ -814,16 +812,16 @@ class TelaCadastroImovel(Screen):
             # print(self.imovel.get_anuncio().get_imagens())
 
             if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_imagens():
-                container_imagens = self.query_one("#container_imagens", ResponsiveGrid)
+                container_imagens = self.query_one("#container_imagens", Grid)
                 for imagem in self.imovel.get_anuncio().get_imagens():
                     container_imagens.mount(
                         ContainerImagem(imagem=imagem), after=container_imagens.query_one(Center))
 
             if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_anexos():
-                container_anexos = self.query_one("#container_anexos", ResponsiveGrid)
+                container_anexos = self.query_one("#container_anexos", Grid)
                 for anexo in self.imovel.get_anuncio().get_anexos():
                     container_anexos.mount(
-                        ContainerImagem(documento=anexo), after=self.query_one("#container_anexos", ResponsiveGrid).query_one(Center))
+                        ContainerImagem(documento=anexo), after=self.query_one("#container_anexos", Grid).query_one(Center))
 
     def on_screen_resume(self):
         self.query_one(Tabs).active = self.query_one(
@@ -872,14 +870,14 @@ class TelaCadastroImovel(Screen):
                 caminhos = Midia.selecionar_arquivo(Midia.Tipo.IMAGEM)
                 if caminhos:
                     for caminho in caminhos:
-                        self.query_one("#container_imagens", ResponsiveGrid).mount(
+                        self.query_one("#container_imagens", Grid).mount(
                             ContainerImagem(imagem=caminho), after=self.query_one("#container_imagens", Grid).query_one(Center))
 
             case "bt_adicionar_anexos":
                 caminhos = Midia.selecionar_arquivo(Midia.Tipo.DOCUMENTO)
                 if caminhos:
                     for caminho in caminhos:
-                        self.query_one("#container_anexos", ResponsiveGrid).mount(
+                        self.query_one("#container_anexos", Grid).mount(
                             ContainerImagem(documento=caminho), after=self.query_one("#container_anexos", Grid).query_one(Center))
 
             case "bt_salvar_alteracoes":

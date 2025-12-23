@@ -1,4 +1,4 @@
-TelaDadosCliente ResponsiveGrid {
+TelaDadosCliente Grid {
     grid-size: 2;
     margin-left: 5;
     margin-right: 80;
@@ -9,12 +9,12 @@ TelaDadosCliente ResponsiveGrid {
     align: center middle;
 }
 
-TelaDadosCliente ResponsiveGrid TextArea{
+TelaDadosCliente Grid TextArea{
    column-span:5;
    height: 99%;
 }
 
-TelaDadosCliente ResponsiveGrid Static {
+TelaDadosCliente Grid Static {
     margin-left: 0;
 }
 

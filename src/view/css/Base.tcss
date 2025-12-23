@@ -319,7 +319,6 @@ App.dark .-accent {
     }
 }
 
-
 App.dark Tabs Underline {
         width: 1fr;
         height: 1;
@@ -331,3 +330,8 @@ App.dark Tabs Underline {
             text-style: dim;
         }
     }
+
+App.tamanho-34 Header HeaderTitle{
+    width: 90%;
+    align: center middle;
+}

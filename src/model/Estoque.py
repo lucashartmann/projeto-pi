@@ -5,7 +5,7 @@ class Estoque:
 
     def __init__(self):
         self.banco_dados = Banco()
-        
+
     def cadastrar_anuncio(self, anuncio):
         return self.banco_dados.cadastrar_anuncio(anuncio)
 

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Tipo(Enum):
     ADMINISTRADOR = "ADMIN"
     CORRETOR = "CORRETOR"
@@ -7,6 +8,7 @@ class Tipo(Enum):
     CAPTADOR = "CAPTADOR"
     CLIENTE = "CLIENTE"
     PROPRIETARIO = "PROPRIETARIO"
+
 
 class Usuario:
     def __init__(self, username, senha, email, nome, cpf_cnpj, tipo):
@@ -23,7 +25,7 @@ class Usuario:
         self.tipo = tipo
         self.data_cadastro = None
         self.data_modificacao = None
-    
+
     def set_data_cadastro(self, data):
         self.data_cadastro = data
 
@@ -35,7 +37,6 @@ class Usuario:
 
     def get_data_modificacao(self):
         return self.data_modificacao
-
 
     def get_id(self):
         return self.id

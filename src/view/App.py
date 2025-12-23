@@ -6,11 +6,12 @@ from view.cliente import TelaDadosCliente, TelaEstoqueCliente, TelaDadosImovel
 from view.admin import TelaServidor
 from view.corretor import TelaCadastroVendaAluguel
 from view.gerente import TelaDadosImobiliaria
+from textual import events
 
 
 class App(App):
     CSS_PATH = "css/Base.tcss"
-    
+
     SCREENS = {
         "tela_cadastro_pessoa": TelaCadastroPessoa.TelaCadastroPessoa,
         "tela_cadastro_imovel": TelaCadastroImovel.TelaCadastroImovel,
@@ -28,6 +29,25 @@ class App(App):
     BINDINGS = {
         Binding("ctrl+q", "app.quit", "Sair"),
     }
+
+    WIDTH_BREAKPOINS = {
+        34: "tamanho-34",
+        64: "tamanho-64",
+        98: "tamanho-98",
+        128: "tamanho-128",
+        192: "tamanho-192",
+    }
+
+    def on_resize(self, event: events.Resize) -> None:
+        for cls in self.WIDTH_BREAKPOINS.values():
+            self.remove_class(cls)
+
+        print(event.size.width)
+
+        for w in sorted(self.WIDTH_BREAKPOINS, reverse=True):
+            if event.size.width > w:
+                self.add_class(self.WIDTH_BREAKPOINS[w])
+                break
 
     def on_mount(self):
         self.use_command_palette = False

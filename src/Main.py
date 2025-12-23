@@ -6,6 +6,7 @@ comando = sys.argv[1:]
 
 # pyinstaller  --hidden-import textual.widgets._tab_pane Main.py
 
+
 def ajuda():
     mensagem = '''
     # Comandos:

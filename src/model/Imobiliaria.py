@@ -30,14 +30,14 @@ class Imobiliaria:
 
     def set_estoque(self, value):
         self.estoque = value
-        
+
     def atualizar(self, campo_desejado, valor, tabela):
         return self.banco_dados.atualizar(campo_desejado, valor, tabela)
-    
-    def verificar_usuario(self, 
-        username, senha):
+
+    def verificar_usuario(self,
+                          username, senha):
         return self.banco_dados.verificar_usuario(
-        username, senha)
+            username, senha)
 
     def cadastrar_endereco(self, endereco):
         return self.banco_dados.cadastrar_endereco(endereco)
@@ -50,59 +50,57 @@ class Imobiliaria:
 
     def cadastrar_usuario(self, usuario):
         return self.banco_dados.cadastrar_usuario(usuario)
-    
+
     def cadastrar_proprietario(self, proprietario):
         return self.banco_dados.cadastrar_proprietario(proprietario)
 
     def get_lista_usuarios(self):
         return self.banco_dados.get_lista_usuarios()
-    
+
     def get_usuario_por_cpf_cnpj(self, cpf):
         return self.banco_dados.get_usuario_por_cpf_cnpj(cpf)
-    
+
     def get_proprietario_por_cpf_cnpj(self, cpf):
         return self.banco_dados.get_proprietario_por_cpf_cnpj(cpf)
-    
+
     def get_lista_clientes(self):
         return self.banco_dados.get_lista_clientes()
-    
-    
+
     def cadastrar_lista_filtros(self, lista_filtros, tabela):
         return self.banco_dados.cadastrar_lista_filtros(lista_filtros, tabela)
-    
+
     def verificar_endereco(self, endereco):
         return self.banco_dados.verificar_endereco(endereco)
-    
+
     def get_condominio_por_id_endereco(self, id):
         return self.banco_dados.get_condominio_por_id_endereco(id)
-    
+
     def cadastrar_condominio(self, condominio):
         return self.banco_dados.cadastrar_condominio(condominio)
-    
+
     def get_lista_proprietarios(self):
         return self.banco_dados.get_lista_proprietarios()
-    
+
     def get_lista_enderecos(self):
         return self.banco_dados.get_lista_enderecos()
-    
+
     def get_lista_filtros_apartamento(self):
         return self.banco_dados.get_lista_filtros_apartamento()
-    
+
     def get_lista_filtros_condominio(self):
         return self.banco_dados.get_lista_filtros_condominio()
-    
+
     def atualizar_anuncio(self, anuncio):
         return self.banco_dados.atualizar_anuncio(anuncio)
-    
+
     def atualizar_condominio(self, condominio):
         return self.banco_dados.atualizar_condominio(condominio)
-    
-    
+
     def atualizar_usuario(self, usuario):
         return self.banco_dados.atualizar_usuario(usuario)
-    
+
     def atualizar_proprietario(self, proprietario):
         return self.banco_dados.atualizar_proprietario(proprietario)
-    
+
     def remover(self, campo_desejado, valor, tabela):
         return self.banco_dados.remover(campo_desejado, valor, tabela)

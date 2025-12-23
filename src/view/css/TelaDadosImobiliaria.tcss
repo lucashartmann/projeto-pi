@@ -23,7 +23,7 @@ TelaDadosImobiliaria VerticalGroup Static {
     color: white;
 }
 
-TelaDadosImobiliaria ResponsiveGrid {
+TelaDadosImobiliaria Grid {
     grid-size: 4;
     background: rgba(15, 13, 13, 1);
     align: center middle;

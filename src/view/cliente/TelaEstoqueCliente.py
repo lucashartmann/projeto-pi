@@ -52,7 +52,7 @@ class TelaEstoqueCliente(Screen):
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
 
         with VerticalScroll():
-            with ResponsiveGrid(id="hg_pesquisa"):
+            with Grid(id="hg_pesquisa"):
                 yield Select([("Venda", "Venda"), ("Aluguel", "Aluguel")])
                 yield Select([(valor.value, valor) for valor in Imovel.Categoria])
                 yield Static("CEP desejado")
