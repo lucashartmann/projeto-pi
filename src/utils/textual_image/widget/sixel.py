@@ -1,9 +1,25 @@
-"""Provides a Textual `Widget` to render images as Sixels (<https://en.wikipedia.org/wiki/Sixel>) in the terminal."""
+"""Provides a Textual `Widget` to render images as Sixels (<https://en.wikipedia.org/wiki/Sixel>) in the terminal.
+
+Note on Performance and Limitations:
+    Sixel support in Textual requires using `render_lines()` directly to inject terminal control
+    sequences, which bypasses the normal rendering pipeline. This is necessary because:
+    1. Sixel data must be positioned based on the visible crop region (only available in render_lines)
+    2. Terminal control sequences must be injected directly into the rendering stream
+    
+    This approach can cause some flickering during scrolling and style changes, especially with
+    large images. The implementation includes several optimizations to mitigate this:
+    - Multi-level caching (direct cache + LRU caches for scaled images and sixel data)
+    - Background generation with debouncing for large images
+    - Intelligent fallback to nearby cached regions during scrolling
+    - Pre-generation of full images for large static content
+    
+    For mostly static images, performance should be acceptable. For dynamic content with frequent
+    scrolling, consider using TGP (Terminal Graphics Protocol) if available, which performs better.
+"""
 
 import logging
-import time
 from collections import OrderedDict
-from typing import IO, Iterable, NamedTuple, Optional, Tuple, Dict
+from typing import IO, Iterable, NamedTuple, Optional, Tuple
 
 from PIL import Image as PILImage
 from rich.console import Console, ConsoleOptions, RenderResult
@@ -87,6 +103,13 @@ class Image(BaseImage, Renderable=_NoopRenderable):
     @BaseImage.image.setter  # type: ignore
     def image(self, value: StrOrBytesPath | IO[bytes] | PILImage.Image | None) -> None:
         super(__class__, type(self)).image.fset(self, value)  # type: ignore
+        # If image is being removed, mark child widget for clearing
+        if value is None:
+            try:
+                child = self.query_one(_ImageSixelImpl)
+                child._needs_clear = True
+            except Exception:
+                pass
         self.refresh(recompose=True)
 
     def compose(self) -> ComposeResult:
@@ -122,11 +145,6 @@ class _ImageSixelImpl(Widget, can_focus=False, inherit_css=False):
         super().__init__()
         self.image = image
         self._cached_sixels: _CachedSixels | None = None
-        # Cache for the scaled pixel data to avoid re-scaling the image on every
-        # crop change (which happens frequently during scrolling). Keyed by
-        # (image, content_size, terminal_sizes).
-        self._cached_scaled_pixeldata: PixelData | None = None
-        self._cached_scaled_info: tuple[StrOrBytesPath | IO[bytes] | PILImage.Image, Size, CellSize] | None = None
 
         # LRU caches
         self._scaled_lru: "OrderedDict[Tuple, PixelData]" = OrderedDict()
@@ -136,23 +154,48 @@ class _ImageSixelImpl(Widget, can_focus=False, inherit_css=False):
 
         # Debounce / background generation
         self._debounce_delay: float = 0.08  # seconds
-        self._debounce_timer = None
         self._pending_generation: Optional[Tuple[Region, Size, CellSize]] = None
-        self._is_generating: bool = False
 
         # Optional pre-generation behavior (only the full scaled image)
         self._pregen_full_scaled: bool = True
         self._pregen_min_pixels: int = 200000  # pregen if scaled image > 200k pixels
+        # Track if we need to clear the area on next render
+        self._needs_clear: bool = False
+
+    @override
+    def on_unmount(self) -> None:
+        """Called when the widget is removed from the DOM.
+        
+        This ensures the area is cleared when the widget is removed (e.g., when closing a modal).
+        """
+        self._needs_clear = True
+        # Force a refresh to clear the area before unmounting
+        try:
+            if self.screen and self.screen.is_active:
+                self.refresh()
+        except (NoScreen, AttributeError):
+            pass
 
     @override
     def render_lines(self, crop: Region) -> list[Strip]:
-        # We don't render anything if the screen isn't active. Textual may try to tint the widget which leads to weird
-        # effects.
+        # If we need to clear (widget being unmounted) or there's no image, clear the area
+        # This removes any leftover Sixel graphics that might remain visible
         try:
-            if not self.image or not self.screen.is_active:
-                return []
+            needs_clear = self._needs_clear
+            has_image = bool(self.image)
+            is_active = self.screen.is_active if hasattr(self, 'screen') else False
+            
+            if needs_clear or not has_image or not is_active:
+                # Reset clear flag before returning
+                self._needs_clear = False
+                # Clear the area by rendering blank spaces - this removes leftover Sixel graphics
+                blank_segment = Segment(" " * crop.width, style=_NULL_STYLE)
+                return [Strip([blank_segment], cell_length=crop.width)] * crop.height
         except NoScreen:  # if no screen, return empty list
             return []
+        
+        # Reset clear flag after checking (in case it was set)
+        self._needs_clear = False
 
         # Inject the sixel data. We can only do it here because we don't know the crop region before.
         terminal_sizes = get_cell_size()
@@ -238,24 +281,15 @@ class _ImageSixelImpl(Widget, can_focus=False, inherit_css=False):
                     self._pending_generation = (crop, self.content_size, terminal_sizes)
                     # cancel previous timer by letting it expire and ignoring if outdated; we just set a new one
                     self.set_timer(self._debounce_delay, self._perform_generation)
-                    # Use best available fallback: either recent sixel from cache or empty
-                    if self._sixel_lru:
-                        # use most recent sixel value
-                        _, sixel_data = next(reversed(self._sixel_lru.items()))
-                    else:
-                        sixel_data = ""
+                    # Use best available fallback: try to find a similar crop region from cache
+                    # This helps reduce flickering during scrolling by showing a nearby cached region
+                    sixel_data = self._find_best_fallback_sixel(crop, sixel_key)
 
-        sixel_segments = self._get_sixel_segments(sixel_data)
+        sixel_segments = self._get_sixel_segments(sixel_data, crop)
         # Render the sixel in the first line of the crop so the image is drawn early and
         # the content area doesn't show as empty before the image is injected. This
         # reduces visible flicker when the widget moves or the terminal resizes.
-        lines = [Strip(sixel_segments, cell_length=crop.width)] + [Strip([])] * (crop.height - 1)
-        return lines
-
-        sixel_segments = self._get_sixel_segments(sixel_data)
-        # Render the sixel in the first line of the crop so the image is drawn early and
-        # the content area doesn't show as empty before the image is injected. This
-        # reduces visible flicker when the widget moves or the terminal resizes.
+        # Empty strips for remaining lines ensure proper layout without interfering with Sixel rendering
         lines = [Strip(sixel_segments, cell_length=crop.width)] + [Strip([])] * (crop.height - 1)
         return lines
 
@@ -271,6 +305,16 @@ class _ImageSixelImpl(Widget, can_focus=False, inherit_css=False):
         return image_data.scaled(pixel_width, pixel_height)
 
     def _crop_image(self, image: PixelData, crop: Region, terminal_sizes: CellSize) -> PixelData:
+        """Crop image data to match the visible crop region.
+        
+        Args:
+            image: The scaled image data to crop.
+            crop: The crop region in cell coordinates.
+            terminal_sizes: Terminal cell size in pixels.
+            
+        Returns:
+            Cropped image data.
+        """
         crop_pixels_left = crop.x * terminal_sizes.width
         crop_pixels_top = crop.y * terminal_sizes.height
         crop_pixels_right = crop.right * terminal_sizes.width
@@ -278,15 +322,118 @@ class _ImageSixelImpl(Widget, can_focus=False, inherit_css=False):
 
         return image.cropped(crop_pixels_left, crop_pixels_top, crop_pixels_right, crop_pixels_bottom)
 
-    def _get_sixel_segments(self, sixel_data: str) -> Iterable[Segment]:
-        visible_region = self.screen.find_widget(self).visible_region
+    def _find_best_fallback_sixel(self, crop: Region, current_key: Tuple) -> str:
+        """Find the best fallback Sixel data from cache when exact match isn't available.
+        
+        This helps reduce flickering during scrolling by showing a nearby cached region
+        instead of an empty image while the correct one is being generated.
+        
+        Args:
+            crop: The current crop region.
+            current_key: The cache key for the current crop.
+            
+        Returns:
+            Sixel data string, or empty string if no suitable fallback found.
+        """
+        if not self._sixel_lru:
+            return ""
+        
+        # Try to find a cached region that overlaps with current crop
+        # This is better than just using the most recent, as it reduces visual jumps
+        best_match = None
+        best_overlap = 0
+        
+        for cached_key, cached_data in self._sixel_lru.items():
+            # Check if it's for the same image and size
+            if (cached_key[0] == current_key[0] and  # same image
+                cached_key[5] == current_key[5] and  # same content_size.width
+                cached_key[6] == current_key[6] and  # same content_size.height
+                cached_key[7] == current_key[7] and  # same terminal_sizes.width
+                cached_key[8] == current_key[8]):   # same terminal_sizes.height
+                
+                # Calculate overlap between cached region and current crop
+                cached_crop = Region(cached_key[1], cached_key[2], cached_key[3], cached_key[4])
+                overlap = self._calculate_overlap(crop, cached_crop)
+                
+                if overlap > best_overlap:
+                    best_overlap = overlap
+                    best_match = cached_data
+        
+        # If we found a reasonable overlap (>50%), use it; otherwise use most recent
+        if best_match and best_overlap > 0.5:
+            logger.debug(f"using fallback sixel with {best_overlap:.0%} overlap")
+            return best_match
+        elif self._sixel_lru:
+            # Fallback to most recent as last resort
+            _, sixel_data = next(reversed(self._sixel_lru.items()))
+            logger.debug("using most recent sixel as fallback")
+            return sixel_data
+        
+        return ""
+
+    def _calculate_overlap(self, region1: Region, region2: Region) -> float:
+        """Calculate overlap ratio between two regions.
+        
+        Args:
+            region1: First region.
+            region2: Second region.
+            
+        Returns:
+            Overlap ratio between 0.0 and 1.0.
+        """
+        # Calculate intersection
+        left = max(region1.x, region2.x)
+        top = max(region1.y, region2.y)
+        right = min(region1.right, region2.right)
+        bottom = min(region1.bottom, region2.bottom)
+        
+        if right <= left or bottom <= top:
+            return 0.0
+        
+        intersection_area = (right - left) * (bottom - top)
+        region1_area = region1.width * region1.height
+        
+        if region1_area == 0:
+            return 0.0
+        
+        return intersection_area / region1_area
+
+    def _get_sixel_segments(self, sixel_data: str, crop: Region) -> Iterable[Segment]:
+        """Generate segments with Sixel data and cursor positioning.
+        
+        Args:
+            sixel_data: The Sixel-encoded image data.
+            crop: The crop region being rendered (relative to widget content).
+            
+        Returns:
+            Segments containing cursor positioning and Sixel data.
+        """
+        # According to the class docstring, self.region == self.content_region for this widget.
+        # Both are in absolute screen coordinates. The crop is relative to the widget's content,
+        # so we add it to get the absolute position on screen.
+        try:
+            # Use content_region explicitly to ensure we're using the content area (without borders/padding)
+            content_region = self.content_region
+            abs_x = content_region.x + crop.x
+            abs_y = content_region.y + crop.y
+        except AttributeError:
+            # Fallback to region if content_region is not available
+            try:
+                abs_x = self.region.x + crop.x
+                abs_y = self.region.y + crop.y
+            except AttributeError:
+                # Last resort: use crop as-is (may cause positioning issues but won't crash)
+                abs_x = crop.x
+                abs_y = crop.y
+        
         return [
             Segment(
-                Control.move_to(visible_region.x, visible_region.y).segment.text,
+                Control.move_to(abs_x, abs_y).segment.text,
                 style=_NULL_STYLE,
             ),
             Segment(sixel_data, style=_NULL_STYLE, control=((ControlType.CURSOR_FORWARD, 0),)),
-            Segment(Control.move_to(visible_region.right, visible_region.bottom).segment.text, style=_NULL_STYLE),
+            # Move cursor to end of rendered area to ensure proper positioning
+            Segment(Control.move_to(abs_x + crop.width, abs_y + crop.height).segment.text, style=_NULL_STYLE),
         ]
 
     def _perform_generation(self) -> None:

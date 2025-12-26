@@ -562,92 +562,179 @@ App.dark ImagemAmpliada #dialog Static:hover{
     background: #413939ff;
 }
 
-
-App.tamanho-34 TelaCadastroImovel #container_cadastro { 
-    grid-size: 2; 
-    grid-columns: auto;
-    # background: yellow;
-    grid-rows: 3;
-    grid-gutter: 2;
-    height: auto;
-    #select_status {
-        width: 100%;
-    }
-}
-
-App.tamanho-34 TelaCadastroImovel #container_anexos {
-    grid-size: 2;
-    grid-gutter: 0;
-    height: 80%;
-    height: auto;
-}
-
-App.tamanho-34 TelaCadastroImovel #container_anexos ContainerImagem{
-   height:90%;
-    column-span: 1;
-}
-
-App.tamanho-34 TelaCadastroImovel #container_imagens {
-    grid-size: 2;
-    grid-gutter: 0;
-    min-height: 60%;
-}
-
-App.tamanho-34 TelaCadastroImovel #container_imagens ContainerImagem{
-    height:100%;
-    column-span: 1;
-}
-
-App.tamanho-34 TelaCadastroImovel #detalhees {
-    height: 100%;
-}
-
 App.tamanho-34 TelaCadastroImovel {
-    overflow-y: scroll;
-}
-
-App.tamanho-34 TelaCadastroImovel #container_proprietario {
-    grid-size: 2;
-    height: 100%;
-    height: auto;
-}
-
-App.tamanho-34 TelaCadastroImovel #container_captador {
-    grid-size: 2;
-    height: 100%;
-    height: auto;
-}
-
-App.tamanho-34 TelaCadastroImovel #container_corretor {
-    grid-size: 2;
-    height: 100%;
-    height: auto;
-}
-
-App.tamanho-64 TelaCadastroImovel #container_cadastro { 
-    grid-size: 4; 
+    
+    #container_cadastro { 
+        grid-size: 2; 
         grid-columns: auto;
-        background: blue;
-        grid-gutter: 2;
+        # background: yellow;
         grid-rows: 3;
+        grid-gutter: 2;
+        height: auto;
         #select_status {
             width: 100%;
         }
+    }
+
+    #container_anexos {
+        grid-size: 2;
+        grid-gutter: 0;
+        min-height: 90%;
+    }
+
+    #container_anexos ContainerImagem{
+        height: 100%;
+        column-span: 1;
+    }
+
+    #container_imagens {
+        grid-size: 2;
+        grid-gutter: 0;
+        min-height: 90%;
+    }
+
+    #container_imagens ContainerImagem{
+        height: 100%;
+        column-span: 1;
+    }
+
+    #container_proprietario {
+        grid-size: 2;
+        height: 100%;
+        height: auto;
+    }
+
+    #container_captador {
+        grid-size: 2;
+        height: 100%;
+        height: auto;
+    }
+
+    #container_corretor {
+        grid-size: 2;
+        height: 100%;
+        height: auto;
+    }
 }
 
- App.tamanho-98 TelaCadastroImovel #container_cadastro { 
+App.tamanho-64 TelaCadastroImovel {
+    
+    #container_cadastro { 
         grid-size: 4; 
         grid-columns: auto;
+        background: blue;
+        grid-gutter: 2;
+        grid-rows: auto;
+        height: auto;
+        #select_status {
+            width: 100%;
+        }
+        #select_status {
+            column-span: 1;
+            width: 100%;
+        }
+        #ta_nome_condominio {
+            column-span: 3;
+            width: 100%;
+        }
+        #ta_rua {
+            column-span: 3;
+            width: 100%;
+        }
+        #ta_estado {
+            column-span: 1;
+            width: auto;
+        }
+    }
+}
+
+ App.tamanho-98 TelaCadastroImovel{ 
+    
+    #container_cadastro { 
+        grid-size: 6; 
+        grid-columns: auto;
         background: green;
+        grid-gutter: 2;
+        grid-rows: auto;
+        height: auto;
+        #select_status {
+            width: 100%;
+        }
+        #select_status{
+            column-span: 1;
+            width: 100%;
+        }
+        #ta_nome_condominio {
+            column-span: 3;
+            width: 100%;
+        }
+        #ta_rua {
+            column-span: 1;
+            width: 100%;
+        }
+        #ta_estado {
+            column-span: 1;
+            width: auto;
+        }
     }
+}
 
-App.tamanho-128 TelaCadastroImovel #container_cadastro { 
-        grid-size: 13; 
-        grid-columns: 15;
+App.tamanho-128 TelaCadastroImovel{ 
+    
+    #container_cadastro { 
+        grid-size: 10; 
+        grid-columns: auto;
+        grid-rows: auto;
+        grid-gutter: 2;
         background: purple;
+        height: auto;
+        #select_status {
+            width: 100%;
+        }
+        #select_status{
+            column-span: 1;
+            width: 100%;
+        }
+        #ta_nome_condominio {
+            column-span: 3;
+            width: 100%;
+        }
+        #ta_rua {
+            column-span: 3;
+            width: 100%;
+        }
+        #ta_estado {
+            column-span: 1;
+            width: auto;
+        }
     }
 
-App.breakpoint-lg TelaCadastroImovel #container_cadastro { 
-        # grid-size: 9; 
+    #container_anexos {
+        grid-gutter: 0;
+        min-height: 50%;
+    }
+
+    #container_anexos ContainerImagem{
+        height: 100%;
+        column-span: 1;
+    }
+
+    #container_imagens {
+        grid-gutter: 0;
+        min-height: 50%;
+    }
+
+    #container_imagens ContainerImagem{
+        height: 100%;
+        column-span: 1;
+    }
+}
+
+App.breakpoint-lg TelaCadastroImovel {
+
+    #container_cadastro { 
+            # grid-size: 9; 
+    }
+
 }
 
