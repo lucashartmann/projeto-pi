@@ -81,6 +81,12 @@ class Init:
     consultar_condominio = imobiliaria.get_condominio_por_id_endereco(
         consulta.get_id())
     anuncio = Anuncio.Anuncio()
+    
+    with open(r"C:\Users\dudua\Music\Projetos\projeto-pi\src\assets\apartamento2\5661211031.jpg", "rb") as f:
+        blob = f.read()
+    
+    anuncio.set_imagens([blob, blob, blob, blob, blob])
+    
     imovel_um = Imovel.Imovel(
         endereco=consulta, status=Imovel.Status.VENDA, categoria=Imovel.Categoria.APARTAMENTO)
 

@@ -51,7 +51,7 @@ class App(App):
 
     def on_mount(self):
         self.use_command_palette = False
-        Init.usuario_atual = Init.captador
+        Init.usuario_atual = Init.administrador
         self.push_screen("tela_cadastro_imovel")
         # self.push_screen("tela_login")
 

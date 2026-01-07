@@ -25,9 +25,14 @@ class TelaDadosImovel(Screen):
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
 
         with HorizontalGroup(id="titulo"):
-            yield Static(self.imovel.get_anuncio().get_titulo(), classes="titulo")
-            yield Static(f"R$ {self.imovel.get_valor():,.2f}", classes="valor")
-        yield Static(f"{self.imovel.get_endereco().get_bairro()}, {self.imovel.get_endereco().get_cidade()} - {self.imovel.get_endereco().get_estado()}")
+            if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_titulo() is not None:
+                yield Static(self.imovel.get_anuncio().get_titulo(), classes="titulo")
+            if self.imovel.get_valor_venda() is not None:
+                yield Static(f"R$ {self.imovel.get_valor_venda():,.2f}", classes="valor")
+            if self.imovel.get_valor_aluguel() is not None:
+                yield Static(f"R$ {self.imovel.get_valor_aluguel():,.2f}", classes="valor")
+        if self.imovel.get_endereco() and self.imovel.get_endereco().get_bairro() is not None and self.imovel.get_endereco().get_cidade() is not None and self.imovel.get_endereco().get_uf() is not None:
+            yield Static(f"{self.imovel.get_endereco().get_bairro()}, {self.imovel.get_endereco().get_cidade()} - {self.imovel.get_endereco().get_uf()}")
 
         with HorizontalGroup():
             with VerticalScroll(id="dados_imovel"):
@@ -37,18 +42,19 @@ class TelaDadosImovel(Screen):
                         for imagem in self.imovel.get_anuncio().get_imagens():
                             yield Image(imagem, classes="foto_pequena")
                 yield Static("Descrição", id="stt_descricao", classes="titulo")
-                yield Static(self.imovel.get_anuncio().get_descricao(), id="descricao")
+                if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_descricao() is not None:
+                    yield Static(self.imovel.get_anuncio().get_descricao(), id="descricao")
                 yield Static("Infraestrutura Apartamento", id="stt_infraestrutura", classes="titulo")
                 with Grid(id="container_info_imovel"):
                     lista = self.imovel.get_filtros()
                     if lista:
                         for nome in lista:
                             yield Checkbox(label=nome, value=True, disabled=True)
-                yield Static("Infraestrutura Condominio", id="stt_infraestrutura", classes="titulo")
+                yield Static("Infraestrutura Condominio", classes="titulo")
 
                 with Grid(id="container_info_condominio"):
                     lista = []
-                    if self.imovel.get_condominio():
+                    if self.imovel.get_condominio() is not None:
                         lista = self.imovel.get_condominio().get_filtros()
                     if lista:
                         for nome in lista:
@@ -59,18 +65,20 @@ class TelaDadosImovel(Screen):
                 with HorizontalGroup():
                     yield Button("Agendar Visita")
                     yield Button("Whatsapp", id="whatsapp")
-                if self.imovel.get_valor_venda():
+                if self.imovel.get_valor_venda() is not None:
                     yield Static("Valor Venda:")
                     yield Static(f"R$ {self.imovel.get_valor_venda():.2f}", classes="valor")
-                if self.imovel.get_valor_aluguel():
+                if self.imovel.get_valor_aluguel() is not None:
                     yield Static("Valor Aluguel:")
                     yield Static(f"R$ {self.imovel.get_valor_aluguel():.2f}", classes="valor")
                 with HorizontalGroup():
                     yield Static("Condominio:")
-                    yield Static(f"R$ {self.imovel.get_valor_condominio():.2f}", classes="valor")
+                    if self.imovel.get_valor_condominio() is not None:
+                        yield Static(f"R$ {self.imovel.get_valor_condominio():.2f}", classes="valor")
                 with HorizontalGroup():
                     yield Static("IPTU:")
-                    yield Static(f"R$ {self.imovel.get_valor_iptu():.2f}", classes="valor")
+                    if self.imovel.get_iptu() is not None:
+                        yield Static(f"R$ {self.imovel.get_iptu():.2f}", classes="valor")
                 yield Button("Entrar em contato", id="bt_contato")
                 yield Static("Um especialista irá entrar em contato por email ou whatsapp")
 
@@ -85,34 +93,4 @@ class TelaDadosImovel(Screen):
             mensagem = Controller.cadastrar_atendimento(atendimento)
             self.norify(mensagem)
 
-    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
-        try:
-            if event.tabs.active == self.query_one("#tab_cadastro_pessoa", Tab).id:
-                self.app.switch_screen("tela_cadastro_pessoa")
-
-            elif event.tabs.active == self.query_one("#tab_cadastro_imovel", Tab).id:
-                self.app.switch_screen("tela_cadastro_imovel")
-
-            elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
-                self.app.switch_screen("tela_estoque")
-
-            elif event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
-                self.app.switch_screen("tela_dados_imobiliaria")
-
-            elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                self.app.switch_screen("tela_servidor")
-
-            elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
-                self.app.switch_screen("tela_estoque_cliente")
-
-            elif event.tabs.active == self.query_one("#tab_dados_cliente", Tab).id:
-                self.app.switch_screen("tela_dados_cliente")
-
-            elif event.tabs.active == self.query_one("#tab_atendimento", Tab).id:
-                self.app.switch_screen("tela_atendimento")
-
-            elif event.tabs.active == self.query_one("#tab_cadastro_venda_aluguel", Tab).id:
-                self.app.switch_screen("tela_cadastro_venda_aluguel")
-
-        except:
-            pass
+   

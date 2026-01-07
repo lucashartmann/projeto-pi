@@ -7,6 +7,8 @@ from utils.textual_image.widget import Image
 from model import Init, Usuario, Imovel
 from database.Banco import Banco
 from io import BytesIO
+import io
+from PIL import Image as PilImage
 from view.cliente import TelaDadosImovel
 
 
@@ -93,9 +95,8 @@ class TelaEstoqueCliente(Screen):
                 if imovel.get_anuncio() and imovel.get_anuncio().get_imagens():
                     container.query_one("#ti_imagem").image = BytesIO(
                         imovel.get_anuncio().get_imagens()[0])
-
-                    container.query_one("#ti_imagem").styles.width = 40
-                    container.query_one("#ti_imagem").styles.height = 15
+                else:
+                    container.query_one("#ti_imagem").image = r"assets\sem_imagem.png"
 
                 if imovel.get_anuncio() and imovel.get_anuncio().get_titulo(
                 ):
@@ -118,8 +119,6 @@ class TelaEstoqueCliente(Screen):
                     container.query_one(
                         "#tx_preco").styles.display = "none"
 
-                list_item.styles.width = 30
-                list_item.styles.height = 30
 
     def on_screen_resume(self):
 
