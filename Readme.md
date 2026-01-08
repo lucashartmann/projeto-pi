@@ -1,6 +1,7 @@
 ![Imagem](Images/login.png)
 ![Imagem](Images/cadastro_imovel.png)
 ![Imagem](Images/cadastro_imovel2.png)
+![Imagem](Images/Galeria.png)
 ![Imagem](Images/cadastro_imovel3.png)
 ![Imagem](Images/cadastro_pessoa.png)
 ![Imagem](Images/estoque.png)
