@@ -1,6 +1,4 @@
 from textual.widgets import Header, _header, Button, Switch, Input
-from textual.containers import Grid
-from textual import events
 
 
 class Header(Header):

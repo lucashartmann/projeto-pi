@@ -263,25 +263,26 @@ class TelaCadastroPessoa(Screen):
     #             m_i.value = ""
 
     def on_select_changed(self, evento: Select.Changed):
-        self.query_one("#inpt_salario").styles.display = "none"
-        self.query_one("#stt_salario").styles.display = "none"
-        self.query_one("#stt_creci").styles.display = "none"
-        self.query_one("#inpt_creci").styles.display = "none"
+        if Init.usuario_atual.get_tipo() != Usuario.Tipo.ADMINISTRADOR:
+            self.query_one("#inpt_salario").styles.display = "none"
+            self.query_one("#stt_salario").styles.display = "none"
+            self.query_one("#stt_creci").styles.display = "none"
+            self.query_one("#inpt_creci").styles.display = "none"
 
-        match evento.select.value:
-            case "Cliente":
-                pass
-            case "Proprietario":
-                pass
-            case "Corretor":
-                self.query_one("#stt_creci").styles.display = "block"
-                self.query_one("#inpt_creci").styles.display = "block"
-            case "Captador":
-                self.query_one("#inpt_salario").styles.display = "block"
-                self.query_one("#stt_salario").styles.display = "block"
-            case "Gerente":
-                self.query_one("#inpt_salario").styles.display = "block"
-                self.query_one("#stt_salario").styles.display = "block"
+            match evento.select.value:
+                case "Cliente":
+                    pass
+                case "Proprietario":
+                    pass
+                case "Corretor":
+                    self.query_one("#stt_creci").styles.display = "block"
+                    self.query_one("#inpt_creci").styles.display = "block"
+                case "Captador":
+                    self.query_one("#inpt_salario").styles.display = "block"
+                    self.query_one("#stt_salario").styles.display = "block"
+                case "Gerente":
+                    self.query_one("#inpt_salario").styles.display = "block"
+                    self.query_one("#stt_salario").styles.display = "block"
 
     def on_button_pressed(self, evento: Button.Pressed):
 

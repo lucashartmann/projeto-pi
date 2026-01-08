@@ -12,11 +12,12 @@ from utils import Midia
 from utils.Widgets import Header
 from textual_image.widget import Image
 from textual_image.widget.sixel import _ImageSixelImpl
-from textual_pdf.pdf_viewer import PDFViewer
+from utils.textual_pdf.pdf_viewer import PDFViewer
 from enum import Enum
 from textual.binding import Binding
 from textual import events
 from textual.geometry import Offset
+
 
 class ImagemAmpliada(ModalScreen):
     def __init__(self, name=None, id=None, classes=None, imagem=None, documento=None):
@@ -476,8 +477,6 @@ class TelaCadastroImovel(Screen):
     def __init__(self, name=None, id=None, classes=None, imovel=None):
         super().__init__(name, id, classes)
         self.imovel = imovel
-        
-    
 
     def compose(self):
         yield Header()
@@ -498,110 +497,109 @@ class TelaCadastroImovel(Screen):
         yield Tabs(Tab("Cadastro", id="tab_imovel"), Tab("Anuncio", id="tab_anuncio"), id="tabs_anuncio")
 
         with Grid(id="container_cadastro"):
-                yield Static("ref:", id="stt_ref")
-                yield TextArea(disabled=True, id="ta_ref")
-                yield Static("[red]*[/]Categoria:", id="stt_categoria")
-                yield Select([(valor.value, valor) for valor in Imovel.Categoria], id="select_categoria", prompt="Selecionar")
-                yield Static("Situação:", id="stt_situacao")
-                yield Select([(valor.value, valor) for valor in Imovel.Situacao], id="select_situacao", prompt="Selecionar")
-                yield Static("Estado:", id="stt_estado_select")
-                yield Select([(valor.value, valor) for valor in Imovel.Estado], id="select_estado", prompt="Selecionar")
-                yield Static("Ocupação:", id="stt_ocupacao")
-                yield Select([(valor.value, valor) for valor in Imovel.Ocupacao], id="select_ocupacao", prompt="Selecionar")
-                yield Static("[red]*[/]Status:", id="stt_status")
-                yield Select([(valor.value, valor) for valor in Imovel.Status], id="select_status", prompt="Selecionar")
-                yield Static("Nome do Condomínio", id="stt_nome_condominio")
-                yield TextArea(id="ta_nome_condominio")
-                yield Static("Ano de Construção", id="stt_ano_construcao")
-                yield MaskedInput(template="0000", id="ta_ano_construcao", validators=Length(minimum=4, maximum=4), valid_empty=True)
-                yield Static("[red]*[/]CEP", id="stt_cep")
-                yield MaskedInput(template="00000-000", id="ta_cep", validators=Length(minimum=9, maximum=9), valid_empty=False)
-                yield Static("[red]*[/]Rua", id="stt_rua")
-                yield TextArea(disabled=True, id="ta_rua")
-                yield Static("[red]*[/]Número", id="stt_numero")
-                yield Input(id="ta_numero", type="integer", valid_empty=True)
-                yield Static("Complemento", id="stt_complemento")
-                yield TextArea(id="ta_complemento")
-                yield Static("Bloco", id="stt_bloco")
-                yield TextArea(id="ta_bloco")
-                yield Static("Andar", id="stt_andar")
-                yield MaskedInput(template="00", id="ta_andar",  validators=Length(minimum=1, maximum=2), valid_empty=True)
-                yield Static("[red]*[/]Bairro", id="stt_bairro")
-                yield TextArea(disabled=True, id="ta_bairro")
-                yield Static("[red]*[/]Cidade", id="stt_cidade")
-                yield TextArea(disabled=True, id="ta_cidade")
-                yield Static("[red]*[/]Estado", id="stt_estado")
-                yield MaskedInput(disabled=True, template="XX", id="ta_estado", validators=Length(minimum=2, maximum=2))
-                yield Static("Salas", id="stt_salas")
-                yield MaskedInput(template="00", id="ta_salas", validators=Length(minimum=1, maximum=2), valid_empty=True)
-                yield Static("Banheiros", id="stt_banheiros")
-                yield MaskedInput(template="00", id="ta_banheiros", validators=Length(minimum=1, maximum=2), valid_empty=True)
-                yield Static("Vagas", id="stt_vagas")
-                yield MaskedInput(template="00", id="ta_vagas", validators=Length(minimum=1, maximum=2), valid_empty=True)
-                yield Static("Varandas", id="stt_varandas")
-                yield MaskedInput(template="00", id="ta_varandas", validators=Length(minimum=1, maximum=2), valid_empty=True)
-                yield Static("Quartos", id="stt_quartos")
-                yield MaskedInput(template="00", id="ta_quartos", validators=Length(minimum=1, maximum=2), valid_empty=True)
-                yield Static("Área Total", id="stt_area_total")
-                yield Input(id="ta_area_total", type="number")
-                yield Static("Área Privativa", id="stt_area_privativa")
-                yield Input(id="ta_area_privativa", type="number")
-                yield Static("Valor Venda:", id="stt_venda")
-                yield Input(id="ta_venda", type="number")
-                yield Static("Valor Aluguel:", id="stt_aluguel")
-                yield Input(id="ta_aluguel", type="number")
-                yield Static("Valor Condomínio:", id="stt_condominio")
-                yield Input(id="ta_condominio", type="number")
-                yield Static("Valor IPTU:", id="stt_iptu")
-                yield Input(id="ta_iptu", type="number")
+            yield Static("ref:", id="stt_ref")
+            yield TextArea(disabled=True, id="ta_ref")
+            yield Static("[red]*[/]Categoria:", id="stt_categoria")
+            yield Select([(valor.value, valor) for valor in Imovel.Categoria], id="select_categoria", prompt="Selecionar")
+            yield Static("Situação:", id="stt_situacao")
+            yield Select([(valor.value, valor) for valor in Imovel.Situacao], id="select_situacao", prompt="Selecionar")
+            yield Static("Estado:", id="stt_estado_select")
+            yield Select([(valor.value, valor) for valor in Imovel.Estado], id="select_estado", prompt="Selecionar")
+            yield Static("Ocupação:", id="stt_ocupacao")
+            yield Select([(valor.value, valor) for valor in Imovel.Ocupacao], id="select_ocupacao", prompt="Selecionar")
+            yield Static("[red]*[/]Status:", id="stt_status")
+            yield Select([(valor.value, valor) for valor in Imovel.Status], id="select_status", prompt="Selecionar")
+            yield Static("Nome do Condomínio", id="stt_nome_condominio")
+            yield TextArea(id="ta_nome_condominio")
+            yield Static("Ano de Construção", id="stt_ano_construcao")
+            yield MaskedInput(template="0000", id="ta_ano_construcao", validators=Length(minimum=4, maximum=4), valid_empty=True)
+            yield Static("[red]*[/]CEP", id="stt_cep")
+            yield MaskedInput(template="00000-000", id="ta_cep", validators=Length(minimum=9, maximum=9), valid_empty=False)
+            yield Static("[red]*[/]Rua", id="stt_rua")
+            yield TextArea(disabled=True, id="ta_rua")
+            yield Static("[red]*[/]Número", id="stt_numero")
+            yield Input(id="ta_numero", type="integer", valid_empty=True)
+            yield Static("Complemento", id="stt_complemento")
+            yield TextArea(id="ta_complemento")
+            yield Static("Bloco", id="stt_bloco")
+            yield TextArea(id="ta_bloco")
+            yield Static("Andar", id="stt_andar")
+            yield MaskedInput(template="00", id="ta_andar",  validators=Length(minimum=1, maximum=2), valid_empty=True)
+            yield Static("[red]*[/]Bairro", id="stt_bairro")
+            yield TextArea(disabled=True, id="ta_bairro")
+            yield Static("[red]*[/]Cidade", id="stt_cidade")
+            yield TextArea(disabled=True, id="ta_cidade")
+            yield Static("[red]*[/]Estado", id="stt_estado")
+            yield MaskedInput(disabled=True, template="XX", id="ta_estado", validators=Length(minimum=2, maximum=2))
+            yield Static("Salas", id="stt_salas")
+            yield MaskedInput(template="00", id="ta_salas", validators=Length(minimum=1, maximum=2), valid_empty=True)
+            yield Static("Banheiros", id="stt_banheiros")
+            yield MaskedInput(template="00", id="ta_banheiros", validators=Length(minimum=1, maximum=2), valid_empty=True)
+            yield Static("Vagas", id="stt_vagas")
+            yield MaskedInput(template="00", id="ta_vagas", validators=Length(minimum=1, maximum=2), valid_empty=True)
+            yield Static("Varandas", id="stt_varandas")
+            yield MaskedInput(template="00", id="ta_varandas", validators=Length(minimum=1, maximum=2), valid_empty=True)
+            yield Static("Quartos", id="stt_quartos")
+            yield MaskedInput(template="00", id="ta_quartos", validators=Length(minimum=1, maximum=2), valid_empty=True)
+            yield Static("Área Total", id="stt_area_total")
+            yield Input(id="ta_area_total", type="number")
+            yield Static("Área Privativa", id="stt_area_privativa")
+            yield Input(id="ta_area_privativa", type="number")
+            yield Static("Valor Venda:", id="stt_venda")
+            yield Input(id="ta_venda", type="number")
+            yield Static("Valor Aluguel:", id="stt_aluguel")
+            yield Input(id="ta_aluguel", type="number")
+            yield Static("Valor Condomínio:", id="stt_condominio")
+            yield Input(id="ta_condominio", type="number")
+            yield Static("Valor IPTU:", id="stt_iptu")
+            yield Input(id="ta_iptu", type="number")
 
         with Vertical(id="container_anuncio"):
-                yield Static("Titulo")
-                with Center():
-                    yield TextArea(id="ta_titulo_anuncio")
-                yield Static("Descriçao")
-                with Center():
-                    yield TextArea(id="ta_descricao_anuncio")
-                yield Static("Apartamento")
+            yield Static("Titulo")
+            with Center():
+                yield TextArea(id="ta_titulo_anuncio")
+            yield Static("Descriçao")
+            with Center():
+                yield TextArea(id="ta_descricao_anuncio")
+            yield Static("Apartamento")
 
-                with Grid(id="container_info_imovel"):
-                    lista = Init.imobiliaria.get_lista_filtros_apartamento()
-                    if lista:
-                        for nome in lista:
-                            yield Checkbox(label=nome)
-                yield Static("Condomínio")
-                with Grid(id="container_info_condominio"):
-                    lista = Init.imobiliaria.get_lista_filtros_condominio()
-                    if lista:
-                        for nome in lista:
-                            yield Checkbox(label=nome)
-                            
+            with Grid(id="container_info_imovel"):
+                lista = Init.imobiliaria.get_lista_filtros_apartamento()
+                if lista:
+                    for nome in lista:
+                        yield Checkbox(label=nome)
+            yield Static("Condomínio")
+            with Grid(id="container_info_condominio"):
+                lista = Init.imobiliaria.get_lista_filtros_condominio()
+                if lista:
+                    for nome in lista:
+                        yield Checkbox(label=nome)
 
         with Grid(id="container_imagens"):
-                    yield Static("Imagens: ")
-                    with Center():
-                        yield Button("Adicionar", id="bt_adicionar_imagens")
+            yield Static("Imagens: ")
+            with Center():
+                yield Button("Adicionar", id="bt_adicionar_imagens")
 
-                    # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
+            # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
 
         with Grid(id="container_anexos"):
-                    yield Static("Anexos: ")
-                    with Center():
-                        yield Button("Adicionar", id="bt_adicionar_anexos")
+            yield Static("Anexos: ")
+            with Center():
+                yield Button("Adicionar", id="bt_adicionar_anexos")
 
-                    # TODO: Pegar o widget de documento, possibilitar adicionar, remover
+            # TODO: Pegar o widget de documento, possibilitar adicionar, remover
 
         with Grid(id="container_proprietario"):
-                    yield Static("Proprietario: ", classes="stt_container_titulo")
-                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_proprietario")
+            yield Static("Proprietario: ", classes="stt_container_titulo")
+            yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_proprietario")
 
         with Grid(id="container_corretor"):
-                    yield Static("Corretor: ", classes="stt_container_titulo")
-                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_corretor")
+            yield Static("Corretor: ", classes="stt_container_titulo")
+            yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_corretor")
 
         with Grid(id="container_captador"):
-                    yield Static("Captador: ", classes="stt_container_titulo")
-                    yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
+            yield Static("Captador: ", classes="stt_container_titulo")
+            yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
 
         yield Footer(show_command_palette=False)
 

@@ -4,6 +4,7 @@ __pycache__
 teste.py
 imobiliaria.db
 data/
+utils/textual_pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

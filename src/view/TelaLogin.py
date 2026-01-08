@@ -17,9 +17,9 @@ class TelaLogin(Screen):
             yield Input(placeholder="Usuário", id="input_username")
             yield MyInput(placeholder="Senha", password=True, id="input_senha")
             yield Select([("Cliente", "Cliente"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Administrador", "Administrador"), ("Gerente", "Gerente")], value="Cliente", allow_blank=False)
-            yield Button("Entrar")
+            yield Button("Entrar", id="bt_entrar")
             yield Label("Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]", id="bt_criar_conta")
-            # yield Label("[@click=app.enviar_email]Esqueceu a senha?[/]", id="bt_esqueceu_senha")
+            yield Label("[@click=app.enviar_email]Esqueceu a senha?[/]", id="bt_esqueceu_senha")
         yield Footer(show_command_palette=False)
 
     def enviar_email(self):
@@ -29,7 +29,7 @@ class TelaLogin(Screen):
         self.query_one("#bt_esqueceu_senha").styles.display = "block"
         self.query_one(Select).styles.display = "block"
         self.query_one("#input_username").placeholder = "Usuário"
-        self.query_one(Button).label = "Entrar"
+        self.query_one("#bt_entrar").label = "Entrar"
         self.query_one("#inpt_email").remove()
         self.query_one("#bt_criar_conta").update(
             "Não tem uma conta? [@click=app.cadastro]Cadastre-se[/]")
@@ -42,7 +42,7 @@ class TelaLogin(Screen):
         self.mount(Input(placeholder="Email", id="inpt_email"),
                    before=self.query_one("#input_username"))
         self.montou = True
-        self.query_one(Button).label = "Criar conta"
+        self.query_one("#bt_entrar").label = "Criar conta"
         self.query_one("#bt_criar_conta").update(
             "[@click=app.voltar]Voltar[/]")
 
