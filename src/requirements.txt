@@ -16,3 +16,5 @@ ngrok
 pymupdf
 python-docx
 beautifulsoup4
+# textual-map
+# textual-pdf

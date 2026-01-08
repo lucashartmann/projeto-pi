@@ -3,12 +3,9 @@ from textual import on
 from textual.screen import Screen
 from textual.containers import VerticalScroll, Container, Grid
 from utils.Widgets import Header
-from utils.textual_image.widget import Image
+from textual_image.widget import Image
 from model import Init, Usuario, Imovel
 from database.Banco import Banco
-from io import BytesIO
-import io
-from PIL import Image as PilImage
 from view.cliente import TelaDadosImovel
 
 

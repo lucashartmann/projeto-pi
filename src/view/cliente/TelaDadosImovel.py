@@ -1,8 +1,8 @@
 from textual.widgets import Static, Button, Footer, Checkbox, Tab, Tabs
 from textual.screen import Screen
-from textual.containers import VerticalScroll, HorizontalGroup, Grid, Vertical, Horizontal, Center
+from textual.containers import HorizontalGroup, Grid, Vertical, Center
 from utils.Widgets import Header
-from utils.textual_image.widget import Image
+from textual_image.widget import Image
 from model import Init, Usuario, Atendimento
 from controller import Controller
 

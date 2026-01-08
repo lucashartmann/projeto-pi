@@ -7,7 +7,7 @@ from textual.suggester import SuggestFromList
 from utils.Widgets import Header
 from model import Init, Imovel, Usuario, Endereco, Captador, Corretor, Condominio
 from database.Banco import Banco
-from utils.textual_image.widget import Image
+from textual_image.widget import Image
 from view import TelaCadastroImovel, TelaCadastroPessoa
 from utils.Widgets import Header
 

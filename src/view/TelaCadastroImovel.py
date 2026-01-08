@@ -10,14 +10,13 @@ from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
 from controller import Controller
 from utils import Midia
 from utils.Widgets import Header
-from utils.textual_image.widget import Image
-from utils.textual_image.widget.sixel import _ImageSixelImpl
-from utils.textual_pdf.pdf_viewer import PDFViewer
+from textual_image.widget import Image
+from textual_image.widget.sixel import _ImageSixelImpl
+from textual_pdf.pdf_viewer import PDFViewer
 from enum import Enum
 from textual.binding import Binding
 from textual import events
 from textual.geometry import Offset
-
 
 class ImagemAmpliada(ModalScreen):
     def __init__(self, name=None, id=None, classes=None, imagem=None, documento=None):
