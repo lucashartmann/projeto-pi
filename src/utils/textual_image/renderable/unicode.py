@@ -7,10 +7,10 @@ from rich.console import Console, ConsoleOptions, RenderResult
 from rich.measure import Measurement
 from rich.segment import Segment
 
-from textual_image._geometry import ImageSize
-from textual_image._pixeldata import PixelData
-from textual_image._terminal import get_cell_size
-from textual_image._utils import StrOrBytesPath, clamp
+from .._geometry import ImageSize
+from .._pixeldata import PixelData
+from .._terminal import get_cell_size
+from .._utils import StrOrBytesPath, clamp
 
 _CHARACTERS = [
     "█",  # FULL BLOCK

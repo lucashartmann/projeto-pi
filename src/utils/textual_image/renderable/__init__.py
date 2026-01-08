@@ -4,11 +4,11 @@ import logging
 import sys
 from typing import Type
 
-from textual_image.renderable import sixel, tgp
-from textual_image.renderable.halfcell import Image as HalfcellImage
-from textual_image.renderable.sixel import Image as SixelImage
-from textual_image.renderable.tgp import Image as TGPImage
-from textual_image.renderable.unicode import Image as UnicodeImage
+from ..renderable import sixel, tgp
+from ..renderable.halfcell import Image as HalfcellImage
+from ..renderable.sixel import Image as SixelImage
+from ..renderable.tgp import Image as TGPImage
+from ..renderable.unicode import Image as UnicodeImage
 
 logger = logging.getLogger(__name__)
 

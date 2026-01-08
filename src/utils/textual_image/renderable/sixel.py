@@ -9,11 +9,11 @@ from rich.control import Control
 from rich.measure import Measurement
 from rich.segment import ControlType, Segment
 
-from textual_image._geometry import ImageSize
-from textual_image._pixeldata import PixelData
-from textual_image._sixel import image_to_sixels
-from textual_image._terminal import TerminalError, capture_terminal_response, get_cell_size
-from textual_image._utils import StrOrBytesPath
+from .._geometry import ImageSize
+from .._pixeldata import PixelData
+from .._sixel import image_to_sixels
+from .._terminal import TerminalError, capture_terminal_response, get_cell_size
+from .._utils import StrOrBytesPath
 
 # Random no-op control code to prevent Rich from messing with our data
 _NULL_CONTROL = [(ControlType.CURSOR_FORWARD, 0)]

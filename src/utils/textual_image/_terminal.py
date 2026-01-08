@@ -8,9 +8,9 @@ from typing import Iterator, NamedTuple, cast
 
 # pragma: no cover: start -- platform specific, we always will only execute one branch
 if sys.platform == "win32":
-    from textual_image._win32 import capture_mode, get_tiocgwinsz, read
+    from ._win32 import capture_mode, get_tiocgwinsz, read
 else:
-    from textual_image._posix import capture_mode, get_tiocgwinsz, read
+    from ._posix import capture_mode, get_tiocgwinsz, read
 # pragma: no cover: stop
 
 logger = logging.getLogger(__name__)

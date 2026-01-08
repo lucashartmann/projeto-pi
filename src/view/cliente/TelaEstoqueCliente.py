@@ -93,7 +93,7 @@ class TelaEstoqueCliente(Screen):
                 list_item.mount(container)
 
                 if imovel.get_anuncio() and imovel.get_anuncio().get_imagens():
-                    container.query_one("#ti_imagem").image = BytesIO(
+                    container.query_one("#ti_imagem").image = (
                         imovel.get_anuncio().get_imagens()[0])
                 else:
                     container.query_one("#ti_imagem").image = r"assets\sem_imagem.png"

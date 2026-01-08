@@ -9,19 +9,19 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from textual_image.renderable import (
+from .renderable import (
     HalfcellImage as HalfcellRenderable,
 )
-from textual_image.renderable import (
+from .renderable import (
     Image as AutoRenderable,
 )
-from textual_image.renderable import (
+from .renderable import (
     SixelImage as SixelRenderable,
 )
-from textual_image.renderable import (
+from .renderable import (
     TGPImage as TGPRenderable,
 )
-from textual_image.renderable import (
+from .renderable import (
     UnicodeImage as UnicodeRenderable,
 )
 

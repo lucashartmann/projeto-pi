@@ -7,7 +7,7 @@ from typing import IO, ContextManager, Iterable, Iterator, Literal, Tuple, cast
 
 from PIL import Image as PILImage
 
-from textual_image._utils import StrOrBytesPath, grouped, is_non_seekable_stream
+from ._utils import StrOrBytesPath, grouped, is_non_seekable_stream
 
 
 def ensure_image(image: StrOrBytesPath | IO[bytes] | PILImage.Image) -> ContextManager[PILImage.Image]:

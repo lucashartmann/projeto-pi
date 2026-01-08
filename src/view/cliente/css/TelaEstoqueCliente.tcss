@@ -96,21 +96,29 @@ TelaEstoqueCliente ListItem {
 
 TelaEstoqueCliente ContainerImovel #ti_imagem {
         width: auto;
-        height: auto;
-        margin-bottom: 2;
+        height: 80%;
+        margin-bottom: 0;
+        align: center middle;
+        content-align: center middle;
+        text-align: center;
 }
 
 
 TelaEstoqueCliente ContainerImovel {
         color: black;
+        content-align: center middle;
         align: center middle;
         height: 100%;
         width: 100%;
+        text-align: center;
 }
 
 TelaEstoqueCliente ContainerImovel Button {
         background: black;
         margin: 0;
+        height: auto;
+        width: 100%;
+        margin: 1;
 }
 
 TelaEstoqueCliente ContainerImovel Static {

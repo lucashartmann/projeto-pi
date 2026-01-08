@@ -10,10 +10,10 @@ from rich.measure import Measurement
 from rich.segment import Segment
 from rich.style import Style
 
-from textual_image._geometry import ImageSize
-from textual_image._pixeldata import PixelData
-from textual_image._terminal import get_cell_size
-from textual_image._utils import StrOrBytesPath, grouped
+from .._geometry import ImageSize
+from .._pixeldata import PixelData
+from .._terminal import get_cell_size
+from .._utils import StrOrBytesPath, grouped
 
 
 def _map_pixel(pixel_value: Tuple[int, int, int]) -> Color:
@@ -72,7 +72,7 @@ class Image:
         height *= 2
 
         for upper_row, lower_row in grouped(self._image_data.scaled(width, height), 2):
-            for upper_pixel, lower_pixel in zip(upper_row, lower_row):
+            for upper_pixel, lower_pixel in zip(upper_row, lower_row, strict=True):
                 yield Segment("▀", style=Style(color=_map_pixel(upper_pixel), bgcolor=_map_pixel(lower_pixel)))  # type: ignore
             yield Segment("\n")
 

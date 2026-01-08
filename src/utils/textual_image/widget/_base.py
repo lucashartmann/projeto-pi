@@ -10,11 +10,11 @@ from textual.geometry import Size
 from textual.widget import Widget
 from typing_extensions import override
 
-from textual_image._geometry import ImageSize
-from textual_image._pixeldata import PixelMeta
-from textual_image._terminal import get_cell_size
-from textual_image._utils import StrOrBytesPath, is_non_seekable_stream
-from textual_image.renderable._protocol import ImageRenderable
+from utils.textual_image._geometry import ImageSize
+from utils.textual_image._pixeldata import PixelMeta
+from utils.textual_image._terminal import get_cell_size
+from utils.textual_image._utils import StrOrBytesPath, is_non_seekable_stream
+from utils.textual_image.renderable._protocol import ImageRenderable
 
 
 class Image(Widget):

@@ -4,7 +4,7 @@ from PIL import Image as PILImage
 from rich.console import Console, ConsoleOptions, RenderResult
 from rich.measure import Measurement
 
-from textual_image._utils import StrOrBytesPath
+from .._utils import StrOrBytesPath
 
 
 class ImageRenderable(Protocol):

@@ -3,7 +3,7 @@
 from types import NoneType
 from typing import NamedTuple, Tuple, cast
 
-from textual_image._terminal import CellSize
+from ._terminal import CellSize
 
 
 class ImageSize(NamedTuple):

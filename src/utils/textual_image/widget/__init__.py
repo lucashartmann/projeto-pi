@@ -2,14 +2,14 @@
 
 from typing import Type
 
-from textual_image._terminal import get_cell_size
-from textual_image.renderable import Image as AutoRenderable
-from textual_image.renderable.halfcell import Image as HalfcellRenderable
-from textual_image.renderable.sixel import Image as SixelRenderable
-from textual_image.renderable.tgp import Image as TGPRenderable
-from textual_image.renderable.unicode import Image as UnicodeRenderable
-from textual_image.widget._base import Image as BaseImage
-from textual_image.widget.sixel import Image as SixelImage
+from utils.textual_image._terminal import get_cell_size
+from utils.textual_image.renderable import Image as AutoRenderable
+from utils.textual_image.renderable.halfcell import Image as HalfcellRenderable
+from utils.textual_image.renderable.sixel import Image as SixelRenderable
+from utils.textual_image.renderable.tgp import Image as TGPRenderable
+from utils.textual_image.renderable.unicode import Image as UnicodeRenderable
+from utils.textual_image.widget._base import Image as BaseImage
+from utils.textual_image.widget.sixel import Image as SixelImage
 
 # Run `get_cell_size()` once to fill the cache,
 # as querying the terminal isn't possible anymore once Textual is started.

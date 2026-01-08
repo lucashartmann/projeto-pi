@@ -12,10 +12,10 @@ from rich.measure import Measurement
 from rich.segment import Segment
 from rich.style import Style
 
-from textual_image._geometry import ImageSize
-from textual_image._pixeldata import PixelData
-from textual_image._terminal import TerminalError, capture_terminal_response, get_cell_size
-from textual_image._utils import StrOrBytesPath
+from .._geometry import ImageSize
+from .._pixeldata import PixelData
+from .._terminal import TerminalError, capture_terminal_response, get_cell_size
+from .._utils import StrOrBytesPath
 
 logger = logging.getLogger(__name__)
 

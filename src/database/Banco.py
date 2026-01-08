@@ -1299,8 +1299,11 @@ class Banco:
                 id_anuncio = cursor.lastrowid
 
                 if anuncio.get_imagens():
+                    print("Lucas")
                     for imagem in anuncio.get_imagens():
                         self.cadastrar_anexo(id_anuncio, imagem, "Imagem")
+                else:
+                    print("Nao Lucas")
 
                 if anuncio.get_videos():
                     for video in anuncio.get_videos():

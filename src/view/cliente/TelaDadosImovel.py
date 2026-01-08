@@ -1,6 +1,6 @@
 from textual.widgets import Static, Button, Footer, Checkbox, Tab, Tabs
 from textual.screen import Screen
-from textual.containers import VerticalScroll, HorizontalGroup, Grid
+from textual.containers import VerticalScroll, HorizontalGroup, Grid, Vertical, Horizontal, Center
 from utils.Widgets import Header
 from utils.textual_image.widget import Image
 from model import Init, Usuario, Atendimento
@@ -35,33 +35,33 @@ class TelaDadosImovel(Screen):
             yield Static(f"{self.imovel.get_endereco().get_bairro()}, {self.imovel.get_endereco().get_cidade()} - {self.imovel.get_endereco().get_uf()}")
 
         with HorizontalGroup():
-            with VerticalScroll(id="dados_imovel"):
+            with Vertical(id="dados_imovel"):
                 if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_imagens():
-                    yield Image(self.imovel.get_anuncio().get_imagens()[0], id="imagem_imovel")
+                    with Center():
+                        yield Image(self.imovel.get_anuncio().get_imagens()[0], id="imagem_imovel")
                     with HorizontalGroup(id="galeria_fotos"):
                         for imagem in self.imovel.get_anuncio().get_imagens():
                             yield Image(imagem, classes="foto_pequena")
-                yield Static("Descrição", id="stt_descricao", classes="titulo")
+                
                 if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_descricao() is not None:
+                    yield Static("Descrição", id="stt_descricao", classes="titulo")
                     yield Static(self.imovel.get_anuncio().get_descricao(), id="descricao")
-                yield Static("Infraestrutura Apartamento", id="stt_infraestrutura", classes="titulo")
-                with Grid(id="container_info_imovel"):
-                    lista = self.imovel.get_filtros()
-                    if lista:
-                        for nome in lista:
-                            yield Checkbox(label=nome, value=True, disabled=True)
-                yield Static("Infraestrutura Condominio", classes="titulo")
-
-                with Grid(id="container_info_condominio"):
-                    lista = []
-                    if self.imovel.get_condominio() is not None:
+                lista = self.imovel.get_filtros()
+                if lista:
+                    yield Static("Infraestrutura Apartamento", id="stt_infraestrutura", classes="titulo")
+                    with Grid(id="container_info_imovel"):
+                            for nome in lista:
+                                yield Checkbox(label=nome, value=True, disabled=True)
+                lista = []
+                if self.imovel.get_condominio() is not None:
                         lista = self.imovel.get_condominio().get_filtros()
-                    if lista:
-                        for nome in lista:
-                            yield Checkbox(label=nome, value=True, disabled=True)
-
+                if lista:
+                    yield Static("Infraestrutura Condominio", classes="titulo")
+                    with Grid(id="container_info_condominio"):
+                            for nome in lista:
+                                yield Checkbox(label=nome, value=True, disabled=True)
                 # yield Static("Mapa", id="mapa", classes="titulo")
-            with VerticalScroll(id="entrar_contato"):
+            with Vertical(id="entrar_contato"):
                 with HorizontalGroup():
                     yield Button("Agendar Visita")
                     yield Button("Whatsapp", id="whatsapp")

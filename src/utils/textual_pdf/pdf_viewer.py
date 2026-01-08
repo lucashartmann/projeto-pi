@@ -202,7 +202,8 @@ class PDFViewer(Container):
                     bbox = draw_obj.textbbox((0, 0), test, font=font_obj)
                     test_width = bbox[2] - bbox[0]
                 except Exception:
-                    test_width = draw_obj.textlength(test, font=font_obj) if hasattr(draw_obj, "textlength") else len(test) * (self.font_size // 2)
+                    test_width = draw_obj.textlength(test, font=font_obj) if hasattr(
+                        draw_obj, "textlength") else len(test) * (self.font_size // 2)
                 if test_width <= max_width:
                     line = test
                 else:
@@ -266,7 +267,7 @@ class PDFViewer(Container):
                 self.go_to_start()
             case "end":
                 self.go_to_end()
-                
+
     def load(self, path: str | Path | io.BytesIO, reset_page: bool = True):
         print(path)
         try:
@@ -274,11 +275,11 @@ class PDFViewer(Container):
             self._check_file(path)
             if reset_page:
                 self.current_page = 0
-            
+
             self.render_page()
         except Exception as e:
-                print("ERRO!", e)
-                pass
+            print("ERRO!", e)
+            pass
 
     def next_page(self):
         if self.current_page < self.total_pages - 1:

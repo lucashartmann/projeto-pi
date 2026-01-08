@@ -14,11 +14,79 @@ TelaDadosImovel .titulo {
     margin: 2;
 }
 
+TelaDadosImovel #imagem_imovel {
+    align: center middle;
+    content-align: center middle;
+    height: 20;
+    width: 50%;
+}
+
+TelaDadosImovel #dados_imovel Center {
+    width: 100%;
+    height: auto;
+}
+
+TelaDadosImovel Image {
+    align: center middle;
+    content-align: center middle;
+
+}
+
+TelaDadosImovel #entrar_contato HorizontalGroup {
+    border: 20% black;
+    height: auto;
+}
+
 TelaDadosImovel #container_checkbox {
     height: auto;
     grid-size: 2;
     margin: 2;
     width: 35%;
+}
+TelaDadosImovel #container_info_imovel {
+    border: 15% black;
+}
+
+TelaDadosImovel #container_info_condominio{
+    border: 15% black;
+}
+
+TelaDadosImovel #titulo {
+    margin: 2;
+    margin-left: 5; 
+    margin-right: 5; 
+    overflow-y: hidden;
+    overflow-x: hidden;
+    border: 15% black;
+}
+
+TelaDadosImovel .titulo {
+    border: 90% black;
+    width: auto;
+    height: auto;
+}
+
+TelaDadosImovel #entrar_contato{ 
+    overflow-y: hidden;
+    overflow-x: hidden;
+    border: 15% black;
+    margin: 2;
+    margin-left: 5; 
+    margin-right: 5;  
+    width: 25%;
+    height: auto;
+}
+
+TelaDadosImovel #dados_imovel {
+    margin: 2;
+    margin-left: 5; 
+    margin-right: 5;  
+    overflow-y: hidden;
+    overflow-x: hidden;
+    border: 15% black;
+    align: center middle;
+    content-align: center middle;
+    height: auto;
 }
 
 TelaDadosImovel Checkbox {
@@ -26,19 +94,20 @@ TelaDadosImovel Checkbox {
 }
 
 TelaDadosImovel #galeria_fotos Image {
-    width: 20;
-    height: 10;
+    width: 12%;
+    height: 7;
     margin: 0 1 0 0;
 }
 
-TelaDadosImovel #entrar_contato {
-    width: 30%;
+
+TelaDadosImovel #galeria_fotos {
+    align: center middle;
+    width: 100%;
+    height: auto;
+    margin-top:2;
+    # overflow-x: scroll;
 }
 
-TelaDadosImovel #dados_imovel{
-    margin-left: 20; 
-    height: 100%;
-}
 
 TelaDadosImovel #whatsapp {
     background: green;
