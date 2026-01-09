@@ -1,7 +1,7 @@
-from textual.widgets import Static, Button, ListItem, ListView, Footer, Select, Input, Tab, Tabs, SelectionList, MaskedInput
+from textual.widgets import Static, Button, ListItem, ListView, Footer, Select, Input, Tab, Tabs, SelectionList, MaskedInput, TextArea
 from textual import on
 from textual.screen import Screen
-from textual.containers import VerticalScroll, Container, Grid
+from textual.containers import VerticalScroll, Container, Grid, Center
 from utils.Widgets import Header
 from textual_image.widget import Image
 from model import Init, Usuario, Imovel
@@ -15,9 +15,10 @@ class ContainerImovel(Container):
         self.id_imovel = id_imovel
 
     def compose(self):
-        yield Image(r"", id="ti_imagem")
-        yield Static("Sala Comercial a venda no Centro de Porto Alegre", id="tx_nome")
-        yield Static("R$ 255.000,00", id="tx_preco")
+        with Center():
+            yield Image(r"", id="ti_imagem")
+        yield TextArea("Sala Comercial a venda no Centro de Porto Alegre", id="tx_nome")
+        yield TextArea("R$ 255.000,00", id="tx_preco")
         yield Button("Ver mais", id="bt_comprar")
 
     def on_button_pressed(self):
@@ -97,21 +98,21 @@ class TelaEstoqueCliente(Screen):
 
                 if imovel.get_anuncio() and imovel.get_anuncio().get_titulo(
                 ):
-                    container.query_one("#tx_nome").content = imovel.get_anuncio().get_titulo(
+                    container.query_one("#tx_nome").text = imovel.get_anuncio().get_titulo(
                     )
                 else:
                     container.query_one("#tx_nome").styles.display = "none"
 
                 if imovel.get_valor_venda():
                     container.query_one(
-                        "#tx_preco").content = f"R$ {imovel.get_valor_venda():.2f}"
+                        "#tx_preco").text = f"R$ {imovel.get_valor_venda():.2f}"
                 else:
                     container.query_one(
                         "#tx_preco").styles.display = "none"
 
                 if imovel.get_valor_aluguel():
                     container.query_one(
-                        "#tx_preco").content = f"R$ {imovel.get_valor_aluguel():.2f}"
+                        "#tx_preco").text = f"R$ {imovel.get_valor_aluguel():.2f}"
                 else:
                     container.query_one(
                         "#tx_preco").styles.display = "none"
@@ -257,7 +258,7 @@ class TelaEstoqueCliente(Screen):
         else:
             self.atualizar_imagens()
 
-        def on_tabs_tab_activated(self, event: Tabs.TabActivated):
+    def on_tabs_tab_activated(self, event: Tabs.TabActivated):
             # if self.salvo == False:
             #     self.mount(PopUp)
 

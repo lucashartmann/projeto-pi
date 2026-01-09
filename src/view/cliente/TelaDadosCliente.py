@@ -1,6 +1,6 @@
 import hashlib
 from textual.screen import Screen
-from textual.containers import Grid
+from textual.containers import Grid, Center
 from textual.widgets import TextArea, Static, Tab, Tabs, Button, Footer, MaskedInput, SelectionList, Input, Switch
 from utils.Widgets import Header
 from textual.validation import Length
@@ -37,39 +37,42 @@ class TelaDadosCliente(Screen):
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
         elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CLIENTE:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
+        
+        with Center():
+            with Grid():
+                yield Static("Username")
+                yield TextArea(id="inpt_username")
+                yield Static("Nome")
+                yield TextArea(id="inpt_nome")
+                yield Static("CPF/CNPJ")
+                yield MaskedInput(template="000.000.000-00", id="inpt_cpf", validators=Length(minimum=11, maximum=14), valid_empty=True)
+                yield Static("RG")
+                yield Input(id="inpt_rg", placeholder="RG aqui", validators=Length(minimum=7, maximum=9), valid_empty=True)
+                # yield Static("Telefone")
+                # yield MaskedInput(template="(00) 00000-0000", id="inpt_telefone")
+                # yield Static("Endereco")
+                # yield TextArea(Init.usuario_atual.get_endereco())
+                yield Static("Email")
+                yield TextArea(id="inpt_email")
+                yield Static("Senha")
+                yield MyInput(placeholder="alterar senha", id="inpt_senha", password=True)
+                yield Static("Data de nascimento", id="stt_data_nascimento")
+                yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento", validators=Length(minimum=10, maximum=10), valid_empty=True)
+            
+            with Grid():
+                # yield SelectionList([(valor.value, valor.value) for valor in Imovel.Categoria], id="select_categoria")
+                yield Static("Quartos")
+                yield MaskedInput(template="00")
+                yield Static("Banheiros")
+                yield MaskedInput(template="00")
+                yield Static("CEP desejado")
+                yield MaskedInput(template="00000-000")
 
-        with Grid():
-            yield Static("Username")
-            yield TextArea(id="inpt_username")
-            yield Static("Nome")
-            yield TextArea(id="inpt_nome")
-            yield Static("CPF/CNPJ")
-            yield MaskedInput(template="000.000.000-00", id="inpt_cpf", validators=Length(minimum=11, maximum=14), valid_empty=True)
-            yield Static("RG")
-            yield Input(id="inpt_rg", placeholder="RG aqui", validators=Length(minimum=7, maximum=9), valid_empty=True)
-            # yield Static("Telefone")
-            # yield MaskedInput(template="(00) 00000-0000", id="inpt_telefone")
-            # yield Static("Endereco")
-            # yield TextArea(Init.usuario_atual.get_endereco())
-            yield Static("Email")
-            yield TextArea(id="inpt_email")
-            yield Static("Senha")
-            yield MyInput(placeholder="alterar senha", id="inpt_senha", password=True)
-            yield Static("Data de nascimento", id="stt_data_nascimento")
-            yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento", validators=Length(minimum=10, maximum=10), valid_empty=True)
-
-        yield Static("Procurando por:")
-        with Grid():
-            # yield SelectionList([(valor.value, valor.value) for valor in Imovel.Categoria], id="select_categoria")
-            yield Static("Quartos")
-            yield MaskedInput(template="00")
-            yield Static("Banheiros")
-            yield MaskedInput(template="00")
-            yield Static("CEP desejado")
-            yield MaskedInput(template="00000-000")
-
-        yield Button("Salvar")
-        # yield Static("Imoveis do usuário", id="stt_compras")
+        
+        with Center():
+            
+            yield Button("Salvar")
+            # yield Static("Imoveis do usuário", id="stt_compras")
         yield Footer(show_command_palette=False)
 
     def on_mount(self):

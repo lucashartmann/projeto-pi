@@ -1,13 +1,24 @@
 TelaDadosCliente Grid {
     grid-size: 2;
-    margin-left: 5;
-    margin-right: 80;
     border: black 10%;
-    width: 100%;
+    width: 40%;
     height: 32;
-    margin-top: 5;
     align: center middle;
+    margin-top: 2;
 }
+
+TelaDadosCliente Grid:first-child {
+    margin-right: 10;
+    margin-top: 2;
+}
+
+TelaDadosCliente Center {
+    align: center middle;
+    width: 100%;
+    content-align: center middle;
+    layout: horizontal;
+}
+
 
 TelaDadosCliente Grid TextArea{
    column-span:5;
@@ -26,10 +37,10 @@ TelaDadosCliente Image{
     align: center middle;
 }
 
-TelaDadosCliente Button {
+TelaDadosCliente Center Button {
     background: black;
-    margin-left: 100;
     margin-top: 2;
+    width: 15%;
 }
 
 

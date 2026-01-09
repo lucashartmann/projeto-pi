@@ -437,6 +437,34 @@ Busca #dialog {
     color: black;
 }
 
+
+Busca #dialog VerticalScroll Checkbox {
+    width: 8;
+    text-align: center;
+    color: white;
+    content-align: center middle;
+}
+
+Busca #dialog VerticalScroll Checkbox:hover {
+   .toggle--button {
+        color: white;
+    }
+}
+
+Busca #dialog VerticalScroll Checkbox {
+    .toggle--button {
+        color: 40% white;
+        align: center middle;
+        text-align: center;
+        content-align: center middle;
+        margin: 0;
+        padding: 0;
+        border: none;
+        width: auto;
+        height: auto;
+    }
+}
+
 Busca #dialog Horizontal{
     width: 100%;
     height: auto;

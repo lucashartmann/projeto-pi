@@ -1,16 +1,16 @@
-#container_esperando, #container_andamento, #container_cadastrados, Horizontal Vertical Static {
+TelaAtendimento #container_esperando, TelaAtendimento #container_andamento, #container_cadastrados, TelaAtendimento Horizontal Vertical Static {
     background: rgb(200, 200, 200);
     margin: 2;
 }
 
-Horizontal Vertical Static {
+TelaAtendimento Horizontal Vertical Static {
     height: 15%;
     color: black;
     text-align: center;
     content-align: center middle;
 }
 
-App.dark #container_esperando,App.dark #container_andamento,App.dark  #container_cadastrados,App.dark Horizontal Vertical Static{
+App.dark TelaAtendimento #container_esperando,App.dark TelaAtendimento #container_andamento, App.dark TelaAtendimento #container_cadastrados, App.dark TelaAtendimento Horizontal Vertical Static{
     background: #1a1717ff;
     color: white;
 }

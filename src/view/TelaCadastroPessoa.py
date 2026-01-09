@@ -1,5 +1,5 @@
 import datetime
-from textual.widgets import Button, Tab, Tabs, Select, Footer, Static, TextArea, MaskedInput, Input
+from textual.widgets import Button, Tab, Tabs, Select, Footer, Static, TextArea, MaskedInput, Input, Checkbox
 from textual.screen import Screen, ModalScreen
 from textual.containers import HorizontalGroup, Vertical, Horizontal, Grid
 from controller import Controller
@@ -7,6 +7,11 @@ from model import Init, Usuario, Captador, Cliente, Corretor, Proprietario, Gere
 from utils.Widgets import Header, MyInput
 from textual.validation import Length
 import requests
+from textual_image.widget import Image
+from textual.events import Click
+from textual import on
+from view import TelaCadastroImovel
+from database.Banco import Banco
 
 
 class PopUp(ModalScreen):
@@ -250,6 +255,61 @@ class TelaCadastroPessoa(Screen):
                     ).value.lower().capitalize()
             except Exception as e:
                 print(e)
+
+            if isinstance(self.pessoa, Proprietario.Proprietario):
+                self.query_one("#imoveis", Vertical).styles.display = "block"
+                imoveis = Init.imobiliaria.get_imoveis_por_proprietario(
+                    self.pessoa.get_cpf_cnpj())
+                if imoveis:
+                    for imovel in imoveis:
+                        container = Horizontal(
+                            classes="imovel", name=imovel.get_id())
+                        self.query_one("#imoveis").mount(container)
+
+                        container.mount(Checkbox())
+                        if imovel.get_anuncio() and imovel.get_anuncio().get_imagens():
+                            container.mount(
+                                Image(imovel.get_anuncio().get_imagens()[0]))
+
+                        container2 = Vertical(classes="dados0")
+                        container.mount(container2)
+                        container3 = Vertical(classes="dados1")
+                        container2.mount(container3)
+                        container3.mount(
+                            Static(imovel.get_endereco().get_bairro(), classes="stt_bairro"))
+                        container3.mount(
+                            Static(f"Referência {imovel.get_id()}", classes="stt_ref"))
+                        if imovel.get_condominio():
+                            container3.mount(
+                                Static(f"{imovel.get_status().value} - {imovel.get_condominio().get_nome()}", classes="stt_status"))
+
+                        container3.mount(Static(
+                            f"{imovel.get_endereco().get_rua()}, {imovel.get_endereco().get_numero()}/{imovel.get_complemento()}"))
+                        container3.mount(
+                            Static(f"{imovel.get_endereco().get_cidade()}"))
+                        if imovel.get_status():
+                            container3.mount(
+                                Static(f"{imovel.get_status().value}"))
+                        if imovel.get_valor_venda():
+                            container3.mount(
+                                Static(f"{imovel.get_valor_venda()}", classes="valor"))
+                        if imovel.get_valor_aluguel():
+                            container3.mount(
+                                Static(f"{imovel.get_valor_aluguel()}", classes="valor"))
+                        container4 = Horizontal(classes="dados2")
+                        container3.mount(container4)
+                        container4.mount(
+                            Static(f"{imovel.get_area_privativa()}"))
+                        container4.mount(Static(f"{imovel.get_area_total()}"))
+                        if imovel.get_quant_banheiros():
+                            container4.mount(
+                                Static(f"{imovel.get_quant_banheiros()} banheiros"))
+                        if imovel.get_quant_quartos():
+                            container4.mount(
+                                Static(f"{imovel.get_quant_quartos()} quartos"))
+                        if imovel.get_quant_vagas():
+                            container4.mount(
+                                Static(f"{imovel.get_quant_vagas()} vagas"))
 
     # def limpar_text_area(self):
     #     if TextArea in self.query():
@@ -502,3 +562,42 @@ class TelaCadastroPessoa(Screen):
                     self.query_one("#ta_cidade", TextArea).text = cidade
                 except Exception as e:
                     self.notify("ERRO! CEP inválido")
+
+    @on(Click)
+    def on_click(self, evento: Click):
+        widget = ""
+        try:
+            if "dados0" in evento.widget.parent.parent.classes:
+                widget = evento.widget.parent.parent.parent
+            elif "dados1" in evento.widget.parent.parent.classes:
+                widget = evento.widget.parent.parent.parent.parent
+            else:
+                widget = evento.widget.parent.parent
+
+            if widget and widget.classes:
+                if "imovel" in widget.classes:
+                    banco = Banco()
+                    if widget.name and self.tabela == "Imovel":
+                        imovel = banco.get_imovel_por_id(int(widget.name))
+                        if imovel:
+                            self.app.switch_screen(
+                                TelaCadastroImovel.TelaCadastroImovel(imovel=imovel))
+                        else:
+                            self.screen.notify("ERRO. Imóvel não encontrado.")
+                    elif widget.name:
+                        pessoa = None
+                        if self.tabela == "Proprietario":
+                            pessoa = banco.get_proprietario_por_cpf_cnpj(
+                                widget.name)
+                        else:
+                            pessoa = banco.get_usuario_por_cpf_cnpj(
+                                widget.name)
+
+                        if pessoa:
+                            self.app.switch_screen(
+                                TelaCadastroPessoa.TelaCadastroPessoa(pessoa=pessoa))
+                        else:
+                            self.screen.notify("ERRO. Pessoa não encontrada.")
+
+        except Exception:
+            pass

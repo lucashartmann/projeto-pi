@@ -6,7 +6,7 @@ from textual.events import Click
 from textual import on
 import requests
 import datetime
-from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio
+from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio, Proprietario
 from controller import Controller
 from utils import Midia
 from utils.Widgets import Header
@@ -231,33 +231,32 @@ class ContainerImagem(Vertical):
 
 
 class Busca(ModalScreen):
+    # Todo: Não está mostrando todas as pessoas da lista, e o checkbox não está sendo marcado como true
     class Tipo(Enum):
         PROPRIETARIO = 0
-        CORRETOR = 0
-        CAPTADOR = 0
+        CORRETOR = 1
+        CAPTADOR = 2
 
     TITLE = "Busca"
 
     def __init__(self, name=None, id=None, classes=None, tipo=None):
         super().__init__(name, id, classes)
         self.tipo = tipo
-
-    lista = []
-    lista_filtrada = []
+        self.lista = []
+        self.lista_filtrada = []
 
     def on_mount(self):
-        match self.tipo:
-            case self.Tipo.PROPRIETARIO:
-                proprietarios = Init.imobiliaria.get_lista_proprietarios()
-                self.lista = proprietarios
-            case self.Tipo.CORRETOR:
-                usuarios = Init.imobiliaria.get_lista_usuarios()
-                self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
-                ) == Usuario.Tipo.CORRETOR)
-            case self.Tipo.CAPTADOR:
-                usuarios = Init.imobiliaria.get_lista_usuarios()
-                self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
-                ) == Usuario.Tipo.CAPTADOR)
+        if self.tipo == self.Tipo.PROPRIETARIO:
+            proprietarios = Init.imobiliaria.get_lista_proprietarios()
+            self.lista = proprietarios
+        elif self.tipo == self.Tipo.CORRETOR:
+            usuarios = Init.imobiliaria.get_lista_usuarios()
+            self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
+            ) == Usuario.Tipo.CORRETOR)
+        elif self.tipo == self.Tipo.CAPTADOR:
+            usuarios = Init.imobiliaria.get_lista_usuarios()
+            self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
+            ) == Usuario.Tipo.CAPTADOR)
         self.atualizar()
 
     def compose(self):
@@ -279,7 +278,6 @@ class Busca(ModalScreen):
                 if pessoa.get_cpf_cnpj() == cpf_cnpj:
                     pessoa_atual = pessoa
                     break
-
             if not pessoa_atual:
                 return
             else:
@@ -291,6 +289,8 @@ class Busca(ModalScreen):
                         "tela_cadastro_imovel").selecionados.append(pessoa_atual)
                 else:
                     return
+        self.app.get_screen("tela_cadastro_imovel").atualizar_selecionados()
+        self.app.pop_screen()
 
     def atualizar(self):
         self.query_one(
@@ -302,14 +302,15 @@ class Busca(ModalScreen):
             lista = self.lista_filtrada
         else:
             lista = self.lista
-
+            
+        if lista:
             for pessoa in lista:
                 container = Horizontal(
                     classes="imovel", name=pessoa.get_cpf_cnpj())
                 self.query_one(
                     "#container_resultado").mount(container)
 
-                if pessoa in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                if pessoa in self.app.get_screen("tela_cadastro_imovel").selecionados: # TODO: arrumar
                     container.mount(Checkbox(value=True))
                 else:
                     container.mount(Checkbox(value=False))
@@ -580,14 +581,10 @@ class TelaCadastroImovel(Screen):
             with Center():
                 yield Button("Adicionar", id="bt_adicionar_imagens")
 
-            # TODO: Fazer botao para adicionar remover imagem e adicionar videos. Possibilitar adicionar mais imagens
-
         with Grid(id="container_anexos"):
             yield Static("Anexos: ")
             with Center():
                 yield Button("Adicionar", id="bt_adicionar_anexos")
-
-            # TODO: Pegar o widget de documento, possibilitar adicionar, remover
 
         with Grid(id="container_proprietario"):
             yield Static("Proprietario: ", classes="stt_container_titulo")
@@ -602,6 +599,61 @@ class TelaCadastroImovel(Screen):
             yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
 
         yield Footer(show_command_palette=False)
+
+    def atualizar_selecionados(self):
+        container_captador = self.query_one("#container_captador")
+        container_corretor = self.query_one("#container_corretor")
+        container_proprietario = self.query_one("#container_proprietario")
+
+        for child in list(container_proprietario.children)[2:]:
+            child.remove()
+        for child in list(container_captador.children)[2:]:
+            child.remove()
+        for child in list(container_corretor.children)[2:]:
+            child.remove()
+
+        for selecionado in self.selecionados:
+            container = ContainerFuncionario()
+
+            if isinstance(selecionado, Proprietario.Proprietario):
+                container_proprietario.mount(
+                    container, after=container_proprietario.query_one(Button))
+                container.query_one("#st_nome", Static).update(
+                    selecionado.get_nome())
+                if selecionado.get_telefones():
+                    container.query_one("#st_telefone", Static).update(
+                        "\n".join(str(telefone) for telefone in selecionado.get_telefones()))
+                else:
+                    container.query_one(
+                        "#st_telefone", Static).styles.display = None
+                if selecionado.get_email():
+                    container.query_one("#st_email", Static).update(
+                        selecionado.get_email())
+                else:
+                    container.query_one(
+                        "#st_email", Static).styles.display = None
+
+            else:
+                if selecionado.get_tipo() == Usuario.Tipo.CAPTADOR:
+                    container_captador.mount(
+                        container, after=container_captador.query_one(Button))
+
+                elif selecionado.get_tipo() == Usuario.Tipo.CORRETOR:
+                    container_corretor.mount(
+                        container, after=container_corretor.query_one(Button))
+
+                if selecionado.get_nome():
+                    container.query_one("#st_nome", Static).update(
+                        selecionado.get_nome())
+                if selecionado.get_telefones():
+                    container.query_one("#st_telefone", Static).update(
+                        "\n".join(str(telefone) for telefone in selecionado.get_telefones()))
+                else:
+                    container.query_one(
+                        "#st_telefone", Static).styles.display = None
+                if selecionado.get_email():
+                    container.query_one("#st_email", Static).update(
+                        selecionado.get_email())
 
     def on_mount(self):
         container_captador = self.query_one("#container_captador")

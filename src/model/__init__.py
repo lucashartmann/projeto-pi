@@ -86,6 +86,8 @@ class Init:
         blob = f.read()
     
     anuncio.set_imagens([blob, blob, blob, blob, blob])
+    anuncio.set_titulo("Apartamento de 1 quarto, venda ou aluguel")
+    anuncio.set_descricao("Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta ratione nulla recusandae illum, magni veniam molestiae odio corrupti. Deleniti, blanditiis recusandae molestiae voluptate culpa at voluptates inventore asperiores saepe quidem.")
     
     imovel_um = Imovel.Imovel(
         endereco=consulta, status=Imovel.Status.VENDA, categoria=Imovel.Categoria.APARTAMENTO)
