@@ -96,22 +96,8 @@ TelaCadastroImovel #container_anuncio {
     border: black 10%;
 }
 
-
 App.dark TelaCadastroImovel #container_anuncio{
     border: #ede6e6ff 10%;
-}
-
-TelaCadastroImovel #container_anexos {
-    width: 100%;
-    height: auto;
-    height: 30%;
-    margin: 2;
-    grid-size: 10;
-    content-align-vertical: middle;
-    margin: 5;
-    margin-bottom: 2;
-    margin-top: 0;
-    border: tall 10% black;
 }
 
 App.dark TelaCadastroImovel #container_anexos {
@@ -136,21 +122,6 @@ TelaCadastroImovel #container_info_condominio {
     display: none;
 }
 
-
-
-TelaCadastroImovel #container_imagens {    
-    width: 100%;
-    height: auto;
-    grid-size: 10;
-    height: 30%;
-    content-align-vertical: middle;
-    align-vertical: middle;
-    margin: 5;
-    margin-bottom: 2;
-    margin-top: 0;
-    border: vkey 20% black;
-    background: rgb(200,200,200) 12%;
-}
 
 App.dark TelaCadastroImovel #container_imagens {
     background: #1a1717ff;
@@ -300,7 +271,7 @@ App.dark TelaCadastroImovel .stt_container_titulo{
     color: #ede6e6ff;
 }
 
-TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario {
+TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, TelaCadastroImovel #container_proprietario, TelaCadastroImovel #container_portais, TelaCadastroImovel #container_imagens, TelaCadastroImovel #container_anexos {
     margin: 2;
     width: 100%;
     height: 30%;
@@ -312,6 +283,22 @@ TelaCadastroImovel #container_captador, TelaCadastroImovel #container_corretor, 
     margin-bottom: 2;
     margin-top: 0;
     border: solid 10% black;
+}
+
+TelaCadastroImovel #container_mapa {
+    width: 100%;
+    margin: 2;
+    height: 50%;
+    content-align: center middle;
+    margin: 5;
+    margin-bottom: 2;
+    margin-top: 0;
+    border: solid 10% black;
+}
+
+TelaCadastroImovel #container_mapa MapWidget {
+    width: 40%;
+    height: 100%;
 }
 
 App.dark TelaCadastroImovel #container_captador, App.dark TelaCadastroImovel #container_corretor, App.dark TelaCadastroImovel #container_proprietario {
@@ -425,8 +412,6 @@ App.dark #dialog{
     content-align: center middle;
 }
 
-
-
 Busca {
     align: center middle;
 }
@@ -434,6 +419,21 @@ Busca {
 Busca #dialog {
     width: 50%;
     height: 50%;
+    color: black;
+}
+
+Busca #container_resultado .dados1 {
+    display: block;
+    color: black;
+    height: auto;
+    margin: 0;
+}
+
+Busca #container_resultado .imovel {
+    height: 24%; 
+    margin: 1 0;
+    border: none;
+    display: block;
     color: black;
 }
 
@@ -463,13 +463,16 @@ Busca #dialog VerticalScroll Checkbox {
         width: auto;
         height: auto;
     }
+    &.-on > .toggle--button {
+            color: rgb(8, 236, 12);
+            background: $panel;
+    }
 }
 
 Busca #dialog Horizontal{
     width: 100%;
     height: auto;
     color: black;
-    dock:top;
     border: none;
 }
 
@@ -482,9 +485,11 @@ Busca #dialog TextArea{
 
 Busca #dialog #container_resultado{
     width: 100%;
-    height: auto;
+    height: 100%;
     color: black;
     margin: 0;
+    border: none;
+    overflow: auto; 
 }
 
 App.dark Busca #dialog {

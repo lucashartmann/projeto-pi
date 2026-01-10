@@ -5,6 +5,7 @@ teste.py
 imobiliaria.db
 data/
 utils/textual_pdf
+utils/textual_map
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

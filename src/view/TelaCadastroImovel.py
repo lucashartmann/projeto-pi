@@ -17,6 +17,7 @@ from enum import Enum
 from textual.binding import Binding
 from textual import events
 from textual.geometry import Offset
+from utils.textual_map import MapWidget
 
 
 class ImagemAmpliada(ModalScreen):
@@ -281,10 +282,17 @@ class Busca(ModalScreen):
             if not pessoa_atual:
                 return
             else:
-                if evento.checkbox.value == False and pessoa_atual in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                encontrado = False
+                pessoa_encontrada = None
+                for pessoa in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                    if pessoa.get_cpf_cnpj() == pessoa_atual.get_cpf_cnpj():
+                        encontrado = True
+                        pessoa_encontrada = pessoa
+
+                if evento.checkbox.value == False and encontrado:
                     self.app.get_screen(
-                        "tela_cadastro_imovel").selecionados.remove(pessoa_atual)
-                elif evento.checkbox.value == True and pessoa_atual not in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                        "tela_cadastro_imovel").selecionados.remove(pessoa_encontrada)
+                elif evento.checkbox.value == True and encontrado is False:
                     self.app.get_screen(
                         "tela_cadastro_imovel").selecionados.append(pessoa_atual)
                 else:
@@ -302,7 +310,7 @@ class Busca(ModalScreen):
             lista = self.lista_filtrada
         else:
             lista = self.lista
-            
+
         if lista:
             for pessoa in lista:
                 container = Horizontal(
@@ -310,10 +318,17 @@ class Busca(ModalScreen):
                 self.query_one(
                     "#container_resultado").mount(container)
 
-                if pessoa in self.app.get_screen("tela_cadastro_imovel").selecionados: # TODO: arrumar
+                # TODO: arrumar
+                encontrado = False
+                for pessoa2 in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                    if pessoa2.get_cpf_cnpj() == pessoa.get_cpf_cnpj():
+                        encontrado = True
+
+                if encontrado:
                     container.mount(Checkbox(value=True))
                 else:
                     container.mount(Checkbox(value=False))
+
                 container2 = Vertical(classes="dados0")
                 container.mount(container2)
                 container3 = Vertical(classes="dados1")
@@ -598,6 +613,13 @@ class TelaCadastroImovel(Screen):
             yield Static("Captador: ", classes="stt_container_titulo")
             yield Button("Editar", classes="bt_editar_pessoa", id="br_editar_captador")
 
+        with Grid(id="container_portais"):
+            yield Static("Portais: ", classes="stt_container_titulo")
+            yield Button("Cadastrar Portal")
+
+        with Center(id="container_mapa"):
+            yield MapWidget(zoom=15)
+
         yield Footer(show_command_palette=False)
 
     def atualizar_selecionados(self):
@@ -792,6 +814,17 @@ class TelaCadastroImovel(Screen):
                     "#ta_nome_condominio", TextArea).text = self.imovel.get_condominio().get_nome()
             self.query_one(
                 "#ta_rua", TextArea).text = self.imovel.get_endereco().get_rua()
+            try:
+                if self.imovel.get_endereco().get_cep() and self.imovel.get_endereco().get_numero():
+                    self.query_one(MapWidget).set_address(
+                        f"{self.imovel.get_endereco().get_cep()}, {self.imovel.get_endereco().get_numero()}, Brasil")
+                    self.query_one(MapWidget).refresh()
+                elif self.imovel.get_endereco().get_cep():
+                    self.query_one(MapWidget).set_address(
+                        f"{self.imovel.get_endereco().get_cep()}, Brasil")
+                    self.query_one(MapWidget).refresh()
+            except:
+                pass
             if self.imovel.get_endereco().get_numero() is not None:
                 self.query_one(
                     "#ta_numero", Input).value = str(self.imovel.get_endereco().get_numero())
@@ -876,7 +909,7 @@ class TelaCadastroImovel(Screen):
         self.query_one(Tabs).active = self.query_one(
             "#tab_cadastro_imovel", Tab).id
 
-    def on_input_changed(self, evento: MaskedInput.Changed):
+    async def on_input_changed(self, evento: MaskedInput.Changed):
         self.salvo = False
         if evento.input.id == "ta_cep" and not self.imovel:
             cep = str(evento.input.value.strip())
@@ -897,8 +930,22 @@ class TelaCadastroImovel(Screen):
                     self.query_one("#ta_estado", MaskedInput).value = uf
                     self.query_one("#ta_rua", TextArea).text = logradouro
                     self.query_one("#ta_cidade", TextArea).text = cidade
+                    try:
+                        await self.query_one(MapWidget).set_address(f"{cep}, Brasil")
+                        self.query_one(MapWidget).refresh()
+                    except:
+                        pass
                 except Exception as e:
                     self.notify("ERRO! CEP inválido")
+        if evento.input.id == "ta_numero" and self.query_one("#ta_cep", MaskedInput).is_valid:
+            cep = self.query_one("#ta_cep", MaskedInput).value
+            numero = evento.input.value
+            if cep and numero:
+                try:
+                    await self.query_one(MapWidget).set_address(f"{cep}, {numero}, Brasil")
+                    self.query_one(MapWidget).refresh()
+                except:
+                    pass
 
     def on_button_pressed(self, evento: Button.Pressed):
 
