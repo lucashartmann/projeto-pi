@@ -10,7 +10,7 @@
 
 - [ ] Testar tela de login
 
-- [ ] Arrumar Tela Atendimentos, Tela de Estoque de Cliente, Tela de Cadastro de venda e aluguel
+- [ ] Arrumar Tela Atendimentos, Filtros do Condominio, Tela de Cadastro de venda e aluguel
 
 - [ ] Corrigir PDFWidget
 

@@ -1561,7 +1561,9 @@ class Banco:
 
                 if imovel.get_filtros():
                     for filtro in imovel.get_filtros():
+                        print(imovel.get_filtros())
                         id = self.get_id_filtro_imovel_por_nome(filtro)
+                        print(id)
                         if id is not None:
                             self.cadastrar_filtro_imovel(
                                 imovel.get_id(), filtro)
@@ -2121,13 +2123,13 @@ class Banco:
                             if id is not None:
                                 self.remover_filtro_do_imovel(
                                     imovel.get_id(), id)
-                    if imovel.get_filtros():
+                if imovel.get_filtros():
                         for filtro in imovel.get_filtros():
                             if filtro not in imovel_consulta.get_filtros():
                                 id = self.get_id_filtro_imovel_por_nome(filtro)
                                 if id is not None:
                                     self.cadastrar_filtro_imovel(
-                                        imovel.get_id(), filtro)
+                                        id_imovel=imovel.get_id(), id_filtro=id)
 
                 query = '''
                         UPDATE Imovel SET
@@ -2207,6 +2209,7 @@ class Banco:
                         WHERE nome = ?
                     ''', (nome,))
                 id = cursor.fetchone()[0]
+                print(id)
                 return id
         except Exception as e:
             print(f"ERRO! Banco.get_id_filtro_imovel_por_nome: {e}")
@@ -2217,7 +2220,7 @@ class Banco:
             with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
-                        INSERT INTO imovel_filtros (id_filtros_imovel, id_imovel)
+                        INSERT INTO imovel_filtros (id_imovel, id_filtros_imovel)
                         VALUES(?, ?)
                     ''', (id_imovel, id_filtro))
                 return True
@@ -2715,7 +2718,7 @@ class Banco:
                 cpf_cnpj_proprietarios = cursor.fetchall()
                 proprietarios = []
                 if cpf_cnpj_proprietarios:
-                    for cpf_cnpj in registros_imovel_filtros:
+                    for cpf_cnpj in cpf_cnpj_proprietarios:
                         cpf_cnpj = cpf_cnpj[0]
                         proprietario = self.get_proprietario_por_cpf_cnpj(
                             cpf_cnpj)
@@ -2723,20 +2726,19 @@ class Banco:
                             proprietarios.append(proprietario)
                 imovel.set_proprietarios(proprietarios)
                 cursor.execute(f'''
-                        SELECT * FROM imovel_filtros 
+                        SELECT id_filtros_imovel FROM imovel_filtros 
                         WHERE id_imovel = ?
                     ''', (id_imovel,))
-                registros_imovel_filtros = cursor.fetchall()
+                lista_ids = cursor.fetchall()
                 filtros = []
-                if registros_imovel_filtros:
-                    for registro in registros_imovel_filtros:
-                        id_filtros_imovel = int(registro[0])
-                        id_imovel = int(registro[1])
+                if lista_ids:
+                    for id in lista_ids:
+                        id = int(id[0])
                         cursor.execute(f'''
                             SELECT nome FROM filtros_imovel 
                             WHERE id_filtros_imovel = ?
-                        ''', (id_filtros_imovel,))
-                        nome_filtro = cursor.fetchone()
+                        ''', (id,))
+                        nome_filtro = cursor.fetchone()[0]
                         if nome_filtro:
                             filtros.append(nome_filtro)
                 imovel.set_filtros(filtros)

@@ -11,7 +11,13 @@ TelaDadosImovel #titulo Static {
 
 TelaDadosImovel .titulo {
     text-style: bold;
-    margin: 2;
+    margin: 1;
+}
+
+TelaDadosImovel #descricao {
+    text-align: justify;
+    margin-left:4;
+    width: 90%;
 }
 
 TelaDadosImovel #imagem_imovel {

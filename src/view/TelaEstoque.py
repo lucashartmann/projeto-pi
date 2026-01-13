@@ -393,32 +393,41 @@ class TelaEstoque(Screen):
                     container.mount(
                         Image(imovel.get_anuncio().get_imagens()[0]))
 
-                container2 = Vertical(classes="dados0")
+                container2 = Horizontal(classes="dados0")
                 container.mount(container2)
-                container3 = Vertical(classes="dados1")
-                container2.mount(container3)
-                container3.mount(
+                container_info = Vertical(classes="dados1")
+                container2.mount(container_info)
+                
+                container_data = Vertical(id="container_data")
+                container2.mount(container_data)
+                
+                if imovel.get_data_modificacao():
+                    container_data.mount(Static(f"Data de Modificação: {imovel.get_data_modificacao().strftime("%d-%m-%Y")}"))
+                if imovel.get_data_cadastro():
+                    container_data.mount(Static(f"Data de Cadastro: {imovel.get_data_cadastro().strftime("%d-%m-%Y")}"))
+                
+                container_info.mount(
                     Static(imovel.get_endereco().get_bairro(), classes="stt_bairro"))
-                container3.mount(
+                container_info.mount(
                     Static(f"Referência {imovel.get_id()}", classes="stt_ref"))
                 if imovel.get_condominio():
-                    container3.mount(
+                    container_info.mount(
                         Static(f"{imovel.get_status().value} - {imovel.get_condominio().get_nome()}", classes="stt_status"))
 
-                container3.mount(Static(
+                container_info.mount(Static(
                     f"{imovel.get_endereco().get_rua()}, {imovel.get_endereco().get_numero()}/{imovel.get_complemento()}"))
-                container3.mount(
+                container_info.mount(
                     Static(f"{imovel.get_endereco().get_cidade()}"))
                 if imovel.get_status():
-                    container3.mount(Static(f"{imovel.get_status().value}"))
+                    container_info.mount(Static(f"{imovel.get_status().value}"))
                 if imovel.get_valor_venda():
-                    container3.mount(
+                    container_info.mount(
                         Static(f"{imovel.get_valor_venda()}", classes="valor"))
                 if imovel.get_valor_aluguel():
-                    container3.mount(
+                    container_info.mount(
                         Static(f"{imovel.get_valor_aluguel()}", classes="valor"))
                 container4 = Horizontal(classes="dados2")
-                container3.mount(container4)
+                container_info.mount(container4)
                 container4.mount(Static(f"{imovel.get_area_privativa()}"))
                 container4.mount(Static(f"{imovel.get_area_total()}"))
                 if imovel.get_quant_banheiros():
@@ -439,19 +448,19 @@ class TelaEstoque(Screen):
                 container.mount(Checkbox())
                 container2 = Vertical(classes="dados0")
                 container.mount(container2)
-                container3 = Vertical(classes="dados1")
-                container2.mount(container3)
+                container_info = Vertical(classes="dados1")
+                container2.mount(container_info)
 
-                container3.mount(
+                container_info.mount(
                     Static(f"Nome {pessoa.get_nome()}", classes="stt_ref"))
-                container3.mount(
+                container_info.mount(
                     Static(f"CPF-CNPJ {pessoa.get_cpf_cnpj()}", classes="stt_ref"))
                 if pessoa.get_email():
-                    container3.mount(
+                    container_info.mount(
                         Static(f"Email {pessoa.get_email()}", classes="stt_bairro"))
                 if pessoa.get_telefones():
                     for telefone in pessoa.get_telefones():
-                        container3.mount(
+                        container_info.mount(
                             Static(f"Telefone: {telefone}", classes="stt_bairro"))
 
         self.setup_dados()

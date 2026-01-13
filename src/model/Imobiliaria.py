@@ -106,7 +106,7 @@ class Imobiliaria:
         return self.banco_dados.remover(campo_desejado, valor, tabela)
 
     def get_imoveis_por_proprietario(self, cpf):
-        return self.banco_dados.get_imoveis_por_proprietario(self, cpf)
+        return self.banco_dados.get_imoveis_por_proprietario(cpf)
 
     def get_imovel_por_id(self, id_imovel):
-        return self.banco_dados.get_imovel_por_id(self, id_imovel)
+        return self.banco_dados.get_imovel_por_id(id_imovel)

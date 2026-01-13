@@ -148,8 +148,21 @@ App.dark TelaEstoque .imovel{
 }
 
 TelaEstoque .dados0 {
-    height: 20;
+    height: 100%;
     margin-left: 2;
+}
+
+TelaEstoque #container_data {
+    margin: 2;
+}
+
+TelaEstoque #container_data Static:first-child {
+    margin: 2 0 2 0;
+}
+
+TelaEstoque .dados1 {
+    height: 100%;
+    margin: 1;
 }
 
 TelaEstoque .dados2 {

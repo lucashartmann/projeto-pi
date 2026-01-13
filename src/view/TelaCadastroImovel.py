@@ -232,7 +232,6 @@ class ContainerImagem(Vertical):
 
 
 class Busca(ModalScreen):
-    # Todo: Não está mostrando todas as pessoas da lista, e o checkbox não está sendo marcado como true
     class Tipo(Enum):
         PROPRIETARIO = 0
         CORRETOR = 1
@@ -240,11 +239,12 @@ class Busca(ModalScreen):
 
     TITLE = "Busca"
 
-    def __init__(self, name=None, id=None, classes=None, tipo=None):
+    def __init__(self, name=None, id=None, classes=None, tipo=None, selecionados=[]):
         super().__init__(name, id, classes)
         self.tipo = tipo
         self.lista = []
         self.lista_filtrada = []
+        self.selecionados = selecionados
 
     def on_mount(self):
         if self.tipo == self.Tipo.PROPRIETARIO:
@@ -284,21 +284,18 @@ class Busca(ModalScreen):
             else:
                 encontrado = False
                 pessoa_encontrada = None
-                for pessoa in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                for pessoa in self.selecionados:
                     if pessoa.get_cpf_cnpj() == pessoa_atual.get_cpf_cnpj():
                         encontrado = True
                         pessoa_encontrada = pessoa
 
                 if evento.checkbox.value == False and encontrado:
-                    self.app.get_screen(
-                        "tela_cadastro_imovel").selecionados.remove(pessoa_encontrada)
+                    self.selecionados.remove(pessoa_encontrada)
                 elif evento.checkbox.value == True and encontrado is False:
-                    self.app.get_screen(
-                        "tela_cadastro_imovel").selecionados.append(pessoa_atual)
+                    self.selecionados.append(pessoa_atual)
                 else:
                     return
-        self.app.get_screen("tela_cadastro_imovel").atualizar_selecionados()
-        self.app.pop_screen()
+        self.dismiss(self.selecionados)
 
     def atualizar(self):
         self.query_one(
@@ -320,7 +317,7 @@ class Busca(ModalScreen):
 
                 # TODO: arrumar
                 encontrado = False
-                for pessoa2 in self.app.get_screen("tela_cadastro_imovel").selecionados:
+                for pessoa2 in self.selecionados:
                     if pessoa2.get_cpf_cnpj() == pessoa.get_cpf_cnpj():
                         encontrado = True
 
@@ -477,6 +474,15 @@ class PopUpApagar(ModalScreen):
 
 
 class ContainerFuncionario(Vertical):
+
+    def __init__(self, *children, name=None, id=None, classes=None, disabled=False, markup=True, cpf_cnpj=None):
+        super().__init__(*children, name=name, id=id,
+                         classes=classes, disabled=disabled, markup=markup)
+        self.cpf_cnpj = cpf_cnpj
+
+    def get_cpf_cnpj(self):
+        return self.cpf_cnpj
+
     def compose(self):
         yield Static("Nome do cliente", id="st_nome")
         yield Static("Telefone do cliente", id="st_telefone")
@@ -486,13 +492,13 @@ class ContainerFuncionario(Vertical):
 class TelaCadastroImovel(Screen):
 
     CSS_PATH = "css/TelaCadastroImovel.tcss"
-    selecionados = []
-    salvo = False
-    acao = False
 
     def __init__(self, name=None, id=None, classes=None, imovel=None):
         super().__init__(name, id, classes)
         self.imovel = imovel
+        self.selecionados = []
+        self.salvo = False
+        self.acao = False
 
     def compose(self):
         yield Header()
@@ -622,7 +628,7 @@ class TelaCadastroImovel(Screen):
 
         yield Footer(show_command_palette=False)
 
-    def atualizar_selecionados(self):
+    def atualizar_selecionados(self, selecionados):
         container_captador = self.query_one("#container_captador")
         container_corretor = self.query_one("#container_corretor")
         container_proprietario = self.query_one("#container_proprietario")
@@ -634,10 +640,14 @@ class TelaCadastroImovel(Screen):
         for child in list(container_corretor.children)[2:]:
             child.remove()
 
+        self.selecionados = selecionados
+
         for selecionado in self.selecionados:
-            container = ContainerFuncionario()
+            container = ContainerFuncionario(
+                cpf_cnpj=selecionado.get_cpf_cnpj())
 
             if isinstance(selecionado, Proprietario.Proprietario):
+
                 container_proprietario.mount(
                     container, after=container_proprietario.query_one(Button))
                 container.query_one("#st_nome", Static).update(
@@ -685,13 +695,15 @@ class TelaCadastroImovel(Screen):
 
             if Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
                 self.selecionados.append(Init.usuario_atual)
-                container = ContainerFuncionario()
+                container = ContainerFuncionario(
+                    cpf_cnpj=Init.usuario_atual.get_cpf_cnpj())
                 container_captador.mount(
                     container, after=container_captador.query_one(Button))
 
             elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
                 self.selecionados.append(Init.usuario_atual)
-                container = ContainerFuncionario()
+                container = ContainerFuncionario(
+                    cpf_cnpj=Init.usuario_atual.get_cpf_cnpj())
                 container_corretor.mount(
                     container, after=container_corretor.query_one(Button))
 
@@ -733,7 +745,8 @@ class TelaCadastroImovel(Screen):
             if self.imovel.get_proprietarios():
                 for proprietario in self.imovel.proprietarios():
                     self.selecionados.append(proprietario)
-                    container = ContainerFuncionario()
+                    container = ContainerFuncionario(
+                        cpf_cnpj=self.imovel.get_proprietarios().get_cpf_cnpj())
                     container_proprietario.mount(
                         container, after=container_proprietario.query_one(Button))
                     container.query_one("#st_nome", Static).update(
@@ -753,7 +766,8 @@ class TelaCadastroImovel(Screen):
 
             if self.imovel.get_corretor():
                 self.selecionados.append(self.imovel.get_corretor())
-                container = ContainerFuncionario()
+                container = ContainerFuncionario(
+                    cpf_cnpj=self.imovel.get_corretor().get_cpf_cnpj())
                 container_corretor.mount(
                     container, after=container_corretor.query_one(Button))
                 container.query_one("#st_nome", Static).update(
@@ -773,7 +787,8 @@ class TelaCadastroImovel(Screen):
 
             if self.imovel.get_captador():
                 self.selecionados.append(self.imovel.get_captador())
-                container = ContainerFuncionario()
+                container = ContainerFuncionario(
+                    cpf_cnpj=self.imovel.get_captador().get_cpf_cnpj())
                 container_captador.mount(
                     container, after=container_captador.query_one(Button))
                 container.query_one("#st_nome", Static).update(
@@ -818,11 +833,9 @@ class TelaCadastroImovel(Screen):
                 if self.imovel.get_endereco().get_cep() and self.imovel.get_endereco().get_numero():
                     self.query_one(MapWidget).set_address(
                         f"{self.imovel.get_endereco().get_cep()}, {self.imovel.get_endereco().get_numero()}, Brasil")
-                    self.query_one(MapWidget).refresh()
                 elif self.imovel.get_endereco().get_cep():
                     self.query_one(MapWidget).set_address(
                         f"{self.imovel.get_endereco().get_cep()}, Brasil")
-                    self.query_one(MapWidget).refresh()
             except:
                 pass
             if self.imovel.get_endereco().get_numero() is not None:
@@ -890,9 +903,6 @@ class TelaCadastroImovel(Screen):
                 self.query_one(
                     "#ta_descricao_anuncio", TextArea).text = self.imovel.get_anuncio().get_descricao()
 
-            print(self.imovel.get_anuncio())
-            # print(self.imovel.get_anuncio().get_imagens())
-
             if self.imovel.get_anuncio() and self.imovel.get_anuncio().get_imagens():
                 container_imagens = self.query_one("#container_imagens", Grid)
                 for imagem in self.imovel.get_anuncio().get_imagens():
@@ -952,11 +962,14 @@ class TelaCadastroImovel(Screen):
         if "bt_editar_pessoa" in evento.button.classes:
             match evento.button.id:
                 case "br_editar_proprietario":
-                    self.app.push_screen(Busca(tipo=Busca.Tipo.PROPRIETARIO))
+                    self.app.push_screen(Busca(
+                        tipo=Busca.Tipo.PROPRIETARIO, selecionados=self.selecionados), callback=self.atualizar_selecionados)
                 case "br_editar_corretor":
-                    self.app.push_screen(Busca(tipo=Busca.Tipo.CORRETOR))
+                    self.app.push_screen(Busca(
+                        tipo=Busca.Tipo.CORRETOR, selecionados=self.selecionados), callback=self.atualizar_selecionados)
                 case "br_editar_captador":
-                    self.app.push_screen(Busca(tipo=Busca.Tipo.CAPTADOR))
+                    self.app.push_screen(Busca(
+                        tipo=Busca.Tipo.CAPTADOR, selecionados=self.selecionados), callback=self.atualizar_selecionados)
         match evento.button.id:
 
             case "bt_apagar_cadastro":
@@ -1176,16 +1189,18 @@ class TelaCadastroImovel(Screen):
                 anexos = []
 
                 try:
-                    for widget_imagem in self.query_one("#container_imagens").query(ContainerImagem):
-                        imagens.append(Midia.get_bytes(
-                            widget_imagem.query_one(Image).image))
+                    if any(isinstance(child, ContainerImagem) for child in self.query_one("#container_imagens").children):
+                        for widget_imagem in self.query_one("#container_imagens").query(ContainerImagem):
+                            imagens.append(Midia.get_bytes(
+                                widget_imagem.query_one(Image).image))
                 except:
                     pass
 
                 try:
-                    for widget_anexo in self.query_one("#container_anexos").query(ContainerImagem):
-                        anexos.append(Midia.get_bytes(
-                            widget_anexo.query_one(PDFViewer).path))
+                    if any(isinstance(child, ContainerImagem) for child in self.query_one("#container_anexos").children):
+                        for widget_anexo in self.query_one("#container_anexos").query(ContainerImagem):
+                            anexos.append(Midia.get_bytes(
+                                widget_anexo.query_one(PDFViewer).path))
                 except:
                     pass
 
@@ -1200,16 +1215,18 @@ class TelaCadastroImovel(Screen):
                 try:
                     for check in self.query_one("#container_info_imovel").query(Checkbox):
                         if check.value:
-                            filtros_imovel.append(check.label)
+                            filtros_imovel.append(check.label.markup)
                 except:
                     pass
 
                 try:
                     for check in self.query_one("#container_info_condominio").query(Checkbox):
                         if check.value:
-                            filtros_condominio.append(check.label)
+                            filtros_condominio.append(check.label.markup)
                 except:
                     pass
+                
+                print(filtros_imovel)
 
                 if self.imovel:
                     imovel = self.imovel
@@ -1227,11 +1244,43 @@ class TelaCadastroImovel(Screen):
                 imovel.set_ano_construcao(ano_construcao)
                 imovel.set_area_privativa(area_privativa)
 
-                # TODO: arrumar
-                if Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
-                    imovel.set_captador(Init.usuario_atual)
-                elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
-                    imovel.set_corretor(Init.usuario_atual)
+                container_captador = self.query_one("#container_captador")
+                container_corretor = self.query_one("#container_corretor")
+                container_proprietario = self.query_one(
+                    "#container_proprietario")
+
+                try:
+                    if any(isinstance(child, ContainerFuncionario) for child in container_captador.children):
+                        captador = Init.imobiliaria.get_usuario_por_cpf_cnpj(
+                            self.query_one(ContainerFuncionario).get_cpf_cnpj())
+                        if captador:
+                            imovel.set_captador(captador)
+                except Exception as e:
+                    print(
+                        "TelaCadastroImovel on_button_pressed: Aviso! Nao foi possivel salvar captador no imovel", e)
+
+                try:
+                    if any(isinstance(child, ContainerFuncionario) for child in container_corretor.children):
+                        corretor = Init.imobiliaria.get_usuario_por_cpf_cnpj(
+                            self.query_one(ContainerFuncionario).get_cpf_cnpj())
+                        if corretor:
+                            imovel.set_corretor(corretor)
+                except Exception as e:
+                    print(
+                        "TelaCadastroImovel on_button_pressed: Aviso! Nao foi possivel salvar corretor no imovel", e)
+
+                try:
+                    if any(isinstance(child, ContainerFuncionario) for child in container_proprietario.children):
+                        lista = []
+                        for container_funcionario in container_proprietario.query(ContainerFuncionario):
+                            proprietario = Init.imobiliaria.get_proprietario_por_cpf_cnpj(
+                                container_funcionario.get_cpf_cnpj())
+                            if proprietario:
+                                lista.append(proprietario)
+                        imovel.set_proprietarios(lista)
+                except Exception as e:
+                    print(
+                        "TelaCadastroImovel on_button_pressed: Aviso! Nao foi possivel salvar proprietario no imovel", e)
 
                 imovel.set_area_total(area_total)
                 imovel.set_bloco(bloco)
