@@ -6,13 +6,13 @@ from utils.Widgets import Header
 from model import Usuario, Init, Atendimento
 
 
-class ContainerCliente(Horizontal):
+class ContainerCliente(Vertical):
     def compose(self):
-        Static("Nome do cliente", id="st_nome")
-        Static("Telefone do cliente", id="st_telefone")
-        Static("Email do cliente", id="st_email")
-        Static("Interessado em:", id="st_interesse")
-        Static("Apartamento, 2 quartos, 3 banheiros", id="st_imovel_interesse")
+        yield Static("Nome do cliente", id="st_nome")
+        yield Static("Telefone do cliente", id="st_telefone")
+        yield Static("Email do cliente", id="st_email")
+        yield Static("Interessado em:", id="st_interesse")
+        yield Static("Apartamento, 2 quartos, 3 banheiros", id="st_imovel_interesse")
 
 
 class TelaAtendimento(Screen):
@@ -36,7 +36,7 @@ class TelaAtendimento(Screen):
         else:
             yield Tabs(Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
 
-        with Horizontal():
+        with Horizontal(id="container_horizontal"):
             with Vertical():
                 yield Static("Recém Cadastrados")
                 yield Vertical(id="container_cadastrados")
@@ -70,7 +70,7 @@ class TelaAtendimento(Screen):
 
         if atendimentos_em_andamento != self.em_atendimento:
             self.em_atendimento = atendimentos_em_andamento
-            self.ataulizar_andamentos()
+            self.atualizar_andamentos()
 
         if atendimentos_pendentes != self.pendentes:
             self.pendentes = atendimentos_pendentes
@@ -79,8 +79,9 @@ class TelaAtendimento(Screen):
         if compradores[-1:-6] != self.recem_cadastrados:
             self.recem_cadastrados = compradores[-1:-6]
             self.atualizar_recem_cadastrados()
+                    
 
-    def ataulizar_andamentos(self):
+    def atualizar_andamentos(self):
         self.query_one("#container_andamento").remove_children
         for atendimento in self.atendimentos:
             if atendimento.get_status() == Atendimento.Status.EM_ANDAMENTO:
@@ -89,13 +90,12 @@ class TelaAtendimento(Screen):
                 container.query_one(
                     "#st_nome").content = atendimento.get_cliente().get_nome()
                 container.query_one(
-                    "#st_telefone").content = atendimento.get_cliente().get_telefone()
+                    "#st_telefone").content = str(atendimento.get_cliente().get_telefones())
                 container.query_one(
                     "#st_email").content = atendimento.get_cliente().get_email()
 
     def atualizar_pendentes(self):
         self.query_one("#container_esperando").remove_children
-
         for atendimento in self.atendimentos:
             if atendimento.get_status() == Atendimento.Status.PENDENTE:
                 container = ContainerCliente()
@@ -103,20 +103,20 @@ class TelaAtendimento(Screen):
                 container.query_one(
                     "#st_nome").content = atendimento.get_cliente().get_nome()
                 container.query_one(
-                    "#st_telefone").content = atendimento.get_cliente().get_telefone()
+                    "#st_telefone").content = str(atendimento.get_cliente().get_telefones())
                 container.query_one(
                     "#st_email").content = atendimento.get_cliente().get_email()
 
     def atualizar_recem_cadastrados(self):
         self.query_one("#container_cadastrados").remove_children()
-        if self.compradores:
+        if self.recem_cadastrados:
             for cliente in self.recem_cadastrados:
                 container = ContainerCliente()
 
                 self.query_one("#container_cadastrados").mount(container)
                 container.query_one("#st_nome").content = cliente.get_nome()
                 container.query_one(
-                    "#st_telefone").content = cliente.get_telefone()
+                    "#st_telefone").content = str(cliente.get_telefones())
                 container.query_one("#st_email").content = cliente.get_email()
                 # container.query_one("#st_interesse").content =
                 # container.query_one("#st_imovel_interesse").content =
@@ -126,21 +126,8 @@ class TelaAtendimento(Screen):
             usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.CLIENTE)
         if compradores:
             self.recem_cadastrados = compradores[-1:-6]
-        self.em_atendimento = []
-        self.pendentes = []
-
-        for atendimento in self.atendimentos:
-            if atendimento.get_status() == Atendimento.Status.EM_ANDAMENTO:
-                self.em_atendimento.append(atendimento)
-
-        for atendimento in self.atendimentos:
-            if atendimento.get_status() == Atendimento.Status.PENDENTE:
-                self.pendentes.append(atendimento)
-
-        self.ataulizar_andamentos()
-        self.atualizar_pendentes()
-        if self.recem_cadastrados:
-            self.atualizar_recem_cadastrados()
+        
+        self.atualizar_recem_cadastrados()
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:

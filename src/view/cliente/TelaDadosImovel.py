@@ -91,6 +91,6 @@ class TelaDadosImovel(Screen):
             atendimento.set_imovel(self.imovel)
             atendimento.set_status(Atendimento.Status.PENDENTE)
             mensagem = Controller.cadastrar_atendimento(atendimento)
-            self.norify(mensagem)
+            self.notify(mensagem)
 
    

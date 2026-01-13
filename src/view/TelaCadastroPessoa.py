@@ -117,43 +117,42 @@ class TelaCadastroPessoa(Screen):
                 yield TextArea(placeholder="username aqui", id="inpt_username")
                 yield Static("Senha", id="stt_senha")
                 yield MyInput(placeholder="senha aqui", id="inpt_senha")
-            else:
-                yield Static("[red]*[/]Nome", id="stt_nome")
-                yield TextArea(placeholder="nome aqui", id="inpt_nome")
-                yield Static("[red]*[/]Email", id="stt_email")
-                yield TextArea(placeholder="email aqui", id="inpt_email")
-                yield Static("Telefone", id="stt_telefone")
-                with HorizontalGroup(id="container_telefones"):
-                    yield MaskedInput(template="(00) 00000-0000", classes="inpt_telefone")
-                    yield Button("+", id="bt_mais_numero")
-                    yield Button("X", id="bt_remover_numero")
-                yield Static("CEP", id="stt_cep")
-                yield MaskedInput(template="00000-000", id="ta_cep", validators=Length(minimum=9, maximum=9), valid_empty=False)
-                yield Static("Rua", id="stt_rua")
-                yield TextArea(disabled=True, id="ta_rua")
-                yield Static("Número do endereço", id="stt_numero")
-                yield Input(id="ta_numero", type="integer", valid_empty=True)
-                yield Static("Complemento do endereço", id="stt_complemento")
-                yield TextArea(id="ta_complemento")
-                yield Static("Bloco do endereço", id="stt_bloco")
-                yield TextArea(id="ta_bloco")
-                yield Static("Bairro", id="stt_bairro")
-                yield TextArea(disabled=True, id="ta_bairro")
-                yield Static("Cidade", id="stt_cidade")
-                yield TextArea(disabled=True, id="ta_cidade")
-                yield Static("Estado", id="stt_estado")
-                yield MaskedInput(disabled=True, template="XX", id="ta_estado", validators=Length(minimum=2, maximum=2))
-                yield Static("Data de nascimento", id="stt_data_nascimento")
-                yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento", validators=Length(minimum=10, maximum=10), valid_empty=True)
-                yield Static("[red]*[/]CPF", id="stt_cpf")
-                yield MaskedInput(template="000.000.000-00", id="inpt_cpf", validators=Length(minimum=11, maximum=14), valid_empty=True)
-                yield Static("RG", id="stt_rg")
-                yield Input(id="inpt_rg", placeholder="RG aqui", validators=Length(minimum=7, maximum=9), valid_empty=True)
-                yield Static("Salário", id="stt_salario")
-                yield Input(id="inpt_salario", type="number")
-                yield Static("Creci", id="stt_creci")
-                yield MaskedInput(
-                    id="inpt_creci", template="000000", validators=Length(minimum=6, maximum=6), valid_empty=True)
+            yield Static("[red]*[/]Nome", id="stt_nome")
+            yield TextArea(placeholder="nome aqui", id="inpt_nome")
+            yield Static("[red]*[/]Email", id="stt_email")
+            yield TextArea(placeholder="email aqui", id="inpt_email")
+            yield Static("Telefone", id="stt_telefone")
+            with HorizontalGroup(id="container_telefones"):
+                yield MaskedInput(template="(00) 00000-0000", classes="inpt_telefone")
+                yield Button("+", id="bt_mais_numero")
+                yield Button("X", id="bt_remover_numero")
+            yield Static("CEP", id="stt_cep")
+            yield MaskedInput(template="00000-000", id="ta_cep", validators=Length(minimum=9, maximum=9), valid_empty=False)
+            yield Static("Rua", id="stt_rua")
+            yield TextArea(disabled=True, id="ta_rua")
+            yield Static("Número do endereço", id="stt_numero")
+            yield Input(id="ta_numero", type="integer", valid_empty=True)
+            yield Static("Complemento do endereço", id="stt_complemento")
+            yield TextArea(id="ta_complemento")
+            yield Static("Bloco do endereço", id="stt_bloco")
+            yield TextArea(id="ta_bloco")
+            yield Static("Bairro", id="stt_bairro")
+            yield TextArea(disabled=True, id="ta_bairro")
+            yield Static("Cidade", id="stt_cidade")
+            yield TextArea(disabled=True, id="ta_cidade")
+            yield Static("Estado", id="stt_estado")
+            yield MaskedInput(disabled=True, template="XX", id="ta_estado", validators=Length(minimum=2, maximum=2))
+            yield Static("Data de nascimento", id="stt_data_nascimento")
+            yield MaskedInput(template="00/00/0000", id="inpt_data_nascimento", validators=Length(minimum=10, maximum=10), valid_empty=True)
+            yield Static("[red]*[/]CPF", id="stt_cpf")
+            yield MaskedInput(template="000.000.000-00", id="inpt_cpf", validators=Length(minimum=11, maximum=14), valid_empty=True)
+            yield Static("RG", id="stt_rg")
+            yield Input(id="inpt_rg", placeholder="RG aqui", validators=Length(minimum=7, maximum=9), valid_empty=True)
+            yield Static("Salário", id="stt_salario")
+            yield Input(id="inpt_salario", type="number")
+            yield Static("Creci", id="stt_creci")
+            yield MaskedInput(
+                id="inpt_creci", template="000000", validators=Length(minimum=6, maximum=6), valid_empty=True)
         if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
             yield Select([("Cliente", "Cliente"), (
                 "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Gerente", "Gerente")], allow_blank=False, id="select_tabelas")
@@ -165,10 +164,11 @@ class TelaCadastroPessoa(Screen):
                 "Proprietario", "Proprietario")], allow_blank=False, id="select_tabelas")
 
         with Vertical(id="imoveis"):
-            pass
+            yield Static("Imóveis:")
 
             # yield Button("Executar")
         yield Footer(show_command_palette=False)
+        
 
     def on_tabs_tab_activated(self, event: Tabs.TabActivated):
         try:
@@ -250,7 +250,9 @@ class TelaCadastroPessoa(Screen):
                 self.query_one("#inpt_rg", Input).value = str(
                     self.pessoa.get_rg())
             try:
-                if self.pessoa.get_tipo():
+                if isinstance(self.pessoa, Proprietario.Proprietario):
+                    self.query_one("#select_tabelas", Select).value = "Proprietario"
+                elif self.pessoa.get_tipo():
                     self.query_one("#select_tabelas", Select).value = self.pessoa.get_tipo(
                     ).value.lower().capitalize()
             except Exception as e:
@@ -265,8 +267,6 @@ class TelaCadastroPessoa(Screen):
                         container = Horizontal(
                             classes="imovel", name=imovel.get_id())
                         self.query_one("#imoveis").mount(container)
-
-                        container.mount(Checkbox())
                         if imovel.get_anuncio() and imovel.get_anuncio().get_imagens():
                             container.mount(
                                 Image(imovel.get_anuncio().get_imagens()[0]))
@@ -584,20 +584,5 @@ class TelaCadastroPessoa(Screen):
                                 TelaCadastroImovel.TelaCadastroImovel(imovel=imovel))
                         else:
                             self.screen.notify("ERRO. Imóvel não encontrado.")
-                    elif widget.name:
-                        pessoa = None
-                        if self.tabela == "Proprietario":
-                            pessoa = banco.get_proprietario_por_cpf_cnpj(
-                                widget.name)
-                        else:
-                            pessoa = banco.get_usuario_por_cpf_cnpj(
-                                widget.name)
-
-                        if pessoa:
-                            self.app.switch_screen(
-                                TelaCadastroPessoa.TelaCadastroPessoa(pessoa=pessoa))
-                        else:
-                            self.screen.notify("ERRO. Pessoa não encontrada.")
-
         except Exception:
             pass

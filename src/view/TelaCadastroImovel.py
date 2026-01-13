@@ -743,10 +743,10 @@ class TelaCadastroImovel(Screen):
                 "#container_proprietario")
 
             if self.imovel.get_proprietarios():
-                for proprietario in self.imovel.proprietarios():
+                for proprietario in self.imovel.get_proprietarios():
                     self.selecionados.append(proprietario)
                     container = ContainerFuncionario(
-                        cpf_cnpj=self.imovel.get_proprietarios().get_cpf_cnpj())
+                        cpf_cnpj=proprietario.get_cpf_cnpj())
                     container_proprietario.mount(
                         container, after=container_proprietario.query_one(Button))
                     container.query_one("#st_nome", Static).update(

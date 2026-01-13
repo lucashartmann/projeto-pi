@@ -843,7 +843,7 @@ class Banco:
                 cursor = conexao.cursor()
                 sql_query = f''' 
                     INSERT INTO atendimento (id_imovel, cpf_cnpj_corretor, cpf_cnpj_comprador, status) 
-                    VALUES(?, ?, ?, ?, ?, ?, ?)
+                    VALUES(?, ?, ?, ?)
                     '''
                 corretor = atendimento.get_corretor()
                 if corretor:
@@ -877,26 +877,31 @@ class Banco:
                 cursor.execute(f'''
                         SELECT * FROM atendimento 
                     ''')
+                
                 registros = cursor.fetchall()
                 if not registros:
                     raise Exception("Não há atendimentos cadastrados")
                 lista = []
                 for registro in registros:
                     id_atendimento = int(registro[0])
-                    corretor = registro[1]
-                    comprador = registro[2]
+                    imovel = registro[1]
+                    corretor = registro[2]
+                    comprador = registro[3]
+                    status = registro[4]
+                    if imovel:
+                        imovel = self.get_imovel_por_id(int(imovel))
                     if corretor:
-                        corretor = self.get_corretor_por_cpf_cnpj(registro[1])
+                        corretor = self.get_usuario_por_cpf_cnpj(corretor)
                     if comprador:
-                        comprador = self.get_cliente_por_cpf_cnpj(registro[2])
-                    status = registro[3]
+                        comprador = self.get_usuario_por_cpf_cnpj(comprador)
                     if status:
-                        status = Atendimento.Status(registro[3])
+                        status = Atendimento.Status(status)
                     atendimento = Atendimento.Atendimento()
                     atendimento.set_status(status)
                     atendimento.set_id(id_atendimento)
                     atendimento.set_corretor(corretor)
                     atendimento.set_cliente(comprador)
+                    atendimento.set_imovel(imovel)
                     lista.append(atendimento)
                 return lista
         except Exception as e:
@@ -1503,45 +1508,38 @@ class Banco:
                 imovel.set_data_modificacao(data_modificacao)
                 imovel.set_anuncio(anuncio)
                 imovel.set_condominio(condominio)
-
                 cursor.execute(f'''
-                            SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
-                            WHERE id_imovel = ?
-                        ''', (id_imovel,))
+                        SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
+                        WHERE id_imovel = ?
+                    ''', (id_imovel,))
                 cpf_cnpj_proprietarios = cursor.fetchall()
-
                 proprietarios = []
-
                 if cpf_cnpj_proprietarios:
-                    for cpf_cnpj in registros_imovel_filtros:
+                    for cpf_cnpj in cpf_cnpj_proprietarios:
                         cpf_cnpj = cpf_cnpj[0]
                         proprietario = self.get_proprietario_por_cpf_cnpj(
                             cpf_cnpj)
                         if proprietario:
                             proprietarios.append(proprietario)
-
                 imovel.set_proprietarios(proprietarios)
-
                 cursor.execute(f'''
-                    SELECT * FROM imovel_filtros 
-                    WHERE id_imovel = ?
-                ''', (id_imovel,))
-                registros_imovel_filtros = cursor.fetchall()
+                        SELECT id_filtros_imovel FROM imovel_filtros 
+                        WHERE id_imovel = ?
+                    ''', (id_imovel,))
+                lista_ids = cursor.fetchall()
                 filtros = []
-
-                if registros_imovel_filtros:
-                    for registro in registros_imovel_filtros:
-                        id_filtros_imovel = int(registro[0])
-                        id_imovel = int(registro[1])
+                if lista_ids:
+                    for id in lista_ids:
+                        id = int(id[0])
                         cursor.execute(f'''
-                                SELECT nome FROM filtros_imovel 
-                                WHERE id_filtros_imovel = ?
-                            ''', (id_filtros_imovel,))
-                        nome_filtro = cursor.fetchone()
+                            SELECT nome FROM filtros_imovel 
+                            WHERE id_filtros_imovel = ?
+                        ''', (id,))
+                        nome_filtro = cursor.fetchone()[0]
                         if nome_filtro:
                             filtros.append(nome_filtro)
-
                 imovel.set_filtros(filtros)
+
                 return imovel
         except Exception as e:
             erro = f"ERRO! Banco.get_imovel_por_id: {e}"
@@ -1798,45 +1796,36 @@ class Banco:
                     imovel.set_data_modificacao(data_modificacao)
                     imovel.set_anuncio(anuncio)
                     imovel.set_condominio(condominio)
-
                     cursor.execute(f'''
                             SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                             WHERE id_imovel = ?
                         ''', (id_imovel,))
                     cpf_cnpj_proprietarios = cursor.fetchall()
-
                     proprietarios = []
-
                     if cpf_cnpj_proprietarios:
-                        for cpf_cnpj in registros_imovel_filtros:
+                        for cpf_cnpj in cpf_cnpj_proprietarios:
                             cpf_cnpj = cpf_cnpj[0]
                             proprietario = self.get_proprietario_por_cpf_cnpj(
                                 cpf_cnpj)
                             if proprietario:
                                 proprietarios.append(proprietario)
-
                     imovel.set_proprietarios(proprietarios)
-
                     cursor.execute(f'''
-                        SELECT * FROM imovel_filtros 
-                        WHERE id_imovel = ?
-                    ''', (id_imovel,))
-                    registros_imovel_filtros = cursor.fetchall()
-
+                            SELECT id_filtros_imovel FROM imovel_filtros 
+                            WHERE id_imovel = ?
+                        ''', (id_imovel,))
+                    lista_ids = cursor.fetchall()
                     filtros = []
-
-                    if registros_imovel_filtros:
-                        for registro in registros_imovel_filtros:
-                            id_filtros_imovel = int(registro[0])
-                            id_imovel = int(registro[1])
+                    if lista_ids:
+                        for id in lista_ids:
+                            id = int(id[0])
                             cursor.execute(f'''
                                 SELECT nome FROM filtros_imovel 
                                 WHERE id_filtros_imovel = ?
-                            ''', (id_filtros_imovel,))
-                            nome_filtro = cursor.fetchone()
+                            ''', (id,))
+                            nome_filtro = cursor.fetchone()[0]
                             if nome_filtro:
                                 filtros.append(nome_filtro)
-
                     imovel.set_filtros(filtros)
                     lista.append(imovel)
 
@@ -1978,45 +1967,36 @@ class Banco:
                     imovel.set_data_modificacao(data_modificacao)
                     imovel.set_anuncio(anuncio)
                     imovel.set_condominio(condominio)
-
                     cursor.execute(f'''
                             SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                             WHERE id_imovel = ?
                         ''', (id_imovel,))
                     cpf_cnpj_proprietarios = cursor.fetchall()
-
                     proprietarios = []
-
                     if cpf_cnpj_proprietarios:
-                        for cpf_cnpj in registros_imovel_filtros:
+                        for cpf_cnpj in cpf_cnpj_proprietarios:
                             cpf_cnpj = cpf_cnpj[0]
                             proprietario = self.get_proprietario_por_cpf_cnpj(
                                 cpf_cnpj)
                             if proprietario:
                                 proprietarios.append(proprietario)
-
                     imovel.set_proprietarios(proprietarios)
-
                     cursor.execute(f'''
-                            SELECT * FROM imovel_filtros 
+                            SELECT id_filtros_imovel FROM imovel_filtros 
                             WHERE id_imovel = ?
                         ''', (id_imovel,))
-                    registros_imovel_filtros = cursor.fetchall()
-
+                    lista_ids = cursor.fetchall()
                     filtros = []
-
-                    if registros_imovel_filtros:
-                        for registro in registros_imovel_filtros:
-                            id_filtros_imovel = int(registro[0])
-                            id_imovel = int(registro[1])
+                    if lista_ids:
+                        for id in lista_ids:
+                            id = int(id[0])
                             cursor.execute(f'''
                                 SELECT nome FROM filtros_imovel 
                                 WHERE id_filtros_imovel = ?
-                            ''', (id_filtros_imovel,))
-                            nome_filtro = cursor.fetchone()
+                            ''', (id,))
+                            nome_filtro = cursor.fetchone()[0]
                             if nome_filtro:
                                 filtros.append(nome_filtro)
-
                     imovel.set_filtros(filtros)
                     lista.append(imovel)
                 return lista
@@ -2124,12 +2104,12 @@ class Banco:
                                 self.remover_filtro_do_imovel(
                                     imovel.get_id(), id)
                 if imovel.get_filtros():
-                        for filtro in imovel.get_filtros():
-                            if filtro not in imovel_consulta.get_filtros():
-                                id = self.get_id_filtro_imovel_por_nome(filtro)
-                                if id is not None:
-                                    self.cadastrar_filtro_imovel(
-                                        id_imovel=imovel.get_id(), id_filtro=id)
+                    for filtro in imovel.get_filtros():
+                        if filtro not in imovel_consulta.get_filtros():
+                            id = self.get_id_filtro_imovel_por_nome(filtro)
+                            if id is not None:
+                                self.cadastrar_filtro_imovel(
+                                    id_imovel=imovel.get_id(), id_filtro=id)
 
                 query = '''
                         UPDATE Imovel SET
@@ -2754,14 +2734,14 @@ class Banco:
                     "data\\Imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(
-                    f"SELECT id_imovel FROM proprietario_imovel WHERE cpf_cnpj_proprietario = {cpf}")
+                    '''SELECT id_imovel FROM proprietario_imovel WHERE cpf_cnpj_proprietario = ?''', (cpf,))
                 dados = cursor.fetchall()
                 if not dados:
                     raise Exception(f"Não há imóveis disponiveis")
                 imoveis = []
                 for id in dados:
                     try:
-                        id = int(id)
+                        id = int(id[0])
                     except:
                         continue
                     imovel = self.get_imovel_por_id(id)

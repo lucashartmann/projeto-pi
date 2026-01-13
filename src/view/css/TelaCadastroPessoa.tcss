@@ -107,3 +107,62 @@ TelaCadastroPessoa Tab {
     color: black;    
 }
 
+TelaCadastroPessoa #imoveis {
+    width: 100%;
+    height: auto;  
+    border: 15% black;
+    margin: 2 5 0 5;
+}
+
+
+TelaCadastroPessoa Image {
+    width: 30;
+    height: 10;
+    margin-top: 1;
+}
+
+TelaCadastroPessoa .imovel {
+    background: rgb(200,200,200);
+    border: 15% black;
+    margin: 2 2 2 2;
+    height: 12;
+}
+
+App.dark TelaCadastroPessoa .imovel{
+    background: #1a1717ff;
+}
+
+TelaCadastroPessoa .dados0 {
+    height: 100%;
+    margin-left: 2;
+}
+
+TelaCadastroPessoa #container_data {
+    margin: 2;
+}
+
+TelaCadastroPessoa #container_data Static:first-child {
+    margin: 2 0 2 0;
+}
+
+TelaCadastroPessoa .dados1 {
+    height: 100%;
+    margin: 1;
+}
+
+TelaCadastroPessoa .dados2 {
+    height: 10;
+}
+
+TelaCadastroPessoa .stt_bairro {
+    text-style: bold;
+}
+
+TelaCadastroPessoa .stt_ref {
+    border: black;
+    width: auto;
+}
+
+App.dark TelaCadastroPessoa .stt_ref{
+    border: #ede6e6ff;
+}
