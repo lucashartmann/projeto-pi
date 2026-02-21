@@ -19,5 +19,6 @@ beautifulsoup4
 markdown
 Pygments
 geopy
-# textual-map
 # textual-pdf
+--extra-index-url https://test.pypi.org/simple/
+textual-map

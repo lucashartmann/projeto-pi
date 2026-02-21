@@ -17,7 +17,7 @@ from enum import Enum
 from textual.binding import Binding
 from textual import events
 from textual.geometry import Offset
-from utils.textual_map import MapWidget
+from textual_map import MapWidget
 
 
 class ImagemAmpliada(ModalScreen):
