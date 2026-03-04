@@ -7,12 +7,12 @@
   </a>
 </p>
 
-![Imagem](images/login.png)
-![Imagem](images/cadastro_imovel.png)
-![Imagem](images/cadastro_imovel2.png)
-![Imagem](images/galeria.png)
-![Imagem](images/cadastro_imovel3.png)
-![Imagem](images/cadastro_pessoa.png)
-![Imagem](images/estoque.png)
-![Imagem](images/anuncios.png)
-![Imagem](images/atendimento.png)
+![Imagem](Images/login.png)
+![Imagem](Images/cadastro_imovel.png)
+![Imagem](Images/cadastro_imovel2.png)
+![Imagem](Images/galeria.png)
+![Imagem](Images/cadastro_imovel3.png)
+![Imagem](Images/cadastro_pessoa.png)
+![Imagem](Images/estoque.png)
+![Imagem](Images/anuncios.png)
+![Imagem](Images/atendimento.png)
