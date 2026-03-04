@@ -82,7 +82,7 @@ class Init:
         consulta.get_id())
     anuncio = Anuncio.Anuncio()
     
-    with open(r"C:\Users\dudua\Music\Projetos\projeto-pi\src\assets\apartamento2\5661211031.jpg", "rb") as f:
+    with open(r"assets\apartamento2\5661211031.jpg", "rb") as f:
         blob = f.read()
     
     anuncio.set_imagens([blob, blob, blob, blob, blob])

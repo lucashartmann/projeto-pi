@@ -27,12 +27,12 @@ jobs:
       - name: Build executable with PyInstaller
         run: |
           pyinstaller --onedir `
-              --add-data "src/view/css;view/css" `
+              --add-data "src/backend/view/css;view/css" `
               --collect-submodules rich `
               --collect-submodules textual `
               --collect-all markdown `
               --name "Sun Sales" `
-              src/Main.py
+              src/backend/Main.py
 
       - name: Fazer upload do artefato
         uses: actions/upload-artifact@v4

@@ -1,11 +1,13 @@
-__pycache__
-.venv
+backend/teste.py
+backend/imobiliaria.db
+backend/data/
+backend/utils/textual_pdf
+backend/utils/textual_map
+backend/__pycache__
+backend/.venv
 .vscode
-teste.py
-imobiliaria.db
-data/
-utils/textual_pdf
-utils/textual_map
+backend/teste.py
+backend/loja.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
