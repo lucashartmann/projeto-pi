@@ -4,17 +4,18 @@ from textual.screen import Screen
 from textual.events import Click
 from textual import on
 from textual.suggester import SuggestFromList
-from utils.Widgets import Header
-from model import Init, Imovel, Usuario, Endereco, Captador, Corretor, Condominio
-from database.Banco import Banco
+from view import cadastro_pessoa
+from utils.widgets import Header
+from model import Init, imovel, usuario, endereco, captador, corretor, condominio
+from database.banco import Banco
 from textual_image.widget import Image
-from view import TelaCadastroImovel, TelaCadastroPessoa
-from utils.Widgets import Header
+from view import cadastro_imovel
+from utils.widgets import Header
 
 
 class TelaEstoque(Screen):
 
-    CSS_PATH = "css/TelaEstoque.tcss"
+    CSS_PATH = "css/estoque.tcss"
     TITLE = "Estoque"
     ruas = []
     cidades = []
@@ -33,11 +34,11 @@ class TelaEstoque(Screen):
 
     def compose(self):
         yield Header()
-        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
-            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
+        if Init.usuario_atual.get_tipo() == usuario.Tipo.ADMINISTRADOR:
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),  Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.CORRETOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
@@ -47,14 +48,14 @@ class TelaEstoque(Screen):
             yield Input(placeholder="pesquise aqui")
             yield TextArea(read_only=True, id="tx_dados")
             with Horizontal(id="primeiro"):
-                if Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
+                if Init.usuario_atual.get_tipo() == usuario.Tipo.GERENTE:
                     yield Select([("Imoveis", "Imovel"), ("Clientes", "Cliente"), ("Proprietários", "Proprietario"), ("Corretores", "Corretor"), ("Captadores", "Captador")], allow_blank=False, id="select_tabelas", prompt="Selecionar")
                 else:
                     yield Select([("Imoveis", "Imovel"), ("Clientes", "Cliente"), ("Proprietários", "Proprietario")], allow_blank=False, id="select_tabelas", prompt="Selecionar")
                 yield Static("Categoria:")
-                yield Select([(valor.value, valor) for valor in Imovel.Categoria], prompt="Selecionar")
+                yield Select([(valor.value, valor) for valor in imovel.Categoria], prompt="Selecionar")
                 yield Static("Status:")
-                yield Select([(valor.value, valor) for valor in Imovel.Status], prompt="Selecionar")
+                yield Select([(valor.value, valor) for valor in imovel.Status], prompt="Selecionar")
             with Horizontal(id="segundo"):
                 yield Static("CEP")
                 yield Input(suggester=SuggestFromList(self.ceps, case_sensitive=False))
@@ -121,7 +122,7 @@ class TelaEstoque(Screen):
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(
-                        usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.CLIENTE)
+                        usr for usr in self.usuarios if self.usuarios and usr and usr.get_tipo() == usuario.Tipo.CLIENTE)
                 case "Proprietario":
                     self.objeto = Init.proprietario
                     self.query_one("#segundo").styles.display = "none"
@@ -133,15 +134,15 @@ class TelaEstoque(Screen):
                     self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    self.lista = list(usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo(
-                    ) == Usuario.Tipo.CORRETOR)
+                    self.lista = list(usr for usr in self.usuarios if self.usuarios and usr and usr.get_tipo(
+                    ) == usuario.Tipo.CORRETOR)
                 case "Captador":
                     self.objeto = Init.captador
                     self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    self.lista = list(usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo(
-                    ) == Usuario.Tipo.CAPTADOR)
+                    self.lista = list(usr for usr in self.usuarios if self.usuarios and usr and usr.get_tipo(
+                    ) == usuario.Tipo.CAPTADOR)
                 case "Venda":
                     self.objeto = None
                     self.query_one("#segundo").styles.display = "none"
@@ -153,14 +154,14 @@ class TelaEstoque(Screen):
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
                     self.lista = list(
-                        usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.GERENTE)
+                        usr for usr in self.usuarios if self.usuarios and usr and usr.get_tipo() == usuario.Tipo.GERENTE)
                 case "Admnistrador":
                     self.objeto = Init.administrador
                     self.query_one("#segundo").styles.display = "none"
                     select.set_options(
                         [("Data Cadastro", "Data Cadastro"), ("Data Atualização", "Data Atualização")])
-                    self.lista = list(usuario for usuario in self.usuarios if self.usuarios and usuario and usuario.get_tipo(
-                    ) == Usuario.Tipo.ADMINISTRADOR)
+                    self.lista = list(usr for usr in self.usuarios if self.usuarios and usr and usr.get_tipo(
+                    ) == usuario.Tipo.ADMINISTRADOR)
 
             self.lista_filtrada = []
             self.atualizar()
@@ -183,9 +184,6 @@ class TelaEstoque(Screen):
 
             elif event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
                 self.app.switch_screen("tela_dados_imobiliaria")
-
-            elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                self.app.switch_screen("tela_servidor")
 
             elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
                 self.app.switch_screen("tela_estoque_cliente")
@@ -233,7 +231,7 @@ class TelaEstoque(Screen):
             case  "Cliente":
                 usuarios = Init.imobiliaria.get_lista_usuarios()
                 clientes = list(
-                    usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.CLIENTE)
+                    usr for usr in usuarios if usuarios and usr and usr.get_tipo() == usuario.Tipo.CLIENTE)
                 if clientes != self.lista:
                     self.lista = clientes
                     self.usuarios = usuarios
@@ -248,8 +246,8 @@ class TelaEstoque(Screen):
 
             case "Corretor":
                 usuarios = Init.imobiliaria.get_lista_usuarios()
-                corretores = list(usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo(
-                ) == Usuario.Tipo.CORRETOR)
+                corretores = list(usr for usr in usuarios if usuarios and usr and usr.get_tipo(
+                ) == usuario.Tipo.CORRETOR)
                 if corretores != self.lista:
                     self.lista = corretores
                     self.usuarios = usuarios
@@ -257,8 +255,8 @@ class TelaEstoque(Screen):
 
             case "Captador":
                 usuarios = Init.imobiliaria.get_lista_usuarios()
-                captadores = list(usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo(
-                ) == Usuario.Tipo.CAPTADOR)
+                captadores = list(usr for usr in usuarios if usuarios and usr and usr.get_tipo(
+                ) == usuario.Tipo.CAPTADOR)
                 if captadores != self.lista:
                     self.lista = captadores
                     self.usuarios = usuarios
@@ -273,7 +271,7 @@ class TelaEstoque(Screen):
             case "Gerente":
                 usuarios = Init.imobiliaria.get_lista_usuarios()
                 gerentes = list(
-                    usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo() == Usuario.Tipo.GERENTE)
+                    usr for usr in usuarios if usuarios and usr and usr.get_tipo() == usuario.Tipo.GERENTE)
                 if gerentes != self.lista:
                     self.lista = gerentes
                     self.usuarios = usuarios
@@ -281,8 +279,8 @@ class TelaEstoque(Screen):
 
             case "Admnistrador":
                 usuarios = Init.imobiliaria.get_lista_usuarios()
-                administradores = list(usuario for usuario in usuarios if usuarios and usuario and usuario.get_tipo(
-                ) == Usuario.Tipo.ADMINISTRADOR)
+                administradores = list(usr for usr in usuarios if usuarios and usr and usr.get_tipo(
+                ) == usuario.Tipo.ADMINISTRADOR)
                 if administradores != self.lista:
                     self.lista = administradores
                     self.usuarios = usuarios
@@ -306,7 +304,7 @@ class TelaEstoque(Screen):
                         imovel = banco.get_imovel_por_id(int(widget.name))
                         if imovel:
                             self.app.switch_screen(
-                                TelaCadastroImovel.TelaCadastroImovel(imovel=imovel))
+                                cadastro_imovel.TelaCadastroImovel(imovel=imovel))
                         else:
                             self.screen.notify("ERRO. Imóvel não encontrado.")
                     elif widget.name:
@@ -320,7 +318,7 @@ class TelaEstoque(Screen):
 
                         if pessoa:
                             self.app.switch_screen(
-                                TelaCadastroPessoa.TelaCadastroPessoa(pessoa=pessoa))
+                                cadastro_pessoa.TelaCadastroPessoa(pessoa=pessoa))
                         else:
                             self.screen.notify("ERRO. Pessoa não encontrada.")
 
@@ -476,50 +474,50 @@ class TelaEstoque(Screen):
                     self.filtro(palavras, index, palavra[:-1].lower())
                     self.atualizar()
                 elif "endereco" in self.objeto.__dict__.keys():
-                    endereco = Endereco.Endereco()
-                    if palavra[:-1].lower() in endereco.__dict__.keys():
+                    endereco_obj = endereco.Endereco()
+                    if palavra[:-1].lower() in endereco_obj.__dict__.keys():
                         index = palavras.index(palavra)
                         self.filtro(palavras, index,
                                     f"endereco().{palavra[:-1].lower()}")
                         self.atualizar()
                 elif "condominio" in self.objeto.__dict__.keys():
-                    condominio = Condominio.Condominio()
-                    if palavra[:-1].lower() in condominio.__dict__.keys():
+                    condominio_obj = condominio.Condominio()
+                    if palavra[:-1].lower() in condominio_obj.__dict__.keys():
                         index = palavras.index(palavra)
                         self.filtro(palavras, index,
                                     f"condominio().{palavra[:-1].lower()}")
                         self.atualizar()
                     elif "endereco" in self.objeto.__dict__.keys():
-                        endereco = Endereco.Endereco()
-                        if palavra[:-1].lower() in endereco.__dict__.keys():
+                        endereco_obj = endereco.Endereco()
+                        if palavra[:-1].lower() in endereco_obj.__dict__.keys():
                             index = palavras.index(palavra)
                             self.filtro(
                                 palavras, index, f"condominio().endereco().{palavra[:-1].lower()}")
                             self.atualizar()
                 elif "captador" in self.objeto.__dict__.keys():
-                    captador = Captador.Captador()
-                    if palavra[:-1].lower() in captador.__dict__.keys():
+                    captador_obj = captador.Captador()
+                    if palavra[:-1].lower() in captador_obj.__dict__.keys():
                         index = palavras.index(palavra)
                         self.filtro(palavras, index,
                                     f"captador().{palavra[:-1].lower()}")
                         self.atualizar()
                     elif "endereco" in self.objeto.__dict__.keys():
-                        endereco = Endereco.Endereco()
-                        if palavra[:-1].lower() in endereco.__dict__.keys():
+                        endereco_obj = endereco.Endereco()
+                        if palavra[:-1].lower() in endereco_obj.__dict__.keys():
                             index = palavras.index(palavra)
                             self.filtro(
                                 palavras, index, f"captador().endereco().{palavra[:-1].lower()}")
                             self.atualizar()
                 elif "corretor" in self.objeto.__dict__.keys():
-                    corretor = Corretor.Corretor()
-                    if palavra[:-1].lower() in corretor.__dict__.keys():
+                    corretor_obj = corretor.Corretor()
+                    if palavra[:-1].lower() in corretor_obj.__dict__.keys():
                         index = palavras.index(palavra)
                         self.filtro(palavras, index,
                                     f"corretor().{palavra[:-1].lower()}")
                         self.atualizar()
                     elif "endereco" in self.objeto.__dict__.keys():
-                        endereco = Endereco.Endereco()
-                        if palavra[:-1].lower() in endereco.__dict__.keys():
+                        endereco_obj = endereco.Endereco()
+                        if palavra[:-1].lower() in endereco_obj.__dict__.keys():
                             index = palavras.index(palavra)
                             self.filtro(
                                 palavras, index, f"corretor().endereco().{palavra[:-1].lower()}")

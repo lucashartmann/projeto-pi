@@ -1,29 +1,29 @@
 from textual.app import App
 from textual.binding import Binding
+from view.cliente import dados_cliente, dados_imovel
+from view import atendimento, cadastro_pessoa, estoque, login
 from model import Init
-from view import TelaCadastroPessoa, TelaLogin, TelaEstoque, TelaCadastroImovel, TelaAtendimento
-from view.cliente import TelaDadosCliente, TelaEstoqueCliente, TelaDadosImovel
-from view.admin import TelaServidor
-from view.corretor import TelaCadastroVendaAluguel
-from view.gerente import TelaDadosImobiliaria
+from view import cadastro_imovel
+from view.cliente import estoque_cliente
+from view.corretor import cadastro_venda_aluguel
+from view.gerente import dados_imobiliaria
 from textual import events
 
 
 class App(App):
-    CSS_PATH = "css/Base.tcss"
+    CSS_PATH = "css/base.tcss"
 
     SCREENS = {
-        "tela_cadastro_pessoa": TelaCadastroPessoa.TelaCadastroPessoa,
-        "tela_cadastro_imovel": TelaCadastroImovel.TelaCadastroImovel,
-        "tela_login": TelaLogin.TelaLogin,
-        "tela_estoque": TelaEstoque.TelaEstoque,
-        "tela_estoque_cliente": TelaEstoqueCliente.TelaEstoqueCliente,
-        "tela_dados_cliente": TelaDadosCliente.TelaDadosCliente,
-        "tela_dados_imobiliaria": TelaDadosImobiliaria.TelaDadosImobiliaria,
-        "tela_servidor": TelaServidor.TelaServidor,
-        "tela_dados_imovel": TelaDadosImovel.TelaDadosImovel,
-        "tela_cadastro_venda_aluguel": TelaCadastroVendaAluguel.TelaCadastroVendaAluguel,
-        "tela_atendimento": TelaAtendimento.TelaAtendimento,
+        "tela_cadastro_pessoa": cadastro_pessoa.TelaCadastroPessoa,
+        "tela_cadastro_imovel": cadastro_imovel.TelaCadastroImovel,
+        "tela_login": login.TelaLogin,
+        "tela_estoque": estoque.TelaEstoque,
+        "tela_estoque_cliente": estoque_cliente.TelaEstoqueCliente,
+        "tela_dados_cliente": dados_cliente.TelaDadosCliente,
+        "tela_dados_imobiliaria": dados_imobiliaria.TelaDadosImobiliaria,
+        "tela_dados_imovel": dados_imovel.TelaDadosImovel,
+        "tela_cadastro_venda_aluguel": cadastro_venda_aluguel.TelaCadastroVendaAluguel,
+        "tela_atendimento": atendimento.TelaAtendimento,
     }
 
     BINDINGS = {
@@ -51,9 +51,9 @@ class App(App):
 
     def on_mount(self):
         self.use_command_palette = False
-        Init.usuario_atual = Init.administrador
-        self.push_screen("tela_atendimento")
-        # self.push_screen("tela_login")
+        # Init.usuario_atual = Init.administrador
+        # self.push_screen("tela_atendimento")
+        self.push_screen("tela_login")
 
     def action_enviar_email(self):
         tela_login = self.get_screen("tela_login")

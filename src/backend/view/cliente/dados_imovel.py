@@ -1,10 +1,10 @@
 from textual.widgets import Static, Button, Footer, Checkbox, Tab, Tabs
 from textual.screen import Screen
 from textual.containers import HorizontalGroup, Grid, Vertical, Center
-from utils.Widgets import Header
+from utils.widgets import Header
 from textual_image.widget import Image
-from model import Init, Usuario, Atendimento
-from controller import Controller
+from model import Init, usuario, atendimento
+from controller import controller
 
 
 class TelaDadosImovel(Screen):
@@ -15,13 +15,13 @@ class TelaDadosImovel(Screen):
 
     TITLE = "Dados do Imóvel"
 
-    CSS_PATH = "css/TelaDadosImovel.tcss"
+    CSS_PATH = "css/dados_imovel.tcss"
 
     def compose(self):
         yield Header()
-        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
-            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CLIENTE:
+        if Init.usuario_atual.get_tipo() == usuario.Tipo.ADMINISTRADOR:
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),  Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.CLIENTE:
             yield Tabs(Tab("Comprar", id="tab_comprar"), Tab("Dados", id="tab_dados_cliente"))
 
         with HorizontalGroup(id="titulo"):
@@ -86,11 +86,11 @@ class TelaDadosImovel(Screen):
 
     def on_button_pressed(self, evento: Button.Pressed):
         if evento.button.id == "bt_contato":
-            atendimento = Atendimento.Atendimento()
-            atendimento.set_cliente(Init.usuario_atual)
-            atendimento.set_imovel(self.imovel)
-            atendimento.set_status(Atendimento.Status.PENDENTE)
-            mensagem = Controller.cadastrar_atendimento(atendimento)
+            novo_atendimento = atendimento.Atendimento()
+            novo_atendimento.set_cliente(Init.usuario_atual)
+            novo_atendimento.set_imovel(self.imovel)
+            novo_atendimento.set_status(atendimento.Status.PENDENTE)
+            mensagem = controller.cadastrar_atendimento(novo_atendimento)
             self.notify(mensagem)
 
    

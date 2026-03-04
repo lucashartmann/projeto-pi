@@ -1,13 +1,13 @@
-from database import Banco
-from model import Estoque
+from database.banco import Banco
+from model.estoque import Estoque
 
 
 class Imobiliaria:
     def __init__(self, nome, cnpj):
-        self.banco_dados = Banco.Banco()
+        self.banco_dados = Banco()
         self.nome = nome
         self.cnpj = cnpj
-        self.estoque = Estoque.Estoque()
+        self.estoque = Estoque()
         self.quantidade_funcionarios = 0
         self.quantidade_clientes = 0
         self.quantidade_fornecedores = 0

@@ -1,13 +1,13 @@
 from textual.screen import Screen
 from textual.widgets import Input, Button, Select, Label, Footer
 from textual.containers import VerticalGroup
-from utils.Widgets import Header, MyInput
-from controller import Controller
+from utils.widgets import Header, MyInput
+from controller import controller
 
 
 class TelaLogin(Screen):
 
-    CSS_PATH = "css/TelaLogin.tcss"
+    CSS_PATH = "css/login.tcss"
     montou = False
     TITLE = "Login"
 
@@ -54,9 +54,9 @@ class TelaLogin(Screen):
 
         if self.montou:
             email = self.query_one("#inpt_email").value.strip()
-            login = Controller.salvar_login(username, senha, email)
+            login = controller.salvar_login(username, senha, email)
         else:
-            login = Controller.verificar_login(username, senha)
+            login = controller.verificar_login(username, senha)
 
         self.notify(login)
 

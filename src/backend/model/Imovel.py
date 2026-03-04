@@ -1,5 +1,5 @@
 from enum import Enum
-from model import Endereco
+from model.endereco import Endereco
 
 
 bairros = [
@@ -72,7 +72,7 @@ class Status(Enum):
 
 class Imovel:
 
-    def __init__(self, endereco: Endereco.Endereco, status, categoria):
+    def __init__(self, endereco: Endereco, status, categoria):
         self.id = None
         self.valor_venda = 0
         self.valor_aluguel = 0

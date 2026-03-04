@@ -1,4 +1,4 @@
-from model.Usuario import Usuario, Tipo
+from model.usuario import Usuario, Tipo
 
 
 class Cliente(Usuario):

@@ -1,14 +1,11 @@
-backend/teste.py
-backend/imobiliaria.db
-backend/data/
-backend/utils/textual_pdf
-backend/utils/textual_map
-backend/__pycache__
-backend/.venv
+textual_pdf
+textual_map
+__pycache__
+.venv
 .vscode
-backend/teste.py
-backend/loja.db
-
+teste.py
+oja.db
+data/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

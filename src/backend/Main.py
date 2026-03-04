@@ -1,5 +1,5 @@
-from view.App import App
-from controller import Controller
+from view.app import App
+from controller import controller
 import sys
 
 comando = sys.argv[1:]
@@ -24,74 +24,74 @@ def ajuda():
 def menu_cmd(comando):
     match comando:
         case ["cadastrar_cliente"]:
-            Controller.cadastrar_cliente()
+            controller.cadastrar_cliente()
         case ["editar_cliente"]:
-            Controller.editar_cliente()
+            controller.editar_cliente()
         case ["remover_cliente", cpf]:
-            Controller.remover(cpf, "usuario")
+            controller.remover(cpf, "usuario")
 
         case ["cadastrar_corretor"]:
-            Controller.cadastrar_corretor()
+            controller.cadastrar_corretor()
         case ["editar_corretor"]:
-            Controller.editar_corretor()
+            controller.editar_corretor()
         case ["remover_corretor", cpf]:
-            Controller.remover(cpf, "usuario")
+            controller.remover(cpf, "usuario")
 
         case ["cadastrar_captador"]:
-            Controller.cadastrar_captador()
+            controller.cadastrar_captador()
         case ["editar_captador"]:
-            Controller.editar_captador()
+            controller.editar_captador()
         case ["remover_captador", cpf]:
-            Controller.remover(cpf, "usuario")
+            controller.remover(cpf, "usuario")
 
         case ["cadastrar_gerente"]:
-            Controller.cadastrar_gerente()
+            controller.cadastrar_gerente()
         case ["editar_gerente"]:
-            Controller.editar_gerente()
+            controller.editar_gerente()
         case ["remover_gerente", cpf]:
-            Controller.remover(cpf, "usuario")
+            controller.remover(cpf, "usuario")
 
         case ["cadastrar_administrador"]:
-            Controller.cadastrar_administrador()
+            controller.cadastrar_administrador()
         case ["editar_administrador"]:
-            Controller.editar_administrador()
+            controller.editar_administrador()
         case ["remover_administrador", cpf]:
-            Controller.remover(cpf, "usuario")
+            controller.remover(cpf, "usuario")
 
         case ["cadastrar_proprietario"]:
-            Controller.cadastrar_proprietario()
+            controller.cadastrar_proprietario()
         case ["editar_proprietario"]:
-            Controller.editar_proprietario()
+            controller.editar_proprietario()
         case ["remover_proprietario", cpf]:
-            Controller.remover(cpf, "proprietario")
+            controller.remover(cpf, "proprietario")
 
         case ["cadastrar_atendimento"]:
-            Controller.cadastrar_atendimento()
+            controller.cadastrar_atendimento()
         case ["editar_atendimento"]:
-            Controller.editar_atendimento()
+            controller.editar_atendimento()
         case ["remover_atendimento", cpf]:
-            Controller.remover(cpf, "atendimento")
+            controller.remover(cpf, "atendimento")
 
         case ["cadastrar_anuncio"]:
-            Controller.cadastrar_anuncio()
+            controller.cadastrar_anuncio()
         case ["editar_anuncio"]:
-            Controller.editar_anuncio()
+            controller.editar_anuncio()
         case ["remover_anuncio", cpf]:
-            Controller.remover(cpf, "anuncio")
+            controller.remover(cpf, "anuncio")
 
         case ["cadastrar_condominio"]:
-            Controller.cadastrar_condominio()
+            controller.cadastrar_condominio()
         case ["editar_condominio"]:
-            Controller.editar_condominio()
+            controller.editar_condominio()
         case ["remover_condominio", cpf]:
-            Controller.remover(cpf, "condominio")
+            controller.remover(cpf, "condominio")
 
         case ["cadastrar_imovel"]:
-            Controller.cadastrar_imovel()
+            controller.cadastrar_imovel()
         case ["editar_imovel"]:
-            Controller.editar_imovel()
+            controller.editar_imovel()
         case ["remover_imovel", id]:
-            Controller.remover(id, "imovel")
+            controller.remover(id, "imovel")
 
         case ["ajuda"]:
             print(ajuda())

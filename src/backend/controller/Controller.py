@@ -1,4 +1,4 @@
-from model import Cliente, Init
+from model import cliente, Init
 import datetime
 
 def cadastrar_atendimento(atendimento):
@@ -181,7 +181,7 @@ def verificar_login(username, senha):
 
 
 def salvar_login(username, senha, email):
-    um_usuario = Cliente.Cliente(
+    um_usuario = cliente.Cliente(
         nome="", cpf="", rg="", telefone="", email="")
 
     um_usuario.set_username(username)

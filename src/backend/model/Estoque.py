@@ -1,4 +1,4 @@
-from database.Banco import Banco
+from database.banco import Banco
 
 
 class Estoque:

@@ -19,6 +19,7 @@ beautifulsoup4
 markdown
 Pygments
 geopy
-# textual-pdf
 --extra-index-url https://test.pypi.org/simple/
 textual-map
+django
+git+ssh://git@github.com/lucashartmann/textual-pdf.git#egg=textual_pdf

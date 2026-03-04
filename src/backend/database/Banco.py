@@ -3,7 +3,7 @@ import hashlib
 import os
 import io
 
-from model import Cliente, Imovel, Captador, Corretor, Atendimento, Endereco, Anuncio, Venda_Aluguel, Condominio, Gerente, Usuario, Proprietario
+from model import cliente, imovel, captador, corretor, atendimento, endereco, anuncio, venda_aluguel, condominio, gerente, usuario, proprietario
 from datetime import datetime
 
 
@@ -16,7 +16,7 @@ class Banco:
 
     def init_tabelas(self):
         with sqlite3.connect(
-                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                "data\\imobiliaria.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS usuario (
@@ -249,7 +249,7 @@ class Banco:
 
     def get_lista_enderecos(self):
         with sqlite3.connect(
-                "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                "data\\imobiliaria.db", check_same_thread=False) as conexao:
             cursor = conexao.cursor()
             try:
                 sql_query = f'''
@@ -274,12 +274,12 @@ class Banco:
                     complemento = registro[5]
                     cidade = registro[6]
                     uf = registro[7]
-                    endereco = Endereco.Endereco(
+                    endereco_obj = endereco.Endereco(
                         rua, bairro, cep, cidade, uf)
-                    endereco.set_id(id_endereco)
-                    endereco.set_numero(numero)
-                    endereco.set_complemento(complemento)
-                    lista.append(endereco)
+                    endereco_obj.set_id(id_endereco)
+                    endereco_obj.set_numero(numero)
+                    endereco_obj.set_complemento(complemento)
+                    lista.append(endereco_obj)
                 return lista
             except Exception as e:
                 erro = f"ERRO! Banco.get_lista_enderecos: {e}"
@@ -289,7 +289,7 @@ class Banco:
     def get_lista_proprietarios(self):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 sql_query = f''' 
                     SELECT * FROM proprietario
@@ -309,12 +309,12 @@ class Banco:
                     if data_nascimento:
                         data_nascimento = datetime.strptime(
                             data_nascimento, "%d-%m-%Y")
-                    proprietario = Proprietario.Proprietario(
+                    proprietario_obj = proprietario.Proprietario(
                         email, nome, cpf_cnpj)
-                    proprietario.set_id(id_proprietario)
-                    proprietario.set_data_nascimento(data_nascimento)
-                    proprietario.set_rg(rg)
-                    lista.append(proprietario)
+                    proprietario_obj.set_id(id_proprietario)
+                    proprietario_obj.set_data_nascimento(data_nascimento)
+                    proprietario_obj.set_rg(rg)
+                    lista.append(proprietario_obj)
                 return lista
         except Exception as e:
             erro = f"ERRO! Banco.get_lista_clientes: {e}"
@@ -324,7 +324,7 @@ class Banco:
     def get_lista_clientes(self):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
 
                 sql_query = f''' 
@@ -353,13 +353,13 @@ class Banco:
                             data_nascimento, "%d-%m-%Y")
                     tipo_usuario = registro[9]
                     if tipo_usuario:
-                        tipo_usuario = Usuario.Tipo(tipo_usuario)
-                    usuario = Cliente.Cliente(
+                        tipo_usuario = usuario.Tipo(tipo_usuario)
+                    cliente_obj = cliente.Cliente(
                         username, senha, email, nome, cpf_cnpj)
-                    usuario.set_id(id_usuario)
-                    usuario.set_rg(rg)
-                    usuario.set_endereco(endereco)
-                    usuario.set_data_nascimento(data_nascimento)
+                    cliente_obj.set_id(id_usuario)
+                    cliente_obj.set_rg(rg)
+                    cliente_obj.set_endereco(endereco)
+                    cliente_obj.set_data_nascimento(data_nascimento)
                     sql_query = f''' 
                                 SELECT id_telefone FROM telefone_usuario 
                                 WHERE id_usuario = ?
@@ -375,8 +375,8 @@ class Banco:
                                     '''
                             cursor.execute(sql_query, (id_telefone,))
                             registro = cursor.fetchone()
-                        usuario.set_telefones(telefones)
-                    lista.append(usuario)
+                        cliente_obj.set_telefones(telefones)
+                    lista.append(cliente_obj)
                 return lista
         except Exception as e:
             erro = f"ERRO! Banco.get_lista_clientes:{e}"
@@ -386,7 +386,7 @@ class Banco:
     def get_lista_usuarios(self):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 sql_query = f''' 
                     SELECT * from usuario 
@@ -413,8 +413,8 @@ class Banco:
                             data_nascimento, "%d-%m-%Y")
                     tipo_usuario = registro[9]
                     if tipo_usuario:
-                        tipo_usuario = Usuario.Tipo(tipo_usuario)
-                    usuario = Usuario.Usuario(
+                        tipo_usuario = usuario.Tipo(tipo_usuario)
+                    usuario_obj = usuario.Usuario(
                         username, senha, email, nome, cpf_cnpj, tipo_usuario)
                     sql_query = f''' 
                                 SELECT id_telefone FROM telefone_usuario 
@@ -433,7 +433,7 @@ class Banco:
                             numero = cursor.fetchone()[0]
                             telefones.append(numero)
                     match tipo_usuario:
-                        case Usuario.Tipo.CORRETOR:
+                        case usuario.Tipo.CORRETOR:
                             cursor.execute(f'''
                                         SELECT creci FROM corretor 
                                         WHERE id_usuario = ?
@@ -441,10 +441,10 @@ class Banco:
                             creci = cursor.fetchone()[0]
                             if creci:
                                 creci = int(creci)
-                            usuario = Corretor.Corretor(
+                            usuario_obj = corretor.Corretor(
                                 username, senha, email, nome, cpf_cnpj, creci)
-                        case Usuario.Tipo.CAPTADOR:
-                            usuario = Captador.Captador(
+                        case usuario.Tipo.CAPTADOR:
+                            usuario_obj = captador.Captador(
                                 username, senha, email, nome, cpf_cnpj)
                             cursor.execute(f'''
                                         SELECT salario FROM captador 
@@ -453,9 +453,9 @@ class Banco:
                             salario = cursor.fetchone()[0]
                             if salario:
                                 salario = float(salario)
-                            usuario.set_salario(salario)
-                        case Usuario.Tipo.GERENTE:
-                            usuario = Gerente.Gerente(
+                            usuario_obj.set_salario(salario)
+                        case usuario.Tipo.GERENTE:
+                            usuario_obj = gerente.Gerente(
                                 username, senha, email, nome, cpf_cnpj)
                             cursor.execute(f'''
                                         SELECT salario FROM gerente 
@@ -464,21 +464,21 @@ class Banco:
                             salario = cursor.fetchone()[0]
                             if salario:
                                 salario = float(salario)
-                            usuario.set_salario(salario)
-                        case Usuario.Tipo.CLIENTE:
-                            usuario = Cliente.Cliente(
+                            usuario_obj.set_salario(salario)
+                        case usuario.Tipo.CLIENTE:
+                            usuario_obj = cliente.Cliente(
                                 username, senha, email, nome, cpf_cnpj)
                             # cursor.execute(f'''
                             #             SELECT * FROM cliente
                             #             WHERE id_usuario = ?
                             #         ''', (id_usuario,))
                             # registros = cursor.fetchone()
-                    usuario.set_id(id_usuario)
-                    usuario.set_rg(rg)
-                    usuario.set_endereco(endereco)
-                    usuario.set_data_nascimento(data_nascimento)
-                    usuario.set_telefones(telefones)
-                    lista.append(usuario)
+                    usuario_obj.set_id(id_usuario)
+                    usuario_obj.set_rg(rg)
+                    usuario_obj.set_endereco(endereco)
+                    usuario_obj.set_data_nascimento(data_nascimento)
+                    usuario_obj.set_telefones(telefones)
+                    lista.append(usuario_obj)
                 return lista
         except Exception as e:
             erro = f"ERRO! Banco.get_lista_usuarios: {e}"
@@ -489,7 +489,7 @@ class Banco:
         try:
 
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 sql_query = f''' 
                     INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo_usuario) 
@@ -535,23 +535,24 @@ class Banco:
                             VALUES(?, ?)
                             '''
                         cursor.execute(sql_query, (id, id_telefone))
-                match usuario.get_tipo():
-                    case Usuario.Tipo.CORRETOR:
+                tipo_usuario_obj = usuario.get_tipo()
+                tipo_usuario_valor = tipo_usuario_obj.value if tipo_usuario_obj else None
+                if tipo_usuario_valor == "CORRETOR":
                         cursor.execute(f'''
                                     INSERT INTO corretor (id_usuario, creci)
                                     VALUES(?, ?)
                                 ''', (id, usuario.get_creci()))
-                    case Usuario.Tipo.CAPTADOR:
+                elif tipo_usuario_valor == "CAPTADOR":
                         cursor.execute(f'''
                                     INSERT INTO captador (id_usuario, salario)
                                     VALUES(?, ?)
                                 ''', (id, usuario.get_salario()))
-                    case Usuario.Tipo.GERENTE:
+                elif tipo_usuario_valor == "GERENTE":
                         cursor.execute(f'''
                                     INSERT INTO gerente (id_usuario, salario)
                                     VALUES(?, ?)
                                 ''', (id, usuario.get_salario()))
-                    case Usuario.Tipo.CLIENTE:
+                elif tipo_usuario_valor == "CLIENTE":
                         cursor.execute(f'''
                                     INSERT INTO cliente (id_usuario)
                                     VALUES(?)
@@ -565,7 +566,7 @@ class Banco:
 
     def remover(self, campo_desejado, valor, tabela):
         try:
-            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            with sqlite3.connect(f"data/imobiliaria.db") as conexao:
                 cursor = conexao.cursor()
                 sql_delete_query = f"""
                 DELETE FROM {tabela}
@@ -580,7 +581,7 @@ class Banco:
 
     def atualizar(self, campo_desejado, valor, tabela):
         try:
-            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            with sqlite3.connect(f"data/imobiliaria.db") as conexao:
                 cursor = conexao.cursor()
                 sql_update_query = f"""
                 UPDATE {tabela}
@@ -595,7 +596,7 @@ class Banco:
 
     def get_usuario_por_cpf_cnpj(self, cpf):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM usuario WHERE cpf_cnpj = ? 
@@ -619,8 +620,8 @@ class Banco:
                         data_nascimento, "%d-%m-%Y")
                 tipo_usuario = registro[9]
                 if tipo_usuario:
-                    tipo_usuario = Usuario.Tipo(tipo_usuario)
-                usuario = Usuario.Usuario(
+                    tipo_usuario = usuario.Tipo(tipo_usuario)
+                usuario_obj = usuario.Usuario(
                     username, senha, email, nome, cpf_cnpj, tipo_usuario)
                 sql_query = f''' 
                             SELECT id_telefone FROM telefone_usuario 
@@ -638,7 +639,7 @@ class Banco:
                         cursor.execute(sql_query, (id_telefone,))
                         registro = cursor.fetchone()
                 match tipo_usuario:
-                    case Usuario.Tipo.CORRETOR:
+                    case usuario.Tipo.CORRETOR:
                         cursor.execute(f'''
                                     SELECT creci FROM corretor 
                                     WHERE id_usuario = ?
@@ -646,10 +647,10 @@ class Banco:
                         creci = cursor.fetchone()[0]
                         if creci:
                             creci = int(creci)
-                        usuario = Corretor.Corretor(
+                        usuario_obj = corretor.Corretor(
                             username, senha, email, nome, cpf_cnpj, creci)
-                    case Usuario.Tipo.CAPTADOR:
-                        usuario = Captador.Captador(
+                    case usuario.Tipo.CAPTADOR:
+                        usuario_obj = captador.Captador(
                             username, senha, email, nome, cpf_cnpj)
                         cursor.execute(f'''
                                     SELECT salario FROM captador 
@@ -658,9 +659,9 @@ class Banco:
                         salario = cursor.fetchone()[0]
                         if salario:
                             salario = float(salario)
-                        usuario.set_salario(salario)
-                    case Usuario.Tipo.GERENTE:
-                        usuario = Gerente.Gerente(
+                        usuario_obj.set_salario(salario)
+                    case usuario.Tipo.GERENTE:
+                        usuario_obj = gerente.Gerente(
                             username, senha, email, nome, cpf_cnpj)
                         cursor.execute(f'''
                                     SELECT salario FROM gerente 
@@ -669,21 +670,21 @@ class Banco:
                         salario = cursor.fetchone()[0]
                         if salario:
                             salario = float(salario)
-                        usuario.set_salario(salario)
-                    case Usuario.Tipo.CLIENTE:
-                        usuario = Cliente.Cliente(
+                        usuario_obj.set_salario(salario)
+                    case usuario.Tipo.CLIENTE:
+                        usuario_obj = cliente.Cliente(
                             username, senha, email, nome, cpf_cnpj)
                         # cursor.execute(f'''
                         #             SELECT * FROM cliente
                         #             WHERE id_usuario = ?
                         #         ''', (id_usuario,))
                         # registros = cursor.fetchone()
-                usuario.set_id(id_usuario)
-                usuario.set_rg(rg)
-                usuario.set_endereco(endereco)
-                usuario.set_data_nascimento(data_nascimento)
-                usuario.set_telefones(telefones)
-                return usuario
+                usuario_obj.set_id(id_usuario)
+                usuario_obj.set_rg(rg)
+                usuario_obj.set_endereco(endereco)
+                usuario_obj.set_data_nascimento(data_nascimento)
+                usuario_obj.set_telefones(telefones)
+                return usuario_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_usuario_por_cpf_cnpj: {e}"
             print(erro)
@@ -691,7 +692,7 @@ class Banco:
 
     def get_lista_filtros_apartamento(self):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM filtros_imovel 
@@ -714,7 +715,7 @@ class Banco:
 
     def get_lista_filtros_condominio(self):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM filtros_condominio 
@@ -738,7 +739,7 @@ class Banco:
     def cadastrar_lista_filtros(self, lista_filtros, tabela):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 for filtro in lista_filtros:
                     sql_query = f''' 
@@ -758,7 +759,7 @@ class Banco:
     def get_condominio_por_id_imovel(self, id_imovel):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM condominio 
@@ -771,14 +772,14 @@ class Banco:
                 id_condominio = int(registro[0])
                 nome = registro[1]
                 id_endereco = registro[2]
-                endereco = self.get_endereco_por_id(id_endereco)
-                if not endereco:
+                endereco_obj = self.get_endereco_por_id(id_endereco)
+                if not endereco_obj:
                     raise Exception(
                         f"Não existe endereço com id {id_endereco}")
-                condominio = Condominio.Condominio()
-                condominio.set_id(id_condominio)
-                condominio.set_nome(nome)
-                condominio.set_endereco(endereco)
+                condominio_obj = condominio.Condominio()
+                condominio_obj.set_id(id_condominio)
+                condominio_obj.set_nome(nome)
+                condominio_obj.set_endereco(endereco_obj)
                 cursor.execute(f'''
                         SELECT * FROM condominio_filtros
                         WHERE id_condominio = ?
@@ -796,8 +797,8 @@ class Banco:
                         if nome:
                             lista_condominio_filtros.append(nome)
                 if lista_condominio_filtros:
-                    condominio.set_filtros(lista_condominio_filtros)
-                return condominio
+                    condominio_obj.set_filtros(lista_condominio_filtros)
+                return condominio_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_condominio_por_id_imovel: {e}"
             print(erro)
@@ -806,7 +807,7 @@ class Banco:
     def atualizar_proprietario(self, proprietario):
         # TODO: atualizar telefones
         try:
-            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            with sqlite3.connect(f"data/imobiliaria.db") as conexao:
                 cursor = conexao.cursor()
                 sql_update_query = f"""
                 UPDATE proprietario
@@ -839,28 +840,28 @@ class Banco:
     def cadastrar_atendimento(self, atendimento):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 sql_query = f''' 
                     INSERT INTO atendimento (id_imovel, cpf_cnpj_corretor, cpf_cnpj_comprador, status) 
                     VALUES(?, ?, ?, ?)
                     '''
-                corretor = atendimento.get_corretor()
-                if corretor:
-                    corretor = corretor.get_cpf_cnpj()
-                cliente = atendimento.get_cliente()
-                if cliente:
-                    cliente = cliente.get_cpf_cnpj()
-                imovel = atendimento.get_imovel()
-                if imovel:
-                    imovel = imovel.get_id()
+                corretor_obj = atendimento.get_corretor()
+                if corretor_obj:
+                    corretor_obj = corretor_obj.get_cpf_cnpj()
+                cliente_obj = atendimento.get_cliente()
+                if cliente_obj:
+                    cliente_obj = cliente_obj.get_cpf_cnpj()
+                imovel_obj = atendimento.get_imovel()
+                if imovel_obj:
+                    imovel_obj = imovel_obj.get_id()
                 status = atendimento.get_status()
                 if status:
                     status = atendimento.get_status().value
                 cursor.execute(sql_query, (
-                    imovel,
-                    corretor,
-                    cliente,
+                    imovel_obj,
+                    corretor_obj,
+                    cliente_obj,
                     status
                 ))
                 conexao.commit()
@@ -872,7 +873,7 @@ class Banco:
 
     def get_lista_atendimentos(self):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM atendimento 
@@ -895,14 +896,14 @@ class Banco:
                     if comprador:
                         comprador = self.get_usuario_por_cpf_cnpj(comprador)
                     if status:
-                        status = Atendimento.Status(status)
-                    atendimento = Atendimento.Atendimento()
-                    atendimento.set_status(status)
-                    atendimento.set_id(id_atendimento)
-                    atendimento.set_corretor(corretor)
-                    atendimento.set_cliente(comprador)
-                    atendimento.set_imovel(imovel)
-                    lista.append(atendimento)
+                        status = atendimento.Status(status)
+                    atendimento_obj = atendimento.Atendimento()
+                    atendimento_obj.set_status(status)
+                    atendimento_obj.set_id(id_atendimento)
+                    atendimento_obj.set_corretor(corretor)
+                    atendimento_obj.set_cliente(comprador)
+                    atendimento_obj.set_imovel(imovel)
+                    lista.append(atendimento_obj)
                 return lista
         except Exception as e:
             erro = f"ERRO! Banco.get_lista_atendimentos: {e}"
@@ -912,7 +913,7 @@ class Banco:
     def get_anuncio_por_id(self, id_anuncio):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM anuncio
@@ -921,23 +922,23 @@ class Banco:
                 registro = cursor.fetchone()
                 if not registro:
                     raise Exception(f"Não existe anúncio com id {id_anuncio}")
-                anuncio = Anuncio.Anuncio()
+                anuncio_obj = anuncio.Anuncio()
                 id_anuncio = registro[0]
                 if id_anuncio:
                     id_anuncio = int(id_anuncio)
                 descricao = registro[1]
                 titulo = registro[2]
-                anuncio.set_id(id_anuncio)
-                anuncio.set_descricao(descricao)
-                anuncio.set_titulo(titulo)
+                anuncio_obj.set_id(id_anuncio)
+                anuncio_obj.set_descricao(descricao)
+                anuncio_obj.set_titulo(titulo)
                 mapa_anexos = self.get_lista_anexos_por_id_anuncio(id_anuncio)
                 if mapa_anexos and mapa_anexos["Imagens"]:
-                    anuncio.set_imagens(mapa_anexos["Imagens"])
+                    anuncio_obj.set_imagens(mapa_anexos["Imagens"])
                 if mapa_anexos and mapa_anexos["Videos"]:
-                    anuncio.set_videos(mapa_anexos["Videos"])
+                    anuncio_obj.set_videos(mapa_anexos["Videos"])
                 if mapa_anexos and mapa_anexos["Documentos"]:
-                    anuncio.set_anexos(mapa_anexos["Documentos"])
-                return anuncio
+                    anuncio_obj.set_anexos(mapa_anexos["Documentos"])
+                return anuncio_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_anuncio_por_id: {e}"
             print(erro)
@@ -946,7 +947,7 @@ class Banco:
     def cadastrar_anexo(self, id_anuncio, blob, tipo):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 sql_query = f''' 
                     INSERT INTO midia_anuncio (id_anuncio, midia, tipo) 
@@ -965,7 +966,7 @@ class Banco:
     def get_lista_anexos_por_id_anuncio(self, id_anuncio):
         try:
 
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT * FROM midia_anuncio 
@@ -1000,7 +1001,7 @@ class Banco:
     def get_condominio_por_id_endereco(self, id):
         try:
 
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                                 SELECT * FROM condominio 
@@ -1013,10 +1014,10 @@ class Banco:
                 id_condominio = int(registro[0])
                 nome = registro[1]
                 id_endereco = int(registro[2])
-                endereco = self.get_endereco_por_id(id_endereco)
-                condominio = Condominio.Condominio(nome, endereco)
-                condominio.set_id(id_condominio)
-                return condominio
+                endereco_obj = self.get_endereco_por_id(id_endereco)
+                condominio_obj = condominio.Condominio(nome, endereco_obj)
+                condominio_obj.set_id(id_condominio)
+                return condominio_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_condominio_por_id_endereco: {e}"
             print(erro)
@@ -1024,7 +1025,7 @@ class Banco:
 
     def get_condominio_por_id(self, id):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                                 SELECT * FROM condominio 
@@ -1037,18 +1038,18 @@ class Banco:
                 id_condominio = int(registro[0])
                 nome = registro[1]
                 id_endereco = int(registro[2])
-                endereco = self.get_endereco_por_id(id_endereco)
-                condominio = Condominio.Condominio(nome, endereco)
-                condominio.set_id(id_condominio)
-                return condominio
+                endereco_obj = self.get_endereco_por_id(id_endereco)
+                condominio_obj = condominio.Condominio(nome, endereco_obj)
+                condominio_obj.set_id(id_condominio)
+                return condominio_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_condominio_por_id: {e}"
             print(erro)
             return None
 
-    def verificar_endereco(self, endereco):
+    def verificar_endereco(self, endereco_obj):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 sql = '''
                     SELECT * 
@@ -1057,7 +1058,7 @@ class Banco:
                     AND numero = ?;
                 '''
                 cursor.execute(
-                    sql, (endereco.get_cep(), endereco.get_numero()))
+                    sql, (endereco_obj.get_cep(), endereco_obj.get_numero()))
                 registro = cursor.fetchone()
                 if not registro:
                     raise Exception(f"Não existe imóvel com este endereço")
@@ -1074,12 +1075,12 @@ class Banco:
                     complemento = registro[5]
                     cidade = registro[6]
                     uf = registro[7]
-                    endereco = Endereco.Endereco(
+                    endereco_resultado = endereco.Endereco(
                         rua, bairro, cep, cidade, uf)
-                    endereco.set_id(id_endereco)
-                    endereco.set_numero(numero)
-                    endereco.set_complemento(complemento)
-                    return endereco
+                    endereco_resultado.set_id(id_endereco)
+                    endereco_resultado.set_numero(numero)
+                    endereco_resultado.set_complemento(complemento)
+                    return endereco_resultado
                 else:
                     return None
         except Exception as e:
@@ -1089,7 +1090,7 @@ class Banco:
 
     def verificar_usuario(self, username, senha):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                                 SELECT * FROM usuario WHERE username = ?
@@ -1118,8 +1119,8 @@ class Banco:
                             data_nascimento, "%d-%m-%Y")
                     tipo = registro[9]
                     if tipo:
-                        tipo = Usuario.Tipo(tipo)
-                    usuario = Usuario.Usuario(
+                        tipo = usuario.Tipo(tipo)
+                    usuario_obj = usuario.Usuario(
                         username, senha_hash_banco, email, nome, cpf_cnpj, tipo)
                     sql_query = f''' 
                                 SELECT id_telefone FROM telefone_usuario 
@@ -1137,7 +1138,7 @@ class Banco:
                             cursor.execute(sql_query, (id_telefone,))
                             registro = cursor.fetchone()
                     match tipo:
-                        case Usuario.Tipo.CORRETOR:
+                        case usuario.Tipo.CORRETOR:
                             cursor.execute(f'''
                                         SELECT creci FROM corretor 
                                         WHERE id_usuario = ?
@@ -1145,10 +1146,10 @@ class Banco:
                             creci = cursor.fetchone()[0]
                             if creci:
                                 creci = int(creci)
-                            usuario = Corretor.Corretor(
+                            usuario_obj = corretor.Corretor(
                                 username, senha_hash_banco, email, nome, cpf_cnpj, creci)
-                        case Usuario.Tipo.CAPTADOR:
-                            usuario = Captador.Captador(
+                        case usuario.Tipo.CAPTADOR:
+                            usuario_obj = captador.Captador(
                                 username, senha_hash_banco, email, nome, cpf_cnpj)
                             cursor.execute(f'''
                                         SELECT salario FROM captador 
@@ -1157,9 +1158,9 @@ class Banco:
                             salario = cursor.fetchone()[0]
                             if salario:
                                 salario = float(salario)
-                            usuario.set_salario(salario)
-                        case Usuario.Tipo.GERENTE:
-                            usuario = Gerente.Gerente(
+                            usuario_obj.set_salario(salario)
+                        case usuario.Tipo.GERENTE:
+                            usuario_obj = gerente.Gerente(
                                 username, senha_hash_banco, email, nome, cpf_cnpj)
                             cursor.execute(f'''
                                         SELECT salario FROM gerente 
@@ -1168,21 +1169,21 @@ class Banco:
                             salario = cursor.fetchone()[0]
                             if salario:
                                 salario = float(salario)
-                            usuario.set_salario(salario)
-                        case Usuario.Tipo.CLIENTE:
-                            usuario = Cliente.Cliente(
+                            usuario_obj.set_salario(salario)
+                        case usuario.Tipo.CLIENTE:
+                            usuario_obj = cliente.Cliente(
                                 username, senha_hash_banco, email, nome, cpf_cnpj)
                             # cursor.execute(f'''
                             #         SELECT * FROM cliente
                             #         WHERE id_usuario = ?
                             #     ''', (id_usuario,))
                             # registros = cursor.fetchone()
-                    usuario.set_endereco(endereco)
-                    usuario.set_data_nascimento(data_nascimento)
-                    usuario.set_rg(rg)
-                    usuario.set_id(id_usuario)
-                    usuario.set_telefones(telefones)
-                    return usuario
+                    usuario_obj.set_endereco(endereco)
+                    usuario_obj.set_data_nascimento(data_nascimento)
+                    usuario_obj.set_rg(rg)
+                    usuario_obj.set_id(id_usuario)
+                    usuario_obj.set_telefones(telefones)
+                    return usuario_obj
                 else:
                     raise Exception("Senha errada!")
 
@@ -1194,7 +1195,7 @@ class Banco:
     def cadastrar_endereco(self, endereco):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 sql_query = f''' 
                     INSERT INTO endereco (rua, numero, bairro, cep, complemento, cidade, uf) 
@@ -1219,18 +1220,18 @@ class Banco:
     def cadastrar_condominio(self, condominio):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
-                endereco = condominio.get_endereco()
-                if endereco:
-                    endereco = condominio.get_endereco().get_id()
+                endereco_obj = condominio.get_endereco()
+                if endereco_obj:
+                    endereco_obj = condominio.get_endereco().get_id()
                 sql_query = f''' 
                     INSERT INTO condominio (nome, id_endereco) 
                     VALUES(?, ?)
                     '''
                 cursor.execute(sql_query, (
                     condominio.get_nome(),
-                    endereco
+                    endereco_obj
                 ))
                 conexao.commit()
                 return True
@@ -1243,7 +1244,7 @@ class Banco:
         # TODO: cadastrar telefones
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
 
                 endereco = proprietario.get_endereco()
@@ -1288,7 +1289,7 @@ class Banco:
     def cadastrar_anuncio(self, anuncio):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
 
                 sql_query = f''' 
@@ -1323,7 +1324,7 @@ class Banco:
 
     def get_endereco_por_id(self, id):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
 
                 cursor = conexao.cursor()
                 cursor.execute(f'''
@@ -1342,12 +1343,12 @@ class Banco:
                 complemento = registros[5]
                 cidade = registros[6]
                 uf = registros[7]
-                endereco = Endereco.Endereco(
+                endereco_obj = endereco.Endereco(
                     rua, bairro, cep, cidade, uf)
-                endereco.set_id(id_endereco)
-                endereco.set_numero(numero)
-                endereco.set_complemento(complemento)
-                return endereco
+                endereco_obj.set_id(id_endereco)
+                endereco_obj.set_numero(numero)
+                endereco_obj.set_complemento(complemento)
+                return endereco_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_endereco_por_id: {e}"
             print(erro)
@@ -1355,7 +1356,7 @@ class Banco:
 
     def get_proprietario_por_cpf_cnpj(self, cpf_cnpj):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
 
                 cursor = conexao.cursor()
                 cursor.execute(f'''
@@ -1375,11 +1376,11 @@ class Banco:
                 if data_nascimento:
                     data_nascimento = datetime.strptime(
                         data_nascimento, "%d-%m-%Y")
-                proprietario = Proprietario.Proprietario(email, nome, cpf_cnpj)
-                proprietario.set_id(id_proprietario)
-                proprietario.set_data_nascimento(data_nascimento)
-                proprietario.set_rg(rg)
-                return proprietario
+                proprietario_obj = proprietario.Proprietario(email, nome, cpf_cnpj)
+                proprietario_obj.set_id(id_proprietario)
+                proprietario_obj.set_data_nascimento(data_nascimento)
+                proprietario_obj.set_rg(rg)
+                return proprietario_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_proprietario_por_cpf_cnpj: {e}"
             print(erro)
@@ -1388,7 +1389,7 @@ class Banco:
     def get_imovel_por_id(self, id):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(
                     f'SELECT * FROM imovel WHERE id_imovel = ?', (id,))
@@ -1419,14 +1420,14 @@ class Banco:
                     quant_varandas = int(quant_varandas)
                 categoria = dados[8]
                 if categoria:
-                    categoria = Imovel.Categoria(categoria)
+                    categoria = imovel.Categoria(categoria)
                 id_endereco = dados[9]
                 endereco = None
                 if id_endereco:
                     endereco = self.get_endereco_por_id(int(id_endereco))
                 status = dados[10]
                 if status:
-                    status = Imovel.Status(status)
+                    status = imovel.Status(status)
                 iptu = dados[11]
                 if iptu:
                     iptu = float(iptu)
@@ -1438,7 +1439,7 @@ class Banco:
                     andar = int(andar)
                 estado = dados[14]
                 if estado:
-                    estado = Imovel.Estado(estado)
+                    estado = imovel.Estado(estado)
                 bloco = dados[15]
                 ano_construcao = dados[16]
                 if ano_construcao:
@@ -1451,10 +1452,10 @@ class Banco:
                     area_privativa = float(area_privativa)
                 situacao = dados[19]
                 if situacao:
-                    situacao = Imovel.Situacao(situacao)
+                    situacao = imovel.Situacao(situacao)
                 ocupacao = dados[20]
                 if ocupacao:
-                    ocupacao = Imovel.Ocupacao(ocupacao)
+                    ocupacao = imovel.Ocupacao(ocupacao)
                 cpf_cnpj_corretor = dados[21]
                 corretor = None
                 if cpf_cnpj_corretor:
@@ -1480,34 +1481,34 @@ class Banco:
                 condominio = None
                 if id_condominio:
                     condominio = self.get_condominio_por_id(int(id_condominio))
-                imovel = Imovel.Imovel(endereco, status, categoria)
-                imovel.set_id(id_imovel)
-                imovel.set_valor_venda(valor_venda)
-                imovel.set_valor_aluguel(valor_aluguel)
-                imovel.set_quant_quartos(quant_quartos)
-                imovel.set_quant_salas(quant_salas)
-                imovel.set_quant_vagas(quant_vagas)
-                imovel.set_quant_banheiros(quant_banheiros)
-                imovel.set_quant_varandas(quant_varandas)
-                imovel.set_categoria(categoria)
-                imovel.set_endereco(endereco)
-                imovel.set_status(status)
-                imovel.set_iptu(iptu)
-                imovel.set_valor_condominio(valor_condominio)
-                imovel.set_andar(andar)
-                imovel.set_estado(estado)
-                imovel.set_bloco(bloco)
-                imovel.set_ano_construcao(ano_construcao)
-                imovel.set_area_total(area_total)
-                imovel.set_area_privativa(area_privativa)
-                imovel.set_situacao(situacao)
-                imovel.set_ocupacao(ocupacao)
-                imovel.set_corretor(corretor)
-                imovel.set_captador(captador)
-                imovel.set_data_cadastro(data_cadastro)
-                imovel.set_data_modificacao(data_modificacao)
-                imovel.set_anuncio(anuncio)
-                imovel.set_condominio(condominio)
+                imovel_obj = imovel.Imovel(endereco, status, categoria)
+                imovel_obj.set_id(id_imovel)
+                imovel_obj.set_valor_venda(valor_venda)
+                imovel_obj.set_valor_aluguel(valor_aluguel)
+                imovel_obj.set_quant_quartos(quant_quartos)
+                imovel_obj.set_quant_salas(quant_salas)
+                imovel_obj.set_quant_vagas(quant_vagas)
+                imovel_obj.set_quant_banheiros(quant_banheiros)
+                imovel_obj.set_quant_varandas(quant_varandas)
+                imovel_obj.set_categoria(categoria)
+                imovel_obj.set_endereco(endereco)
+                imovel_obj.set_status(status)
+                imovel_obj.set_iptu(iptu)
+                imovel_obj.set_valor_condominio(valor_condominio)
+                imovel_obj.set_andar(andar)
+                imovel_obj.set_estado(estado)
+                imovel_obj.set_bloco(bloco)
+                imovel_obj.set_ano_construcao(ano_construcao)
+                imovel_obj.set_area_total(area_total)
+                imovel_obj.set_area_privativa(area_privativa)
+                imovel_obj.set_situacao(situacao)
+                imovel_obj.set_ocupacao(ocupacao)
+                imovel_obj.set_corretor(corretor)
+                imovel_obj.set_captador(captador)
+                imovel_obj.set_data_cadastro(data_cadastro)
+                imovel_obj.set_data_modificacao(data_modificacao)
+                imovel_obj.set_anuncio(anuncio)
+                imovel_obj.set_condominio(condominio)
                 cursor.execute(f'''
                         SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                         WHERE id_imovel = ?
@@ -1521,7 +1522,7 @@ class Banco:
                             cpf_cnpj)
                         if proprietario:
                             proprietarios.append(proprietario)
-                imovel.set_proprietarios(proprietarios)
+                imovel_obj.set_proprietarios(proprietarios)
                 cursor.execute(f'''
                         SELECT id_filtros_imovel FROM imovel_filtros 
                         WHERE id_imovel = ?
@@ -1538,9 +1539,9 @@ class Banco:
                         nome_filtro = cursor.fetchone()[0]
                         if nome_filtro:
                             filtros.append(nome_filtro)
-                imovel.set_filtros(filtros)
+                imovel_obj.set_filtros(filtros)
 
-                return imovel
+                return imovel_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_imovel_por_id: {e}"
             print(erro)
@@ -1550,7 +1551,7 @@ class Banco:
         try:
 
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 sql_query = ''' 
                 INSERT INTO imovel(valor_venda, valor_aluguel, quant_quartos, quant_salas, quant_vagas, quant_banheiros, quant_varandas, categoria, id_endereco, status, iptu, valor_condominio, andar, estado, bloco, ano_construcao, area_total, area_privativa, situacao, ocupacao, cpf_cnpj_corretor, cpf_cnpj_captador, data_cadastro, data_modificacao, id_anuncio, id_condominio) 
@@ -1570,19 +1571,19 @@ class Banco:
                 if categoria:
                     categoria = categoria.value
 
-                endereco = imovel.get_endereco()
-                if endereco:
-                    if endereco.get_id() != None:
-                        endereco = endereco.get_id()
+                endereco_obj = imovel.get_endereco()
+                if endereco_obj:
+                    if endereco_obj.get_id() != None:
+                        endereco_obj = endereco_obj.get_id()
                     else:
-                        endereco = None
+                        endereco_obj = None
 
-                anuncio = imovel.get_anuncio()
-                if anuncio:
-                    if anuncio.get_id() != None:
-                        anuncio = anuncio.get_id()
+                anuncio_obj = imovel.get_anuncio()
+                if anuncio_obj:
+                    if anuncio_obj.get_id() != None:
+                        anuncio_obj = anuncio_obj.get_id()
                     else:
-                        anuncio = None
+                        anuncio_obj = None
 
                 if imovel.get_proprietarios():
                     for proprietario in imovel.get_proprietarios():
@@ -1609,17 +1610,17 @@ class Banco:
                 if ocupacao:
                     ocupacao = ocupacao.value
 
-                corretor = imovel.get_corretor()
-                if corretor:
-                    corretor = corretor.get_cpf_cnpj()
+                corretor_obj = imovel.get_corretor()
+                if corretor_obj:
+                    corretor_obj = corretor_obj.get_cpf_cnpj()
 
-                captador = imovel.get_captador()
-                if captador:
-                    captador = captador.get_cpf_cnpj()
+                captador_obj = imovel.get_captador()
+                if captador_obj:
+                    captador_obj = captador_obj.get_cpf_cnpj()
 
-                condominio = imovel.get_condominio()
-                if condominio:
-                    condominio = condominio.get_id()
+                condominio_obj = imovel.get_condominio()
+                if condominio_obj:
+                    condominio_obj = condominio_obj.get_id()
 
                 data_cadastro = imovel.get_data_cadastro()
                 if data_cadastro and isinstance(data_cadastro, datetime):
@@ -1638,7 +1639,7 @@ class Banco:
                     imovel.get_quant_banheiros(),
                     imovel.get_quant_varandas(),
                     categoria,
-                    endereco,
+                    endereco_obj,
                     status,
                     imovel.get_iptu(),
                     imovel.get_valor_condominio(),
@@ -1650,12 +1651,12 @@ class Banco:
                     imovel.get_area_privativa(),
                     situacao,
                     ocupacao,
-                    corretor,
-                    captador,
+                    corretor_obj,
+                    captador_obj,
                     data_cadastro,
                     data_modificacao,
-                    anuncio,
-                    condominio
+                    anuncio_obj,
+                    condominio_obj
                 ))
                 conexao.commit()
                 return True
@@ -1668,7 +1669,7 @@ class Banco:
 
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
 
                 cursor = conexao.cursor()
                 lista = []
@@ -1702,7 +1703,7 @@ class Banco:
 
                     categoria = dados[8]
                     if categoria:
-                        categoria = Imovel.Categoria(categoria)
+                        categoria = imovel.Categoria(categoria)
 
                     id_endereco = dados[9]
                     endereco = None
@@ -1711,7 +1712,7 @@ class Banco:
 
                     status = dados[10]
                     if status:
-                        status = Imovel.Status(status)
+                        status = imovel.Status(status)
                     iptu = dados[11]
                     if iptu:
                         iptu = float(iptu)
@@ -1723,7 +1724,7 @@ class Banco:
                         andar = int(andar)
                     estado = dados[14]
                     if estado:
-                        estado = Imovel.Estado(estado)
+                        estado = imovel.Estado(estado)
                     bloco = dados[15]
                     ano_construcao = dados[16]
                     if ano_construcao:
@@ -1736,10 +1737,10 @@ class Banco:
                         area_privativa = float(area_privativa)
                     situacao = dados[19]
                     if situacao:
-                        situacao = Imovel.Situacao(situacao)
+                        situacao = imovel.Situacao(situacao)
                     ocupacao = dados[20]
                     if ocupacao:
-                        ocupacao = Imovel.Ocupacao(ocupacao)
+                        ocupacao = imovel.Ocupacao(ocupacao)
                     cpf_cnpj_corretor = dados[21]
                     corretor = None
                     if cpf_cnpj_corretor:
@@ -1768,34 +1769,34 @@ class Banco:
                         condominio = self.get_condominio_por_id(
                             int(id_condominio))
 
-                    imovel = Imovel.Imovel(endereco, status, categoria)
-                    imovel.set_id(id_imovel)
-                    imovel.set_valor_venda(valor_venda)
-                    imovel.set_valor_aluguel(valor_aluguel)
-                    imovel.set_quant_quartos(quant_quartos)
-                    imovel.set_quant_salas(quant_salas)
-                    imovel.set_quant_vagas(quant_vagas)
-                    imovel.set_quant_banheiros(quant_banheiros)
-                    imovel.set_quant_varandas(quant_varandas)
-                    imovel.set_categoria(categoria)
-                    imovel.set_endereco(endereco)
-                    imovel.set_status(status)
-                    imovel.set_iptu(iptu)
-                    imovel.set_valor_condominio(valor_condominio)
-                    imovel.set_andar(andar)
-                    imovel.set_estado(estado)
-                    imovel.set_bloco(bloco)
-                    imovel.set_ano_construcao(ano_construcao)
-                    imovel.set_area_total(area_total)
-                    imovel.set_area_privativa(area_privativa)
-                    imovel.set_situacao(situacao)
-                    imovel.set_ocupacao(ocupacao)
-                    imovel.set_corretor(corretor)
-                    imovel.set_captador(captador)
-                    imovel.set_data_cadastro(data_cadastro)
-                    imovel.set_data_modificacao(data_modificacao)
-                    imovel.set_anuncio(anuncio)
-                    imovel.set_condominio(condominio)
+                    imovel_obj = imovel.Imovel(endereco, status, categoria)
+                    imovel_obj.set_id(id_imovel)
+                    imovel_obj.set_valor_venda(valor_venda)
+                    imovel_obj.set_valor_aluguel(valor_aluguel)
+                    imovel_obj.set_quant_quartos(quant_quartos)
+                    imovel_obj.set_quant_salas(quant_salas)
+                    imovel_obj.set_quant_vagas(quant_vagas)
+                    imovel_obj.set_quant_banheiros(quant_banheiros)
+                    imovel_obj.set_quant_varandas(quant_varandas)
+                    imovel_obj.set_categoria(categoria)
+                    imovel_obj.set_endereco(endereco)
+                    imovel_obj.set_status(status)
+                    imovel_obj.set_iptu(iptu)
+                    imovel_obj.set_valor_condominio(valor_condominio)
+                    imovel_obj.set_andar(andar)
+                    imovel_obj.set_estado(estado)
+                    imovel_obj.set_bloco(bloco)
+                    imovel_obj.set_ano_construcao(ano_construcao)
+                    imovel_obj.set_area_total(area_total)
+                    imovel_obj.set_area_privativa(area_privativa)
+                    imovel_obj.set_situacao(situacao)
+                    imovel_obj.set_ocupacao(ocupacao)
+                    imovel_obj.set_corretor(corretor)
+                    imovel_obj.set_captador(captador)
+                    imovel_obj.set_data_cadastro(data_cadastro)
+                    imovel_obj.set_data_modificacao(data_modificacao)
+                    imovel_obj.set_anuncio(anuncio)
+                    imovel_obj.set_condominio(condominio)
                     cursor.execute(f'''
                             SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                             WHERE id_imovel = ?
@@ -1809,7 +1810,7 @@ class Banco:
                                 cpf_cnpj)
                             if proprietario:
                                 proprietarios.append(proprietario)
-                    imovel.set_proprietarios(proprietarios)
+                    imovel_obj.set_proprietarios(proprietarios)
                     cursor.execute(f'''
                             SELECT id_filtros_imovel FROM imovel_filtros 
                             WHERE id_imovel = ?
@@ -1826,8 +1827,8 @@ class Banco:
                             nome_filtro = cursor.fetchone()[0]
                             if nome_filtro:
                                 filtros.append(nome_filtro)
-                    imovel.set_filtros(filtros)
-                    lista.append(imovel)
+                    imovel_obj.set_filtros(filtros)
+                    lista.append(imovel_obj)
 
                 return lista
         except Exception as e:
@@ -1838,7 +1839,7 @@ class Banco:
     def get_lista_imoveis_disponiveis(self):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 lista = []
                 cursor.execute(
@@ -1872,7 +1873,7 @@ class Banco:
 
                     categoria = dados[8]
                     if categoria:
-                        categoria = Imovel.Categoria(categoria)
+                        categoria = imovel.Categoria(categoria)
 
                     id_endereco = dados[9]
                     endereco = None
@@ -1881,7 +1882,7 @@ class Banco:
 
                     status = dados[10]
                     if status:
-                        status = Imovel.Status(status)
+                        status = imovel.Status(status)
                     iptu = dados[11]
                     if iptu:
                         iptu = float(iptu)
@@ -1893,7 +1894,7 @@ class Banco:
                         andar = int(andar)
                     estado = dados[14]
                     if estado:
-                        estado = Imovel.Estado(estado)
+                        estado = imovel.Estado(estado)
                     bloco = dados[15]
                     ano_construcao = dados[16]
                     if ano_construcao:
@@ -1906,10 +1907,10 @@ class Banco:
                         area_privativa = float(area_privativa)
                     situacao = dados[19]
                     if situacao:
-                        situacao = Imovel.Situacao(situacao)
+                        situacao = imovel.Situacao(situacao)
                     ocupacao = dados[20]
                     if ocupacao:
-                        ocupacao = Imovel.Ocupacao(ocupacao)
+                        ocupacao = imovel.Ocupacao(ocupacao)
                     cpf_cnpj_corretor = dados[21]
                     corretor = None
                     if cpf_cnpj_corretor:
@@ -1939,34 +1940,34 @@ class Banco:
                         condominio = self.get_condominio_por_id(
                             int(id_condominio))
 
-                    imovel = Imovel.Imovel(endereco, status, categoria)
-                    imovel.set_id(id_imovel)
-                    imovel.set_valor_venda(valor_venda)
-                    imovel.set_valor_aluguel(valor_aluguel)
-                    imovel.set_quant_quartos(quant_quartos)
-                    imovel.set_quant_salas(quant_salas)
-                    imovel.set_quant_vagas(quant_vagas)
-                    imovel.set_quant_banheiros(quant_banheiros)
-                    imovel.set_quant_varandas(quant_varandas)
-                    imovel.set_categoria(categoria)
-                    imovel.set_endereco(endereco)
-                    imovel.set_status(status)
-                    imovel.set_iptu(iptu)
-                    imovel.set_valor_condominio(valor_condominio)
-                    imovel.set_andar(andar)
-                    imovel.set_estado(estado)
-                    imovel.set_bloco(bloco)
-                    imovel.set_ano_construcao(ano_construcao)
-                    imovel.set_area_total(area_total)
-                    imovel.set_area_privativa(area_privativa)
-                    imovel.set_situacao(situacao)
-                    imovel.set_ocupacao(ocupacao)
-                    imovel.set_corretor(corretor)
-                    imovel.set_captador(captador)
-                    imovel.set_data_cadastro(data_cadastro)
-                    imovel.set_data_modificacao(data_modificacao)
-                    imovel.set_anuncio(anuncio)
-                    imovel.set_condominio(condominio)
+                    imovel_obj = imovel.Imovel(endereco, status, categoria)
+                    imovel_obj.set_id(id_imovel)
+                    imovel_obj.set_valor_venda(valor_venda)
+                    imovel_obj.set_valor_aluguel(valor_aluguel)
+                    imovel_obj.set_quant_quartos(quant_quartos)
+                    imovel_obj.set_quant_salas(quant_salas)
+                    imovel_obj.set_quant_vagas(quant_vagas)
+                    imovel_obj.set_quant_banheiros(quant_banheiros)
+                    imovel_obj.set_quant_varandas(quant_varandas)
+                    imovel_obj.set_categoria(categoria)
+                    imovel_obj.set_endereco(endereco)
+                    imovel_obj.set_status(status)
+                    imovel_obj.set_iptu(iptu)
+                    imovel_obj.set_valor_condominio(valor_condominio)
+                    imovel_obj.set_andar(andar)
+                    imovel_obj.set_estado(estado)
+                    imovel_obj.set_bloco(bloco)
+                    imovel_obj.set_ano_construcao(ano_construcao)
+                    imovel_obj.set_area_total(area_total)
+                    imovel_obj.set_area_privativa(area_privativa)
+                    imovel_obj.set_situacao(situacao)
+                    imovel_obj.set_ocupacao(ocupacao)
+                    imovel_obj.set_corretor(corretor)
+                    imovel_obj.set_captador(captador)
+                    imovel_obj.set_data_cadastro(data_cadastro)
+                    imovel_obj.set_data_modificacao(data_modificacao)
+                    imovel_obj.set_anuncio(anuncio)
+                    imovel_obj.set_condominio(condominio)
                     cursor.execute(f'''
                             SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                             WHERE id_imovel = ?
@@ -1980,7 +1981,7 @@ class Banco:
                                 cpf_cnpj)
                             if proprietario:
                                 proprietarios.append(proprietario)
-                    imovel.set_proprietarios(proprietarios)
+                    imovel_obj.set_proprietarios(proprietarios)
                     cursor.execute(f'''
                             SELECT id_filtros_imovel FROM imovel_filtros 
                             WHERE id_imovel = ?
@@ -1997,38 +1998,38 @@ class Banco:
                             nome_filtro = cursor.fetchone()[0]
                             if nome_filtro:
                                 filtros.append(nome_filtro)
-                    imovel.set_filtros(filtros)
-                    lista.append(imovel)
+                    imovel_obj.set_filtros(filtros)
+                    lista.append(imovel_obj)
                 return lista
         except Exception as e:
             erro = f"ERRO! Banco.get_lista_imoveis_disponiveis: {e}"
             print(erro)
             return []
 
-    def atualizar_imovel(self, imovel: Imovel.Imovel):
+    def atualizar_imovel(self, imovel: imovel.Imovel):
         try:
 
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
 
                 categoria = imovel.get_categoria()
                 if categoria:
                     categoria = categoria.value
 
-                endereco = imovel.get_endereco()
-                if endereco:
-                    if endereco.get_id() != None:
-                        endereco = endereco.get_id()
+                endereco_obj = imovel.get_endereco()
+                if endereco_obj:
+                    if endereco_obj.get_id() != None:
+                        endereco_obj = endereco_obj.get_id()
                     else:
-                        endereco = None
+                        endereco_obj = None
 
-                anuncio = imovel.get_anuncio()
-                if anuncio:
-                    if anuncio.get_id() != None:
-                        anuncio = anuncio.get_id()
+                anuncio_obj = imovel.get_anuncio()
+                if anuncio_obj:
+                    if anuncio_obj.get_id() != None:
+                        anuncio_obj = anuncio_obj.get_id()
                     else:
-                        anuncio = None
+                        anuncio_obj = None
 
                 imovel_consultado = self.get_imovel_por_id(imovel.get_id())
                 if imovel_consultado.get_proprietarios():
@@ -2074,17 +2075,17 @@ class Banco:
                 if ocupacao:
                     ocupacao = ocupacao.value
 
-                condominio = imovel.get_condominio()
-                if condominio:
-                    condominio = condominio.get_id()
+                condominio_obj = imovel.get_condominio()
+                if condominio_obj:
+                    condominio_obj = condominio_obj.get_id()
 
-                corretor = imovel.get_corretor()
-                if corretor:
-                    corretor = corretor.get_cpf_cnpj()
+                corretor_obj = imovel.get_corretor()
+                if corretor_obj:
+                    corretor_obj = corretor_obj.get_cpf_cnpj()
 
-                captador = imovel.get_captador()
-                if captador:
-                    captador = captador.get_cpf_cnpj()
+                captador_obj = imovel.get_captador()
+                if captador_obj:
+                    captador_obj = captador_obj.get_cpf_cnpj()
 
                 data_cadastro = imovel.get_data_cadastro()
                 if data_cadastro and isinstance(data_cadastro, datetime):
@@ -2151,7 +2152,7 @@ class Banco:
                     imovel.get_quant_banheiros(),
                     imovel.get_quant_varandas(),
                     categoria,
-                    endereco,
+                    endereco_obj,
                     status,
                     imovel.get_iptu(),
                     imovel.get_valor_condominio(),
@@ -2163,12 +2164,12 @@ class Banco:
                     imovel.get_area_privativa(),
                     situacao,
                     ocupacao,
-                    corretor,
-                    captador,
+                    corretor_obj,
+                    captador_obj,
                     data_cadastro,
                     data_modificacao,
-                    anuncio,
-                    condominio,
+                    anuncio_obj,
+                    condominio_obj,
                     imovel.get_id()
                 )
 
@@ -2182,7 +2183,7 @@ class Banco:
 
     def get_id_filtro_imovel_por_nome(self, nome):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT id_filtros_imovel FROM filtros_imovel 
@@ -2197,7 +2198,7 @@ class Banco:
 
     def cadastrar_filtro_imovel(self, id_imovel, id_filtro):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         INSERT INTO imovel_filtros (id_imovel, id_filtros_imovel)
@@ -2210,7 +2211,7 @@ class Banco:
 
     def remover_filtro_do_imovel(self, id_imovel, id_filtro):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                       DELETE FROM imovel_filtros
@@ -2222,7 +2223,7 @@ class Banco:
 
     def get_id_filtro_condominio_por_nome(self, nome):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         SELECT id_filtros_condominio FROM filtros_condominio 
@@ -2236,7 +2237,7 @@ class Banco:
 
     def cadastrar_filtro_condominio(self, id_condominio, id_filtro):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                         INSERT INTO condominio_filtros (id_filtros_condominio, id_condominio)
@@ -2249,7 +2250,7 @@ class Banco:
 
     def remover_filtro_do_condominio(self, id_condominio, id_filtro):
         try:
-            with sqlite3.connect("data\\Imobiliaria.db", check_same_thread=False) as conexao:
+            with sqlite3.connect("data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(f'''
                       DELETE FROM condominio_filtros
@@ -2262,7 +2263,7 @@ class Banco:
     def atualizar_anuncio(self, anuncio):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
 
                 query = '''
@@ -2337,7 +2338,7 @@ class Banco:
     def atualizar_condominio(self, condominio):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
 
                 query = '''
@@ -2382,7 +2383,7 @@ class Banco:
     def atualizar_usuario(self, usuario):
         # TODO: atualizar telefones
         try:
-            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            with sqlite3.connect(f"data/imobiliaria.db") as conexao:
                 cursor = conexao.cursor()
                 sql_update_query = f"""
                 UPDATE usuario
@@ -2458,20 +2459,21 @@ class Banco:
                                 cursor.execute(
                                     sql_query, (usuario.get_id(), id_telefone))
 
-                    match usuario.get_tipo():
-                        case Usuario.Tipo.CORRETOR:
+                    tipo_usuario_obj = usuario.get_tipo()
+                    tipo_usuario_valor = tipo_usuario_obj.value if tipo_usuario_obj else None
+                    if tipo_usuario_valor == "CORRETOR":
                             cursor.execute(f'''
                                         UPDATE corretor
                                         SET creci = ?
                                         WHERE id_usuario = ?;
                                     ''', (usuario.get_creci(), usuario.get_id()))
-                        case Usuario.Tipo.CAPTADOR:
+                    elif tipo_usuario_valor == "CAPTADOR":
                             cursor.execute(f'''
                                         UPDATE captador
                                         SET salario = ?
                                         WHERE id_usuario = ?;
                                     ''', (usuario.get_salario(), usuario.get_id()))
-                        case Usuario.Tipo.GERENTE:
+                    elif tipo_usuario_valor == "GERENTE":
                             cursor.execute(f'''
                                         UPDATE gerente
                                         SET salario = ?
@@ -2492,7 +2494,7 @@ class Banco:
     def atualizar_proprietario(self, proprietario):
         # TODO: atualizar telefones
         try:
-            with sqlite3.connect(f"data/Imobiliaria.db") as conexao:
+            with sqlite3.connect(f"data/imobiliaria.db") as conexao:
                 cursor = conexao.cursor()
                 sql_update_query = f"""
                 UPDATE proprietario
@@ -2568,7 +2570,7 @@ class Banco:
     def get_imovel_por_id(self, id_imovel):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(
                     f"SELECT * FROM imovel WHERE id_imovel = {id_imovel}")
@@ -2600,14 +2602,14 @@ class Banco:
                     quant_varandas = int(quant_varandas)
                 categoria = dados[8]
                 if categoria:
-                    categoria = Imovel.Categoria(categoria)
+                    categoria = imovel.Categoria(categoria)
                 id_endereco = dados[9]
                 endereco = None
                 if id_endereco:
                     endereco = self.get_endereco_por_id(int(id_endereco))
                 status = dados[10]
                 if status:
-                    status = Imovel.Status(status)
+                    status = imovel.Status(status)
                 iptu = dados[11]
                 if iptu:
                     iptu = float(iptu)
@@ -2619,7 +2621,7 @@ class Banco:
                     andar = int(andar)
                 estado = dados[14]
                 if estado:
-                    estado = Imovel.Estado(estado)
+                    estado = imovel.Estado(estado)
                 bloco = dados[15]
                 ano_construcao = dados[16]
                 if ano_construcao:
@@ -2632,10 +2634,10 @@ class Banco:
                     area_privativa = float(area_privativa)
                 situacao = dados[19]
                 if situacao:
-                    situacao = Imovel.Situacao(situacao)
+                    situacao = imovel.Situacao(situacao)
                 ocupacao = dados[20]
                 if ocupacao:
-                    ocupacao = Imovel.Ocupacao(ocupacao)
+                    ocupacao = imovel.Ocupacao(ocupacao)
                 cpf_cnpj_corretor = dados[21]
                 corretor = None
                 if cpf_cnpj_corretor:
@@ -2663,34 +2665,34 @@ class Banco:
                 if id_condominio:
                     condominio = self.get_condominio_por_id(
                         int(id_condominio))
-                imovel = Imovel.Imovel(endereco, status, categoria)
-                imovel.set_id(id_imovel)
-                imovel.set_valor_venda(valor_venda)
-                imovel.set_valor_aluguel(valor_aluguel)
-                imovel.set_quant_quartos(quant_quartos)
-                imovel.set_quant_salas(quant_salas)
-                imovel.set_quant_vagas(quant_vagas)
-                imovel.set_quant_banheiros(quant_banheiros)
-                imovel.set_quant_varandas(quant_varandas)
-                imovel.set_categoria(categoria)
-                imovel.set_endereco(endereco)
-                imovel.set_status(status)
-                imovel.set_iptu(iptu)
-                imovel.set_valor_condominio(valor_condominio)
-                imovel.set_andar(andar)
-                imovel.set_estado(estado)
-                imovel.set_bloco(bloco)
-                imovel.set_ano_construcao(ano_construcao)
-                imovel.set_area_total(area_total)
-                imovel.set_area_privativa(area_privativa)
-                imovel.set_situacao(situacao)
-                imovel.set_ocupacao(ocupacao)
-                imovel.set_corretor(corretor)
-                imovel.set_captador(captador)
-                imovel.set_data_cadastro(data_cadastro)
-                imovel.set_data_modificacao(data_modificacao)
-                imovel.set_anuncio(anuncio)
-                imovel.set_condominio(condominio)
+                imovel_obj = imovel.Imovel(endereco, status, categoria)
+                imovel_obj.set_id(id_imovel)
+                imovel_obj.set_valor_venda(valor_venda)
+                imovel_obj.set_valor_aluguel(valor_aluguel)
+                imovel_obj.set_quant_quartos(quant_quartos)
+                imovel_obj.set_quant_salas(quant_salas)
+                imovel_obj.set_quant_vagas(quant_vagas)
+                imovel_obj.set_quant_banheiros(quant_banheiros)
+                imovel_obj.set_quant_varandas(quant_varandas)
+                imovel_obj.set_categoria(categoria)
+                imovel_obj.set_endereco(endereco)
+                imovel_obj.set_status(status)
+                imovel_obj.set_iptu(iptu)
+                imovel_obj.set_valor_condominio(valor_condominio)
+                imovel_obj.set_andar(andar)
+                imovel_obj.set_estado(estado)
+                imovel_obj.set_bloco(bloco)
+                imovel_obj.set_ano_construcao(ano_construcao)
+                imovel_obj.set_area_total(area_total)
+                imovel_obj.set_area_privativa(area_privativa)
+                imovel_obj.set_situacao(situacao)
+                imovel_obj.set_ocupacao(ocupacao)
+                imovel_obj.set_corretor(corretor)
+                imovel_obj.set_captador(captador)
+                imovel_obj.set_data_cadastro(data_cadastro)
+                imovel_obj.set_data_modificacao(data_modificacao)
+                imovel_obj.set_anuncio(anuncio)
+                imovel_obj.set_condominio(condominio)
                 cursor.execute(f'''
                         SELECT cpf_cnpj_proprietario FROM proprietario_imovel 
                         WHERE id_imovel = ?
@@ -2704,7 +2706,7 @@ class Banco:
                             cpf_cnpj)
                         if proprietario:
                             proprietarios.append(proprietario)
-                imovel.set_proprietarios(proprietarios)
+                imovel_obj.set_proprietarios(proprietarios)
                 cursor.execute(f'''
                         SELECT id_filtros_imovel FROM imovel_filtros 
                         WHERE id_imovel = ?
@@ -2721,8 +2723,8 @@ class Banco:
                         nome_filtro = cursor.fetchone()[0]
                         if nome_filtro:
                             filtros.append(nome_filtro)
-                imovel.set_filtros(filtros)
-                return imovel
+                imovel_obj.set_filtros(filtros)
+                return imovel_obj
         except Exception as e:
             erro = f"ERRO! Banco.get_imovel_por_id: {e}"
             print(erro)
@@ -2731,7 +2733,7 @@ class Banco:
     def get_imoveis_por_proprietario(self, cpf):
         try:
             with sqlite3.connect(
-                    "data\\Imobiliaria.db", check_same_thread=False) as conexao:
+                    "data\\imobiliaria.db", check_same_thread=False) as conexao:
                 cursor = conexao.cursor()
                 cursor.execute(
                     '''SELECT id_imovel FROM proprietario_imovel WHERE cpf_cnpj_proprietario = ?''', (cpf,))

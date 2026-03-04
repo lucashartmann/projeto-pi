@@ -6,17 +6,15 @@ from textual.events import Click
 from textual import on
 import requests
 import datetime
-from model import Init, Imovel, Usuario, Endereco, Anuncio, Condominio, Proprietario
-from controller import Controller
-from utils import Midia
-from utils.Widgets import Header
+from model import Init, imovel, usuario, endereco, anuncio, condominio, proprietario
+from controller import controller
+from utils import midia
+from utils.widgets import Header
 from textual_image.widget import Image
 from textual_image.widget.sixel import _ImageSixelImpl
-from utils.textual_pdf.pdf_viewer import PDFViewer
+from textual_pdf.pdf_viewer import PDFViewer
 from enum import Enum
 from textual.binding import Binding
-from textual import events
-from textual.geometry import Offset
 from textual_map import MapWidget
 
 
@@ -252,12 +250,12 @@ class Busca(ModalScreen):
             self.lista = proprietarios
         elif self.tipo == self.Tipo.CORRETOR:
             usuarios = Init.imobiliaria.get_lista_usuarios()
-            self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
-            ) == Usuario.Tipo.CORRETOR)
+            self.lista = list(usr for usr in usuarios if usr.get_tipo(
+            ) == usuario.Tipo.CORRETOR)
         elif self.tipo == self.Tipo.CAPTADOR:
             usuarios = Init.imobiliaria.get_lista_usuarios()
-            self.lista = list(usuario for usuario in usuarios if usuario.get_tipo(
-            ) == Usuario.Tipo.CAPTADOR)
+            self.lista = list(usr for usr in usuarios if usr.get_tipo(
+            ) == usuario.Tipo.CAPTADOR)
         self.atualizar()
 
     def compose(self):
@@ -354,8 +352,8 @@ class Busca(ModalScreen):
                     self.filtro(palavras, index, palavra[:-1].lower())
                     self.atualizar()
                 elif "endereco" in self.objeto.__dict__.keys():
-                    endereco = Endereco.Endereco()
-                    if palavra[:-1].lower() in endereco.__dict__.keys():
+                    endereco_obj = endereco.Endereco()
+                    if palavra[:-1].lower() in endereco_obj.__dict__.keys():
                         index = palavras.index(palavra)
                         self.filtro(palavras, index,
                                     f"endereco().{palavra[:-1].lower()}")
@@ -464,7 +462,7 @@ class PopUpApagar(ModalScreen):
         if evento.button.id == "bt_confirmar":
             ref = int(self.app.get_screen(
                 "tela_cadastro_imovel").query_one("#ta_ref", TextArea).text)
-            remocao = Controller.remover
+            remocao = controller.remover
             ("id_imovel", ref, "imovel")
             self.app.get_screen("tela_cadastro_imovel").notify(remocao)
             self.app.get_screen("tela_cadastro_imovel").acao == True
@@ -491,7 +489,7 @@ class ContainerFuncionario(Vertical):
 
 class TelaCadastroImovel(Screen):
 
-    CSS_PATH = "css/TelaCadastroImovel.tcss"
+    CSS_PATH = "css/cadastro_imovel.tcss"
 
     def __init__(self, name=None, id=None, classes=None, imovel=None):
         super().__init__(name, id, classes)
@@ -502,11 +500,11 @@ class TelaCadastroImovel(Screen):
 
     def compose(self):
         yield Header()
-        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
-            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
+        if Init.usuario_atual.get_tipo() == usuario.Tipo.ADMINISTRADOR:
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),  Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.CORRETOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
@@ -522,15 +520,15 @@ class TelaCadastroImovel(Screen):
             yield Static("ref:", id="stt_ref")
             yield TextArea(disabled=True, id="ta_ref")
             yield Static("[red]*[/]Categoria:", id="stt_categoria")
-            yield Select([(valor.value, valor) for valor in Imovel.Categoria], id="select_categoria", prompt="Selecionar")
+            yield Select([(valor.value, valor) for valor in imovel.Categoria], id="select_categoria", prompt="Selecionar")
             yield Static("Situação:", id="stt_situacao")
-            yield Select([(valor.value, valor) for valor in Imovel.Situacao], id="select_situacao", prompt="Selecionar")
+            yield Select([(valor.value, valor) for valor in imovel.Situacao], id="select_situacao", prompt="Selecionar")
             yield Static("Estado:", id="stt_estado_select")
-            yield Select([(valor.value, valor) for valor in Imovel.Estado], id="select_estado", prompt="Selecionar")
+            yield Select([(valor.value, valor) for valor in imovel.Estado], id="select_estado", prompt="Selecionar")
             yield Static("Ocupação:", id="stt_ocupacao")
-            yield Select([(valor.value, valor) for valor in Imovel.Ocupacao], id="select_ocupacao", prompt="Selecionar")
+            yield Select([(valor.value, valor) for valor in imovel.Ocupacao], id="select_ocupacao", prompt="Selecionar")
             yield Static("[red]*[/]Status:", id="stt_status")
-            yield Select([(valor.value, valor) for valor in Imovel.Status], id="select_status", prompt="Selecionar")
+            yield Select([(valor.value, valor) for valor in imovel.Status], id="select_status", prompt="Selecionar")
             yield Static("Nome do Condomínio", id="stt_nome_condominio")
             yield TextArea(id="ta_nome_condominio")
             yield Static("Ano de Construção", id="stt_ano_construcao")
@@ -646,7 +644,7 @@ class TelaCadastroImovel(Screen):
             container = ContainerFuncionario(
                 cpf_cnpj=selecionado.get_cpf_cnpj())
 
-            if isinstance(selecionado, Proprietario.Proprietario):
+            if isinstance(selecionado, proprietario.Proprietario):
 
                 container_proprietario.mount(
                     container, after=container_proprietario.query_one(Button))
@@ -666,11 +664,11 @@ class TelaCadastroImovel(Screen):
                         "#st_email", Static).styles.display = None
 
             else:
-                if selecionado.get_tipo() == Usuario.Tipo.CAPTADOR:
+                if selecionado.get_tipo() == usuario.Tipo.CAPTADOR:
                     container_captador.mount(
                         container, after=container_captador.query_one(Button))
 
-                elif selecionado.get_tipo() == Usuario.Tipo.CORRETOR:
+                elif selecionado.get_tipo() == usuario.Tipo.CORRETOR:
                     container_corretor.mount(
                         container, after=container_corretor.query_one(Button))
 
@@ -691,16 +689,16 @@ class TelaCadastroImovel(Screen):
         container_captador = self.query_one("#container_captador")
         container_corretor = self.query_one("#container_corretor")
 
-        if self.imovel is None and (Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR or Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR):
+        if self.imovel is None and (Init.usuario_atual.get_tipo() == usuario.Tipo.CAPTADOR or Init.usuario_atual.get_tipo() == usuario.Tipo.CORRETOR):
 
-            if Init.usuario_atual.get_tipo() == Usuario.Tipo.CAPTADOR:
+            if Init.usuario_atual.get_tipo() == usuario.Tipo.CAPTADOR:
                 self.selecionados.append(Init.usuario_atual)
                 container = ContainerFuncionario(
                     cpf_cnpj=Init.usuario_atual.get_cpf_cnpj())
                 container_captador.mount(
                     container, after=container_captador.query_one(Button))
 
-            elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
+            elif Init.usuario_atual.get_tipo() == usuario.Tipo.CORRETOR:
                 self.selecionados.append(Init.usuario_atual)
                 container = ContainerFuncionario(
                     cpf_cnpj=Init.usuario_atual.get_cpf_cnpj())
@@ -976,14 +974,14 @@ class TelaCadastroImovel(Screen):
                 self.app.push_screen(PopUpApagar())
 
             case "bt_adicionar_imagens":
-                caminhos = Midia.selecionar_arquivo(Midia.Tipo.IMAGEM)
+                caminhos = midia.selecionar_arquivo(midia.Tipo.IMAGEM)
                 if caminhos:
                     for caminho in caminhos:
                         self.query_one("#container_imagens", Grid).mount(
                             ContainerImagem(imagem=caminho), after=self.query_one("#container_imagens", Grid).query_one(Center))
 
             case "bt_adicionar_anexos":
-                caminhos = Midia.selecionar_arquivo(Midia.Tipo.DOCUMENTO)
+                caminhos = midia.selecionar_arquivo(midia.Tipo.DOCUMENTO)
                 if caminhos:
                     for caminho in caminhos:
                         self.query_one("#container_anexos", Grid).mount(
@@ -1173,17 +1171,17 @@ class TelaCadastroImovel(Screen):
                         ano_construcao = None
                 else:
                     ano_construcao = None
-                endereco = Endereco.Endereco(rua, bairro,
-                                             cep, cidade, estado)
-                endereco.set_numero(numero)
+                endereco_imovel = endereco.Endereco(rua, bairro,
+                                                    cep, cidade, estado)
+                endereco_imovel.set_numero(numero)
 
                 titulo = self.query_one("#ta_titulo_anuncio", TextArea).text
                 descricao = self.query_one(
                     "#ta_descricao_anuncio", TextArea).text
                 if self.imovel:
-                    anuncio = self.imovel.get_anuncio()
+                    anuncio_atual = self.imovel.get_anuncio()
                 else:
-                    anuncio = Anuncio.Anuncio()
+                    anuncio_atual = anuncio.Anuncio()
 
                 imagens = []
                 anexos = []
@@ -1191,7 +1189,7 @@ class TelaCadastroImovel(Screen):
                 try:
                     if any(isinstance(child, ContainerImagem) for child in self.query_one("#container_imagens").children):
                         for widget_imagem in self.query_one("#container_imagens").query(ContainerImagem):
-                            imagens.append(Midia.get_bytes(
+                            imagens.append(midia.get_bytes(
                                 widget_imagem.query_one(Image).image))
                 except:
                     pass
@@ -1199,15 +1197,15 @@ class TelaCadastroImovel(Screen):
                 try:
                     if any(isinstance(child, ContainerImagem) for child in self.query_one("#container_anexos").children):
                         for widget_anexo in self.query_one("#container_anexos").query(ContainerImagem):
-                            anexos.append(Midia.get_bytes(
+                            anexos.append(midia.get_bytes(
                                 widget_anexo.query_one(PDFViewer).path))
                 except:
                     pass
 
-                anuncio.set_anexos(anexos)
-                anuncio.set_titulo(titulo)
-                anuncio.set_descricao(descricao)
-                anuncio.set_imagens(imagens)
+                anuncio_atual.set_anexos(anexos)
+                anuncio_atual.set_titulo(titulo)
+                anuncio_atual.set_descricao(descricao)
+                anuncio_atual.set_imagens(imagens)
 
                 filtros_imovel = []
                 filtros_condominio = []
@@ -1229,20 +1227,20 @@ class TelaCadastroImovel(Screen):
                 print(filtros_imovel)
 
                 if self.imovel:
-                    imovel = self.imovel
-                    imovel.set_endereco(endereco)
-                    imovel.set_status(status_imovel)
-                    imovel.set_categoria(categoria_imovel)
+                    imovel_atual = self.imovel
+                    imovel_atual.set_endereco(endereco_imovel)
+                    imovel_atual.set_status(status_imovel)
+                    imovel_atual.set_categoria(categoria_imovel)
                 else:
-                    imovel = Imovel.Imovel(
-                        endereco, status_imovel, categoria_imovel)
-                imovel.set_filtros(filtros_imovel)
-                imovel.set_complemento(complemento)
+                    imovel_atual = imovel.Imovel(
+                        endereco_imovel, status_imovel, categoria_imovel)
+                imovel_atual.set_filtros(filtros_imovel)
+                imovel_atual.set_complemento(complemento)
                 if not self.imovel:
-                    imovel.set_anuncio(anuncio)
-                imovel.set_andar(andar)
-                imovel.set_ano_construcao(ano_construcao)
-                imovel.set_area_privativa(area_privativa)
+                    imovel_atual.set_anuncio(anuncio_atual)
+                imovel_atual.set_andar(andar)
+                imovel_atual.set_ano_construcao(ano_construcao)
+                imovel_atual.set_area_privativa(area_privativa)
 
                 container_captador = self.query_one("#container_captador")
                 container_corretor = self.query_one("#container_corretor")
@@ -1254,7 +1252,7 @@ class TelaCadastroImovel(Screen):
                         captador = Init.imobiliaria.get_usuario_por_cpf_cnpj(
                             self.query_one(ContainerFuncionario).get_cpf_cnpj())
                         if captador:
-                            imovel.set_captador(captador)
+                            imovel_atual.set_captador(captador)
                 except Exception as e:
                     print(
                         "TelaCadastroImovel on_button_pressed: Aviso! Nao foi possivel salvar captador no imovel", e)
@@ -1264,7 +1262,7 @@ class TelaCadastroImovel(Screen):
                         corretor = Init.imobiliaria.get_usuario_por_cpf_cnpj(
                             self.query_one(ContainerFuncionario).get_cpf_cnpj())
                         if corretor:
-                            imovel.set_corretor(corretor)
+                            imovel_atual.set_corretor(corretor)
                 except Exception as e:
                     print(
                         "TelaCadastroImovel on_button_pressed: Aviso! Nao foi possivel salvar corretor no imovel", e)
@@ -1277,45 +1275,45 @@ class TelaCadastroImovel(Screen):
                                 container_funcionario.get_cpf_cnpj())
                             if proprietario:
                                 lista.append(proprietario)
-                        imovel.set_proprietarios(lista)
+                        imovel_atual.set_proprietarios(lista)
                 except Exception as e:
                     print(
                         "TelaCadastroImovel on_button_pressed: Aviso! Nao foi possivel salvar proprietario no imovel", e)
 
-                imovel.set_area_total(area_total)
-                imovel.set_bloco(bloco)
-                imovel.set_iptu(iptu)
-                imovel.set_valor_condominio(valor_condominio)
-                imovel.set_valor_venda(venda)
-                imovel.set_valor_aluguel(aluguel)
-                imovel.set_quant_banheiros(banheiros)
-                imovel.set_quant_quartos(quartos)
-                imovel.set_quant_salas(salas)
-                imovel.set_quant_vagas(vagas)
-                imovel.set_quant_varandas(varandas)
-                imovel.set_situacao(situacao_imovel)
-                imovel.set_estado(estado_imovel)
-                imovel.set_ocupacao(ocupacao_imovel)
+                imovel_atual.set_area_total(area_total)
+                imovel_atual.set_bloco(bloco)
+                imovel_atual.set_iptu(iptu)
+                imovel_atual.set_valor_condominio(valor_condominio)
+                imovel_atual.set_valor_venda(venda)
+                imovel_atual.set_valor_aluguel(aluguel)
+                imovel_atual.set_quant_banheiros(banheiros)
+                imovel_atual.set_quant_quartos(quartos)
+                imovel_atual.set_quant_salas(salas)
+                imovel_atual.set_quant_vagas(vagas)
+                imovel_atual.set_quant_varandas(varandas)
+                imovel_atual.set_situacao(situacao_imovel)
+                imovel_atual.set_estado(estado_imovel)
+                imovel_atual.set_ocupacao(ocupacao_imovel)
                 if not self.imovel:
-                    imovel.set_id(ref)
-                imovel.set_data_modificacao(datetime.datetime.now())
+                    imovel_atual.set_id(ref)
+                imovel_atual.set_data_modificacao(datetime.datetime.now())
                 if self.imovel:
-                    condominio = self.imovel.get_condominio()
-                    condominio.set_nome(nome_condominio)
-                    condominio.set_endereco(endereco)
+                    condominio_atual = self.imovel.get_condominio()
+                    condominio_atual.set_nome(nome_condominio)
+                    condominio_atual.set_endereco(endereco_imovel)
                 else:
-                    condominio = Condominio.Condominio(
-                        nome_condominio, endereco)
+                    condominio_atual = condominio.Condominio(
+                        nome_condominio, endereco_imovel)
 
-                condominio.set_filtros(filtros_condominio)
+                condominio_atual.set_filtros(filtros_condominio)
 
                 if not self.imovel:
-                    imovel.set_condominio(condominio)
+                    imovel_atual.set_condominio(condominio_atual)
 
                 if self.imovel:
-                    cadastro = Controller.editar_imovel(imovel)
+                    cadastro = controller.editar_imovel(imovel_atual)
                 else:
-                    cadastro = Controller.cadastrar_imovel(imovel)
+                    cadastro = controller.cadastrar_imovel(imovel_atual)
 
                 self.notify(cadastro)
                 self.salvo = True
@@ -1342,9 +1340,6 @@ class TelaCadastroImovel(Screen):
 
                 elif event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
                     self.app.switch_screen("tela_dados_imobiliaria")
-
-                elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                    self.app.switch_screen("tela_servidor")
 
                 elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
                     self.app.switch_screen("tela_estoque_cliente")

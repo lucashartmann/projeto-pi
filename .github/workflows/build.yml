@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r src/requirements.txt --use-deprecated=legacy-resolver
+          pip install -r src/backend/requirements.txt --use-deprecated=legacy-resolver
           pip install pyinstaller
 
       - name: Build executable with PyInstaller
@@ -32,7 +32,7 @@ jobs:
               --collect-submodules textual `
               --collect-all markdown `
               --name "Sun Sales" `
-              src/backend/Main.py
+              src/backend/main.py
 
       - name: Fazer upload do artefato
         uses: actions/upload-artifact@v4

@@ -1,9 +1,9 @@
-from model import Cliente, Imobiliaria, Imovel, Venda_Aluguel, Endereco, Corretor, Captador, Anuncio, Gerente, Usuario, Proprietario, Condominio
+from model import cliente, imovel, captador, corretor, atendimento, endereco, anuncio, venda_aluguel, condominio, gerente, usuario, proprietario, imobiliaria
 
 
 class Init:
 
-    imobiliaria = Imobiliaria.Imobiliaria("GameStart", "00000000000")
+    imobiliaria = imobiliaria.Imobiliaria("GameStart", "00000000000")
     usuario_atual = ""
 
     filtros_imovel = ["Aceita Pet", "Churrasqueira", "Armarios Embutidos", "Cozinha Americana", "Área de Serviço", "Suíte Master",
@@ -17,135 +17,140 @@ class Init:
     imobiliaria.cadastrar_lista_filtros(
         filtros_condominio, "filtros_condominio")
 
-    administrador = Usuario.Usuario(username="administrador", senha="123", email="admin@example.com",
-                                    nome="Lucas", cpf_cnpj="00000000000", tipo=Usuario.Tipo.ADMINISTRADOR)
-    administrador_dois = Usuario.Usuario(username="admin2", senha="123", email="admin2@example.com",
-                                         nome="Felipe", cpf_cnpj="11111111111", tipo=Usuario.Tipo.ADMINISTRADOR)
-    gerente = Gerente.Gerente(username="gerente", senha="123", email="gerente@example.com",
-                              nome="Pedro", cpf_cnpj="22222222222")
-    gerente_dois = Gerente.Gerente(username="gerente2", senha="123", email="gerente2@example.com",
-                                   nome="Rosangela", cpf_cnpj="33333333333")
-    comprador = Cliente.Cliente(username="cliente", senha="123", email="cliente@example.com",
+    administrador = usuario.Usuario(username="administrador", senha="123", email="admin@example.com",
+                                    nome="Lucas", cpf_cnpj="00000000000", tipo=usuario.Tipo.ADMINISTRADOR)
+    administrador_dois = usuario.Usuario(username="admin2", senha="123", email="admin2@example.com",
+                                         nome="Felipe", cpf_cnpj="11111111111", tipo=usuario.Tipo.ADMINISTRADOR)
+    gerente_um = gerente.Gerente(username="gerente", senha="123",
+                                 email="gerente@example.com", nome="Pedro", cpf_cnpj="22222222222")
+    gerente_dois = gerente.Gerente(username="gerente2", senha="123",
+                                   email="gerente2@example.com", nome="Rosangela", cpf_cnpj="33333333333")
+    comprador = cliente.Cliente(username="cliente", senha="123", email="cliente@example.com",
                                 nome="Marcela", cpf_cnpj="44444444444")
-    comprador_dois = Cliente.Cliente(username="cliente2", senha="123", email="cliente2@example.com",
+    comprador_dois = cliente.Cliente(username="cliente2", senha="123", email="cliente2@example.com",
                                      nome="Rute Dois", cpf_cnpj="77777777777")
-    captador = Captador.Captador(username="captador", senha="123", email="captador@example.com",
-                                 nome="Ana", cpf_cnpj="55555555555")
-    captador_dois = Captador.Captador(username="captador2", senha="123", email="captador2@example.com",
+    captador_um = captador.Captador(username="captador", senha="123", email="captador@example.com",
+                                    nome="Ana", cpf_cnpj="55555555555")
+    captador_dois = captador.Captador(username="captador2", senha="123", email="captador2@example.com",
                                       nome="Ana Dois", cpf_cnpj="88888888888")
-    corretor = Corretor.Corretor(username="corretor", senha="123", email="corretor@example.com",
-                                 nome="João", cpf_cnpj="66666666666", creci="123456")
-    corretor_dois = Corretor.Corretor(username="corretor2", senha="123", email="corretor2@example.com",
+    corretor_um = corretor.Corretor(username="corretor", senha="123", email="corretor@example.com",
+                                    nome="João", cpf_cnpj="66666666666", creci="123456")
+    corretor_dois = corretor.Corretor(username="corretor2", senha="123", email="corretor2@example.com",
                                       nome="Elisabeth", cpf_cnpj="99999999999", creci="654321")
 
     if not imobiliaria.get_lista_usuarios():
 
         imobiliaria.cadastrar_usuario(administrador)
-        imobiliaria.cadastrar_usuario(gerente)
+        imobiliaria.cadastrar_usuario(gerente_um)
         imobiliaria.cadastrar_usuario(comprador)
-        imobiliaria.cadastrar_usuario(captador)
-        imobiliaria.cadastrar_usuario(corretor)
+        imobiliaria.cadastrar_usuario(captador_um)
+        imobiliaria.cadastrar_usuario(corretor_um)
         imobiliaria.cadastrar_usuario(administrador_dois)
         imobiliaria.cadastrar_usuario(gerente_dois)
         imobiliaria.cadastrar_usuario(comprador_dois)
         imobiliaria.cadastrar_usuario(captador_dois)
         imobiliaria.cadastrar_usuario(corretor_dois)
 
-    proprietario = Proprietario.Proprietario(email="proprietario@example.com",
-                                             nome="Maria", cpf_cnpj="00000000000")
+    proprietario_um = proprietario.Proprietario(email="proprietario@example.com",
+                                                nome="Maria", cpf_cnpj="00000000000")
 
-    proprietario_dois = Proprietario.Proprietario(email="proprietario2@example.com",
+    proprietario_dois = proprietario.Proprietario(email="proprietario2@example.com",
                                                   nome="Joaquim", cpf_cnpj="11111111111")
 
     if not imobiliaria.get_lista_proprietarios():
 
         imobiliaria.cadastrar_proprietario(proprietario_dois)
-        imobiliaria.cadastrar_proprietario(proprietario)
+        imobiliaria.cadastrar_proprietario(proprietario_um)
 
-    endereco = Endereco.Endereco(
+    endereco_um = endereco.Endereco(
         rua="Rua A", bairro="Centro", cep=12345678, cidade="Cidade X", uf="Estado Y")
-    endereco.set_numero("123")
+    endereco_um.set_numero("123")
 
-    endereco_dois = Endereco.Endereco(
+    endereco_dois = endereco.Endereco(
         rua="Rua B", bairro="Bairro Z", cep=87654321, cidade="Cidade W", uf="Estado V")
     endereco_dois.set_numero("456")
 
     if not imobiliaria.get_lista_enderecos():
-        cadastro = imobiliaria.cadastrar_endereco(endereco)
+        cadastro = imobiliaria.cadastrar_endereco(endereco_um)
         cadastro_dois = imobiliaria.cadastrar_endereco(endereco_dois)
-    consulta = None
+    consulta_um = None
     consulta_dois = None
-    consulta = imobiliaria.verificar_endereco(endereco)
-    condominio_um = Condominio.Condominio("Way", consulta)
+    consulta_um = imobiliaria.verificar_endereco(endereco_um)
+    condominio_um = condominio.Condominio("Way", consulta_um)
     imobiliaria.cadastrar_condominio(condominio_um)
-    consultar_condominio = imobiliaria.get_condominio_por_id_endereco(
-        consulta.get_id())
-    anuncio = Anuncio.Anuncio()
-    
+    consultar_condominio = None
+    if consulta_um:
+        consultar_condominio = imobiliaria.get_condominio_por_id_endereco(
+            consulta_um.get_id())
+    anuncio_um = anuncio.Anuncio()
+
     with open(r"assets\apartamento2\5661211031.jpg", "rb") as f:
         blob = f.read()
-    
-    anuncio.set_imagens([blob, blob, blob, blob, blob])
-    anuncio.set_titulo("Apartamento de 1 quarto, venda ou aluguel")
-    anuncio.set_descricao("Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta ratione nulla recusandae illum, magni veniam molestiae odio corrupti. Deleniti, blanditiis recusandae molestiae voluptate culpa at voluptates inventore asperiores saepe quidem.")
-    
-    imovel_um = Imovel.Imovel(
-        endereco=consulta, status=Imovel.Status.VENDA, categoria=Imovel.Categoria.APARTAMENTO)
 
-    imovel_dois = Imovel.Imovel(
-        endereco=consulta, status=Imovel.Status.ALUGUEL, categoria=Imovel.Categoria.APARTAMENTO)
-    imovel_tres = Imovel.Imovel(
-        endereco=consulta, status=Imovel.Status.VENDIDO, categoria=Imovel.Categoria.LOFT)
+    anuncio_um.set_imagens([blob, blob, blob, blob, blob])
+    anuncio_um.set_titulo("Apartamento de 1 quarto, venda ou aluguel")
+    anuncio_um.set_descricao("Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta ratione nulla recusandae illum, magni veniam molestiae odio corrupti. Deleniti, blanditiis recusandae molestiae voluptate culpa at voluptates inventore asperiores saepe quidem.")
+
+    imovel_um = imovel.Imovel(
+        endereco=consulta_um, status=imovel.Status.VENDA, categoria=imovel.Categoria.APARTAMENTO)
+
+    imovel_dois = imovel.Imovel(
+        endereco=consulta_um, status=imovel.Status.ALUGUEL, categoria=imovel.Categoria.APARTAMENTO)
+    imovel_tres = imovel.Imovel(
+        endereco=consulta_um, status=imovel.Status.VENDIDO, categoria=imovel.Categoria.LOFT)
     if not imobiliaria.get_estoque().get_lista_imoveis():
-        cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(anuncio)
+        cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(anuncio_um)
         if cadastro_anuncio is not None:
-            anuncio.set_id(cadastro_anuncio)
-            imovel_um.set_anuncio(anuncio)
-            imovel_um.set_condominio(consultar_condominio)
+            anuncio_um.set_id(cadastro_anuncio)
+            imovel_um.set_anuncio(anuncio_um)
+            if consultar_condominio:
+                imovel_um.set_condominio(consultar_condominio)
             imobiliaria.get_estoque().cadastrar_imovel(imovel_um)
 
         cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
-            anuncio)
+            anuncio_um)
 
         if cadastro_anuncio is not None:
-            anuncio.set_id(cadastro_anuncio)
-            imovel_dois.set_anuncio(anuncio)
+            anuncio_um.set_id(cadastro_anuncio)
+            imovel_dois.set_anuncio(anuncio_um)
             imovel_dois.set_condominio(consultar_condominio)
             imobiliaria.get_estoque().cadastrar_imovel(imovel_dois)
 
         cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
-            anuncio)
+            anuncio_um)
 
         if cadastro_anuncio is not None:
-            anuncio.set_id(cadastro_anuncio)
-            imovel_tres.set_anuncio(anuncio)
+            anuncio_um.set_id(cadastro_anuncio)
+            imovel_tres.set_anuncio(anuncio_um)
             imovel_tres.set_condominio(consultar_condominio)
             imobiliaria.get_estoque().cadastrar_imovel(imovel_tres)
 
     consulta_dois = imobiliaria.verificar_endereco(endereco_dois)
-    condominio_dois = Condominio.Condominio("Premium", consulta_dois)
+    condominio_dois = condominio.Condominio("Premium", consulta_dois)
     imobiliaria.cadastrar_condominio(condominio_dois)
-    consultar_condominio2 = imobiliaria.get_condominio_por_id_endereco(
-        consulta_dois.get_id())
-    imovel_quatro = Imovel.Imovel(
-        endereco=consulta_dois, status=Imovel.Status.PENDENTE, categoria=Imovel.Categoria.TERRENO)
-    imovel_cinco = Imovel.Imovel(
-        endereco=consulta_dois, status=Imovel.Status.VENDA_ALUGUEL, categoria=Imovel.Categoria.CASA)
+    condominio_dois = None
+    if consulta_dois:
+        condominio_dois = imobiliaria.get_condominio_por_id_endereco(
+            consulta_dois.get_id())
+    imovel_quatro = imovel.Imovel(
+        endereco=consulta_dois, status=imovel.Status.PENDENTE, categoria=imovel.Categoria.TERRENO)
+    imovel_cinco = imovel.Imovel(
+        endereco=consulta_dois, status=imovel.Status.VENDA_ALUGUEL, categoria=imovel.Categoria.CASA)
     if not imobiliaria.get_estoque().get_lista_imoveis():
         cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
-            anuncio)
+            anuncio_um)
 
         if cadastro_anuncio is not None:
-            anuncio.set_id(cadastro_anuncio)
-            imovel_quatro.set_anuncio(anuncio)
-            imovel_quatro.set_condominio(consultar_condominio2)
+            anuncio_um.set_id(cadastro_anuncio)
+            imovel_quatro.set_anuncio(anuncio_um)
+            imovel_quatro.set_condominio(condominio_dois)
             imobiliaria.get_estoque().cadastrar_imovel(imovel_quatro)
 
         cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
-            anuncio)
+            anuncio_um)
 
         if cadastro_anuncio is not None:
-            anuncio.set_id(cadastro_anuncio)
-            imovel_cinco.set_anuncio(anuncio)
-            imovel_cinco.set_condominio(consultar_condominio2)
+            anuncio_um.set_id(cadastro_anuncio)
+            imovel_cinco.set_anuncio(anuncio_um)
+            imovel_cinco.set_condominio(condominio_dois)
             imobiliaria.get_estoque().cadastrar_imovel(imovel_cinco)

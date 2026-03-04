@@ -3,20 +3,20 @@
 from textual.screen import Screen
 from textual.widgets import Tab, Tabs, Static, Header, Footer
 from textual.containers import VerticalGroup, Grid
-from utils.Widgets import Header
+from utils.widgets import Header
 
-from model import Init, Usuario
+from model import Init, usuario
 
 
 class TelaDadosImobiliaria(Screen):
 
-    CSS_PATH = "css/TelaDadosImobiliaria.tcss"
+    CSS_PATH = "css/dados_imobiliaria.tcss"
 
     def compose(self):
         yield Header()
-        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
-            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
+        if Init.usuario_atual.get_tipo() == usuario.Tipo.ADMINISTRADOR:
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),  Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         yield Grid()
@@ -65,9 +65,6 @@ class TelaDadosImobiliaria(Screen):
 
             elif event.tabs.active == self.query_one("#tab_estoque", Tab).id:
                 self.app.switch_screen("tela_estoque")
-
-            elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                self.app.switch_screen("tela_servidor")
 
             elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
                 self.app.switch_screen("tela_estoque_cliente")

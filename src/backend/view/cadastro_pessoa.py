@@ -2,16 +2,16 @@ import datetime
 from textual.widgets import Button, Tab, Tabs, Select, Footer, Static, TextArea, MaskedInput, Input, Checkbox
 from textual.screen import Screen, ModalScreen
 from textual.containers import HorizontalGroup, Vertical, Horizontal, Grid
-from controller import Controller
-from model import Init, Usuario, Captador, Cliente, Corretor, Proprietario, Gerente, Endereco
-from utils.Widgets import Header, MyInput
+from controller import controller
+from model import Init, usuario, captador, cliente, corretor, proprietario, gerente, endereco
+from utils.widgets import Header, MyInput
 from textual.validation import Length
 import requests
 from textual_image.widget import Image
 from textual.events import Click
 from textual import on
-from view import TelaCadastroImovel
-from database.Banco import Banco
+from view import cadastro_imovel
+from database.banco import Banco
 
 
 class PopUp(ModalScreen):
@@ -64,10 +64,10 @@ class PopUpApagar(ModalScreen):
                 return
 
             if self.query_one("#select_tabelas", Select).value == "Proprietario":
-                remocao = Controller.remover(
+                remocao = controller.remover(
                     "id_proprietario", cpf, "proprietario")
             else:
-                remocao = Controller.remover(
+                remocao = controller.remover(
                     "id_usuario", cpf, "usuario")
 
             self.app.get_screen("tela_cadastro_pessoa").notify(remocao)
@@ -80,7 +80,7 @@ class PopUpApagar(ModalScreen):
 
 class TelaCadastroPessoa(Screen):
 
-    CSS_PATH = "css/TelaCadastroPessoa.tcss"
+    CSS_PATH = "css/cadastro_pessoa.tcss"
 
     valor_select = ""
     tabela = "products"
@@ -99,11 +99,11 @@ class TelaCadastroPessoa(Screen):
 
         yield Header()
 
-        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
-            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"), Tab("Servidor", id="tab_servidor"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.CORRETOR:
+        if Init.usuario_atual.get_tipo() == usuario.Tipo.ADMINISTRADOR:
+            yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"),  Tab("Dados Cliente", id="tab_dados_cliente"), Tab("Estoque Cliente", id="tab_comprar"), Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),  Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"))
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.CORRETOR:
             yield Tabs(Tab('Atendimento', id="tab_atendimento"), Tab("Cadastro de Venda/Aluguel", id="tab_cadastro_venda_aluguel"), Tab("Cadastro de Imoveis", id="tab_cadastro_imovel"), Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"))
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.GERENTE:
             yield Tabs(Tab("Dados da imobiliaria", id="tab_dados_imobiliaria"),
                        Tab("Cadastro de Pessoas", id="tab_cadastro_pessoa"), Tab("Estoque", id="tab_estoque"), Tab("Estoque", id="tab_estoque"))
         else:
@@ -112,7 +112,7 @@ class TelaCadastroPessoa(Screen):
             yield Button("Apagar", id="bt_apagar_cadastro", variant="warning")
             yield Button("Salvar", id="bt_salvar_alteracoes", variant="success")
         with Grid():
-            if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
+            if Init.usuario_atual.get_tipo() == usuario.Tipo.ADMINISTRADOR:
                 yield Static("Username", id="stt_username")
                 yield TextArea(placeholder="username aqui", id="inpt_username")
                 yield Static("Senha", id="stt_senha")
@@ -153,10 +153,10 @@ class TelaCadastroPessoa(Screen):
             yield Static("Creci", id="stt_creci")
             yield MaskedInput(
                 id="inpt_creci", template="000000", validators=Length(minimum=6, maximum=6), valid_empty=True)
-        if Init.usuario_atual.get_tipo() == Usuario.Tipo.ADMINISTRADOR:
+        if Init.usuario_atual.get_tipo() == usuario.Tipo.ADMINISTRADOR:
             yield Select([("Cliente", "Cliente"), (
                 "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador"), ("Gerente", "Gerente")], allow_blank=False, id="select_tabelas")
-        elif Init.usuario_atual.get_tipo() == Usuario.Tipo.GERENTE:
+        elif Init.usuario_atual.get_tipo() == usuario.Tipo.GERENTE:
             yield Select([("Cliente", "Cliente"), (
                 "Proprietario", "Proprietario"), ("Corretor", "Corretor"), ("Captador", "Captador")], allow_blank=False, id="select_tabelas")
         else:
@@ -181,9 +181,6 @@ class TelaCadastroPessoa(Screen):
 
             elif event.tabs.active == self.query_one("#tab_dados_imobiliaria", Tab).id:
                 self.app.switch_screen("tela_dados_imobiliaria")
-
-            elif event.tabs.active == self.query_one("#tab_servidor", Tab).id:
-                self.app.switch_screen("tela_servidor")
 
             elif event.tabs.active == self.query_one("#tab_comprar", Tab).id:
                 self.app.switch_screen("tela_estoque_cliente")
@@ -250,7 +247,7 @@ class TelaCadastroPessoa(Screen):
                 self.query_one("#inpt_rg", Input).value = str(
                     self.pessoa.get_rg())
             try:
-                if isinstance(self.pessoa, Proprietario.Proprietario):
+                if isinstance(self.pessoa, proprietario.Proprietario):
                     self.query_one("#select_tabelas", Select).value = "Proprietario"
                 elif self.pessoa.get_tipo():
                     self.query_one("#select_tabelas", Select).value = self.pessoa.get_tipo(
@@ -258,7 +255,7 @@ class TelaCadastroPessoa(Screen):
             except Exception as e:
                 print(e)
 
-            if isinstance(self.pessoa, Proprietario.Proprietario):
+            if isinstance(self.pessoa, proprietario.Proprietario):
                 self.query_one("#imoveis", Vertical).styles.display = "block"
                 imoveis = Init.imobiliaria.get_imoveis_por_proprietario(
                     self.pessoa.get_cpf_cnpj())
@@ -323,7 +320,7 @@ class TelaCadastroPessoa(Screen):
     #             m_i.value = ""
 
     def on_select_changed(self, evento: Select.Changed):
-        if Init.usuario_atual.get_tipo() != Usuario.Tipo.ADMINISTRADOR:
+        if Init.usuario_atual.get_tipo() != usuario.Tipo.ADMINISTRADOR:
             self.query_one("#inpt_salario").styles.display = "none"
             self.query_one("#stt_salario").styles.display = "none"
             self.query_one("#stt_creci").styles.display = "none"
@@ -475,42 +472,42 @@ class TelaCadastroPessoa(Screen):
                     rg = None
 
                 if cep is not None:
-                    endereco = Endereco.Endereco(rua, bairro,
-                                                 cep, cidade, estado)
-                    endereco.set_numero(numero)
+                    endereco_obj = endereco.Endereco(rua, bairro,
+                                                     cep, cidade, estado)
+                    endereco_obj.set_numero(numero)
                 else:
-                    endereco = None
+                    endereco_obj = None
 
                 if not self.pessoa():
                     match self.query_one("#select_tabelas", Select).value:
                         case "Cliente":
-                            pessoa = Cliente.Cliente(
+                            pessoa = cliente.Cliente(
                                 username, senha, email, nome, cpf)
                         case "Proprietario":
-                            pessoa = Proprietario.Proprietario(
+                            pessoa = proprietario.Proprietario(
                                 email, nome, cpf)
                         case "Corretor":
-                            pessoa = Corretor.Corretor(
+                            pessoa = corretor.Corretor(
                                 username, senha, email, nome, cpf, creci)
                         case "Captador":
-                            pessoa = Captador.Captador(
+                            pessoa = captador.Captador(
                                 username, senha, email, nome, cpf)
                         case "Administrador":
-                            pessoa = Usuario.Usuario(
-                                username, senha, email, nome, cpf, tipo=Usuario.Tipo.ADMINISTRADOR)
+                            pessoa = usuario.Usuario(
+                                username, senha, email, nome, cpf, tipo=usuario.Tipo.ADMINISTRADOR)
 
                     pessoa.set_rg(rg)
                     pessoa.set_data_nascimento(data_nascimento)
                     pessoa.set_telefones(telefones)
-                    if endereco:
-                        pessoa.set_endereco(endereco)
+                    if endereco_obj:
+                        pessoa.set_endereco(endereco_obj)
                     # pessoa.set_username(username)
                     # pessoa.set_senha(senha)
 
-                    atualizacao = Controller.cadastrar_usuario(
+                    atualizacao = controller.cadastrar_usuario(
                         pessoa)
 
-                    atualizacao = Controller.cadastrar_proprietario(
+                    atualizacao = controller.cadastrar_proprietario(
                         pessoa)
                 else:
                     pessoa = self.pessoa
@@ -523,19 +520,19 @@ class TelaCadastroPessoa(Screen):
                     pessoa.set_data_nascimento(data_nascimento)
                     pessoa.set_email(email)
                     pessoa.set_telefones(telefones)
-                    if endereco:
-                        pessoa.set_endereco(endereco)
+                    if endereco_obj:
+                        pessoa.set_endereco(endereco_obj)
 
-                    if isinstance(self.pessoa, Corretor.Corretor):
+                    if isinstance(self.pessoa, corretor.Corretor):
                         pessoa.set_creci(creci)
-                    elif isinstance(self.pessoa, Gerente.Gerente) or isinstance(self.pessoa, Captador.Captador):
+                    elif isinstance(self.pessoa, gerente.Gerente) or isinstance(self.pessoa, captador.Captador):
                         pessoa.set_salario(salario)
 
-                    if isinstance(self.pessoa, Proprietario.Proprietario):
-                        atualizacao = Controller.editar_proprietario(
+                    if isinstance(self.pessoa, proprietario.Proprietario):
+                        atualizacao = controller.editar_proprietario(
                             self.pessoa)
                     else:
-                        atualizacao = Controller.editar_usuario(self.pessoa)
+                        atualizacao = controller.editar_usuario(self.pessoa)
 
                 self.notify(atualizacao)
 
@@ -581,7 +578,7 @@ class TelaCadastroPessoa(Screen):
                         imovel = banco.get_imovel_por_id(int(widget.name))
                         if imovel:
                             self.app.switch_screen(
-                                TelaCadastroImovel.TelaCadastroImovel(imovel=imovel))
+                                cadastro_imovel.TelaCadastroImovel(imovel=imovel))
                         else:
                             self.screen.notify("ERRO. Imóvel não encontrado.")
         except Exception:
