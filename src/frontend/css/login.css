@@ -1,0 +1,40 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 750px;
+}
+
+div {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: center;
+    margin-top: auto;
+    height: 65%;
+    background: var(--background-nav);
+}
+
+select {
+    width: 90%;
+    height: 30px;
+}
+
+input {
+    width: 50%;
+    height: 20px;
+}
+
+button {
+    width: 40%;
+    margin-top: 25px;
+    height: 25px;
+    background: var(--background-nav);
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: var(--background);
+}

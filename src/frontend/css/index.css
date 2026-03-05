@@ -1,28 +1,29 @@
 #imovelDestaque {
     background: rgb(135, 126, 126, 0.2);
-    width: 100%;
+    width: 70%;
     height: 150px;
     margin: 30px 6px 0px 6px;
     border: solid rgba(47, 45, 45, 0.2) 2px;
     border-radius: 3px;
-    text-align: center;
-    align-content: center;
     box-shadow: 0.1px 0.1px 3px black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;    
 }
 
 section#anuncios {
     justify-items: center;
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     row-gap: 30px;
     margin: 50px 10px 10px 10px;
 }
 
 .anuncio_imovel {
     background: rgb(135, 126, 126, 0.2);
-    width: 90%;
+    width: 200px;
     justify-items: center;
-    align-self: center;
 }
 
 .anuncio_imovel:hover {
@@ -33,24 +34,24 @@ section#anuncios {
 .anuncio_imovel img {
     width: 90%;
     height: auto;
-    margin: 0px 2px 1px 2px;
+    margin: 10px 2px 1px 2px;
+    display: flex;
 }
 
-p.preco {
+.preco {
     color: var(--hover);
 }
 
 #principaisAnuncios {
     background: rgb(135, 126, 126, 0.2);
-    width: 100%;
+    width: 80%;
     height: 150px;
-    margin: 50px 10px 10px 10px;
+    margin: 50px auto 10px auto;
     border: solid rgba(47, 45, 45, 0.2) 2px;
     border-radius: 3px;
-    text-align: center;
-    align-items: center;
     box-shadow: 0.1px 0.1px 3px black;
-    display: inline-flex;
+    display: flex;
+    align-items: center;
 }
 
 .setas#setaDireita {
