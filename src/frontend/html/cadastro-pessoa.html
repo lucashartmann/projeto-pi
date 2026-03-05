@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/cadastro-pessoa.css">
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="../index.html">Página Inicial</a></li>
+            <!-- <li><a href="cadastro.html">Cadastro</a></li> -->
+            <!-- <li><a href="consulta.html">Consulta</a></li> -->
+            <li><a href="sobreNos.html">Sobre Nós</a></li>
+        </ul>
+    </nav>
+    <div id="h_buttons">:
+        <button id="bt_apagar_cadastro" variant="warning">Apagar</button>
+        <button id="bt_salvar_alteracoes" variant="success">Salvar</button>
+    </div>
+    <div>:
+        <label id="stt_nome">Nome</label>
+        <textarea placeholder="nome aqui" id="inpt_nome"></textarea>
+        <label id="stt_email">Email</label>
+        <textarea placeholder="email aqui" id="inpt_email"></textarea>
+        <label id="stt_telefone">Telefone</label>
+        <div id="container_telefones">
+            <input template="(00) 00000-0000" classes="inpt_telefone">
+            <button id="bt_mais_numero">+</button>
+            <button id="bt_remover_numero">X</button>
+        </div>
+        <label id="stt_cep">CEP</label>
+        <input template="00000-000" id="ta_cep" validators=Length(minimum=9, maximum=9) valid_empty=False>
+        <label id="stt_rua">Rua</label>
+        <textarea disabled=True id="ta_rua"></textarea>
+        <label id="stt_numero">Número do endereço</label>
+        <input id="ta_numero" type="integer" valid_empty=True>
+        <label id="stt_complemento">Complemento do endereço</label>
+        <textarea id="ta_complemento"></textarea>
+        <label id="stt_bloco">Bloco do endereço</label>
+        <textarea id="ta_bloco"></textarea>
+        <label id="stt_bairro">Bairro</label>
+        <textarea id="ta_bairro" disabled=True></textarea>
+        <label id="stt_cidade">Cidade</label>
+        <textarea id="ta_cidade" disabled=True></textarea>
+        <label id="stt_estado">Estado</label>
+        <input disabled=True template="XX" id="ta_estado" validators=Length(minimum=2, maximum=2)>
+        <label id="stt_data_nascimento">Data de nascimento</label>
+        <input template="00/00/0000" , id="inpt_data_nascimento" , validators=Length(minimum=10, maximum=10),
+            valid_empty=True>
+        <label id="stt_cpf">CPF</label>
+        <input template="000.000.000-00" , id="inpt_cpf" , validators=Length(minimum=11, maximum=14), valid_empty=True>
+        <label id="stt_rg">RG</label>
+        <input id="inpt_rg" placeholder="RG aqui" , validators=Length(minimum=7, maximum=9) valid_empty=True>
+        <label id="stt_salario">Salário</label>
+        <input id="inpt_salario" type="number">
+        <label id="stt_creci">Creci</label>
+        <input id="inpt_creci" template="000000" validators=Length(minimum=6, maximum=6) valid_empty=True>
+
+    </div>
+    <select allow_blank=False, id="select_tabelas"></select>
+    <select allow_blank=False id="select_tabelas"></select>
+    <select allow_blank=False id="select_tabelas"></select>
+    <div id="imoveis">
+        <label>Imóveis:</label>
+        <button>Executar</button>
+    </div>
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><img src="assets/github-logo.png" alt=""></a>
+    </footer>
+</body>
+<!-- <script src="../js/login.js"></script> -->
+
+</html>

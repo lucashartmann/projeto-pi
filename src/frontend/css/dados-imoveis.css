@@ -1,0 +1,139 @@
+ img {
+     width: 104;
+     height: 30;
+     margin-bottom: 1;
+ }
+
+ #titulo label {
+     font-weight: bold;
+     margin: 2;
+ }
+
+ .titulo {
+     font-weight: bold;
+     margin: 1;
+ }
+
+ #descricao {
+     text-align: justify;
+     margin-left: 4;
+     width: 90%;
+ }
+
+ #imagem_imovel {
+     justify-self: center;
+     align-content: center;
+     height: 20;
+     width: 50%;
+ }
+
+ #dados_imovel div {
+     width: 100%;
+     height: auto;
+ }
+
+ img {
+     justify-self: center;
+     align-content: center;
+
+ }
+
+ #entrar_contato div {
+     border: 20% black;
+     height: auto;
+ }
+
+ #container_checkbox {
+     height: auto;
+     /* grid-size: 2; */
+     margin: 2;
+     width: 35%;
+ }
+
+ #container_info_imovel {
+     border: 15% black;
+ }
+
+ #container_info_condominio {
+     border: 15% black;
+ }
+
+ #titulo {
+     margin: 2;
+     margin-left: 5;
+     margin-right: 5;
+     overflow-y: hidden;
+     overflow-x: hidden;
+     border: 15% black;
+ }
+
+ .titulo {
+     border: 90% black;
+     width: auto;
+     height: auto;
+ }
+
+ #entrar_contato {
+     overflow-y: hidden;
+     overflow-x: hidden;
+     border: 15% black;
+     margin: 2;
+     margin-left: 5;
+     margin-right: 5;
+     width: 25%;
+     height: auto;
+ }
+
+ #dados_imovel {
+     margin: 2;
+     margin-left: 5;
+     margin-right: 5;
+     overflow-y: hidden;
+     overflow-x: hidden;
+     border: 15% black;
+     justify-self: center;
+     align-content: center;
+     height: auto;
+ }
+
+ checkbox {
+     background: transparent;
+ }
+
+ #galeria_fotos Image {
+     width: 12%;
+     height: 7;
+     margin: 0 1 0 0;
+ }
+
+
+ #galeria_fotos {
+     justify-self: center;
+     width: 100%;
+     height: auto;
+     margin-top: 2;
+ }
+
+
+ #whatsapp {
+     background: green;
+     border: green;
+     margin-left: 2;
+ }
+
+ #entrar_contato label {
+     width: 50%;
+     margin: 2;
+ }
+
+ #entrar_contato button {
+     margin: 2 2 2 5;
+ }
+
+ #entrar_contato #bt_contato {
+     margin: 2 2 2 15;
+ }
+
+ .valor {
+     color: rgba(73, 123, 52, 1);
+ }

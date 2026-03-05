@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/estoque.css">
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="../index.html">Página Inicial</a></li>
+            <!-- <li><a href="cadastro.html">Cadastro</a></li> -->
+            <!-- <li><a href="consulta.html">Consulta</a></li> -->
+            <li><a href="sobreNos.html">Sobre Nós</a></li>
+        </ul>
+    </nav>
+    <div id="container_filtragem">
+        <input placeholder="pesquise aqui">
+        <textarea read_only=True id="tx_dados"></textarea>
+        <div id="primeiro">
+            <label>Categoria</label>
+            <select prompt="Selecionar"></select>
+            <label>Status</label>
+            <select prompt="Selecionar"></select>
+        </div>
+        <div id="segundo">
+            <label>CEP</label>
+            <input suggester=SuggestFromList(self.ceps, case_sensitive=False)>
+            <label>Número</label>
+            <input>
+        </div>
+        <div id="h_filtro">
+            <select id="select_filtro"></select>
+            <button id="seta" flat=True>⬇️</button>
+        </div>
+        <div id="container_resultado"></div>
+    </div>
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><img src="assets/github-logo.png" alt=""></a>
+    </footer>
+</body>
+<!-- <script src="../js/login.js"></script> -->
+
+</html>

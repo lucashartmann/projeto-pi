@@ -1,0 +1,33 @@
+ #container_esperando,
+ #container_andamento,
+ #container_cadastrados,
+ #container_horizontal div label {
+     background: rgb(200, 200, 200);
+     margin: 2;
+ }
+
+
+ #container_horizontal div label:first-child {
+     height: 15%;
+     color: black;
+     text-align: center;
+     align-content: center;
+ }
+
+
+
+ ContainerCliente {
+     border: 15% black;
+     width: 100%;
+     height: auto;
+     margin: 4;
+ }
+
+ ContainerCliente label {
+     width: auto;
+     height: auto;
+     border: none;
+     margin: 0;
+     text-align: center;
+     align-content: center;
+ }

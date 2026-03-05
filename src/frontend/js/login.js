@@ -17,13 +17,13 @@ async function fazerLogin() {
         const dados = await resposta.json();
 
         if (resposta.ok && dados.status === "ok") {
-            alert("Login correto!");
-            return;
+            console.log("Login correto!");
+            window.location.href = "../html/cadastro-imovel.html";
+            return
         }
 
         alert("Login invalido!");
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
-        alert("Nao foi possivel conectar ao servidor. Verifique se o backend esta rodando.");
     }
 }

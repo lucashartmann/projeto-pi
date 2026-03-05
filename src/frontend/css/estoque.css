@@ -1,0 +1,160 @@
+ #container_filtragem {
+     border: black 10%;
+     margin: 5;
+     margin-bottom: 2;
+     margin-top: 0;
+ }
+
+
+ #container_resultado {
+     border: black 10%;
+     margin: 5;
+     margin-bottom: 2;
+     margin-top: 2;
+ }
+
+
+
+
+ textarea {
+     height: 5;
+     margin: 1;
+ }
+
+ input {
+     margin: 1;
+ }
+
+ #container_resultado {
+     height: auto;
+ }
+
+ #h_filtro {
+     width: auto;
+     min-width: 17%;
+     height: auto;
+ }
+
+
+ #h_filtro select {
+     width: auto;
+     min-width: 75%;
+ }
+
+ #h_filtro select label {
+     width: auto;
+ }
+
+
+ #h_filtro #seta {
+     background: transparent;
+     text-align: center;
+     height: 100%;
+     min-width: 0;
+     width: auto;
+     border: black 40%;
+     color: black;
+     margin: 0;
+ }
+
+
+ #h_filtro #seta:hover {
+     background: rgba(196, 191, 191, 1);
+ }
+
+
+ #container_filtragem {
+     width: 100%;
+     height: auto;
+ }
+
+ #container_filtragem select {
+     width: 20;
+ }
+
+
+ #container_filtragem label {
+     width: 12;
+ }
+
+ #segundo {
+     justify-self: center;
+     width: 100%;
+     height: auto;
+ }
+
+ #segundo input {
+     height: auto;
+     width: auto;
+     min-width: 10%;
+ }
+
+ #segundo label {
+     margin-top: 2;
+ }
+
+ #primeiro label {
+     margin-top: 1;
+ }
+
+ #primeiro select label {
+     margin-top: 0;
+ }
+
+ #primeiro {
+     justify-self: center;
+     width: 100%;
+     height: auto;
+ }
+
+
+ img {
+     width: 30;
+     height: 10;
+     margin-top: 1;
+ }
+
+ .imovel checkbox {
+     margin-top: 4;
+     margin-right: 4;
+     margin-left: 2;
+ }
+
+ .imovel {
+     background: rgb(200, 200, 200);
+     margin: 2 2 2 2;
+     height: 12;
+ }
+
+
+
+ .dados0 {
+     height: 100%;
+     margin-left: 2;
+ }
+
+ #container_data {
+     margin: 2;
+ }
+
+ #container_data label:first-child {
+     margin: 2 0 2 0;
+ }
+
+ .dados1 {
+     height: 100%;
+     margin: 1;
+ }
+
+ .dados2 {
+     height: 10;
+ }
+
+ .stt_bairro {
+     font-weight: bold;
+ }
+
+ .stt_ref {
+     border: black;
+     width: auto;
+ }

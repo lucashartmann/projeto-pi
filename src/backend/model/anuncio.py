@@ -3,7 +3,6 @@ class Anuncio:
         self.id = None
         self.descricao = None
         self.titulo = None
-        self.id = None
         self.imagens = []
         self.videos = []
         self.anexos = []

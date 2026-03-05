@@ -1,0 +1,152 @@
+ #h_buttons button {
+     margin-right: 2;
+ }
+
+ #h_buttons {
+     height: auto;
+     border: black 10%;
+     width: auto;
+     margin: 5;
+     margin-bottom: 0;
+     margin-top: 0;
+ }
+
+
+
+
+ textarea {
+     width: 70%;
+     min-height: 3;
+     height: auto;
+     color: black;
+ }
+
+ #imoveis,
+ #inpt_creci,
+ #stt_creci,
+ #stt_salario,
+ #inpt_salario {
+     display: none;
+ }
+
+ #bt_remover_numero {
+     display: none;
+     margin-left: 1;
+     color: red;
+ }
+
+ #container_telefones {
+     width: 100%;
+ }
+
+ #container_telefones button {
+     min-width: 0;
+     width: 10%;
+ }
+
+
+ #bt_remover_numero:hover {
+     background: red;
+     color: white;
+ }
+
+ input,
+ input {
+     width: 70%;
+     color: black;
+ }
+
+ button {
+     width: auto;
+ }
+
+ select {
+     width: 10%;
+     margin-left: 5;
+ }
+
+ div {
+     /* grid-size: 4; */
+     /* grid-gutter: 2; */
+     height: auto;
+     width: 100%;
+     border: black 10%;
+     margin: 5;
+     margin-top: 0;
+     margin-bottom: 1;
+     justify-self: center;
+ }
+
+
+ div {
+     height: auto;
+ }
+
+
+ html {
+     background: rgb(200, 200, 200);
+     color: black;
+ }
+
+
+ #input_descricao {
+     width: auto;
+     height: auto;
+ }
+
+ .tab {
+     color: black;
+ }
+
+ #imoveis {
+     width: 100%;
+     height: auto;
+     border: 15% black;
+     margin: 2 5 0 5;
+ }
+
+
+ img {
+     width: 30;
+     height: 10;
+     margin-top: 1;
+ }
+
+ .imovel {
+     background: rgb(200, 200, 200);
+     border: 15% black;
+     margin: 2 2 2 2;
+     height: 12;
+ }
+
+
+ .dados0 {
+     height: 100%;
+     margin-left: 2;
+ }
+
+ #container_data {
+     margin: 2;
+ }
+
+ #container_data label:first-child {
+     margin: 2 0 2 0;
+ }
+
+ .dados1 {
+     height: 100%;
+     margin: 1;
+ }
+
+ .dados2 {
+     height: 10;
+ }
+
+ .stt_bairro {
+     font-weight: bold;
+ }
+
+ .stt_ref {
+     border: black;
+     width: auto;
+ }

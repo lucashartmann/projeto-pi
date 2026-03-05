@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <!-- <link rel="stylesheet" href="../css/dados-cliente.css"> -->
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="../index.html">Página Inicial</a></li>
+            <!-- <li><a href="cadastro.html">Cadastro</a></li> -->
+            <!-- <li><a href="consulta.html">Consulta</a></li> -->
+            <li><a href="sobreNos.html">Sobre Nós</a></li>
+        </ul>
+    </nav>
+    <div>
+        <div>:
+            <label>Username</label>
+            <textarea id="inpt_username"></textarea>
+            <label>Nome</label>
+            <textarea id="inpt_nome"></textarea>
+            <label>CPF/CNPJ</label>
+            <input template="000.000.000-00" id="inpt_cpf" validators=Length(minimum=11, maximum=14) valid_empty=True>
+            <label>RG</label>
+            <input id="inpt_rg" placeholder="RG aqui" validators=Length(minimum=7, maximum=9) valid_empty=True>
+            <label>"Telefone"</label>
+            <input template="(00) 00000-0000" id="inpt_telefone">
+            <label>Endereco</label>
+            <label>Email</label>
+            <textarea id="inpt_email"></textarea>
+            <label>Senha</label>
+            <input placeholder="alterar senha" id="inpt_senha" password=True>
+            <label id="stt_data_nascimento">Data de nascimento</label>
+            <input template="00/00/0000" id="inpt_data_nascimento" validators=Length(minimum=10, maximum=10)
+                valid_empty=True>
+        </div>
+        <div>:
+            <label>Quartos</label>
+            <input template="00">
+            <label>Banheiros</label>
+            <input template="00">
+            <label>CEP desejado</label>
+            <input template="00000-000">
+        </div>
+        <div>:
+            <button>Salvar</button>
+            <label id="stt_compras">Imoveis do usuário</label>
+        </div>
+    </div>
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><img src="assets/github-logo.png" alt=""></a>
+    </footer>
+</body>
+<!-- <script src="../js/login.js"></script> -->
+
+</html>

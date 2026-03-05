@@ -1,0 +1,34 @@
+html {
+    background: rgba(15, 13, 13, 1);
+}
+
+
+div {
+    background: black;
+    justify-self: center;
+    margin: 2;
+    width: 30;
+    height: 20;
+}
+
+label {
+    color: white;
+}
+
+div label {
+    background: rgba(57, 51, 51, 1);
+    height: 40%;
+    margin: 1;
+    text-align: center;
+    color: white;
+}
+
+div {
+    /* grid-size: 4; */
+    background: rgba(15, 13, 13, 1);
+    justify-self: center;
+}
+
+.valor {
+    color: rgba(73, 123, 52, 1);
+}
