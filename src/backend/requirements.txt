@@ -12,7 +12,6 @@ typing_extensions
 uc-micro-py
 psutil
 requests
-# ngrok
 pymupdf
 python-docx
 beautifulsoup4
