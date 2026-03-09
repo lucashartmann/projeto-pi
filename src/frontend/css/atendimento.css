@@ -1,0 +1,22 @@
+#container_horizontal {
+    display: flex;
+    gap: 200px;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+}
+
+#container_horizontal div {
+    margin-top: 50px;
+}
+
+.container {
+    width: 200%;
+    background: var(--background-nav);
+    height: 500px;
+}
+
+#container_horizontal label {
+    text-align: center;
+    justify-self: center;
+}

@@ -94,3 +94,7 @@ label {
     width: 90px;
     height: 30px;
 }
+
+.active {
+    border: dashed green 1px;
+}
