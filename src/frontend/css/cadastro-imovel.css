@@ -11,24 +11,36 @@
 }
 
 #h_buttons {
-    background: var(--background-nav);
-    margin: 10px 0 0 20px;
+    display: flex;
+    margin: 10px 0 20px 20px;
     width: 20%;
     height: 45px;
     justify-self: center;
+    gap: 10px;
 }
 
-#bt_apagar_cadastro {
-    background-color: red;
-    border: none;
+#h_buttons button {
     width: 50%;
     height: 100%;
 }
 
-#bt_salvar_alteracoes {
-    background-color: green;
-    height: 100%;
-    width: 40%;
+#container_anuncio {
+    justify-self: center;
+    align-self: center;
+    margin: 50px 10px 20px 10px;
+    /* width: 80%; */
+    justify-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#container_anuncio textarea{
+    width: 100%;
+    gap: 50px;
+}
+
+#container_anuncio #ta_descricao_anuncio {
+    height: 30px;
 }
 
 #container_cadastro {
@@ -36,7 +48,7 @@
     align-self: center;
     margin: 50px 10px 20px 10px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 2fr));
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 2fr));
     row-gap: 30px;
     column-gap: 20px;
     width: 80%;
@@ -57,4 +69,28 @@
 
 #container_imagens {
     margin-top: 50px;
+}
+
+textarea {
+    height: 90%;
+    font-size: 120%;
+}
+
+input {
+    height: 140%;
+    font-size: 100%;
+}
+
+label {
+    font-size: 120%;
+    font-weight: 500;
+}
+
+.tab button {
+    /* background-color: rgba(32, 151, 24, 0.8); */
+    /* border: solid 2px rgba(17, 66, 13, 0.5); */
+    font-weight: 600;
+    font-size: 100%;
+    width: 90px;
+    height: 30px;
 }

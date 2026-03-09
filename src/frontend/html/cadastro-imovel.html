@@ -19,8 +19,8 @@
         </ul>
     </nav>
     <div id="h_buttons">
-        <button id="bt_apagar_cadastro">Apagar</button>
-        <button id="bt_salvar_alteracoes">Salvar</button>
+        <button class="bt_delete">Apagar</button>
+        <button class="bt_success">Salvar</button>
     </div>
     <div class="tab">
         <button class="tablinks" id="tab_imovel" onclick="openTab(event, 'container_cadastro')"
@@ -45,58 +45,53 @@
         <label for="" id="stt_nome_condominio">Nome do Condomínio</label>
         <textarea name="" id="ta_nome_condominio"></textarea>
         <label for="" id="stt_ano_construcao">Ano de Construção</label>
-        <input type="text" template="0000" id="ta_ano_construcao" validators=Length(minimum=4, maximum=4)
-            valid_empty=True>
+        <input type="date" placeholder="0000" id="ta_ano_construcao" minlength="4" maxlength="4">
         <label for="" id="stt_cep">CEP</label>
-        <input type="text" template="00000-000" id="ta_cep" validators=Length(minimum=9, maximum=9) valid_empty=False>
+        <input type="number" placeholder="00000-000" id="ta_cep" required minlength="9" maxlength="9">
         <label for="" id="stt_rua">Rua</label>
         <textarea name="" id="ta_rua" disabled=True></textarea>
         <label for="" id="stt_numero">Número</label>
-        <input type="text" id="ta_numero" type="integer" valid_empty=True>
+        <input type="text" id="ta_numero" type="integer">
         <label for="" id="stt_complemento">Complemento</label>
         <textarea name="" id="ta_complemento"></textarea>
         <label for="" id="stt_bloco">Bloco</label>
         <textarea name="" id="ta_bloco"></textarea>
         <label for="" id="stt_andar">Andar</label>
-        <input type="text" template="00" id="ta_andar" validators=Length(minimum=1, maximum=2 valid_empty=True>
+        <input type="number" placeholder="00" id="ta_andar" minlength="1" maxlength="2">
         <label for="" id="stt_bairro">Bairro</label>
         <textarea name="" id="ta_bairro" disabled=True></textarea>
         <label for="" id="stt_cidade">Cidade</label>
         <textarea name="" id="ta_cidade" disabled=True></textarea>
         <label for="" id="stt_estado">Estado</label>
-        <input type="text" disabled=True, template="XX" , id="ta_estado" , validators=Length(minimum=2, maximum=2)>
+        <input type="text" disabled=True, placeholder="XX"  id="ta_estado" minlength="2" maxlength="2">
         <label for="" id="stt_salas">Salas</label>
-        <input type="text" template="00" id="ta_salas" validators=Length(minimum=1, maximum=2) valid_empty=True>
+        <input type="number" placeholder="00" id="ta_salas" minlength="1" maxlength="2">
         <label for="" id="stt_banheiros">Banheiros</label>
-        <input type="text" template="00" id="ta_banheiros" validators=Length(minimum=1, maximum=2) valid_empty=True>
+        <input type="number" placeholder="00" id="ta_banheiros" minlength="1" maxlength="2">
         <label for="" id="stt_vagas">Vagas</label>
-        <input type="text" template="00" id="ta_vagas" validators=Length(minimum=1, maximum=2) valid_empty=True>
+        <input type="number" placeholder="00" id="ta_vagas" minlength="1" maxlength="2">
         <label for="" id="stt_varandas">Varandas</label>
-        <input type="text" template="00" id="ta_varandas" validators=Length(minimum=1, maximum=2) valid_empty=True>
+        <input type="number" placeholder="00" id="ta_varandas" minlength="1" maxlength="2">
         <label for="" id="stt_quartos">Quartos</label>
-        <input type="text" template="00" id="ta_quartos" validators=Length(minimum=1, maximum=2) valid_empty=True>
+        <input type="number" placeholder="00" id="ta_quartos" minlength="1" maxlength="2">
         <label for="" id="stt_area_total">Área Total</label>
-        <input type="text" id="ta_area_total" type="number">
+        <input type="number" id="ta_area_total" type="number">
         <label for="" id="stt_area_privativa">Área Privativa</label>
-        <input type="text" id="ta_area_privativa" type="number">
+        <input type="number" id="ta_area_privativa" type="number">
         <label for="" id="stt_venda">Valor Venda:</label>
-        <input type="text" id="ta_venda" type="number">
+        <input type="number" id="ta_venda" type="number">
         <label for="" id="stt_aluguel">Valor Aluguel:</label>
-        <input type="text" id="ta_aluguel" type="number">
+        <input type="number" id="ta_aluguel" type="number">
         <label for="" id="stt_condominio">Valor Condomínio:</label>
-        <input type="text" id="ta_condominio" type="number">
+        <input type="number" id="ta_condominio" type="number">
         <label for="" id="stt_iptu">Valor IPTU:</label>
-        <input type="text" id="ta_iptu" type="number">
+        <input type="number" id="ta_iptu" type="number">
     </div>
     <div id="container_anuncio" style="display: none;" role="tabpanel" class="tabcontent">
         <label for="">Titulo</label>
-        <div>
-            <textarea name="" id="ta_titulo_anuncio"></textarea>
-        </div>
+        <textarea name="" id="ta_titulo_anuncio"></textarea>
         <label for="">Descriçao</label>
-        <div>
-            <textarea name="" id="ta_descricao_anuncio"></textarea>
-        </div>
+        <textarea name="" id="ta_descricao_anuncio"></textarea>
         <label for="">Apartamento</label>
         <div id="container_info_imovel">
             <label for="">Condomínio</label>

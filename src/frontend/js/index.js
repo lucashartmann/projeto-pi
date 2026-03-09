@@ -14,7 +14,7 @@ async function listarImoveis() {
 }
 
 async function carregarAnuncios() {
-    const dados = await listarImoveis(); 
+    const dados = await listarImoveis();
     const section = document.getElementById("anuncios");
 
     console.log(dados)
@@ -40,14 +40,14 @@ async function carregarAnuncios() {
         p_localizacao.textContent = `${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}`;
         div.appendChild(p_localizacao);
 
-        if (imovel.endereco.valor_venda){
+        if (imovel.endereco.valor_venda) {
             const p_preco_venda = document.createElement("p");
             const span_preco_venda = document.createElement("span");
             span_preco_venda.textContent = imovel.endereco.valor_venda;
             p_preco_venda.innerText = "Preço:";
             p_preco_venda.appendChild(span_preco_venda);
             div.appendChild(p_preco_venda);
-        }else if (imovel.endereco.valor_aluguel){
+        } else if (imovel.endereco.valor_aluguel) {
             const p_preco_aluguel = document.createElement("p");
             p_preco_aluguel.textContent = imovel.endereco.valor_aluguel;
             div.appendChild(p_preco_aluguel);
