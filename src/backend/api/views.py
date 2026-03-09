@@ -1,9 +1,12 @@
+from datetime import datetime
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from backend.model import condominio, endereco, imovel, anuncio
 from model import Init
+from database.banco import Banco
 import base64
-
+from controller import controller
 
 def _com_cors(resposta: JsonResponse) -> JsonResponse:
     resposta["Access-Control-Allow-Origin"] = "*"
@@ -11,6 +14,119 @@ def _com_cors(resposta: JsonResponse) -> JsonResponse:
     resposta["Access-Control-Allow-Headers"] = "Content-Type"
     return resposta
 
+@csrf_exempt
+def getImovelPorId(request, id):
+    if request.method == "OPTIONS":
+        return _com_cors(JsonResponse({"status": "ok"}))
+    #TODO: implementar
+
+@csrf_exempt
+def cadastrar_imovel(request):
+    if request.method == "OPTIONS":
+        return _com_cors(JsonResponse({"status": "ok"}))
+    
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, TypeError):
+            return _com_cors(JsonResponse({"erro": "JSON invalido"}, status=400))
+        
+        id = int(data.get("ref")) if data.get("ref") else None
+        nome_condominio = data.get("nome_condominio") if data.get("nome_condominio") else None
+        valor_venda = float(data.get("valor_venda", 0))
+        valor_aluguel = float(data.get("valor_aluguel", 0))
+        quant_quartos = int(data.get("quant_quartos", 0))
+        quant_salas = int(data.get("quant_salas", 0))
+        quant_vagas = int(data.get("quant_vagas", 0))
+        quant_banheiros = int(data.get("quant_banheiros", 0))
+        quant_varandas = int(data.get("quant_varandas", 0))
+        categoria = imovel.Categoria(data.get("categoria")) if data.get("categoria") else None
+        status = imovel.Status(data.get("status")) if data.get("status") else None
+        iptu = float(data.get("iptu", 0))
+        valor_condominio = float(data.get("valor_condominio", 0))
+        andar = int(data.get("andar", 0))
+        estado = imovel.Estado(data.get("estado")) if data.get("estado") else None
+        bloco = data.get("bloco")
+        ano_construcao = int(data.get("ano_construcao"))
+        area_total = float(data.get("area_total", 0))
+        area_privativa = float(data.get("area_privativa", 0))
+        situacao = imovel.Situacao(data.get("situacao")) if data.get("situacao") else None
+        ocupacao = imovel.Ocupacao(data.get("ocupacao")) if data.get("ocupacao") else None
+        # proprietarios = data.get("proprietarios", [])
+        # corretor = data.get("corretor")
+        # captador = data.get("captador")
+        cep = int(data.get("cep")) if data.get("cep") else None
+        rua = data.get("rua") if data.get("rua") else None
+        bairro = data.get("bairro") if data.get("bairro") else None
+        cidade = data.get("cidade") if data.get("cidade") else None
+        titulo = data.get("titulo")  if data.get("titulo") else None
+        descricao = data.get("descricao") if data.get("descricao") else None
+        complemento = data.get("complemento") if data.get("complemento") else None
+        uf = data.get("uf") if data.get("uf") else None
+        numero = int(data.get("numero")) if data.get("numero") else None
+        anuncio_obj = anuncio.Anuncio()
+        anuncio_obj.set_titulo(titulo)
+        anuncio_obj.set_descricao(descricao)
+        endereco_obj = endereco.Endereco(rua, bairro, cep, cidade, estado)
+        endereco_obj.set_numero(numero)
+        endereco_obj.set_complemento(complemento)
+        endereco_obj.set_uf(uf)
+        condominio_obj = condominio.Condominio(
+                        nome_condominio, endereco_obj)
+        # imagens = anuncio.get("imagens", [])
+        # imagens_bytes = []
+        # for imagem in imagens:
+        #     try:
+        #         imagem_bytes = base64.b64decode(imagem)
+        #         imagens_bytes.append(imagem_bytes)
+        #     except (base64.binascii.Error, ValueError):
+        #         continue
+        # anuncio_obj.set_imagens(imagens_bytes)
+        # condominio = data.get("condominio")
+        # filtros = data.get("filtros", [])
+        
+  
+        imovel_obj = None
+        if id:
+            imovel_obj = Init.imobiliaria.get_imovel_por_id(id)
+        else:
+            imovel_obj = imovel.Imovel(endereco_obj, status, categoria)
+            
+        imovel_obj.set_id(id)
+        imovel_obj.set_valor_venda(valor_venda)
+        imovel_obj.set_valor_aluguel(valor_aluguel)
+        imovel_obj.set_quant_quartos(quant_quartos)
+        imovel_obj.set_quant_salas(quant_salas)
+        imovel_obj.set_quant_vagas(quant_vagas)
+        imovel_obj.set_quant_banheiros(quant_banheiros)
+        imovel_obj.set_quant_varandas(quant_varandas)
+        imovel_obj.set_categoria(categoria)
+        imovel_obj.set_endereco(endereco_obj)
+        imovel_obj.set_status(status)
+        imovel_obj.set_iptu(iptu)
+        imovel_obj.set_valor_condominio(valor_condominio)
+        imovel_obj.set_andar(andar)
+        imovel_obj.set_estado(estado)
+        imovel_obj.set_bloco(bloco)
+        imovel_obj.set_ano_construcao(ano_construcao)
+        imovel_obj.set_area_total(area_total)
+        imovel_obj.set_area_privativa(area_privativa)
+        imovel_obj.set_situacao(situacao)
+        imovel_obj.set_ocupacao(ocupacao)
+        # imovel_obj.set_corretor(corretor)
+        # imovel_obj.set_captador(captador)
+        imovel_obj.set_anuncio(anuncio_obj)
+        imovel_obj.set_condominio(condominio_obj)
+        
+        if id:
+            imovel_obj.set_data_modificacao(datetime.datetime.now())
+            controller.editar_imovel(
+                imovel_obj)
+        else:
+            controller.cadastrar_imovel(
+                imovel_obj)
+
+        return _com_cors(JsonResponse({"status": "ok"}))
 
 @csrf_exempt
 def deslogar(request):

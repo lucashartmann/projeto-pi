@@ -61,7 +61,8 @@ async function carregarAnuncios() {
 }
 
 async function abrirAnuncio(imovel_id) {
-    return;
+    sessionStorage.setItem("imovel_id", imovel_id);
+    window.location.href = "../html/dados-imovel.html";
 }
 window.addEventListener("DOMContentLoaded", () => {
     carregarAnuncios();

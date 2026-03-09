@@ -1,3 +1,60 @@
+function salvar() {
+    var form = document.getElementsByName("form");
+    var data = {};
+
+    for (formulario of form) {
+        var formData = new FormData(form);
+        formData.forEach(function(value, key) {
+            data[key] = value;
+        });
+    };
+
+    if (data) {
+        try {
+            fetch("http://localhost:3000/imoveis/cadastrar/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Imóvel cadastrado com sucesso:", data);
+            })
+            .catch(error => {
+                console.error("Erro ao cadastrar imóvel:", error);
+            });
+        } catch (error) {
+            console.error("Erro ao enviar dados do imóvel:", error);
+        }
+
+    }
+
+    console.log("Dados do imóvel a serem enviados:", data);
+}
+
+function excluir() {
+    try {
+        fetch("http://localhost:3000/imoveis/excluir/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ ref: 1 })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Imóvel excluído com sucesso:", data);
+        })
+        .catch(error => {
+            console.error("Erro ao excluir imóvel:", error);
+        });
+    } catch (error) {
+        console.error("Erro ao enviar dados para exclusão do imóvel:", error);
+    }
+}
+
 var tabDisplays = {};
 
 function hideAllTabContents() {
