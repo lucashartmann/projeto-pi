@@ -63,5 +63,7 @@ async function carregarAnuncios() {
 async function abrirAnuncio(imovel_id) {
     return;
 }
+window.addEventListener("DOMContentLoaded", () => {
+    carregarAnuncios();
+});
 
-carregarAnuncios()

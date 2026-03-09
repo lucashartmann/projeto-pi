@@ -13,12 +13,19 @@ function openTab(evt, tabId) {
         displays[tabId] = "block";
     }
     document.getElementById(tabId).style.display = displays[tabId];
+
+    sessionStorage.setItem("tab", tabId);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("tab_imovel")?.classList.add("active");
-    var tabcontent = document.getElementsByClassName("tabcontent");
-    for (var i = 0; i < tabcontent.length; i++) {
-        displays[tabcontent[i].id] = tabcontent[i].style.display;
+    const tab = sessionStorage.getItem("tab");
+    if (tab) {
+        openTab(tab);
+    } else {
+        document.getElementById("tab_imovel")?.classList.add("active");
+        var tabcontent = document.getElementsByClassName("tabcontent");
+        for (var i = 0; i < tabcontent.length; i++) {
+            displays[tabcontent[i].id] = tabcontent[i].style.display;
+        }
     }
 });
