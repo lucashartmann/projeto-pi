@@ -89,7 +89,9 @@ input:valid {
 
 button {
     cursor: pointer;
+    font-size: 100%;
 }
+
 
 .bt_delete {
     background-color: rgb(151, 24, 24, 0.7);

@@ -13,6 +13,109 @@ async function listarImoveis() {
     }
 }
 
+function imovelPrincipal(dados) {
+    while (true) {
+        var randomIndex = Math.floor(Math.random() * dados.length);
+        var imovel = dados[randomIndex];
+        var b64 = imovel.anuncio?.imagens?.[0];
+        if (b64) {
+            break;
+        }
+    }
+
+    var banner = document.getElementById("imovelDestaque");
+    var img = document.createElement("img");
+    img.id = "imgDestaque";
+    img.src = `data:image/jpeg;base64,${b64}`;
+    img.style.cursor = "pointer";
+    img.onclick = () => abrirAnuncio(imovel.id);
+    if (!banner) return;
+    banner.appendChild(img);
+    var titulo = imovel.anuncio.titulo;
+    var p_titulo = document.createElement("h2");
+    p_titulo.className = "sobrepor";
+    p_titulo.textContent = titulo;
+    banner.appendChild(p_titulo);
+    if (imovel.valor_venda) {
+        var p_preco_venda = document.createElement("p");
+        p_preco_venda.className = "sobrepor";
+        p_preco_venda.textContent = imovel.valor_venda;
+        banner.appendChild(p_preco_venda);
+    } else if (imovel.valor_aluguel) {
+        var p_preco_aluguel = document.createElement("p");
+        p_preco_aluguel.className = "sobrepor";
+        p_preco_aluguel.textContent = imovel.valor_aluguel;
+        banner.appendChild(p_preco_aluguel);
+    }
+}
+
+function proximoAnuncio() {
+    var imagens = document.getElementsByClassName("imgBanner");
+    const atual = document.querySelector(".imgBanner:nth-child(1+n)");
+    var proximo;
+    for (var i = 0; i < imagens.length; i++) {
+        if (imagens[i] === atual) {
+            proximo = imagens[(i + 1) % imagens.length];
+            break;
+        }
+    }
+    if (proximo) {
+        proximo.style.display = "block";
+    }
+    atual.style.display = "none";
+}
+
+function anuncioAnterior() {
+    var imagens = document.getElementsByClassName("imgBanner");
+    const atual = document.querySelector(".imgBanner:nth-child(1+n)");
+    var anterior;
+    for (var i = 0; i < imagens.length; i++) {
+        if (imagens[i] === atual) {
+            anterior = imagens[(i - 1 + imagens.length) % imagens.length];
+            break;
+        }
+    }
+    if (anterior) {
+        anterior.style.display = "block";
+    }
+    atual.style.display = "none";
+
+}
+
+
+function bannerImoveis(dados) {
+    var banner = document.getElementById("principaisAnuncios");
+    for (var i = 0; i < 5; i++) {
+        var imovel = dados[i];
+        var b64 = imovel.anuncio?.imagens?.[0];
+        if (!b64) {
+            break;
+        }
+        var img = document.createElement("img");
+        img.className = "imgBanner";
+        img.src = `data:image/jpeg;base64,${b64}`;
+        img.onclick = () => abrirAnuncio(imovel.id);
+        if (!banner) return;
+        banner.appendChild(img);
+        var titulo = imovel.anuncio.titulo;
+        var p_titulo = document.createElement("h2");
+        p_titulo.className = "sobrepor";
+        p_titulo.textContent = titulo;
+        banner.appendChild(p_titulo);
+        if (imovel.valor_venda) {
+            var p_preco_venda = document.createElement("p");
+            p_preco_venda.className = "sobrepor";
+            p_preco_venda.textContent = imovel.valor_venda;
+            banner.appendChild(p_preco_venda);
+        } else if (imovel.valor_aluguel) {
+            var p_preco_aluguel = document.createElement("p");
+            p_preco_aluguel.className = "sobrepor";
+            p_preco_aluguel.textContent = imovel.valor_aluguel;
+            banner.appendChild(p_preco_aluguel);
+        }
+    }
+}
+
 async function carregarAnuncios() {
     const dados = await listarImoveis();
     const section = document.getElementById("anuncios");
@@ -58,11 +161,14 @@ async function carregarAnuncios() {
 
         section.appendChild(div);
     }
+
+    imovelPrincipal(dados);
+    bannerImoveis(dados);
 }
 
 async function abrirAnuncio(imovel_id) {
     sessionStorage.setItem("imovel_id", imovel_id);
-    window.location.href = "../html/dados-imovel.html";
+    window.location.href = "html/dados-imovel.html";
 }
 window.addEventListener("DOMContentLoaded", () => {
     carregarAnuncios();

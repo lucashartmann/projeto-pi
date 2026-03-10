@@ -1,7 +1,6 @@
 #imovelDestaque {
     background: rgb(135, 126, 126, 0.2);
-    width: 70%;
-    height: 150px;
+    width: 50%;
     margin: 30px 6px 0px 6px;
     border: solid rgba(47, 45, 45, 0.2) 2px;
     border-radius: 3px;
@@ -10,7 +9,10 @@
     align-items: center;
     justify-content: center;
     justify-self: center;
+    position: relative;
+    height: 27rem;
 }
+
 
 section#anuncios {
     justify-items: center;
@@ -25,7 +27,7 @@ section#anuncios {
 
 .anuncio_imovel {
     background: rgb(135, 126, 126, 0.2);
-    width: 80%;
+    width: 70%;
     justify-items: center;
 }
 
@@ -48,22 +50,26 @@ section#anuncios {
 #principaisAnuncios {
     background: rgb(135, 126, 126, 0.2);
     width: 80%;
-    height: 150px;
+    height: 22rem;
     margin: 50px auto 10px auto;
     border: solid rgba(47, 45, 45, 0.2) 2px;
     border-radius: 3px;
     box-shadow: 0.1px 0.1px 3px black;
     display: flex;
     align-items: center;
+    position: relative;
+    gap:10px;
 }
 
 .setas#setaDireita {
-    margin-left: auto;
+    margin-left: 1010px;
+    position: absolute;
     margin-right: 13px;
 }
 
 .setas#setaEsquerda {
-    margin-right: auto;
+    margin-right: 0px;
+    position: absolute;
     margin-left: 13px;
 }
 
@@ -71,9 +77,63 @@ section#anuncios {
     text-align: center;
     align-content: center;
     height: auto;
+    position: absolute;
+    z-index: 2;
+    height: auto;
+    width: 4%;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .setas:hover {
-    color: rgba(139, 49, 49, 0.8);
+    background: rgba(139, 49, 49, 0.8);
     cursor: pointer;
+}
+
+#principaisAnuncios h2 {
+    margin: 20rem 28rem 0rem 0rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    width: auto;
+    height: auto;
+    z-index: 1;
+}
+
+#principaisAnuncios p {
+    z-index: 2;
+}
+
+#imovelDestaque p {
+    z-index: 2;
+}
+
+#imovelDestaque h2 {
+    margin: 22rem 29rem 0rem 0rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    width: auto;
+    height: auto;
+    z-index: 1;
+}
+
+.sobrepor {
+    position: absolute;
+    z-index: 1;
+}
+
+#imgDestaque {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    object-fit: fill;
+}
+
+.imgBanner {
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    object-fit: fill;
+}
+
+.imgBanner:nth-child(1+n) {
+    display: none;
 }

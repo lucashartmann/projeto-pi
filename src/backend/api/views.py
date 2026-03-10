@@ -2,11 +2,13 @@ from datetime import datetime
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from backend.model import condominio, endereco, imovel, anuncio
+from model import condominio, endereco, imovel, anuncio
 from model import Init
 from database.banco import Banco
 import base64
 from controller import controller
+import logging
+
 
 def _com_cors(resposta: JsonResponse) -> JsonResponse:
     resposta["Access-Control-Allow-Origin"] = "*"
@@ -14,25 +16,64 @@ def _com_cors(resposta: JsonResponse) -> JsonResponse:
     resposta["Access-Control-Allow-Headers"] = "Content-Type"
     return resposta
 
+
 @csrf_exempt
 def getImovelPorId(request, id):
     if request.method == "OPTIONS":
         return _com_cors(JsonResponse({"status": "ok"}))
-    #TODO: implementar
+    if request.method == "GET":
+        print(id)
+        logging.info(f"Requisição para obter imóvel com ID: {id}")
+        imovel_obj = Init.imobiliaria.get_imovel_por_id(int(id))
+        print(imovel_obj)
+        if imovel_obj:
+            resposta = {
+                "id": imovel_obj.get_id(),
+                "valor_venda": imovel_obj.get_valor_venda(),
+                "valor_condominio": imovel_obj.get_valor_condominio(),
+                "valor_iptu": imovel_obj.get_iptu(),
+                "valor_aluguel": imovel_obj.get_valor_aluguel(),
+                "categoria": imovel_obj.get_categoria().value if imovel_obj.get_categoria() else None,
+                "status": imovel_obj.get_status().value if imovel_obj.get_status() else None,
+                "endereco": {
+                    "rua": imovel_obj.get_endereco().rua,
+                    "numero": imovel_obj.get_endereco().numero,
+                    "bairro": imovel_obj.get_endereco().bairro,
+                    "cidade": imovel_obj.get_endereco().cidade,
+                    "uf": imovel_obj.get_endereco().uf,
+                    "cep": imovel_obj.get_endereco().cep,
+                    "complemento": imovel_obj.get_endereco().complemento,
+                } if imovel_obj.get_endereco() else None,
+                "anuncio": {
+                    "id": imovel_obj.get_anuncio().get_id(),
+                    "descricao": imovel_obj.get_anuncio().get_descricao(),
+                    "titulo": imovel_obj.get_anuncio().get_titulo(),
+                    "imagens": [
+                        base64.b64encode(imagem.getvalue()).decode("utf-8")
+                        for imagem in imovel_obj.get_anuncio().get_imagens()
+                    ] if imovel_obj.get_anuncio() and imovel_obj.get_anuncio().get_imagens() else []
+                } if imovel_obj.get_anuncio() else None,
+            }
+            return _com_cors(JsonResponse(resposta))
+        else:
+            return _com_cors(JsonResponse({"erro": "Imovel nao encontrado"}, status=404))
+    return _com_cors(JsonResponse({"erro": "Metodo invalido"}, status=405))
+
 
 @csrf_exempt
 def cadastrar_imovel(request):
     if request.method == "OPTIONS":
         return _com_cors(JsonResponse({"status": "ok"}))
-    
+
     if request.method == "POST":
         try:
             data = json.loads(request.body)
         except (json.JSONDecodeError, TypeError):
             return _com_cors(JsonResponse({"erro": "JSON invalido"}, status=400))
-        
+
         id = int(data.get("ref")) if data.get("ref") else None
-        nome_condominio = data.get("nome_condominio") if data.get("nome_condominio") else None
+        nome_condominio = data.get("nome_condominio") if data.get(
+            "nome_condominio") else None
         valor_venda = float(data.get("valor_venda", 0))
         valor_aluguel = float(data.get("valor_aluguel", 0))
         quant_quartos = int(data.get("quant_quartos", 0))
@@ -40,18 +81,23 @@ def cadastrar_imovel(request):
         quant_vagas = int(data.get("quant_vagas", 0))
         quant_banheiros = int(data.get("quant_banheiros", 0))
         quant_varandas = int(data.get("quant_varandas", 0))
-        categoria = imovel.Categoria(data.get("categoria")) if data.get("categoria") else None
-        status = imovel.Status(data.get("status")) if data.get("status") else None
+        categoria = imovel.Categoria(
+            data.get("categoria")) if data.get("categoria") else None
+        status = imovel.Status(
+            data.get("status")) if data.get("status") else None
         iptu = float(data.get("iptu", 0))
         valor_condominio = float(data.get("valor_condominio", 0))
         andar = int(data.get("andar", 0))
-        estado = imovel.Estado(data.get("estado")) if data.get("estado") else None
+        estado = imovel.Estado(
+            data.get("estado")) if data.get("estado") else None
         bloco = data.get("bloco")
         ano_construcao = int(data.get("ano_construcao"))
         area_total = float(data.get("area_total", 0))
         area_privativa = float(data.get("area_privativa", 0))
-        situacao = imovel.Situacao(data.get("situacao")) if data.get("situacao") else None
-        ocupacao = imovel.Ocupacao(data.get("ocupacao")) if data.get("ocupacao") else None
+        situacao = imovel.Situacao(
+            data.get("situacao")) if data.get("situacao") else None
+        ocupacao = imovel.Ocupacao(
+            data.get("ocupacao")) if data.get("ocupacao") else None
         # proprietarios = data.get("proprietarios", [])
         # corretor = data.get("corretor")
         # captador = data.get("captador")
@@ -59,9 +105,10 @@ def cadastrar_imovel(request):
         rua = data.get("rua") if data.get("rua") else None
         bairro = data.get("bairro") if data.get("bairro") else None
         cidade = data.get("cidade") if data.get("cidade") else None
-        titulo = data.get("titulo")  if data.get("titulo") else None
+        titulo = data.get("titulo") if data.get("titulo") else None
         descricao = data.get("descricao") if data.get("descricao") else None
-        complemento = data.get("complemento") if data.get("complemento") else None
+        complemento = data.get("complemento") if data.get(
+            "complemento") else None
         uf = data.get("uf") if data.get("uf") else None
         numero = int(data.get("numero")) if data.get("numero") else None
         anuncio_obj = anuncio.Anuncio()
@@ -72,7 +119,7 @@ def cadastrar_imovel(request):
         endereco_obj.set_complemento(complemento)
         endereco_obj.set_uf(uf)
         condominio_obj = condominio.Condominio(
-                        nome_condominio, endereco_obj)
+            nome_condominio, endereco_obj)
         # imagens = anuncio.get("imagens", [])
         # imagens_bytes = []
         # for imagem in imagens:
@@ -84,14 +131,13 @@ def cadastrar_imovel(request):
         # anuncio_obj.set_imagens(imagens_bytes)
         # condominio = data.get("condominio")
         # filtros = data.get("filtros", [])
-        
-  
+
         imovel_obj = None
         if id:
             imovel_obj = Init.imobiliaria.get_imovel_por_id(id)
         else:
             imovel_obj = imovel.Imovel(endereco_obj, status, categoria)
-            
+
         imovel_obj.set_id(id)
         imovel_obj.set_valor_venda(valor_venda)
         imovel_obj.set_valor_aluguel(valor_aluguel)
@@ -117,7 +163,7 @@ def cadastrar_imovel(request):
         # imovel_obj.set_captador(captador)
         imovel_obj.set_anuncio(anuncio_obj)
         imovel_obj.set_condominio(condominio_obj)
-        
+
         if id:
             imovel_obj.set_data_modificacao(datetime.datetime.now())
             controller.editar_imovel(
@@ -127,6 +173,7 @@ def cadastrar_imovel(request):
                 imovel_obj)
 
         return _com_cors(JsonResponse({"status": "ok"}))
+
 
 @csrf_exempt
 def deslogar(request):

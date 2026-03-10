@@ -7,5 +7,5 @@ urlpatterns = [
     path("usuario/", carregar_usuario, name="carregar_usuario"),
     path("deslogar/", deslogar, name='deslogar'),
     path("imoveis/cadastrar/", cadastrar_imovel, name="cadastrar_imovel"),
-    path("imoveis/<int:id>/", getImovelPorId(id), name="getImovelPorId"), # TODO: implementar
+    path("imoveis/<int:id>/", getImovelPorId, name="getImovelPorId"),
 ]
