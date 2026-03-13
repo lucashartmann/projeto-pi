@@ -655,7 +655,7 @@ App.tamanho-64 TelaCadastroImovel {
     #container_cadastro { 
         grid-size: 4; 
         grid-columns: auto;
-        background: blue;
+        # background: blue;
         grid-gutter: 2;
         grid-rows: auto;
         height: auto;
@@ -686,7 +686,7 @@ App.tamanho-64 TelaCadastroImovel {
     #container_cadastro { 
         grid-size: 6; 
         grid-columns: auto;
-        background: green;
+        # background: green;
         grid-gutter: 2;
         grid-rows: auto;
         height: auto;
@@ -719,7 +719,7 @@ App.tamanho-128 TelaCadastroImovel{
         grid-columns: auto;
         grid-rows: auto;
         grid-gutter: 2;
-        background: purple;
+        # background: purple;
         height: auto;
         #select_status {
             width: 100%;
