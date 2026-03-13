@@ -1,22 +1,40 @@
 #container_horizontal {
-    display: flex;
-    gap: 200px;
-    justify-items: center;
-    justify-content: center;
-    justify-self: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 0px;
+    height: auto;
 }
 
-#container_horizontal div {
-    margin-top: 50px;
+.titulo {
+    font-weight: 600;
+    font-size: 125%;
+}
+
+#container_horizontal > div {
+    margin-top: 20px;
+    text-align: center;
+    margin: 40px;
 }
 
 .container {
-    width: 200%;
     background: var(--background-nav);
-    height: 500px;
+    height: 74vh;
+    justify-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 20px;
 }
 
 #container_horizontal label {
     text-align: center;
     justify-self: center;
+}
+
+.card {
+    /* cursor: pointer; */
+    /* text-align: left; */
+    background: rgb(151, 114, 114, 0.2);
+    width: 90%;
+    height: auto;
+    margin: 10px 10px 10px 10px;
 }

@@ -8,6 +8,10 @@
     width: 90%;
 }
 
+#container_telefones input {
+    width: 60%;
+}
+
 input {
     height: 140%;
     font-size: 100%;
@@ -50,7 +54,7 @@ textarea {
     #campo_dados {
         grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
     }
-} 
+}
 
 label {
     font-size: 120%;

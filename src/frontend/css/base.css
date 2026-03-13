@@ -36,6 +36,7 @@ ul {
 
 nav ul li {
     margin: auto;
+    padding: 0;
     /* gap: 10px; */
 }
 
