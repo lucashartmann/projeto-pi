@@ -8,10 +8,6 @@
     width: 90%;
 }
 
-#container_telefones input {
-    width: 60%;
-}
-
 input {
     height: 140%;
     font-size: 100%;
@@ -19,21 +15,22 @@ input {
 
 #container_selects {
     display: inline-flex;
-    width: 90%;
-    margin: 50px 40px 50px 90px;
+    margin: 50px 0px 25px 0px;
     justify-content: center;
     justify-items: center;
     justify-self: center;
     height: 35px;
+    width: 100%;
 }
 
 #container_selects select {
-    width: 10%;
-    margin: 7px;
+    width: 25%;
+    margin: 0px 0px 7px 10px;
     height: 100%;
 }
 
 #container_executar {
+    margin: 0;
     justify-self: center;
 }
 
@@ -50,12 +47,6 @@ textarea {
     font-size: 120%;
 }
 
-@media screen and (max-width: 380px) {
-    #campo_dados {
-        grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
-    }
-}
-
 label {
     font-size: 120%;
     font-weight: 500;
@@ -65,4 +56,29 @@ label {
     font-size: 120%;
     background-color: var(--background);
     border: solid 2px;
+}
+
+#container_telefones input {
+    width: 94%;
+    height: 120%;
+}
+
+#container_telefones {
+    width: auto;
+    display: block;
+    height: 30%;
+}
+
+#container_telefones button {
+   margin-top: 8px;
+}
+
+@media screen and (max-width: 380px) {
+    #campo_dados {
+        grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
+    }
+}
+
+#inpt_data_nascimento, #ta_numero, #ta_cep {
+    height: 70%;
 }

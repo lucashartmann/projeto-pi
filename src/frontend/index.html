@@ -7,6 +7,8 @@
     <title>Página Inicial</title>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 
 <body>
@@ -20,16 +22,14 @@
     <div id="imovelDestaque">
     </div>
     <div id="principaisAnuncios">
-        <h1 class="setas sobrepor" id="setaEsquerda" onclick="proximoAnuncio()">
-            << /h1>
-                <h1 class="setas sobrepor" id="setaDireita" onclick="anuncioAnterior()">></h1>
+        <h1 class="setas sobrepor" id="setaEsquerda" onclick="proximoAnuncio()"> < </h1>
+        <h1 class="setas sobrepor" id="setaDireita" onclick="anuncioAnterior()"> > </h1>
     </div>
     <section id="anuncios">
-
     </section>
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
-        <a href="https://github.com/lucashartmann" target="_blank"><img src="assets/github-logo.png" alt=""></a>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
     </footer>
 </body>
 <script src="js/base.js"></script>
