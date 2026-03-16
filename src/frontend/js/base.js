@@ -3,26 +3,25 @@ async function deslogar() {
         const resposta = await fetch("http://127.0.0.1:8000/deslogar/", {
             method: "POST"
         });
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
-        }
-
-        nav = document.getElementsByTagName("nav");
-        ul = nav[0].getElementsByTagName("ul");
-        for (li of ul[0].children) {
-            a = li.getElementsByTagName("a")[0];
-            if (a.innerText == "Sair") {
-                a.innerText = "Logar";
-                a.removeEventListener("click", deslogar);
-                a.href = "login.html";
+        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+        const nav = document.querySelector("nav ul");
+        if (nav) {
+            for (const li of nav.children) {
+                const a = li.querySelector("a");
+                if (a && a.innerText === "Sair") {
+                    a.innerText = "Logar";
+                    a.removeEventListener("click", deslogar);
+                    a.href = "login.html";
+                }
             }
         }
-
         console.log("Deslogado com sucesso!");
-        window.location.href = "../index.html";
-        return;
-
+        if (window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/")) {
+            window.location.reload();
+            return;
+        } else {
+            window.location.href = "../index.html";
+        }
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -32,15 +31,9 @@ async function deslogar() {
 async function carregarUser() {
     try {
         const resposta = await fetch("http://127.0.0.1:8000/usuario/");
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
-        } else {
-            const dados = await resposta.json();
-            usuario = dados.tipo;
-            return usuario;
-        }
-
+        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+        const dados = await resposta.json();
+        return dados.tipo;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -48,171 +41,66 @@ async function carregarUser() {
 }
 
 function carregarTabs(usuario) {
-    nav = document.getElementsByTagName("nav");
-    ul = nav[0].getElementsByTagName("ul");
-
+    const nav = document.querySelector("nav ul");
+    if (!nav) return;
+    let tabs = [];
     switch (usuario) {
         case 'ADMIN':
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Atendimento";
-            a.id = "tab_atendimento";
-            a.href = "atendimento.html";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Cadastro de Imoveis";
-            a.href = "cadastro-imovel.html";
-            a.id = "tab_cadastro_imovel";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Cadastro de Pessoas";
-            a.href = "cadastro-pessoa.html";
-            a.id = "tab_cadastro_pessoa";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Estoque";
-            a.href = "estoque.html";
-            a.id = "tab_estoque";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Dados Cliente";
-            a.href = "dados-cliente.html";
-            a.id = "tab_dados_cliente";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Estoque Cliente";
-            a.href = "estoque-cliente.html";
-            a.id = "tab_comprar";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Dados da imobiliaria";
-            a.href = "dados-imobiliaria.html";
-            a.id = "tab_dados_imobiliaria";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Cadastro de Venda/Aluguel";
-            a.href = "cadastro-venda-aluguel.html";
-            a.id = "tab_cadastro_venda_aluguel";
-            li.appendChild(a);
-            ul[0].appendChild(li);
+            tabs = [
+                { text: "Atendimento", id: "tab_atendimento", href: "atendimento.html" },
+                { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
+                { text: "Cadastro de Pessoas", id: "tab_cadastro_pessoa", href: "cadastro-pessoa.html" },
+                { text: "Estoque", id: "tab_estoque", href: "estoque.html" },
+                { text: "Dados Cliente", id: "tab_dados_cliente", href: "dados-cliente.html" },
+                { text: "Estoque Cliente", id: "tab_comprar", href: "estoque-cliente.html" },
+                { text: "Dados da imobiliaria", id: "tab_dados_imobiliaria", href: "dados-imobiliaria.html" },
+                { text: "Cadastro de Venda/Aluguel", id: "tab_cadastro_venda_aluguel", href: "cadastro-venda-aluguel.html" }
+            ];
             break;
         case "CORRETOR":
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Atendimento";
-            a.href = "atendimento.html";
-            a.id = "tab_atendimento";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Cadastro de Imoveis";
-            a.href = "cadastro-imovel.html";
-            a.id = "tab_cadastro_imovel";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Cadastro de Pessoas";
-            a.href = "cadastro-pessoa.html";
-            a.id = "tab_cadastro_pessoa";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Estoque";
-            a.href = "estoque.html";
-            a.id = "tab_estoque";
-            li.appendChild(a);
-            ul[0].appendChild(li);
+            tabs = [
+                { text: "Atendimento", id: "tab_atendimento", href: "atendimento.html" },
+                { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
+                { text: "Cadastro de Pessoas", id: "tab_cadastro_pessoa", href: "cadastro-pessoa.html" },
+                { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
+            ];
             break;
         case "GERENTE":
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Dados da imobiliaria";
-            a.id = "tab_dados_imobiliaria";
-            a.href = "dados-imobiliaria.html";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Cadastro de Pessoas";
-            a.id = "tab_cadastro_pessoa";
-            a.href = "cadastro-pessoa.html";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Estoque";
-            a.href = "estoque.html";
-            a.id = "tab_estoque";
-            li.appendChild(a);
-            ul[0].appendChild(li);
+            tabs = [
+                { text: "Dados da imobiliaria", id: "tab_dados_imobiliaria", href: "dados-imobiliaria.html" },
+                { text: "Cadastro de Pessoas", id: "tab_cadastro_pessoa", href: "cadastro-pessoa.html" },
+                { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
+            ];
             break;
         case "CAPTADOR":
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Cadastro de Imoveis";
-            a.id = "tab_cadastro_imovel";
-            a.href = "cadastro-imovel.html";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Cadastro de Pessoas";
-            a.id = "tab_cadastro_pessoa";
-            a.href = "cadastro-pessoa.html";
-            li.appendChild(a);
-            ul[0].appendChild(li);
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Estoque";
-            a.href = "estoque.html";
-            a.id = "tab_estoque";
-            li.appendChild(a);
-            ul[0].appendChild(li);
+            tabs = [
+                { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
+                { text: "Cadastro de Pessoas", id: "tab_cadastro_pessoa", href: "cadastro-pessoa.html" },
+                { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
+            ];
             break;
         case "CLIENTE":
-            var li = document.createElement("li");
-            var a = document.createElement("a");
-            a.innerText = "Dados Cliente";
-            a.id = "tab_dados_cliente";
-            a.href = "dados-cliente.html";
-            li.appendChild(a);
-            ul[0].appendChild(li);
+            tabs = [
+                { text: "Dados Cliente", id: "tab_dados_cliente", href: "dados-cliente.html" }
+            ];
             break;
     }
-
-    for (li of ul[0].children) {
-        a = li.getElementsByTagName("a")[0];
-        if (a.innerText === "Login") {
+    tabs.push({ text: "Login", id: "tab_login", href: "login.html" });
+    tabs.unshift({ text: "Página Inicial", id: "tab_inicio", href: "index.html" });
+    nav.innerHTML = tabs.map(tab => `<li><a id="${tab.id}" href="${tab.href}">${tab.text}</a></li>`).join("");
+    for (const li of nav.children) {
+        const a = li.querySelector("a");
+        if (a && a.innerText === "Login") {
             a.innerText = "Sair";
             a.addEventListener("click", deslogar);
             a.href = "#";
         }
     }
-};
+}
 
 async function setup() {
-    usuario = await carregarUser();
-
-    if (usuario) {
-        carregarTabs(usuario);
-    }
+    const usuario = await carregarUser();
+    if (usuario) carregarTabs(usuario);
 }
 
 window.addEventListener("DOMContentLoaded", () => {

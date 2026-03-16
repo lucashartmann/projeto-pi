@@ -1,68 +1,41 @@
 function setupDados(dados) {
     var div = document.getElementById("dados_imovel");
-    const div_titulo = document.createElement("div");
-    const div_pai = document.createElement("div");
-    div_pai.id = "div_pai";
-    div_titulo.id = "div_titulo";
-    const titulo = document.createElement("h3");
-    titulo.innerText = dados.anuncio.titulo;
-    div_titulo.appendChild(titulo);
-    const localizacao = document.createElement("p")
-    localizacao.innerText = `${dados.endereco.rua}, ${dados.endereco.numero}, ${dados.endereco.bairro}`;
-    div_titulo.appendChild(localizacao);
-    div_pai.appendChild(div_titulo);
-    div.insertBefore(div_pai, div.firstChild);
-    const label_condominio = document.getElementById("condominio");
-    const label_iptu = document.getElementById("iptu");
-    if (dados.valor_condominio) {
-        var p = document.createElement("p");
-        p.color = "green";
-        p.innerText = `${dados.valor_condominio}`;
-        label_condominio.appendChild(p);
-    } else {
-        if (label_condominio) {
-            label_condominio.style.display = "none";
-        }
-    }
-
-    if (dados.valor_iptu) {
-        var p = document.createElement("p");
-        p.color = "green";
-        p.innerText = `${dados.valor_iptu}`;
-        label_iptu.appendChild(p);
-    } else {
-        if (label_iptu) {
-            label_iptu.style.display = "none";
-        }
-    }
-
-    var ul_imagens = document.createElement("ul");
-    ul_imagens.id = "ul_imagens";
-
-    if (dados.anuncio.imagens) {
-        var primeira_imagem = dados.anuncio.imagens[0];
-        if (primeira_imagem) {
-            var img = document.createElement("img");
-            img.src = `data:image/jpeg;base64,${primeira_imagem}`;
-            div_titulo.appendChild(img);
-        }
+    let imagensHtml = "";
+    if (dados.anuncio.imagens && dados.anuncio.imagens.length > 0) {
+        imagensHtml += `<img src="data:image/jpeg;base64,${dados.anuncio.imagens[0]}" alt="Imagem do imóvel" />`;
+        imagensHtml += `<ul id="ul_imagens">`;
         for (const imagem of dados.anuncio.imagens) {
-            var img = document.createElement("img");
-            var li = document.createElement("li");
-            img.src = `data:image/jpeg;base64,${imagem}`;
-            li.appendChild(img);
-            ul_imagens.appendChild(li);
+            imagensHtml += `<li><img src="data:image/jpeg;base64,${imagem}" alt="Imagem do imóvel" /></li>`;
         }
+        imagensHtml += `</ul>`;
     }
-    div_pai.appendChild(ul_imagens);
 
-    const h3_descricao = document.createElement("h3");
-    h3_descricao.innerText = "Descrição";
-    div_pai.appendChild(h3_descricao);
-    const descricao = document.createElement("p")
-    descricao.innerText = dados.anuncio.descricao;
-    div_pai.appendChild(descricao);
-
+    let html = `
+        <div id="div_pai">
+            <div id="div_titulo">
+                <h3>${dados.anuncio.titulo}</h3>
+                <p>${dados.endereco.rua}, ${dados.endereco.numero}, ${dados.endereco.bairro}</p>
+                ${imagensHtml}
+            </div>
+            <h3>Descrição</h3>
+            <p>${dados.anuncio.descricao}</p>
+        </div>
+        <div id="entrar_contato">
+            <div>
+                <button>Agendar Visita</button>
+                <button id="whatsapp">Whatsapp</button>
+            </div>
+            <div>
+                <label id="condominio">Condominio: <p style='color:green;'>${dados.valor_condominio}</p></label>
+                <div>
+                    <label id="iptu">IPTU: <p style='color:green;'>${dados.valor_iptu}</p></label>
+                    <button id="bt_contato">Entrar em contato</button>
+                    <label>Um especialista irá entrar em contato por email ou whatsapp</label>
+                </div>
+            </div>
+    `;
+    div.innerHTML = html;
+    
     //TODO: adicionar filtros, localizacao, valores, etc
 }
 

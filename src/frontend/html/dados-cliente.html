@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- <link rel="stylesheet" href="../css/dados-cliente.css"> -->
+    <link rel="stylesheet" href="../css/dados-cliente.css">
 </head>
 
 <body>
@@ -20,7 +19,7 @@
         </ul>
     </nav>
     <div>
-        <div>:
+        <div class="grid-container">
             <label>Username</label>
             <textarea id="inpt_username"></textarea>
             <label>Nome</label>
@@ -32,6 +31,7 @@
             <label>"Telefone"</label>
             <input template="(00) 00000-0000" id="inpt_telefone">
             <label>Endereco</label>
+            <input id="inpt_endereco" placeholder="Endereco aqui">
             <label>Email</label>
             <textarea id="inpt_email"></textarea>
             <label>Senha</label>
@@ -39,18 +39,25 @@
             <label id="stt_data_nascimento">Data de nascimento</label>
             <input template="00/00/0000" id="inpt_data_nascimento" minlength="10" maxlength="10">
         </div>
-        <div>:
-            <label>Quartos</label>
-            <input template="00">
-            <label>Banheiros</label>
-            <input template="00">
-            <label>CEP desejado</label>
-            <input template="00000-000">
+        <div id="detalhes">
+            <div class="detalhes-content">
+                <label>Quartos:</label>
+                <input placeholder="00" type="number" maxlength="2">
+            </div>
+            <div class="detalhes-content">
+                <label>Banheiros:</label>
+                <input placeholder="00" type="number" maxlength="2">
+            </div>
+            <div class="detalhes-content">
+                <label>CEP desejado:</label>
+                <input placeholder="00000-000" id="inpt_cep" minlength="9" maxlength="9">
+            </div>
         </div>
-        <div>:
+        <div id="ctn-botao">
             <button>Salvar</button>
-            <label id="stt_compras">Imoveis do usuário</label>
         </div>
+        <label id="stt_compras">Imoveis do usuário</label>
+        <div id="imoveis"></div>
     </div>
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>

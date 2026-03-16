@@ -7,7 +7,6 @@
     --background-nav: #baaeae;
 }
 
-
 html,
 body {
     font-family: "Arsenal SC", sans-serif;
@@ -15,6 +14,16 @@ body {
     padding: 0;
     background-color: var(--background);
     overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+html {
+    overflow-y: auto;
+}
+
+body {
+    overflow-y: hidden;
+    height: 100%;
 }
 
 nav {
@@ -64,6 +73,7 @@ footer {
     width: 100%;
     height: 5%;
     font-size: 14px;
+    z-index: 100;
 }
 
 footer img {
@@ -118,4 +128,9 @@ button {
 
 .bt_delete:hover {
     background-color: rgb(151, 24, 24, 0.3);
+}
+
+.fa-github {
+    color: black;
+    font-size: 20px;
 }

@@ -225,6 +225,27 @@ def verificar_login(request):
 
     return _com_cors(JsonResponse({"erro": "Metodo invalido"}, status=405))
 
+@csrf_exempt
+def listar_atendimentos(request):
+    if request.method == "OPTIONS":
+        return _com_cors(JsonResponse({"status": "ok"}))
+    
+    atendimentos = Init.imobiliaria.get_lista_atendimentos()
+    lista = []
+    if atendimentos:
+        for atendimento in atendimentos:
+            lista.append({
+                "id": atendimento.get_id(),
+                "corretor": atendimento.get_corretor().get_nome() if atendimento.get_corretor() else None,
+                "cliente": atendimento.get_cliente().get_nome() if atendimento.get_cliente() else None,
+                "imovel": {
+                    "id": atendimento.get_imovel().get_id(),
+                    "titulo": atendimento.get_imovel().get_anuncio().get_titulo() if atendimento.get_imovel() and atendimento.get_imovel().get_anuncio() else None
+                } if atendimento.get_imovel() else None,
+                "status": atendimento.get_status().value if atendimento.get_status() else None
+            })
+    return _com_cors(JsonResponse(lista, safe=False))
+    
 
 @csrf_exempt
 def listar_imoveis(request):

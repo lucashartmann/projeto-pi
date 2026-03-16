@@ -14,39 +14,21 @@ async function listarImoveis() {
 }
 
 function imovelPrincipal(dados) {
+    let imovel, b64;
     while (true) {
         var randomIndex = Math.floor(Math.random() * dados.length);
-        var imovel = dados[randomIndex];
-        var b64 = imovel.anuncio?.imagens?.[0];
-        if (b64) {
-            break;
-        }
+        imovel = dados[randomIndex];
+        b64 = imovel.anuncio?.imagens?.[0];
+        if (b64) break;
     }
-
     var banner = document.getElementById("imovelDestaque");
-    var img = document.createElement("img");
-    img.id = "imgDestaque";
-    img.src = `data:image/jpeg;base64,${b64}`;
-    img.style.cursor = "pointer";
-    img.onclick = () => abrirAnuncio(imovel.id);
     if (!banner) return;
-    banner.appendChild(img);
-    var titulo = imovel.anuncio.titulo;
-    var p_titulo = document.createElement("h2");
-    p_titulo.className = "sobrepor";
-    p_titulo.textContent = titulo;
-    banner.appendChild(p_titulo);
-    if (imovel.valor_venda) {
-        var p_preco_venda = document.createElement("p");
-        p_preco_venda.className = "sobrepor";
-        p_preco_venda.textContent = imovel.valor_venda;
-        banner.appendChild(p_preco_venda);
-    } else if (imovel.valor_aluguel) {
-        var p_preco_aluguel = document.createElement("p");
-        p_preco_aluguel.className = "sobrepor";
-        p_preco_aluguel.textContent = imovel.valor_aluguel;
-        banner.appendChild(p_preco_aluguel);
-    }
+    let preco = imovel.valor_venda ? `<p class='sobrepor'>${imovel.valor_venda}</p>` : (imovel.valor_aluguel ? `<p class='sobrepor'>${imovel.valor_aluguel}</p>` : "");
+    banner.innerHTML = `
+        <img id="imgDestaque" src="data:image/jpeg;base64,${b64}" style="cursor:pointer;" onclick="abrirAnuncio(${imovel.id})" />
+        <h2 class="sobrepor">${imovel.anuncio.titulo}</h2>
+        ${preco}
+    `;
 }
 
 function proximoAnuncio() {
@@ -84,35 +66,47 @@ function anuncioAnterior() {
 
 
 function bannerImoveis(dados) {
-    var banner = document.getElementById("principaisAnuncios");
-    for (var i = 0; i < 5; i++) {
-        var imovel = dados[i];
-        var b64 = imovel.anuncio?.imagens?.[0];
-        if (!b64) {
-            break;
+    var div = document.getElementsByClassName("swiper-wrapper")[0];
+    var banner = document.createElement("div")
+    banner.className = "swiper-slide";
+        var wrapper = document.querySelector(".swiper-wrapper");
+        if (!wrapper) return;
+        let html = "";
+        for (var i = 0; i < 5; i++) {
+            var imovel = dados[i];
+            if (!imovel) continue;
+            var b64 = imovel.anuncio?.imagens?.[0];
+            if (!b64) continue;
+            let preco = imovel.valor_venda ? `<p class='sobrepor'>${imovel.valor_venda}</p>` : (imovel.valor_aluguel ? `<p class='sobrepor'>${imovel.valor_aluguel}</p>` : "");
+            html += `
+                <div class="swiper-slide">
+                    <img class="imgBanner" src="data:image/jpeg;base64,${b64}" onclick="abrirAnuncio(${imovel.id})" />
+                    <h2 class="sobrepor">${imovel.anuncio.titulo}</h2>
+                    ${preco}
+                </div>
+            `;
         }
-        var img = document.createElement("img");
-        img.className = "imgBanner";
-        img.src = `data:image/jpeg;base64,${b64}`;
-        img.onclick = () => abrirAnuncio(imovel.id);
-        if (!banner) return;
-        banner.appendChild(img);
-        var titulo = imovel.anuncio.titulo;
-        var p_titulo = document.createElement("h2");
-        p_titulo.className = "sobrepor";
-        p_titulo.textContent = titulo;
-        banner.appendChild(p_titulo);
-        if (imovel.valor_venda) {
-            var p_preco_venda = document.createElement("p");
-            p_preco_venda.className = "sobrepor";
-            p_preco_venda.textContent = imovel.valor_venda;
-            banner.appendChild(p_preco_venda);
-        } else if (imovel.valor_aluguel) {
-            var p_preco_aluguel = document.createElement("p");
-            p_preco_aluguel.className = "sobrepor";
-            p_preco_aluguel.textContent = imovel.valor_aluguel;
-            banner.appendChild(p_preco_aluguel);
+        wrapper.innerHTML = html;
+        if (window.Swiper) {
+            if (window.swiperInstance) window.swiperInstance.destroy(true, true);
+            window.swiperInstance = new Swiper('.swiper', {
+                loop: true,
+                pagination: { el: '.swiper-pagination', clickable: true },
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                scrollbar: { el: '.swiper-scrollbar' },
+            });
         }
+}
+
+function nextSlide() {
+    if (window.swiperInstance) {
+        window.swiperInstance.slideNext();
+    }
+}
+
+function prevSlide() {
+    if (window.swiperInstance) {
+        window.swiperInstance.slidePrev();
     }
 }
 
@@ -124,43 +118,23 @@ async function carregarAnuncios() {
 
     if (!section || !dados) return;
 
+    let html = "";
     for (const imovel of dados) {
-        const div = document.createElement("div");
-        div.className = "anuncio_imovel";
-        div.addEventListener("click", () => abrirAnuncio(imovel.id));
-
-        const imagem = document.createElement("img");
-        const b64 = imovel.anuncio?.imagens?.[0];
-        if (b64) {
-            imagem.src = `data:image/jpeg;base64,${b64}`;
-        }
-        div.appendChild(imagem);
-        const p_titulo = document.createElement("h2");
-        p_titulo.textContent = imovel.anuncio.p_titulo;
-        div.appendChild(p_titulo);
-
-        const p_localizacao = document.createElement("p");
-        p_localizacao.textContent = `${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}`;
-        div.appendChild(p_localizacao);
-
-        if (imovel.endereco.valor_venda) {
-            const p_preco_venda = document.createElement("p");
-            const span_preco_venda = document.createElement("span");
-            span_preco_venda.textContent = imovel.endereco.valor_venda;
-            p_preco_venda.innerText = "Preço:";
-            p_preco_venda.appendChild(span_preco_venda);
-            div.appendChild(p_preco_venda);
-        } else if (imovel.endereco.valor_aluguel) {
-            const p_preco_aluguel = document.createElement("p");
-            p_preco_aluguel.textContent = imovel.endereco.valor_aluguel;
-            div.appendChild(p_preco_aluguel);
-        }
-        const p_descricao = document.createElement("p");
-        p_descricao.textContent = imovel.anuncio.descricao;
-        div.appendChild(p_descricao);
-
-        section.appendChild(div);
+        const b64 = imovel.anuncio?.imagens?.[0] || "";
+        const preco = imovel.endereco.valor_venda
+            ? `<p>Preço: <span>${imovel.endereco.valor_venda}</span></p>`
+            : (imovel.endereco.valor_aluguel ? `<p>${imovel.endereco.valor_aluguel}</p>` : "");
+        html += `
+            <div class="anuncio_imovel" onclick="abrirAnuncio(${imovel.id})">
+                <img src="data:image/jpeg;base64,${b64}" />
+                <h2>${imovel.anuncio.titulo}</h2>
+                <p>${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}</p>
+                ${preco}
+                <p>${imovel.anuncio.descricao}</p>
+            </div>
+        `;
     }
+    section.innerHTML = html;
 
     imovelPrincipal(dados);
     bannerImoveis(dados);
@@ -173,4 +147,3 @@ async function abrirAnuncio(imovel_id) {
 window.addEventListener("DOMContentLoaded", () => {
     carregarAnuncios();
 });
-
