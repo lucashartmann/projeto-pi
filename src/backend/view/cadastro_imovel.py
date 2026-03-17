@@ -1004,23 +1004,23 @@ class TelaCadastroImovel(Screen):
                     "#select_ocupacao", Select).value
                 status_imovel = self.query_one("#select_status", Select).value
 
-                if status_imovel == "NoSelection" or status_imovel == Select.BLANK:
+                if status_imovel == "NoSelection" or status_imovel == Select.NULL:
                     status_imovel = None
                     self.notify("ERRO! Selecione o status")
                     return
-
-                if categoria_imovel == "NoSelection" or categoria_imovel == Select.BLANK:
+                
+                if categoria_imovel == "NoSelection" or categoria_imovel == Select.NULL:
                     categoria_imovel = None
                     self.notify("ERRO! Selecione a categoria")
                     return
 
-                if situacao_imovel == "NoSelection" or situacao_imovel == Select.BLANK:
+                if situacao_imovel == "NoSelection" or situacao_imovel == Select.NULL:
                     situacao_imovel = None
 
-                if estado_imovel == "NoSelection" or estado_imovel == Select.BLANK:
+                if estado_imovel == "NoSelection" or estado_imovel == Select.NULL:
                     estado_imovel = None
 
-                if ocupacao_imovel == "NoSelection" or ocupacao_imovel == Select.BLANK:
+                if ocupacao_imovel == "NoSelection" or ocupacao_imovel == Select.NULL:
                     ocupacao_imovel = None
 
                 nome_condominio = self.query_one(

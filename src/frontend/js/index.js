@@ -1,6 +1,11 @@
 async function listarImoveis() {
     try {
-        const resposta = await fetch("http://127.0.0.1:8000/imoveis/");
+        const resposta = await fetch("http://127.0.0.1:8000/estoque/disponivel/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
         if (!resposta.ok) {
             throw new Error(`HTTP ${resposta.status}`);
@@ -31,76 +36,52 @@ function imovelPrincipal(dados) {
     `;
 }
 
-function proximoAnuncio() {
-    var imagens = document.getElementsByClassName("imgBanner");
-    const atual = document.querySelector(".imgBanner:nth-child(1+n)");
-    var proximo;
-    for (var i = 0; i < imagens.length; i++) {
-        if (imagens[i] === atual) {
-            proximo = imagens[(i + 1) % imagens.length];
-            break;
-        }
-    }
-    if (proximo) {
-        proximo.style.display = "block";
-    }
-    atual.style.display = "none";
-}
-
-function anuncioAnterior() {
-    var imagens = document.getElementsByClassName("imgBanner");
-    const atual = document.querySelector(".imgBanner:nth-child(1+n)");
-    var anterior;
-    for (var i = 0; i < imagens.length; i++) {
-        if (imagens[i] === atual) {
-            anterior = imagens[(i - 1 + imagens.length) % imagens.length];
-            break;
-        }
-    }
-    if (anterior) {
-        anterior.style.display = "block";
-    }
-    atual.style.display = "none";
-
-}
-
-
 function bannerImoveis(dados) {
     var div = document.getElementsByClassName("swiper-wrapper")[0];
     var banner = document.createElement("div")
     banner.className = "swiper-slide";
-        var wrapper = document.querySelector(".swiper-wrapper");
-        if (!wrapper) return;
-        let html = "";
-        for (var i = 0; i < 5; i++) {
-            var imovel = dados[i];
-            if (!imovel) continue;
-            var b64 = imovel.anuncio?.imagens?.[0];
-            if (!b64) continue;
-            let preco = imovel.valor_venda ? `<p class='sobrepor'>${imovel.valor_venda}</p>` : (imovel.valor_aluguel ? `<p class='sobrepor'>${imovel.valor_aluguel}</p>` : "");
-            html += `
+    var wrapper = document.querySelector(".swiper-wrapper");
+    if (!wrapper) return;
+    let html = "";
+    for (var i = 0; i < 5; i++) {
+        var imovel = dados[i];
+        if (!imovel) continue;
+        var b64 = imovel.anuncio?.imagens?.[0];
+        if (!b64) continue;
+        let preco = imovel.valor_venda ? `<p class='sobrepor'>${imovel.valor_venda}</p>` : (imovel.valor_aluguel ? `<p class='sobrepor'>${imovel.valor_aluguel}</p>` : "");
+        html += `
                 <div class="swiper-slide">
                     <img class="imgBanner" src="data:image/jpeg;base64,${b64}" onclick="abrirAnuncio(${imovel.id})" />
                     <h2 class="sobrepor">${imovel.anuncio.titulo}</h2>
                     ${preco}
                 </div>
             `;
-        }
-        wrapper.innerHTML = html;
-        if (window.Swiper) {
-            if (window.swiperInstance) window.swiperInstance.destroy(true, true);
-            window.swiperInstance = new Swiper('.swiper', {
-                loop: true,
-                pagination: { el: '.swiper-pagination', clickable: true },
-                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-                scrollbar: { el: '.swiper-scrollbar' },
-            });
-        }
+    }
+    wrapper.innerHTML = html;
+    
+}
+
+function inicializarSwiper() {
+    if (!document.querySelector('.swiper')) {
+        console.warn("Elemento .swiper não encontrado");
+        return;
+    }
+    if (window.Swiper) {
+        if (window.swiperInstance) window.swiperInstance.destroy(true, true);
+        window.swiperInstance = new Swiper('.swiper', {
+            loop: true,
+            pagination: { el: '.swiper-pagination', clickable: true },
+            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+            scrollbar: { el: '.swiper-scrollbar' },
+        });
+    }
 }
 
 function nextSlide() {
-    if (window.swiperInstance) {
+    if (window.swiperInstance && typeof window.swiperInstance.slideNext === "function") {
         window.swiperInstance.slideNext();
+    } else {
+        console.warn("Swiper ainda não inicializado");
     }
 }
 
@@ -110,8 +91,8 @@ function prevSlide() {
     }
 }
 
-async function carregarAnuncios() {
-    const dados = await listarImoveis();
+async function carregarAnuncios(dados) {
+    
     const section = document.getElementById("anuncios");
 
     console.log(dados)
@@ -136,14 +117,29 @@ async function carregarAnuncios() {
     }
     section.innerHTML = html;
 
-    imovelPrincipal(dados);
-    bannerImoveis(dados);
+    
 }
 
 async function abrirAnuncio(imovel_id) {
     sessionStorage.setItem("imovel_id", imovel_id);
     window.location.href = "html/dados-imovel.html";
 }
-window.addEventListener("DOMContentLoaded", () => {
-    carregarAnuncios();
+
+window.addEventListener("DOMContentLoaded", async () => {
+    const dados = await listarImoveis();
+    if (!dados) {
+        console.error("Não foi possível carregar os imóveis");
+        return;
+    }
+    carregarAnuncios(dados);
+    imovelPrincipal(dados);
+    bannerImoveis(dados);
+    inicializarSwiper();
+
+    setInterval(() => {
+        const swiper = document.querySelector('.swiper').swiper;
+        if (swiper) {
+            swiper.slideNext();
+        }
+    }, 900);
 });

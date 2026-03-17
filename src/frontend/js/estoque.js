@@ -1,6 +1,11 @@
 async function listarImoveis() {
     try {
-        const resposta = await fetch("http://127.0.0.1:8000/imoveis/");
+        const resposta = await fetch("http://127.0.0.1:8000/estoque/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
         if (!resposta.ok) {
             throw new Error(`HTTP ${resposta.status}`);
@@ -16,32 +21,27 @@ async function listarImoveis() {
 
 async function carregarAnuncios() {
     const dados = await listarImoveis();
-    const section = document.getElementById("anuncios");
+    const section = document.getElementById("container_resultado");
 
     console.log(dados)
 
     if (!section || !dados) return;
-
-    let html = "";
+    section.innerHTML = "";
     for (const imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || "";
-        const preco = imovel.endereco.valor_venda
-            ? `<p>Preço: <span>${imovel.endereco.valor_venda}</span></p>`
-            : (imovel.endereco.valor_aluguel ? `<p>${imovel.endereco.valor_aluguel}</p>` : "");
-        html += `
-            <div class="anuncio_imovel" onclick="abrirAnuncio(${imovel.id})">
-                <img src="data:image/jpeg;base64,${b64}" />
-                <h2>${imovel.anuncio.p_titulo}</h2>
-                <p>${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}</p>
-                ${preco}
-                <p>${imovel.anuncio.descricao}</p>
+
+        section.innerHTML += `
+            <div class="resultado">
+                <img src="data:image/jpeg;base64,${b64}" alt="">
+                <div class="dados">
+                    <label>${imovel.id}</label>
+                    <label for="">${imovel.endereco.rua}</label>
+                    <label for="">${imovel.categoria}</label>
+                    <label for="">${imovel.status}</label>
+                </div>
             </div>
         `;
     }
-    section.innerHTML = html;
-
-    imovelPrincipal(dados);
-    bannerImoveis(dados);
 }
 
 function mudarOrdem() {

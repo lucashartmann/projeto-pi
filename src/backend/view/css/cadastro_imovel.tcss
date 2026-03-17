@@ -45,7 +45,7 @@ TelaCadastroImovel #container_cadastro {
     height: 100%;
     grid-size: 10;
     margin: 1 1 2 2;
-    grid-columns: 20;
+    grid-columns: 19;
     border: black 10%;
     align: center middle;
 
@@ -684,7 +684,7 @@ App.tamanho-64 TelaCadastroImovel {
  App.tamanho-98 TelaCadastroImovel{ 
     
     #container_cadastro { 
-        grid-size: 6; 
+        grid-size: 4; 
         grid-columns: auto;
         # background: green;
         grid-gutter: 2;
@@ -708,6 +708,9 @@ App.tamanho-64 TelaCadastroImovel {
         #ta_estado {
             column-span: 1;
             width: auto;
+        }
+        TextArea {
+            height: 100%;
         }
     }
 }

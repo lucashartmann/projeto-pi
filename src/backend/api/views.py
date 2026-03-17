@@ -225,11 +225,12 @@ def verificar_login(request):
 
     return _com_cors(JsonResponse({"erro": "Metodo invalido"}, status=405))
 
+
 @csrf_exempt
 def listar_atendimentos(request):
     if request.method == "OPTIONS":
         return _com_cors(JsonResponse({"status": "ok"}))
-    
+
     atendimentos = Init.imobiliaria.get_lista_atendimentos()
     lista = []
     if atendimentos:
@@ -245,16 +246,19 @@ def listar_atendimentos(request):
                 "status": atendimento.get_status().value if atendimento.get_status() else None
             })
     return _com_cors(JsonResponse(lista, safe=False))
-    
+
 
 @csrf_exempt
-def listar_imoveis(request):
+def listar_imoveis(request, disponivel=False):
     if request.method == "OPTIONS":
         return _com_cors(JsonResponse({"status": "ok"}))
 
     if request.method == "GET":
-
-        imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+        imoveis = []
+        if disponivel:
+            imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis_disponiveis()
+        else:
+            imoveis = Init.imobiliaria.get_estoque().get_lista_imoveis()
         lista = []
 
         if imoveis:

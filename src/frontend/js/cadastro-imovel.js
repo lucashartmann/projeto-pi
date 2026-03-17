@@ -4,27 +4,27 @@ function salvar() {
 
     for (formulario of form) {
         var formData = new FormData(form);
-        formData.forEach(function(value, key) {
+        formData.forEach(function (value, key) {
             data[key] = value;
         });
     };
 
     if (data) {
         try {
-            fetch("http://localhost:3000/imoveis/cadastrar/", {
+            fetch("http://localhost:3000/estoque/cadastrar/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Imóvel cadastrado com sucesso:", data);
-            })
-            .catch(error => {
-                console.error("Erro ao cadastrar imóvel:", error);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Imóvel cadastrado com sucesso:", data);
+                })
+                .catch(error => {
+                    console.error("Erro ao cadastrar imóvel:", error);
+                });
         } catch (error) {
             console.error("Erro ao enviar dados do imóvel:", error);
         }
@@ -36,20 +36,20 @@ function salvar() {
 
 function excluir() {
     try {
-        fetch("http://localhost:3000/imoveis/excluir/", {
+        fetch("http://localhost:3000/estoque/excluir/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ ref: 1 })
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Imóvel excluído com sucesso:", data);
-        })
-        .catch(error => {
-            console.error("Erro ao excluir imóvel:", error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log("Imóvel excluído com sucesso:", data);
+            })
+            .catch(error => {
+                console.error("Erro ao excluir imóvel:", error);
+            });
     } catch (error) {
         console.error("Erro ao enviar dados para exclusão do imóvel:", error);
     }

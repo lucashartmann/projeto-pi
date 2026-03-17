@@ -86,20 +86,36 @@ class Init:
 
     with open(r"assets\apartamento2\5661211031.jpg", "rb") as f:
         blob = f.read()
+        
+    with open(r"assets\apartamento2\5661211294.jpg", "rb") as f:
+        blob2 = f.read()
 
-    anuncio_um.set_imagens([blob, blob, blob, blob, blob])
+    anuncio_um.set_imagens([blob, blob, blob2, blob2, blob])
     anuncio_um.set_titulo("Apartamento de 1 quarto, venda ou aluguel")
-    anuncio_um.set_descricao("Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta ratione nulla recusandae illum, magni veniam molestiae odio corrupti. Deleniti, blanditiis recusandae molestiae voluptate culpa at voluptates inventore asperiores saepe quidem.")
+    anuncio_um.set_descricao("Imóvel com uma posição privilegiada, próximo a parques, shoppings e com fácil acesso ao transporte público. O apartamento possui uma sala aconchegante, cozinha funcional, banheiro moderno e um quarto confortável. Ideal para quem busca praticidade e qualidade de vida.")
+    
+    anuncio_dois = anuncio.Anuncio()
+    
+    with open(r"assets\apartamento1\5661162882.jpg", "rb") as f:
+        blob = f.read()
+        
+    anuncio_dois.set_imagens([blob, blob, blob, blob, blob])
+    anuncio_dois.set_titulo("Apartamento de 2 quartos, venda ou aluguel")
+    anuncio_dois.set_descricao("Imóvel localizado no centro da cidade, próximo a escolas, supermercados e com fácil acesso ao transporte público. O apartamento possui uma sala ampla, cozinha americana, banheiro social e um quarto espaçoso. Ideal para quem busca conforto e praticidade.")
 
     imovel_um = imovel.Imovel(
-        endereco=consulta_um, status=imovel.Status.VENDA, categoria=imovel.Categoria.APARTAMENTO)
-
+        endereco=consulta_um, status=imovel.Status.VENDA_ALUGUEL, categoria=imovel.Categoria.APARTAMENTO)
+    imovel_um.set_valor_aluguel(1500)
+    imovel_um.set_valor_venda(300000)
     imovel_dois = imovel.Imovel(
         endereco=consulta_um, status=imovel.Status.ALUGUEL, categoria=imovel.Categoria.APARTAMENTO)
+    imovel_dois.set_valor_aluguel(2000)
     imovel_tres = imovel.Imovel(
         endereco=consulta_um, status=imovel.Status.VENDIDO, categoria=imovel.Categoria.LOFT)
+    
     if not imobiliaria.get_estoque().get_lista_imoveis():
         cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(anuncio_um)
+        cadastro_anuncio2 = imobiliaria.get_estoque().cadastrar_anuncio(anuncio_dois)
         if cadastro_anuncio is not None:
             anuncio_um.set_id(cadastro_anuncio)
             imovel_um.set_anuncio(anuncio_um)
@@ -107,12 +123,9 @@ class Init:
                 imovel_um.set_condominio(consultar_condominio)
             imobiliaria.get_estoque().cadastrar_imovel(imovel_um)
 
-        cadastro_anuncio = imobiliaria.get_estoque().cadastrar_anuncio(
-            anuncio_um)
-
-        if cadastro_anuncio is not None:
-            anuncio_um.set_id(cadastro_anuncio)
-            imovel_dois.set_anuncio(anuncio_um)
+        if cadastro_anuncio2 is not None:
+            anuncio_dois.set_id(cadastro_anuncio2)
+            imovel_dois.set_anuncio(anuncio_dois)
             imovel_dois.set_condominio(consultar_condominio)
             imobiliaria.get_estoque().cadastrar_imovel(imovel_dois)
 
@@ -154,3 +167,17 @@ class Init:
             imovel_cinco.set_anuncio(anuncio_um)
             imovel_cinco.set_condominio(condominio_dois)
             imobiliaria.get_estoque().cadastrar_imovel(imovel_cinco)
+            
+    atendimento_um = atendimento.Atendimento()
+    atendimento_um.set_cliente(comprador)
+    atendimento_um.set_corretor(corretor_um)
+    atendimento_um.set_imovel(imovel_um)
+    atendimento_um.set_status(atendimento.Status.EM_ANDAMENTO)
+    atendimento_dois = atendimento.Atendimento()
+    atendimento_dois.set_cliente(comprador_dois)
+    atendimento_dois.set_corretor(corretor_dois)
+    atendimento_dois.set_imovel(imovel_dois)
+    atendimento_dois.set_status(atendimento.Status.PENDENTE)
+    if not imobiliaria.get_lista_atendimentos():
+        imobiliaria.cadastrar_atendimento(atendimento_um)
+        imobiliaria.cadastrar_atendimento(atendimento_dois)

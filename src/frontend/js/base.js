@@ -86,7 +86,7 @@ function carregarTabs(usuario) {
             break;
     }
     tabs.push({ text: "Login", id: "tab_login", href: "login.html" });
-    tabs.unshift({ text: "Página Inicial", id: "tab_inicio", href: "index.html" });
+    tabs.unshift({ text: "Página Inicial", id: "tab_inicio", href: "../index.html" });
     nav.innerHTML = tabs.map(tab => `<li><a id="${tab.id}" href="${tab.href}">${tab.text}</a></li>`).join("");
     for (const li of nav.children) {
         const a = li.querySelector("a");

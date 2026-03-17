@@ -1,11 +1,12 @@
 function setupDados(dados) {
     var div = document.getElementById("dados_imovel");
     let imagensHtml = "";
+    console.log(dados);
     if (dados.anuncio.imagens && dados.anuncio.imagens.length > 0) {
         imagensHtml += `<img src="data:image/jpeg;base64,${dados.anuncio.imagens[0]}" alt="Imagem do imóvel" />`;
         imagensHtml += `<ul id="ul_imagens">`;
         for (const imagem of dados.anuncio.imagens) {
-            imagensHtml += `<li><img src="data:image/jpeg;base64,${imagem}" alt="Imagem do imóvel" /></li>`;
+            imagensHtml += `<li><img src="data:image/jpeg;base64,${imagem}" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>`;
         }
         imagensHtml += `</ul>`;
     }
@@ -35,14 +36,14 @@ function setupDados(dados) {
             </div>
     `;
     div.innerHTML = html;
-    
+
     //TODO: adicionar filtros, localizacao, valores, etc
 }
 
 async function getDadosImovel(id) {
     console.log("Buscando dados do imóvel com id:", id);
     try {
-        const resposta = await fetch(`http://127.0.0.1:8000/imoveis/${id}/`,
+        const resposta = await fetch(`http://127.0.0.1:8000/estoque/${id}/`,
             {
                 method: "GET",
                 headers: {
@@ -75,3 +76,31 @@ window.addEventListener("DOMContentLoaded", async () => {
         setupDados(dados);
     }
 });
+
+// quando clica na imagem ela aumenta, fica no centro da tela e sobre os elementos do fundo
+function abrirImagem(src) {
+    var modal = document.createElement("div");
+    modal.style.position = "fixed";
+    modal.style.top = "0";
+    modal.style.left = "0";
+    modal.style.width = "100%";
+    modal.style.height = "100%";
+    modal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+    modal.style.display = "flex";
+    modal.style.justifyContent = "center";
+    modal.style.alignItems = "center";
+    modal.style.zIndex = "1000";
+    var img = document.createElement("img");
+    img.src = src;
+    img.style.maxWidth = "90%";
+    img.style.maxHeight = "90%";
+    modal.appendChild(img);
+    document.body.appendChild(modal);
+    modal.addEventListener("click", function () {
+        document.body.removeChild(modal);
+    });
+    img.addEventListener("click", function (event) {
+        event.stopPropagation();
+        document.body.removeChild(modal);
+    });
+}

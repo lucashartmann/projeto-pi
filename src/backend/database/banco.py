@@ -1843,7 +1843,7 @@ class Banco:
                 cursor = conexao.cursor()
                 lista = []
                 cursor.execute(
-                    "SELECT * FROM imovel WHERE status IN ('Venda', 'Aluguel', 'venda_aluguel')")
+                    "SELECT * FROM imovel WHERE status IN ('Venda', 'Aluguel', 'Venda_Aluguel')")
                 resultados = cursor.fetchall()
                 if not resultados:
                     raise Exception(f"Não há imóveis disponiveis")
