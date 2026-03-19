@@ -40,44 +40,21 @@ function setupDados(dados) {
     //TODO: adicionar filtros, localizacao, valores, etc
 }
 
-async function getDadosImovel(id) {
-    console.log("Buscando dados do imóvel com id:", id);
-    try {
-        const resposta = await fetch(`http://127.0.0.1:8000/estoque/${id}/`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
-        }
-
-        return await resposta.json();
-    } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-
-}
 
 window.addEventListener("DOMContentLoaded", async () => {
-    id = sessionStorage.getItem("imovel_id");
+    id = sessionStorage.getItem("imovel_id") || null;
     if (!id) {
         alert("Imóvel não encontrado!");
         window.location.href = "../html/index.html";
         return;
     }
     dados = await getDadosImovel(id);
+    sessionStorage.removeItem("imovel_id");
     if (dados) {
         setupDados(dados);
     }
 });
 
-// quando clica na imagem ela aumenta, fica no centro da tela e sobre os elementos do fundo
 function abrirImagem(src) {
     var modal = document.createElement("div");
     modal.style.position = "fixed";

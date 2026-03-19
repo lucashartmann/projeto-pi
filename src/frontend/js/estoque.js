@@ -1,24 +1,3 @@
-async function listarImoveis() {
-    try {
-        const resposta = await fetch("http://127.0.0.1:8000/estoque/", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
-        }
-
-        return await resposta.json();
-    } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-}
-
-
 async function carregarAnuncios() {
     const dados = await listarImoveis();
     const section = document.getElementById("container_resultado");
@@ -31,7 +10,7 @@ async function carregarAnuncios() {
         const b64 = imovel.anuncio?.imagens?.[0] || "";
 
         section.innerHTML += `
-            <div class="resultado">
+            <div class="resultado" onclick="abrirCadastro(${imovel.id})">
                 <img src="data:image/jpeg;base64,${b64}" alt="">
                 <div class="dados">
                     <label>${imovel.id}</label>
@@ -58,11 +37,11 @@ function filtrar() {
     if (!section) return;
 }
 
+function abrirCadastro(imovel_id) {
+    sessionStorage.setItem("imovel_id_estoque", imovel_id);
+    window.location.href = "cadastro-imovel.html";
+}
+
 window.addEventListener("DOMContentLoaded", () => {
     carregarAnuncios();
 });
-
-async function abrirAnuncio(imovel_id) {
-    sessionStorage.setItem("imovel_id", imovel_id);
-    window.location.href = "html/dados-imovel.html";
-}

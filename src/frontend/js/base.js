@@ -1,3 +1,69 @@
+async function listarImoveis() {
+    try {
+        const resposta = await fetch("http://127.0.0.1:8000/estoque/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!resposta.ok) {
+            throw new Error(`HTTP ${resposta.status}`);
+        }
+
+        return await resposta.json();
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+        return null;
+    }
+}
+
+async function listarImoveisDisponiveis() {
+    try {
+        const resposta = await fetch("http://127.0.0.1:8000/estoque/disponivel/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!resposta.ok) {
+            throw new Error(`HTTP ${resposta.status}`);
+        }
+
+        return await resposta.json();
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+        return null;
+    }
+}
+
+
+
+async function getDadosImovel(id) {
+    console.log("Buscando dados do imóvel com id:", id);
+    try {
+        const resposta = await fetch(`http://127.0.0.1:8000/estoque/${id}/`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        if (!resposta.ok) {
+            throw new Error(`HTTP ${resposta.status}`);
+        }
+
+        return await resposta.json();
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+        return null;
+    }
+
+}
+
 async function deslogar() {
     try {
         const resposta = await fetch("http://127.0.0.1:8000/deslogar/", {
@@ -49,10 +115,8 @@ function carregarTabs(usuario) {
             tabs = [
                 { text: "Atendimento", id: "tab_atendimento", href: "atendimento.html" },
                 { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
-                { text: "Cadastro de Pessoas", id: "tab_cadastro_pessoa", href: "cadastro-pessoa.html" },
                 { text: "Estoque", id: "tab_estoque", href: "estoque.html" },
                 { text: "Dados Cliente", id: "tab_dados_cliente", href: "dados-cliente.html" },
-                { text: "Estoque Cliente", id: "tab_comprar", href: "estoque-cliente.html" },
                 { text: "Dados da imobiliaria", id: "tab_dados_imobiliaria", href: "dados-imobiliaria.html" },
                 { text: "Cadastro de Venda/Aluguel", id: "tab_cadastro_venda_aluguel", href: "cadastro-venda-aluguel.html" }
             ];
@@ -61,21 +125,19 @@ function carregarTabs(usuario) {
             tabs = [
                 { text: "Atendimento", id: "tab_atendimento", href: "atendimento.html" },
                 { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
-                { text: "Cadastro de Pessoas", id: "tab_cadastro_pessoa", href: "cadastro-pessoa.html" },
+                { text: "Cadastro de Venda/Aluguel", id: "tab_cadastro_venda_aluguel", href: "cadastro-venda-aluguel.html" },
                 { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
             ];
             break;
         case "GERENTE":
             tabs = [
                 { text: "Dados da imobiliaria", id: "tab_dados_imobiliaria", href: "dados-imobiliaria.html" },
-                { text: "Cadastro de Pessoas", id: "tab_cadastro_pessoa", href: "cadastro-pessoa.html" },
                 { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
             ];
             break;
         case "CAPTADOR":
             tabs = [
                 { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
-                { text: "Cadastro de Pessoas", id: "tab_cadastro_pessoa", href: "cadastro-pessoa.html" },
                 { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
             ];
             break;
@@ -85,9 +147,9 @@ function carregarTabs(usuario) {
             ];
             break;
     }
-    tabs.push({ text: "Login", id: "tab_login", href: "login.html" });
-    tabs.unshift({ text: "Página Inicial", id: "tab_inicio", href: "../index.html" });
-    nav.innerHTML = tabs.map(tab => `<li><a id="${tab.id}" href="${tab.href}">${tab.text}</a></li>`).join("");
+    // tabs.push({ text: "Login", id: "tab_login", href: "login.html" });
+    // tabs.unshift({ text: "Página Inicial", id: "tab_inicio", href: "../index.html" });
+    nav.innerHTML += tabs.map(tab => `<li><a id="${tab.id}" href="${tab.href}">${tab.text}</a></li>`).join("");
     for (const li of nav.children) {
         const a = li.querySelector("a");
         if (a && a.innerText === "Login") {

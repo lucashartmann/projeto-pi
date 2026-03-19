@@ -8,11 +8,13 @@
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/cadastro-imovel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
 </head>
 
 <body>
     <nav>
         <ul>
+            <a href="../index.html"><i class="fas fa-home"></i></a>
             <li><a href="../index.html">Página Inicial</a></li>
             <li><a href="sobreNos.html">Sobre Nós</a></li>
             <li><a href="login.html">Login</a></li>
@@ -33,7 +35,7 @@
         <label id="stt_ref" for="">ref:</label>
         <textarea name="ref" id="ta_ref" disabled=True></textarea>
         <label for="" id="stt_categoria">Categoria:</label>
-        <select name="categoria" id="select_categoria" prompt="Selecionar"></select>
+        <select name="categoria" id="select_categoria" prompt="Selecionar">Apartamento, Casa, Loft, Studio</select>
         <label for="" id="stt_situacao">Situação</label>
         <select name="situacao" id="select_situacao"></select>
         <label for="" id="stt_estado_select">Estado:</label>
@@ -124,19 +126,19 @@
         <label for="" classes="stt_container_titulo">Portais: </label>
         <button>Cadastrar Portal</button>
     </div>
-    <div id="container_mapa" class="container">
+    <!-- <div id="container_mapa" class="container">
         <gmp-map center="41.027748173921374, -92.41852445367961" zoom="13" map-id="DEMO_MAP_ID"
             style="height: 400px"></gmp-map>
-    </div>
+    </div> -->
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
         <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
     </footer>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=maps,marker" defer></script>
+    <script src="../js/base.js"></script>
+    <script src="../js/cadastro-imovel.js"></script>
 </body>
 <!-- <script src="../js/login.js"></script> -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=maps,marker" defer></script>
-<script src="../js/base.js"></script>
-
-<script src="../js/cadastro-imovel.js"></script>
 
 </html>

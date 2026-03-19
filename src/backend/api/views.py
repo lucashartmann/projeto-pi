@@ -51,7 +51,32 @@ def getImovelPorId(request, id):
                     "imagens": [
                         base64.b64encode(imagem.getvalue()).decode("utf-8")
                         for imagem in imovel_obj.get_anuncio().get_imagens()
-                    ] if imovel_obj.get_anuncio() and imovel_obj.get_anuncio().get_imagens() else []
+                    ] if imovel_obj.get_anuncio() and imovel_obj.get_anuncio().get_imagens() else [],
+                "quantidade_quartos": imovel_obj.get_quant_quartos(),
+                "quant_salas": imovel_obj.get_quant_salas(),
+                "quant_vagas": imovel_obj.get_quant_vagas(),
+                "quant_banheiros": imovel_obj.get_quant_banheiros(),
+                "quant_varandas": imovel_obj.get_quant_varandas(),
+                "andar": imovel_obj.get_andar(),
+                "estado": imovel_obj.get_estado().value if imovel_obj.get_estado() else None,
+                "bloco": imovel_obj.get_bloco(),
+                "ano_construcao": imovel_obj.get_ano_construcao(),
+                "area_total": imovel_obj.get_area_total(),
+                "area_privativa": imovel_obj.get_area_privativa(),
+                "situacao": imovel_obj.get_situacao().value if imovel_obj.get_situacao() else None,
+                "ocupacao": imovel_obj.get_ocupacao().value if imovel_obj.get_ocupacao() else None,
+                "proprietarios": [{ "id": proprietario.get_id(), "email": proprietario.get_email(), "nome": proprietario.get_nome(), "cpf_cnpj": proprietario.get_cpf_cnpj(), "rg": proprietario.get_rg(), "telefones": [proprietario.get_telefones()], "endereco": proprietario.get_endereco(), "data_nascimento": proprietario.get_data_nascimento(), "imoveis": proprietario.get_imoveis(), "data_cadastro": proprietario.get_data_cadastro(), "data_modificacao": proprietario.get_data_modificacao() } for proprietario in imovel_obj.get_proprietarios()],
+                "corretor": { "username": imovel_obj.get_corretor().get_username(), "senha": imovel_obj.get_corretor().get_senha(), "email": imovel_obj.get_corretor().get_email(), "nome": imovel_obj.get_corretor().get_nome(), "cpf_cnpj": imovel_obj.get_corretor().get_cpf_cnpj(), "tipo": imovel_obj.get_corretor().get_tipo() } if imovel_obj.get_corretor() else None,
+                "captador": { "username": imovel_obj.get_captador().get_username(), "senha": imovel_obj.get_captador().get_senha(), "email": imovel_obj.get_captador().get_email(), "nome": imovel_obj.get_captador().get_nome(), "cpf_cnpj": imovel_obj.get_captador().get_cpf_cnpj(), "tipo": imovel_obj.get_captador().get_tipo() } if imovel_obj.get_captador() else None,
+                "data_cadastro": imovel_obj.get_data_cadastro(),
+                "data_modificacao": imovel_obj.get_data_modificacao(),
+                "corretor": { "username": imovel_obj.get_corretor().get_username(), "senha": imovel_obj.get_corretor().get_senha(), "email": imovel_obj.get_corretor().get_email(), "nome": imovel_obj.get_corretor().get_nome(), "cpf_cnpj": imovel_obj.get_corretor().get_cpf_cnpj(), "tipo": imovel_obj.get_corretor().get_tipo() } if imovel_obj.get_corretor() else None,
+                "captador": { "username": imovel_obj.get_captador().get_username(), "senha": imovel_obj.get_captador().get_senha(), "email": imovel_obj.get_captador().get_email(), "nome": imovel_obj.get_captador().get_nome(), "cpf_cnpj": imovel_obj.get_captador().get_cpf_cnpj(), "tipo": imovel_obj.get_captador().get_tipo() } if imovel_obj.get_captador() else None,
+                "data_cadastro": imovel_obj.get_data_cadastro(),
+                "data_modificacao": imovel_obj.get_data_modificacao(),
+                "condominio": { "id": imovel_obj.get_condominio().get_id(), "nome": imovel_obj.get_condominio().get_nome(), "filtros": [imovel_obj.get_condominio().get_filtros()] } if imovel_obj.get_condominio() else None,
+                "filtros": [imovel_obj.get_filtros()],
+                "complemento": imovel_obj.get_complemento()
                 } if imovel_obj.get_anuncio() else None,
             }
             return _com_cors(JsonResponse(resposta))
@@ -238,7 +263,13 @@ def listar_atendimentos(request):
             lista.append({
                 "id": atendimento.get_id(),
                 "corretor": atendimento.get_corretor().get_nome() if atendimento.get_corretor() else None,
-                "cliente": atendimento.get_cliente().get_nome() if atendimento.get_cliente() else None,
+                "cliente": {
+                    "id": atendimento.get_cliente().get_id(),
+                    "nome": atendimento.get_cliente().get_nome(),
+                    # "idade": atendimento.get_cliente().get_idade(),
+                    "telefones": [atendimento.get_cliente().get_telefones()],
+                    "email": atendimento.get_cliente().get_email(),
+                } if atendimento.get_cliente() else None,
                 "imovel": {
                     "id": atendimento.get_imovel().get_id(),
                     "titulo": atendimento.get_imovel().get_anuncio().get_titulo() if atendimento.get_imovel() and atendimento.get_imovel().get_anuncio() else None

@@ -51,7 +51,7 @@
     grid-template-columns: repeat(auto-fit, minmax(14%, 2fr));
     row-gap: 30px;
     column-gap: 20px;
-    width: 80%;
+    width: 90%;
 }
 
 #container_anuncio {
@@ -61,10 +61,11 @@
 .container {
     justify-self: center;
     align-content: center;
-    width: 80%;
+    width: 90%;
     background: var(--background-nav);
     margin-bottom: 20px;
-    height: 100px;
+    height: 10rem;
+    color: white;
 }
 
 #container_imagens {
@@ -97,6 +98,11 @@ label {
 
 .active {
     border: dashed green 1px;
+}
+
+#container_mapa {
+    z-index: 1;
+    margin-bottom: 100px;
 }
 
 @media screen and (max-width: 820px) {

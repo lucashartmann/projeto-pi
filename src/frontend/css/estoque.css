@@ -16,7 +16,7 @@
     display: flex;
     gap: 10px;
     margin: 0 20px 20px 20px;
-    background: var(--background-nav);
+    /* background: var(--background-nav); */
     width: 30%;
 }
 
@@ -28,12 +28,15 @@
     display: block;
 }
 
+
 .resultado {
     display: flex;
     gap: 20px;
-    background: var(--background-nav);
+    background-color: rgba(186, 174, 174, 0.5);
+    /* border: solid 2px rgba(46, 30, 30, 0.4); */
     padding: 10px;
     margin: 10px 20px;
+    cursor: pointer;
 }
 
 img {

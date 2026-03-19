@@ -6,7 +6,10 @@
     width: 80%;
     margin: 30px;
     justify-items: center;
+    
 }
+
+
 
 #stt_compras {
     display: none;
@@ -28,6 +31,7 @@ button {
     display: flex;
     justify-content: center;
     width: 100%;
+    margin-bottom: 100px;
 }
 
 .detalhes-content input {

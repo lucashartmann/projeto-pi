@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
 </head>
 
 <body>
     <nav>
         <ul>
+            <a href="#"><i class="fas fa-home"></i></a>
             <li><a href="index.html">Página Inicial</a></li>
             <li><a href="html/sobreNos.html">Sobre Nós</a></li>
             <li><a href="html/login.html">Login</a></li>
@@ -21,17 +23,15 @@
     </nav>
     <div id="pesquisa">
         <div id="pesquisa-container">
-            <input placeholder="pesquise aqui" id="input_pesquisa">
+            <input placeholder="pesquise aqui" id="input_pesquisa" oninput="pesquisar()">
         </div>
         <div id="container_filtragem">
             <label>Categoria</label>
-            <select prompt="Selecionar"></select>
+            <select prompt="Selecionar" id="select_categoria"></select>
             <label>Status</label>
-            <select prompt="Selecionar"></select>
+            <select prompt="Selecionar" id="select_status"></select>
             <label>CEP</label>
-            <input suggester=SuggestFromList(self.ceps, case_sensitive=False)>
-            <label>Número</label>
-            <input>
+            <input oninput="pesquisarCEP(event)">
         </div>
     </div>
     <div id="imovelDestaque">
