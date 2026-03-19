@@ -11,7 +11,7 @@ function salvar() {
 
     if (data) {
         try {
-            fetch("http://localhost:3000/estoque/cadastrar/", {
+            fetch("http://127.0.0.1:8000/estoque/cadastrar/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -25,6 +25,7 @@ function salvar() {
                 .catch(error => {
                     console.error("Erro ao cadastrar imóvel:", error);
                 });
+
         } catch (error) {
             console.error("Erro ao enviar dados do imóvel:", error);
         }
@@ -34,25 +35,33 @@ function salvar() {
     console.log("Dados do imóvel a serem enviados:", data);
 }
 
-function excluir() {
-    try {
-        fetch("http://localhost:3000/estoque/excluir/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ ref: 1 })
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Imóvel excluído com sucesso:", data);
+async function excluir() {
+    if (imovel_id) {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/estoque/apagar/" + imovel_id + "/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ ref: imovel_id })
             })
-            .catch(error => {
-                console.error("Erro ao excluir imóvel:", error);
-            });
-    } catch (error) {
-        console.error("Erro ao enviar dados para exclusão do imóvel:", error);
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Imóvel excluído com sucesso:", data);
+                    window.location.href = "estoque.html";
+                })
+                .catch(error => {
+                    console.error("Erro ao excluir imóvel:", error);
+                });
+        } catch (error) {
+            console.error("Erro ao enviar dados para exclusão do imóvel:", error);
+        }
     }
+    else {
+        alert("Nenhum imóvel selecionado para exclusão!");
+    }
+
+
 }
 
 var tabDisplays = {};
@@ -104,19 +113,18 @@ async function abrirCadastro(imovel_id) {
     imovel = await getDadosImovel(imovel_id);
     console.log("Dados do imóvel para cadastro:", imovel);
     if (imovel) {
-        form = document.getElementById("container_cadastro");
-
-        if (imovel.condominio) {
-            document.getElementById("ta_nome_condominio").disabled = true;
-        }
-
-        if (imovel.endereco) {
-            document.getElementById("ta_rua").value = imovel.endereco.rua || "";
-            document.getElementById("ta_bairro").value = imovel.endereco.bairro || "";
-            document.getElementById("ta_cidade").value = imovel.endereco.cidade || "";
-            document.getElementById("ta_estado").value = imovel.endereco.uf || "";
-        }
-        document.getElementById("select_categoria").value = imovel.categoria || "Selecionar";
+        document.getElementById("select_status").value = imovel.status?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("select_situacao").value = imovel.situacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("select_estado").value = imovel.estado?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("select_ocupacao").value = imovel.ocupacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("ta_nome_condominio").value = imovel.condominio?.nome || "";
+        document.getElementById("ta_rua").value = imovel.endereco?.rua || "";
+        document.getElementById("ta_bairro").value = imovel.endereco?.bairro || "";
+        document.getElementById("ta_cidade").value = imovel.endereco?.cidade || "";
+        document.getElementById("ta_estado").value = imovel.endereco?.uf || "";
+        document.getElementById("select_categoria").value = imovel.categoria?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        // document.getElementById("ta_titulo").value = imovel.anuncio?.titulo || "";
+        // document.getElementById("ta_descricao").value = imovel.anuncio?.descricao || "";
         document.getElementById("ta_numero").value = imovel.endereco.numero || "";
         document.getElementById("ta_complemento").value = imovel.complemento || "";
         document.getElementById("ta_bloco").value = imovel.bloco || "";
@@ -132,11 +140,14 @@ async function abrirCadastro(imovel_id) {
         document.getElementById("ta_aluguel").value = imovel.valor_aluguel || "";
         document.getElementById("ta_condominio").value = imovel.valor_condominio || "";
         document.getElementById("ta_iptu").value = imovel.valor_iptu || "";
+        document.getElementById("ta_ano_construcao").value = imovel.ano_construcao || "";
     } else {
         alert("Imóvel não encontrado!");
         window.location.href = "estoque.html";
     }
 }
+
+let imovel_id = null;
 
 window.addEventListener("DOMContentLoaded", function () {
     var tabcontent = document.getElementsByClassName("tabcontent");
@@ -160,7 +171,7 @@ window.addEventListener("DOMContentLoaded", function () {
         activateTab(initialTabId, null);
     }
 
-    var imovel_id = this.sessionStorage.getItem("imovel_id_estoque") || null;
+    imovel_id = this.sessionStorage.getItem("imovel_id_estoque") || null;
     if (imovel_id) {
         sessionStorage.removeItem("imovel_id_estoque");
         abrirCadastro(imovel_id);

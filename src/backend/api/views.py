@@ -228,6 +228,26 @@ def carregar_usuario(request):
 
 
 @csrf_exempt
+def apagar_imovel(request, id):
+    if request.method == "OPTIONS":
+        return _com_cors(JsonResponse({"status": "ok"}))
+
+    if request.method == "POST":
+        try:
+            imovel = Init.imobiliaria.get_imovel_por_id(id)
+            if imovel:
+                remocao = Init.imobiliaria.remover("id_imovel", id, "imovel")
+                if remocao:
+                    return _com_cors(JsonResponse({"status": "ok"}))
+                else:
+                    return _com_cors(JsonResponse({"erro": "Erro ao remover imóvel"}, status=500))
+            else:
+                return _com_cors(JsonResponse({"erro": "Imóvel não encontrado"}, status=404))
+        except Exception as e:
+            return _com_cors(JsonResponse({"erro": str(e)}, status=500))
+
+    return _com_cors(JsonResponse({"erro": "Método inválido"}, status=405))
+
 def verificar_login(request):
     if request.method == "OPTIONS":
         return _com_cors(JsonResponse({"status": "ok"}))

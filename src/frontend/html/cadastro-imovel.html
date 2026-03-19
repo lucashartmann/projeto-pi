@@ -21,7 +21,7 @@
         </ul>
     </nav>
     <div id="h_buttons">
-        <button class="bt_delete">Apagar</button>
+        <button class="bt_delete" onclick="excluir()">Apagar</button>
         <button class="bt_success" onclick="salvar()">Salvar</button>
     </div>
     <div class="tab">
@@ -38,45 +38,26 @@
         <select name="categoria" id="select_categoria" prompt="Selecionar">
             <option value="sala_comercial">Sala Comercial</option>
             <option value="apartamento">Apartamento</option>
-            <option value="loja">Loja</option>
             <option value="casa">Casa</option>
-            <option value="cobertura">Cobertura</option>
-            <option value="loft">Loft</option>
             <option value="chacara">Chácara</option>
             <option value="fazenda">Fazenda</option>
-            <option value="terreno">Terreno</option>
-            <option value="kitnet">Kitnet</option>
-            <option value="sobrado">Sobrado</option>
             <option value="casa_condominio">Casa em Condomínio</option>
             <option value="empreendimento">Empreendimento</option>
             <option value="ponto_comercial">Ponto Comercial</option>
             <option value="predio_comercial">Prédio Comercial</option>
-            <option value="pavilhao">Pavilhão</option>
             <option value="galpao">Galpão</option>
             <option value="deposito">Depósito</option>
-            <option value="studio">Studio</option>
             <option value="apartamento">Apartamento</option>
             <option value="loja">Loja</option>
-            <option value="casa">Casa</option>
             <option value="cobertura">Cobertura</option>
             <option value="loft">Loft</option>
-            <option value="chacara">Chácara</option>
-            <option value="fazenda">Fazenda</option>
             <option value="terreno">Terreno</option>
             <option value="kitnet">Kitnet</option>
             <option value="sobrado">Sobrado</option>
-            <option value="casa_condominio">Casa em Condomínio</option>
-            <option value="empreendimento">Empreendimento</option>
-            <option value="ponto_comercial">Ponto Comercial</option>
-            <option value="predio_comercial">Prédio Comercial</option>
             <option value="pavilhao">Pavilhão</option>
-            <option value="galpao">Galpão</option>
             <option value="deposito">Depósito</option>
             <option value="studio">Studio</option></select>
             <option value="sala_comercial">Sala Comercial</option>
-            <option value="apartamento">Apartamento</option
-            <option value="cobertura">Cobertura</option>
-            <option value="loft">Loft</option>
         </select>
         <label for="" id="stt_situacao">Situação</label>
         <select name="situacao" id="select_situacao">
