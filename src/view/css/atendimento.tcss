@@ -11,9 +11,11 @@ TelaAtendimento #container_horizontal Vertical Static:first-child {
     content-align: center middle;
 }
 
-App.dark TelaAtendimento #container_esperando,App.dark TelaAtendimento #container_andamento, App.dark TelaAtendimento #container_cadastrados, App.dark TelaAtendimento Horizontal Vertical Static{
-    background: #1a1717ff;
-    color: white;
+App.dark TelaAtendimento {
+    #container_esperando, #container_andamento,  #container_cadastrados,  Horizontal Vertical Static{
+        background: #1a1717ff;
+        color: white;
+    }
 }
 
 TelaAtendimento ContainerCliente {
@@ -21,13 +23,12 @@ TelaAtendimento ContainerCliente {
     width: 100%;
     height: auto;
     margin: 4;
-}
-
-TelaAtendimento ContainerCliente Static{
-    width: auto;
-    height: auto;
-    border: none;
-    margin: 0;
-    text-align: center;
-    content-align: center middle;
+    Static{
+        width: auto;
+        height: auto;
+        border: none;
+        margin: 0;
+        text-align: center;
+        content-align: center middle;
+    }
 }

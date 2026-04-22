@@ -23,22 +23,19 @@ TelaLogin Input{
     color: black;
 }
 
-TelaLogin Select Horizontal{
-    background: rgba(214, 219, 216, 1);
-}
-
-TelaLogin Select Static {
-    color: black;
-}
-
-TelaLogin Select SelectOverlay{
-    background: rgba(214, 219, 216, 1);
-    color: black;
-}
-
-TelaLogin Select {
+TelaLogin Select{  
     max-width: 100%;
     margin: 1 0 1 0;
+    Horizontal{
+        background: rgba(214, 219, 216, 1);
+    }
+    Static {
+        color: black;
+    }
+    SelectOverlay{
+        background: rgba(214, 219, 216, 1);
+        color: black;
+    }
 }
 
 TelaLogin Button {
@@ -48,21 +45,21 @@ TelaLogin Button {
     color: black;
 }
 
-App.dark TelaLogin Button{
-    background: #121212;
-    color: #ede6e6ff;
+App.dark TelaLogin {
+    Button{
+        background: #121212;
+        color: #ede6e6ff;
+        &:hover{
+            background: #161313ff;
+        }
+    }
+    Header Button:hover {
+        color: white;
+        background: red;
+    }
 }
 
-App.dark TelaLogin Button:hover{
-    background: #161313ff;
-}
-
-App.dark TelaLogin Header Button:hover {
-    color: white;
-    background: red;
-}
-
-TelaLogin Header Button, App.dark TelaLogin Header Button{
+TelaLogin Header Button{
     width: 100%;
     margin: 0;
     color: red;
@@ -85,12 +82,11 @@ TelaLogin #bt_criar_conta {
     color: white;
 }
 
-TelaLogin MyInput Switch {
-    width: 10;
-    height: 100%;
-    min-height: 0;
-}
-
 TelaLogin MyInput {
     height: 22%;
+    Switch {
+        width: 10;
+        height: 100%;
+        min-height: 0;
+    }
 }

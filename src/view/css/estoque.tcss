@@ -1,25 +1,11 @@
-TelaEstoque #container_filtragem{
-    border: black 10%;
-    margin: 5;
-    margin-bottom: 2;
-    margin-top: 0;
-}
-
-App.dark TelaEstoque #container_filtragem {
-    border: #ede6e6ff 10%;
-}
 
 TelaEstoque #container_resultado{
     border: black 10%;
     margin: 5;
     margin-bottom: 2;
     margin-top: 2;
+    height: auto;
 }
-
-App.dark TelaEstoque #container_resultado {
-    border: #ede6e6ff 10%;
-}
-
 
 TelaEstoque TextArea {
     height: 5;
@@ -30,10 +16,6 @@ TelaEstoque Input {
     margin: 1;
 }
 
-TelaEstoque #container_resultado {
-    height: auto;
-}
-
 TelaEstoque #h_filtro {
     width: auto;
     min-width: 17%;
@@ -41,89 +23,68 @@ TelaEstoque #h_filtro {
     # dock: right;    
     # margin-top: 5;
     # margin-right: 2;
-}
-
-
-TelaEstoque #h_filtro Select {
-   width: auto;
-   min-width: 75%;
-}
-
-TelaEstoque #h_filtro Select Static{
-   width: auto;
-}
-
-
-TelaEstoque #h_filtro #seta{
-    background: transparent;
-    text-align: center;
-    height: 100%;
-    min-width: 0;
-    width: auto;
-    border: black 40%;
-    color: black;
-    margin: 0;
-}
-
-
-TelaEstoque #h_filtro #seta:hover{
-    background: rgba(196, 191, 191, 1);
-}
-
-App.dark #h_filtro #seta:hover{
-    background: #4a4343ff;
-}
-
-App.dark #h_filtro #seta{
-    background: #1a1717ff;
-    color: #ede6e6ff;
-    border: #ede6e6ff 40%;
+    Select {
+        width: auto;
+        min-width: 75%;
+        Static{
+            width: auto;
+        }
+    }
+    #seta{
+        background: transparent;
+        text-align: center;
+        height: 100%;
+        min-width: 0;
+        width: auto;
+        border: black 40%;
+        color: black;
+        margin: 0;
+        &:hover{
+            background: rgba(196, 191, 191, 1);
+        }
+    }
 }
 
 TelaEstoque #container_filtragem {
+    border: black 10%;
+    margin: 5;
+    margin-bottom: 2;
+    margin-top: 0;
     width: 100%;
     height: auto;
-}
-
-TelaEstoque #container_filtragem Select {
-    width: 20;
-}
-
-
-TelaEstoque #container_filtragem Static {
-    width: 12;
+    Select {
+        width: 20;
+    }
+    Static {
+        width: 12;
+    }
 }
 
 TelaEstoque #segundo {
     align: center middle;
     width: 100%;
     height: auto;
-}
-
-TelaEstoque #segundo Input {
-    height: auto;
-    width: auto;
-    min-width: 10%;
-}
-
-TelaEstoque #segundo Static {
-    margin-top: 2;
-}
-
-TelaEstoque #primeiro Static {
-    margin-top: 1;
-}
-
-TelaEstoque #primeiro Select Static {
-    margin-top: 0;
+    Input {
+        height: auto;
+        width: auto;
+        min-width: 10%;
+    }
+    Static {
+        margin-top: 2;
+    }
 }
 
 TelaEstoque #primeiro {
     align: center middle;
     width: 100%;
     height: auto;
+    Select Static {
+        margin-top: 0;
+    }
+    Static {
+        margin-top: 1;
+    }
 }
-
 
 TelaEstoque Image {
     width: 30;
@@ -131,20 +92,15 @@ TelaEstoque Image {
     margin-top: 1;
 }
 
-TelaEstoque .imovel Checkbox {
-    margin-top:4;
-    margin-right: 4;
-    margin-left: 2;
-}
-
 TelaEstoque .imovel {
     background: rgb(200,200,200);
     margin: 2 2 2 2;
     height: 12;
-}
-
-App.dark TelaEstoque .imovel{
-    background: #1a1717ff;
+    Checkbox {
+        margin-top:4;
+        margin-right: 4;
+        margin-left: 2;
+    }
 }
 
 TelaEstoque .dados0 {
@@ -154,10 +110,9 @@ TelaEstoque .dados0 {
 
 TelaEstoque #container_data {
     margin: 2;
-}
-
-TelaEstoque #container_data Static:first-child {
-    margin: 2 0 2 0;
+    Static:first-child {
+        margin: 2 0 2 0;
+    }
 }
 
 TelaEstoque .dados1 {
@@ -178,6 +133,25 @@ TelaEstoque .stt_ref {
     width: auto;
 }
 
-App.dark TelaEstoque .stt_ref{
-    border: #ede6e6ff;
+App.dark TelaEstoque {
+    .stt_ref{
+        border: #ede6e6ff;
+    }
+    .imovel{
+        background: #1a1717ff;
+    }
+    #container_filtragem {
+        border: #ede6e6ff 10%;
+    }
+    #container_resultado {
+        border: #ede6e6ff 10%;
+    }
+    #h_filtro #seta{
+        background: #1a1717ff;
+        color: #ede6e6ff;
+        border: #ede6e6ff 40%;
+        &:hover{
+            background: #4a4343ff;
+        }
+    }
 }

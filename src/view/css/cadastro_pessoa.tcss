@@ -1,7 +1,3 @@
-TelaCadastroPessoa #h_buttons Button{
-    margin-right: 2;
-}
-
 TelaCadastroPessoa #h_buttons{
     height: auto;
     border: black 10%;
@@ -9,12 +5,10 @@ TelaCadastroPessoa #h_buttons{
     margin: 5;
     margin-bottom: 0;
     margin-top: 0;
+    Button{
+        margin-right: 2;
+    }
 }
-
-App.dark TelaCadastroPessoa #h_buttons {
-    border: #ede6e6ff 10%;
-}
-
 
 TelaCadastroPessoa TextArea {
     width: 70%;
@@ -31,21 +25,18 @@ TelaCadastroPessoa #bt_remover_numero {
     display: none;
     margin-left: 1;
     color: red;
+    &:hover {
+        background: red;
+        color: white;
+    }
 }
 
 TelaCadastroPessoa #container_telefones {
     width: 100%;
-}
-
-TelaCadastroPessoa #container_telefones Button{
-    min-width: 0;
-    width: 10%;
-}
-
-
-TelaCadastroPessoa #bt_remover_numero:hover {
-    background: red;
-    color: white;
+    Button{
+        min-width: 0;
+        width: 10%;
+    }
 }
 
 TelaCadastroPessoa MaskedInput, TelaCadastroPessoa Input {
@@ -74,29 +65,23 @@ TelaCadastroPessoa Grid {
     align: center middle;
 }
 
-App.tamanho-34 TelaCadastroPessoa Grid {
-    grid-size: 2;
-}
-
-App.tamanho-34 TelaCadastroPessoa Select {
-    width: 35%;
-}
-
-
-App.dark TelaCadastroPessoa Grid {
-    border: #ede6e6ff 10%;
+App.tamanho-34 TelaCadastroPessoa {
+    Grid {
+        grid-size: 2;
+    }
+    Select {
+        width: 35%;
+    }
 }
 
 TelaCadastroPessoa VerticalGroup {
     height: auto;
 }
 
-
 TelaCadastroPessoa  {
     background: rgb(200, 200, 200);
     color: black;
 }
-
 
 TelaCadastroPessoa #input_descricao {
     width: auto;
@@ -114,7 +99,6 @@ TelaCadastroPessoa #imoveis {
     margin: 2 5 0 5;
 }
 
-
 TelaCadastroPessoa Image {
     width: 30;
     height: 10;
@@ -128,10 +112,6 @@ TelaCadastroPessoa .imovel {
     height: 12;
 }
 
-App.dark TelaCadastroPessoa .imovel{
-    background: #1a1717ff;
-}
-
 TelaCadastroPessoa .dados0 {
     height: 100%;
     margin-left: 2;
@@ -139,11 +119,11 @@ TelaCadastroPessoa .dados0 {
 
 TelaCadastroPessoa #container_data {
     margin: 2;
+    Static:first-child {
+        margin: 2 0 2 0;
+    }
 }
 
-TelaCadastroPessoa #container_data Static:first-child {
-    margin: 2 0 2 0;
-}
 
 TelaCadastroPessoa .dados1 {
     height: 100%;
@@ -163,6 +143,17 @@ TelaCadastroPessoa .stt_ref {
     width: auto;
 }
 
-App.dark TelaCadastroPessoa .stt_ref{
-    border: #ede6e6ff;
+App.dark TelaCadastroPessoa{ 
+    .stt_ref{
+        border: #ede6e6ff;
+    }
+    #h_buttons {
+        border: #ede6e6ff 10%;
+    }
+    .imovel{
+        background: #1a1717ff;
+    }
+    Grid {
+        border: #ede6e6ff 10%;
+    }
 }

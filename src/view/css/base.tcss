@@ -24,70 +24,63 @@ Header {
     width: 100%;
     content-align-vertical: middle;
     text-align: center;
-}
-
-Header Button {
-    color: red;
-    background: transparent;
-    width: auto;
-    height: auto;
-    min-height: 0;
-    height: 100%;
-    min-width: 0;
-    padding: 0;
-    dock:left;
-    width: 8;
-    content-align: left middle;
-    border: none;
-}
-
-Header Switch {
-    color: red;
-    background: transparent;
-    width: auto;
-    height: auto;
-    min-height: 0;
-    min-width: 0;
-    padding: 0;
-    width: 7;
-    content-align: left middle;
-    border: solid 10% black;
-}
-
-Header &.-on .switch--slider {
-            color: green;
-        }
-
-Header & .switch--slider {
+    Button {
         color: red;
-            background: rgb(200,200,200);
+        background: transparent;
+        width: auto;
+        height: auto;
+        min-height: 0;
+        height: 100%;
+        min-width: 0;
+        padding: 0;
+        dock:left;
+        width: 8;
+        content-align: left middle;
+        border: none;
+        &:hover {
+            color: white;
+            background: red;
         }
-
-
-Header HeaderClock, Header HeaderClockSpace {
-    display: none;
+    }
+    Switch {
+        color: red;
+        background: transparent;
+        width: auto;
+        height: auto;
+        min-height: 0;
+        min-width: 0;
+        padding: 0;
+        width: 7;
+        content-align: left middle;
+        border: solid 10% black;
+    }
+    &.-on .switch--slider {
+        color: green;
+    }
+    & .switch--slider {
+        color: red;
+        background: rgb(200,200,200);
+    }
+    HeaderClock, HeaderClockSpace {
+        display: none;
+    }
+    HeaderTitle {
+        color: white;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+        content-align: center middle;
+        width: 97%;
+        height: 100%;
+        margin: 0;
+        border: none;
+        min-height: 0;
+        min-width: 0;
+    }
 }
 
-Header Button:hover {
-    color: white;
-    background: red;
-}
 
 Button:hover {
     background: gray;
-}
-
-Header HeaderTitle {
-    color: white;
-    text-wrap: nowrap;
-    text-overflow: ellipsis;
-    content-align: center middle;
-    width: 97%;
-    height: 100%;
-    margin: 0;
-    border: none;
-    min-height: 0;
-    min-width: 0;
 }
 
 ModalScreen {
@@ -213,123 +206,116 @@ Underline .underline--bar {
     color: black;
 }
 
-App.dark Screen {
-    background: #121212;
-    color: #ede6e6ff;
-}
-
-App.dark Tab {
-    color: #ede6e6ff;
-}
-
-App.dark Select Static {
-    color: #ede6e6ff;
-}
-
-App.dark Input, App.dark MaskedInput, App.dark TextArea, App.dark Checkbox,App.dark  MyInput, App.dark Select SelectOverlay, App.dark Select Horizontal {
-   background: #322b2bff;
-   color: #ede6e6ff;
-}
-
-App.dark .input--cursor, App.dark .input--selection {
-    background: #ede6e6ff;
-    color: black;
-}
-
-App.dark .text-area--cursor, App.dark .text-area--selection {
-    background: #ede6e6ff;
-    color: black;
-}
-
-App.dark Underline .underline--bar {
-    color: #c2b2b2ff;
-}
-
-App.dark .-warning  {
-    color: auto;
-    background: rgba(110, 107, 22, 1); 
-    border-top: tall rgba(110, 107, 22, 1);
-    border-bottom: tall rgba(110, 107, 22, 1);
-
-    &:hover {
-        background: rgba(131, 127, 27, 1);
-        border-bottom: tall rgba(131, 127, 27, 1);
-        border-top: tall rgba(131, 127, 27, 1);
+App.dark {
+    
+    Screen {
+        background: #121212;
+        color: #ede6e6ff;
     }
-
-    &.-active {
-        background: $success;
-        border-bottom: tall rgba(110, 107, 22, 1);
+    Tab {
+        color: #ede6e6ff;
+    }
+    Select Static {
+        color: #ede6e6ff;
+    }
+    Input, MaskedInput, TextArea, Checkbox  MyInput, Select SelectOverlay, Select Horizontal {
+        background: #322b2bff;
+        color: #ede6e6ff;
+    }
+    .input--cursor, .input--selection {
+        background: #ede6e6ff;
+        color: black;
+    }
+    .text-area--cursor, .text-area--selection {
+        background: #ede6e6ff;
+        color: black;
+    }
+    Underline .underline--bar {
+        color: #c2b2b2ff;
+    }
+    .-warning  {
+        color: auto;
+        background: rgba(110, 107, 22, 1); 
         border-top: tall rgba(110, 107, 22, 1);
+        border-bottom: tall rgba(110, 107, 22, 1);
+
+        &:hover {
+            background: rgba(131, 127, 27, 1);
+            border-bottom: tall rgba(131, 127, 27, 1);
+            border-top: tall rgba(131, 127, 27, 1);
+        }
+
+        &.-active {
+            background: $success;
+            border-bottom: tall rgba(110, 107, 22, 1);
+            border-top: tall rgba(110, 107, 22, 1);
+        }
     }
-}
-
-App.dark .-error {
-    color: auto;
-    background: $error;
-    border-top: tall $error-lighten-2;
-    border-bottom: tall $error-darken-3;    
-
-    &:hover {
-        background: $error-darken-1;
-        border-top: tall $error;
-    }   
-    
-    &.-active {
+    .-error {
+        color: auto;
         background: $error;
-        border-bottom: tall $error-lighten-2;
-        border-top: tall $error-darken-2;
-    }
-}   
+        border-top: tall $error-lighten-2;
+        border-bottom: tall $error-darken-3;    
 
-App.dark .-success {
-    color: auto;
-    background: rgba(10, 64, 15, 1);
-    border-top: tall rgba(10, 64, 15, 1);
-    border-bottom: tall rgba(10, 64, 15, 1);
-
-    &:hover {
-        background: $success-darken-1;
-        border-top: tall $success-darken-1;
-        border-bottom: tall $success-darken-1;
-    }
-
-    &.-active {
-        background: $success;
-        border-bottom: tall rgba(10, 64, 15, 1);
+        &:hover {
+            background: $error-darken-1;
+            border-top: tall $error;
+        }   
+        
+        &.-active {
+            background: $error;
+            border-bottom: tall $error-lighten-2;
+            border-top: tall $error-darken-2;
+        }
+    }   
+    .-success {
+        color: auto;
+        background: rgba(10, 64, 15, 1);
         border-top: tall rgba(10, 64, 15, 1);
-    }
-}
-          
-App.dark .-accent {
-    color: auto;
-    background: $accent;
-    border-top: tall $accent-lighten-2;
-    border-bottom: tall $accent-darken-3;
-    
-    &:hover {
-        background: $accent-darken-1;
-        border-top: tall $accent;
-    }
+        border-bottom: tall rgba(10, 64, 15, 1);
 
-    &.-active {
+        &:hover {
+            background: $success-darken-1;
+            border-top: tall $success-darken-1;
+            border-bottom: tall $success-darken-1;
+        }
+
+        &.-active {
+            background: $success;
+            border-bottom: tall rgba(10, 64, 15, 1);
+            border-top: tall rgba(10, 64, 15, 1);
+        }
+    }
+    .-accent {
+        color: auto;
         background: $accent;
-        border-bottom: tall $accent-lighten-2;
-        border-top: tall $accent-darken-2;
+        border-top: tall $accent-lighten-2;
+        border-bottom: tall $accent-darken-3;
+        
+        &:hover {
+            background: $accent-darken-1;
+            border-top: tall $accent;
+        }
+
+        &.-active {
+            background: $accent;
+            border-bottom: tall $accent-lighten-2;
+            border-top: tall $accent-darken-2;
+        }
     }
+    Tabs Underline {
+            width: 1fr;
+            height: 1;
+            & > .underline--bar {
+                color: #322b2bff;
+                background: $foreground 90%;
+            }
+            &:ansi {
+                text-style: dim;
+            }
+        }
 }
 
-App.dark Tabs Underline {
-        width: 1fr;
-        height: 1;
-        & > .underline--bar {
-            color: #322b2bff;
-            background: $foreground 90%;
-        }
-        &:ansi {
-            text-style: dim;
-        }
-    }
 
 App.tamanho-34 Header HeaderTitle{
     width: 90%;
